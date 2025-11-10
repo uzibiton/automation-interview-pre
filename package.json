@@ -1,0 +1,35 @@
+{
+  "name": "automation-interview-pre",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "services/auth-service",
+    "services/api-service",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "dev": "concurrently -n \"AUTH,API,FRONTEND\" -c \"blue,green,yellow\" \"npm run dev:auth\" \"npm run dev:api\" \"npm run dev:frontend\"",
+    "dev:auth": "npm run start:dev --workspace=auth-service",
+    "dev:api": "npm run start:dev --workspace=api-service",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build:all": "npm run build --workspaces",
+    "clean": "npm run clean:modules && npm run clean:build",
+    "clean:modules": "rm -rf node_modules services/*/node_modules frontend/node_modules",
+    "clean:build": "rm -rf services/*/dist frontend/dist",
+    "docker:up": "docker-compose up --build",
+    "docker:down": "docker-compose down",
+    "docker:clean": "docker-compose down -v && docker system prune -f",
+    "db:start": "docker-compose up postgres -d",
+    "db:stop": "docker-compose stop postgres",
+    "db:reset": "docker-compose down -v && docker-compose up postgres -d"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.6.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
