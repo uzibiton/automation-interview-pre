@@ -1,0 +1,6 @@
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#007bff" rx="85"/>
+  <text x="50%" y="45%" text-anchor="middle" dy=".3em" font-size="200" fill="white">💰</text>
+  <text x="50%" y="70%" text-anchor="middle" font-size="64" fill="white" font-family="Arial, sans-serif">Expense</text>
+  <text x="50%" y="78%" text-anchor="middle" font-size="64" fill="white" font-family="Arial, sans-serif">Tracker</text>
+</svg>
