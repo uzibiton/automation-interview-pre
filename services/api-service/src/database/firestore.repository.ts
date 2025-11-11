@@ -23,7 +23,7 @@ export class FirestoreRepository implements IExpenseRepository {
       projectId: process.env.FIREBASE_PROJECT_ID,
       // credentials will be auto-loaded from GOOGLE_APPLICATION_CREDENTIALS env var
     });
-    
+
     this.expenses = this.db.collection('expenses');
     this.categories = this.db.collection('categories');
     this.subCategories = this.db.collection('sub_categories');
@@ -33,7 +33,8 @@ export class FirestoreRepository implements IExpenseRepository {
     const expenseData = {
       ...expenseDto,
       userId: String(userId),
-      amount: typeof expenseDto.amount === 'string' ? parseFloat(expenseDto.amount) : expenseDto.amount,
+      amount:
+        typeof expenseDto.amount === 'string' ? parseFloat(expenseDto.amount) : expenseDto.amount,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -49,9 +50,7 @@ export class FirestoreRepository implements IExpenseRepository {
     let query: any = this.expenses.where('userId', '==', String(userId));
 
     if (filters?.startDate && filters?.endDate) {
-      query = query
-        .where('date', '>=', filters.startDate)
-        .where('date', '<=', filters.endDate);
+      query = query.where('date', '>=', filters.startDate).where('date', '<=', filters.endDate);
     }
 
     if (filters?.categoryId) {
@@ -67,7 +66,7 @@ export class FirestoreRepository implements IExpenseRepository {
     }
 
     const snapshot = await query.orderBy('date', 'desc').get();
-    
+
     return snapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data(),
@@ -76,13 +75,13 @@ export class FirestoreRepository implements IExpenseRepository {
 
   async findOne(id: string | number, userId: number | string): Promise<Expense | null> {
     const doc = await this.expenses.doc(String(id)).get();
-    
+
     if (!doc.exists) {
       return null;
     }
 
     const data: any = doc.data();
-    
+
     // Verify ownership
     if (data.userId !== String(userId)) {
       return null;
@@ -94,9 +93,13 @@ export class FirestoreRepository implements IExpenseRepository {
     };
   }
 
-  async update(id: string | number, userId: number | string, expenseDto: Partial<CreateExpenseDto>): Promise<Expense> {
+  async update(
+    id: string | number,
+    userId: number | string,
+    expenseDto: Partial<CreateExpenseDto>,
+  ): Promise<Expense> {
     const expense = await this.findOne(id, userId);
-    
+
     if (!expense) {
       throw new Error('Expense not found');
     }
@@ -107,7 +110,8 @@ export class FirestoreRepository implements IExpenseRepository {
     };
 
     if (expenseDto.amount) {
-      updateData.amount = typeof expenseDto.amount === 'string' ? parseFloat(expenseDto.amount) : expenseDto.amount;
+      updateData.amount =
+        typeof expenseDto.amount === 'string' ? parseFloat(expenseDto.amount) : expenseDto.amount;
     }
 
     await this.expenses.doc(String(id)).update(updateData);
@@ -120,7 +124,7 @@ export class FirestoreRepository implements IExpenseRepository {
 
   async delete(id: string | number, userId: number | string): Promise<void> {
     const expense = await this.findOne(id, userId);
-    
+
     if (!expense) {
       throw new Error('Expense not found');
     }
@@ -138,17 +142,18 @@ export class FirestoreRepository implements IExpenseRepository {
 
     // Group by category
     const categoryMap = new Map<number, number>();
-    
+
     for (const expense of expenses) {
       const categoryId = expense.categoryId;
-      const amount = typeof expense.amount === 'string' ? parseFloat(expense.amount) : expense.amount;
+      const amount =
+        typeof expense.amount === 'string' ? parseFloat(expense.amount) : expense.amount;
       categoryMap.set(categoryId, (categoryMap.get(categoryId) || 0) + amount);
     }
 
     // Get category names
     const categories = await this.getCategories();
     const by_category = Array.from(categoryMap.entries()).map(([categoryId, total]) => {
-      const category = categories.find(c => c.id === categoryId);
+      const category = categories.find((c) => c.id === categoryId);
       return {
         category: category?.nameEn || 'Unknown',
         total,
@@ -165,7 +170,7 @@ export class FirestoreRepository implements IExpenseRepository {
 
   async getCategories(): Promise<Category[]> {
     const snapshot = await this.categories.get();
-    
+
     return snapshot.docs.map((doc: any) => ({
       id: parseInt(doc.id),
       ...doc.data(),
@@ -173,10 +178,8 @@ export class FirestoreRepository implements IExpenseRepository {
   }
 
   async getSubCategories(categoryId: number): Promise<SubCategory[]> {
-    const snapshot = await this.subCategories
-      .where('categoryId', '==', categoryId)
-      .get();
-    
+    const snapshot = await this.subCategories.where('categoryId', '==', categoryId).get();
+
     return snapshot.docs.map((doc: any) => ({
       id: parseInt(doc.id),
       ...doc.data(),

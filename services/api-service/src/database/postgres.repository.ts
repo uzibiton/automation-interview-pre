@@ -24,13 +24,15 @@ export class PostgresRepository implements IExpenseRepository {
     const expense = this.expenseRepository.create({
       ...expenseDto,
       userId: Number(userId),
-      amount: typeof expenseDto.amount === 'string' ? parseFloat(expenseDto.amount) : expenseDto.amount,
+      amount:
+        typeof expenseDto.amount === 'string' ? parseFloat(expenseDto.amount) : expenseDto.amount,
     });
     return await this.expenseRepository.save(expense);
   }
 
   async findAll(userId: number | string, filters?: ExpenseFilters): Promise<any[]> {
-    const query = this.expenseRepository.createQueryBuilder('expense')
+    const query = this.expenseRepository
+      .createQueryBuilder('expense')
       .where('expense.userId = :userId', { userId: Number(userId) });
 
     if (filters?.startDate && filters?.endDate) {
@@ -61,7 +63,11 @@ export class PostgresRepository implements IExpenseRepository {
     });
   }
 
-  async update(id: string | number, userId: number | string, expenseDto: Partial<CreateExpenseDto>): Promise<any> {
+  async update(
+    id: string | number,
+    userId: number | string,
+    expenseDto: Partial<CreateExpenseDto>,
+  ): Promise<any> {
     const expense = await this.findOne(id, userId);
     if (!expense) {
       throw new Error('Expense not found');
@@ -69,7 +75,8 @@ export class PostgresRepository implements IExpenseRepository {
 
     Object.assign(expense, expenseDto);
     if (expenseDto.amount) {
-      expense.amount = typeof expenseDto.amount === 'string' ? parseFloat(expenseDto.amount) : expenseDto.amount;
+      expense.amount =
+        typeof expenseDto.amount === 'string' ? parseFloat(expenseDto.amount) : expenseDto.amount;
     }
 
     return await this.expenseRepository.save(expense);
@@ -99,7 +106,7 @@ export class PostgresRepository implements IExpenseRepository {
     return {
       total,
       count: expenses.length,
-      by_category: by_category.map(item => ({
+      by_category: by_category.map((item) => ({
         category: item.category,
         total: parseFloat(item.total),
       })),

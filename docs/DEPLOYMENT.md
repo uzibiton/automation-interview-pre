@@ -3,6 +3,7 @@
 This guide walks you through deploying the Expense Tracker application to Google Cloud Run with Firebase Firestore.
 
 ## Table of Contents
+
 - [Prerequisites](#prerequisites)
 - [Architecture Overview](#architecture-overview)
 - [Setup Steps](#setup-steps)
@@ -17,11 +18,13 @@ This guide walks you through deploying the Expense Tracker application to Google
 ## Prerequisites
 
 ### 1. Google Cloud Account
+
 - Create a Google Cloud account: https://console.cloud.google.com
 - Enable billing (required for Cloud Run)
 - $300 free credit for new users
 
 ### 2. Install gcloud CLI
+
 ```bash
 # Download from: https://cloud.google.com/sdk/docs/install
 
@@ -36,6 +39,7 @@ gcloud auth application-default login
 ```
 
 ### 3. Required Tools
+
 ```bash
 # Docker (for local testing)
 docker --version
@@ -52,6 +56,7 @@ node --version
 ## Architecture Overview
 
 ### Production Architecture:
+
 ```
 Users
   ↓
@@ -63,6 +68,7 @@ API Service (Cloud Run) ──→ Firestore (Expenses)
 ```
 
 ### Services:
+
 1. **Frontend**: React + Vite PWA
 2. **Auth Service**: NestJS (JWT + Google OAuth)
 3. **API Service**: NestJS (Expense CRUD)
@@ -171,6 +177,7 @@ chmod +x deploy-cloud-run.sh
 ```
 
 The script will:
+
 1. Build Docker images for all services
 2. Push images to Google Container Registry
 3. Deploy services to Cloud Run
@@ -260,6 +267,7 @@ echo "Frontend: $FRONTEND_URL"
 ### 1. Update Google OAuth Redirect URI
 
 Go back to Google Cloud Console → APIs & Services → Credentials:
+
 1. Edit your OAuth 2.0 Client ID
 2. Add authorized redirect URI: `https://auth-service-xxx.run.app/auth/google/callback`
 3. Save
@@ -331,6 +339,7 @@ gcloud run services logs tail frontend --region=us-central1
 View all services: https://console.cloud.google.com/run
 
 Each service shows:
+
 - Request count
 - Request latency
 - Container instances
@@ -349,16 +358,19 @@ View database: https://console.firebase.google.com/ → Firestore Database
 ### Cloud Run Pricing (us-central1):
 
 **Free Tier (Monthly):**
+
 - 2 million requests
 - 360,000 GB-seconds memory
 - 180,000 vCPU-seconds
 
 **After Free Tier:**
+
 - Requests: $0.40 per million
 - Memory: $0.0000025 per GB-second
 - CPU: $0.000024 per vCPU-second
 
 **Example: Small App (10,000 daily users)**
+
 - Requests: ~300,000/month = FREE
 - Memory/CPU: ~$5-10/month
 - **Total: ~$5-10/month**
@@ -366,20 +378,24 @@ View database: https://console.firebase.google.com/ → Firestore Database
 ### Firestore Pricing:
 
 **Free Tier (Daily):**
+
 - 50,000 reads
 - 20,000 writes
 - 20,000 deletes
 - 1 GB storage
 
 **After Free Tier:**
+
 - Reads: $0.06 per 100,000
 - Writes: $0.18 per 100,000
 - Storage: $0.18/GB/month
 
 **Example: Small App**
+
 - ~$0-5/month
 
 ### Total Monthly Cost:
+
 - **Small traffic**: $5-15/month
 - **Medium traffic**: $20-50/month
 

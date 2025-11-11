@@ -64,12 +64,16 @@ export interface IExpenseRepository {
   create(userId: number | string, expense: CreateExpenseDto): Promise<Expense>;
   findAll(userId: number | string, filters?: ExpenseFilters): Promise<Expense[]>;
   findOne(id: string | number, userId: number | string): Promise<Expense | null>;
-  update(id: string | number, userId: number | string, expense: Partial<CreateExpenseDto>): Promise<Expense>;
+  update(
+    id: string | number,
+    userId: number | string,
+    expense: Partial<CreateExpenseDto>,
+  ): Promise<Expense>;
   delete(id: string | number, userId: number | string): Promise<void>;
-  
+
   // Stats
   getStats(userId: number | string, filters?: ExpenseFilters): Promise<ExpenseStats>;
-  
+
   // Categories
   getCategories(): Promise<Category[]>;
   getSubCategories(categoryId: number): Promise<SubCategory[]>;
