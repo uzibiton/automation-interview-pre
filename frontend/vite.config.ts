@@ -8,6 +8,7 @@ export default defineConfig({
     port: parseInt(process.env.PORT || '3000'),
     host: '0.0.0.0',
     strictPort: false,
+    allowedHosts: ['all'],
     hmr: {
       clientPort: parseInt(process.env.PORT || '3000'),
     },

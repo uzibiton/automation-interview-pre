@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
@@ -8,6 +8,14 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
+RUN node node_modules/vite/bin/vite.js build
+
+FROM nginx:alpine
+
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 8080
 
-CMD ["node", "node_modules/vite/bin/vite.js", "--host", "0.0.0.0"]
+CMD ["nginx", "-g", "daemon off;"]
