@@ -8,8 +8,14 @@ import { Category } from './category.entity';
 import { SubCategory } from './sub-category.entity';
 import { AuthGuard } from '../guards/auth.guard';
 
+// Only import TypeORM entities if using PostgreSQL
+const databaseImports =
+  process.env.DATABASE_TYPE === 'firestore'
+    ? []
+    : [TypeOrmModule.forFeature([Expense, Category, SubCategory])];
+
 @Module({
-  imports: [TypeOrmModule.forFeature([Expense, Category, SubCategory]), HttpModule],
+  imports: [...databaseImports, HttpModule],
   controllers: [ExpensesController],
   providers: [ExpensesService, AuthGuard],
 })
