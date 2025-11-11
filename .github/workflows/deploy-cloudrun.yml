@@ -1,0 +1,122 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+      - deployment-support
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_REGION: us-central1
+  DATABASE_TYPE: firestore
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: |
+          gcloud auth configure-docker
+
+      - name: Build and Deploy Auth Service
+        run: |
+          cd services/auth-service
+          gcloud builds submit --tag gcr.io/$GCP_PROJECT_ID/auth-service
+          gcloud run deploy auth-service \
+            --image gcr.io/$GCP_PROJECT_ID/auth-service \
+            --platform managed \
+            --region $GCP_REGION \
+            --allow-unauthenticated \
+            --min-instances 1 \
+            --max-instances 10 \
+            --memory 512Mi \
+            --set-env-vars "DATABASE_TYPE=$DATABASE_TYPE,FIREBASE_PROJECT_ID=$GCP_PROJECT_ID" \
+            --set-secrets "JWT_SECRET=jwt-secret:latest,GOOGLE_CLIENT_SECRET=google-client-secret:latest" \
+            --update-env-vars "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
+
+      - name: Get Auth Service URL
+        id: auth-url
+        run: |
+          AUTH_URL=$(gcloud run services describe auth-service --platform managed --region $GCP_REGION --format 'value(status.url)')
+          echo "url=$AUTH_URL" >> $GITHUB_OUTPUT
+          echo "Auth Service URL: $AUTH_URL"
+
+      - name: Build and Deploy API Service
+        run: |
+          cd services/api-service
+          gcloud builds submit --tag gcr.io/$GCP_PROJECT_ID/api-service
+          gcloud run deploy api-service \
+            --image gcr.io/$GCP_PROJECT_ID/api-service \
+            --platform managed \
+            --region $GCP_REGION \
+            --allow-unauthenticated \
+            --min-instances 0 \
+            --max-instances 10 \
+            --memory 512Mi \
+            --set-env-vars "DATABASE_TYPE=$DATABASE_TYPE,FIREBASE_PROJECT_ID=$GCP_PROJECT_ID,AUTH_SERVICE_URL=${{ steps.auth-url.outputs.url }}"
+
+      - name: Get API Service URL
+        id: api-url
+        run: |
+          API_URL=$(gcloud run services describe api-service --platform managed --region $GCP_REGION --format 'value(status.url)')
+          echo "url=$API_URL" >> $GITHUB_OUTPUT
+          echo "API Service URL: $API_URL"
+
+      - name: Build and Deploy Frontend
+        run: |
+          cd frontend
+          gcloud builds submit --tag gcr.io/$GCP_PROJECT_ID/frontend
+          gcloud run deploy frontend \
+            --image gcr.io/$GCP_PROJECT_ID/frontend \
+            --platform managed \
+            --region $GCP_REGION \
+            --allow-unauthenticated \
+            --min-instances 0 \
+            --max-instances 10 \
+            --memory 256Mi \
+            --set-env-vars "VITE_AUTH_SERVICE_URL=${{ steps.auth-url.outputs.url }},VITE_API_SERVICE_URL=${{ steps.api-url.outputs.url }},VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
+
+      - name: Get Frontend URL
+        id: frontend-url
+        run: |
+          FRONTEND_URL=$(gcloud run services describe frontend --platform managed --region $GCP_REGION --format 'value(status.url)')
+          echo "url=$FRONTEND_URL" >> $GITHUB_OUTPUT
+          echo "Frontend URL: $FRONTEND_URL"
+
+      - name: Deployment Summary
+        run: |
+          echo "## 🚀 Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Service URLs" >> $GITHUB_STEP_SUMMARY
+          echo "- **Frontend**: ${{ steps.frontend-url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Auth Service**: ${{ steps.auth-url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **API Service**: ${{ steps.api-url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Update Google OAuth redirect URI to: \`${{ steps.auth-url.outputs.url }}/auth/google/callback\`" >> $GITHUB_STEP_SUMMARY
+          echo "2. Test the application at: ${{ steps.frontend-url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          echo "## ❌ Deployment Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the workflow logs for details." >> $GITHUB_STEP_SUMMARY
