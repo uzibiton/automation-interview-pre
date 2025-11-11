@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "מעקב הוצאות",
+    "logout": "התנתק",
+    "language": "שפה"
+  },
+  "nav": {
+    "dashboard": "לוח בקרה",
+    "expenses": "הוצאות",
+    "addExpense": "הוסף הוצאה",
+    "categories": "קטגוריות"
+  },
+  "auth": {
+    "login": "התחבר",
+    "register": "הרשמה",
+    "email": "אימייל",
+    "password": "סיסמה",
+    "name": "שם",
+    "continueWithGoogle": "המשך עם Google",
+    "or": "או",
+    "alreadyHaveAccount": "יש לך כבר חשבון?",
+    "dontHaveAccount": "אין לך חשבון?",
+    "switchToLogin": "התחבר",
+    "switchToRegister": "הרשם"
+  },
+  "expenses": {
+    "title": "ההוצאות שלי",
+    "noExpenses": "אין הוצאות עדיין",
+    "addNew": "הוסף הוצאה חדשה",
+    "totalSpent": "סה״כ הוצאות",
+    "thisMonth": "החודש",
+    "amount": "סכום",
+    "category": "קטגוריה",
+    "subCategory": "תת קטגוריה",
+    "description": "תיאור",
+    "date": "תאריך",
+    "paymentMethod": "שיטת תשלום",
+    "labels": "תויות",
+    "save": "שמור",
+    "cancel": "ביטול",
+    "edit": "ערוך",
+    "delete": "מחק",
+    "filter": "סינון",
+    "allCategories": "כל הקטגוריות"
+  },
+  "paymentMethods": {
+    "credit_card": "כרטיס אשראי",
+    "debit_card": "כרטיס חיוב",
+    "cash": "מזומן",
+    "bank_transfer": "העברה בנקאית"
+  },
+  "stats": {
+    "title": "סטטיסטיקת הוצאות",
+    "byCategory": "הוצאות לפי קטגוריה",
+    "period": "תקופה",
+    "week": "שבוע",
+    "month": "חודש",
+    "year": "שנה",
+    "total": "סה״כ",
+    "count": "כמות"
+  }
+}

@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -48,5 +49,46 @@ export class AuthService {
 
   async validateToken(payload: any): Promise<User> {
     return this.usersService.findById(payload.sub);
+  }
+
+  async register(email: string, password: string, name?: string) {
+    // Check if user already exists
+    const existingUser = await this.usersService.findByEmail(email);
+    if (existingUser) {
+      throw new ConflictException('User with this email already exists');
+    }
+
+    // Hash password
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    // Create user
+    const user = await this.usersService.createUser({
+      email,
+      name: name || email.split('@')[0],
+      passwordHash,
+    });
+
+    return this.login(user);
+  }
+
+  async loginWithPassword(email: string, password: string) {
+    // Find user with password
+    const user = await this.usersService.findByEmailWithPassword(email);
+
+    if (!user || !user.passwordHash) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Remove password from user object
+    delete user.passwordHash;
+
+    return this.login(user);
   }
 }

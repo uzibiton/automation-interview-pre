@@ -73,3 +73,6 @@ postgres_data/
 *.key
 *.cert
 .env.save
+
+# Reference folder (not part of the project)
+reference-expenses/

@@ -17,6 +17,9 @@ export class User {
   @Column({ nullable: true })
   name: string;
 
+  @Column({ name: 'password_hash', nullable: true, select: false })
+  passwordHash: string;
+
   @Column({ name: 'google_id', unique: true, nullable: true })
   googleId: string;
 

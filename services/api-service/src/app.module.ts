@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
-import { TasksModule } from './tasks/tasks.module';
+import { ExpensesModule } from './expenses/expenses.module';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { TasksModule } from './tasks/tasks.module';
       logging: process.env.NODE_ENV === 'development',
     }),
     HttpModule,
-    TasksModule,
+    ExpensesModule,
   ],
 })
 export class AppModule {}

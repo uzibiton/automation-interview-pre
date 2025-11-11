@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "Expense Tracker",
+    "logout": "Logout",
+    "language": "Language"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "expenses": "Expenses",
+    "addExpense": "Add Expense",
+    "categories": "Categories"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "continueWithGoogle": "Continue with Google",
+    "or": "OR",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "switchToLogin": "Login",
+    "switchToRegister": "Register"
+  },
+  "expenses": {
+    "title": "My Expenses",
+    "noExpenses": "No expenses yet",
+    "addNew": "Add New Expense",
+    "totalSpent": "Total Spent",
+    "thisMonth": "This Month",
+    "amount": "Amount",
+    "category": "Category",
+    "subCategory": "Sub Category",
+    "description": "Description",
+    "date": "Date",
+    "paymentMethod": "Payment Method",
+    "labels": "Labels",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "filter": "Filter",
+    "allCategories": "All Categories"
+  },
+  "paymentMethods": {
+    "credit_card": "Credit Card",
+    "debit_card": "Debit Card",
+    "cash": "Cash",
+    "bank_transfer": "Bank Transfer"
+  },
+  "stats": {
+    "title": "Spending Statistics",
+    "byCategory": "Expenses by Category",
+    "period": "Period",
+    "week": "Week",
+    "month": "Month",
+    "year": "Year",
+    "total": "Total",
+    "count": "Count"
+  }
+}

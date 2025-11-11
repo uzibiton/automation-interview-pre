@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import TaskList from './TaskList';
-import TaskForm from './TaskForm';
+import ExpenseList from './ExpenseList';
+import ExpenseForm from './ExpenseForm';
+import ExpensePieChart from './ExpensePieChart';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 const API_SERVICE_URL = import.meta.env.VITE_API_SERVICE_URL || 'http://localhost:3002';
 
@@ -19,14 +22,15 @@ interface User {
 
 interface Stats {
   total: number;
-  pending: number;
-  in_progress: number;
-  completed: number;
+  totalAmount: number;
+  count: number;
+  byCategory: { categoryId: number; categoryName: string; total: number }[];
 }
 
 function Dashboard({ token, onLogout }: DashboardProps) {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
-  const [stats, setStats] = useState<Stats>({ total: 0, pending: 0, in_progress: 0, completed: 0 });
+  const [stats, setStats] = useState<Stats>({ total: 0, totalAmount: 0, count: 0, byCategory: [] });
   const [showForm, setShowForm] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -49,7 +53,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get(`${API_SERVICE_URL}/tasks/stats`, {
+      const response = await axios.get(`${API_SERVICE_URL}/expenses/stats?period=month`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setStats(response.data);
@@ -58,7 +62,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
     }
   };
 
-  const handleTaskCreated = () => {
+  const handleExpenseCreated = () => {
     setShowForm(false);
     setRefreshKey((prev) => prev + 1);
   };
@@ -66,12 +70,13 @@ function Dashboard({ token, onLogout }: DashboardProps) {
   return (
     <div>
       <div className="header">
-        <h1>📋 Task Manager</h1>
+        <h1>� {t('app.title')}</h1>
         <div className="user-info">
+          <LanguageSwitcher />
           {user?.avatarUrl && <img src={user.avatarUrl} alt={user.name} className="user-avatar" />}
           <span>{user?.name}</span>
           <button onClick={onLogout} className="btn btn-secondary">
-            Logout
+            {t('app.logout')}
           </button>
         </div>
       </div>
@@ -79,38 +84,34 @@ function Dashboard({ token, onLogout }: DashboardProps) {
       <div className="container">
         <div className="stats">
           <div className="stat-card">
-            <h3>Total Tasks</h3>
-            <div className="value">{stats.total}</div>
+            <h3>{t('expenses.thisMonth')}</h3>
+            <div className="value">${stats.totalAmount?.toFixed(2) || '0.00'}</div>
           </div>
           <div className="stat-card">
-            <h3>Pending</h3>
-            <div className="value" style={{ color: '#ffc107' }}>
-              {stats.pending}
-            </div>
-          </div>
-          <div className="stat-card">
-            <h3>In Progress</h3>
+            <h3>{t('stats.count')}</h3>
             <div className="value" style={{ color: '#2196f3' }}>
-              {stats.in_progress}
+              {stats.count || 0}
             </div>
           </div>
           <div className="stat-card">
-            <h3>Completed</h3>
-            <div className="value" style={{ color: '#4caf50' }}>
-              {stats.completed}
+            <h3>{t('stats.byCategory')}</h3>
+            <div className="value" style={{ fontSize: '14px' }}>
+              {stats.byCategory?.length || 0} {t('nav.categories')}
             </div>
           </div>
         </div>
 
         <div style={{ marginBottom: '20px' }}>
           <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
-            {showForm ? 'Cancel' : '+ New Task'}
+            {showForm ? t('expenses.cancel') : t('expenses.addNew')}
           </button>
         </div>
 
-        {showForm && <TaskForm token={token} onSuccess={handleTaskCreated} />}
+        {showForm && <ExpenseForm token={token} onSuccess={handleExpenseCreated} />}
 
-        <TaskList
+        <ExpensePieChart token={token} refreshKey={refreshKey} />
+
+        <ExpenseList
           token={token}
           refreshKey={refreshKey}
           onUpdate={() => setRefreshKey((prev) => prev + 1)}

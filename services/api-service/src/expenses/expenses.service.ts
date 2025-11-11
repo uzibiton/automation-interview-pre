@@ -1,0 +1,137 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Expense } from './expense.entity';
+import { Category } from './category.entity';
+import { SubCategory } from './sub-category.entity';
+import { CreateExpenseDto, UpdateExpenseDto } from './dto/expense.dto';
+
+@Injectable()
+export class ExpensesService {
+  constructor(
+    @InjectRepository(Expense)
+    private expensesRepository: Repository<Expense>,
+    @InjectRepository(Category)
+    private categoriesRepository: Repository<Category>,
+    @InjectRepository(SubCategory)
+    private subCategoriesRepository: Repository<SubCategory>,
+  ) {}
+
+  async findAll(
+    userId: number,
+    filters?: { startDate?: string; endDate?: string; categoryId?: number },
+  ): Promise<Expense[]> {
+    const query = this.expensesRepository
+      .createQueryBuilder('expense')
+      .where('expense.userId = :userId', { userId })
+      .orderBy('expense.date', 'DESC');
+
+    if (filters?.startDate) {
+      query.andWhere('expense.date >= :startDate', {
+        startDate: filters.startDate,
+      });
+    }
+
+    if (filters?.endDate) {
+      query.andWhere('expense.date <= :endDate', { endDate: filters.endDate });
+    }
+
+    if (filters?.categoryId) {
+      query.andWhere('expense.categoryId = :categoryId', {
+        categoryId: filters.categoryId,
+      });
+    }
+
+    return query.getMany();
+  }
+
+  async findOne(userId: number, id: number): Promise<Expense> {
+    const expense = await this.expensesRepository.findOne({
+      where: { id, userId },
+    });
+
+    if (!expense) {
+      throw new NotFoundException(`Expense with ID ${id} not found`);
+    }
+
+    return expense;
+  }
+
+  async create(userId: number, createExpenseDto: CreateExpenseDto): Promise<Expense> {
+    const expense = this.expensesRepository.create({
+      ...createExpenseDto,
+      userId,
+    });
+
+    return this.expensesRepository.save(expense);
+  }
+
+  async update(userId: number, id: number, updateExpenseDto: UpdateExpenseDto): Promise<Expense> {
+    const expense = await this.findOne(userId, id);
+
+    Object.assign(expense, updateExpenseDto);
+
+    return this.expensesRepository.save(expense);
+  }
+
+  async delete(userId: number, id: number): Promise<void> {
+    const expense = await this.findOne(userId, id);
+    await this.expensesRepository.remove(expense);
+  }
+
+  async getStats(userId: number, period: string = 'month'): Promise<any> {
+    const now = new Date();
+    let startDate: Date;
+
+    switch (period) {
+      case 'week':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+        break;
+      case 'year':
+        startDate = new Date(now.getFullYear(), 0, 1);
+        break;
+      case 'month':
+      default:
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+    }
+
+    const expenses = await this.expensesRepository
+      .createQueryBuilder('expense')
+      .where('expense.userId = :userId', { userId })
+      .andWhere('expense.date >= :startDate', { startDate })
+      .getMany();
+
+    const total = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
+
+    const byCategory = await this.expensesRepository
+      .createQueryBuilder('expense')
+      .select('expense.categoryId', 'categoryId')
+      .addSelect('SUM(expense.amount)', 'total')
+      .addSelect('COUNT(*)', 'count')
+      .where('expense.userId = :userId', { userId })
+      .andWhere('expense.date >= :startDate', { startDate })
+      .groupBy('expense.categoryId')
+      .getRawMany();
+
+    return {
+      total,
+      count: expenses.length,
+      period,
+      byCategory,
+    };
+  }
+
+  async getCategories(language: string = 'en'): Promise<Category[]> {
+    return this.categoriesRepository.find({
+      order: { nameEn: 'ASC' },
+    });
+  }
+
+  async getSubCategories(categoryId: number): Promise<SubCategory[]> {
+    return this.subCategoriesRepository.find({
+      where: { categoryId },
+      order: { nameEn: 'ASC' },
+    });
+  }
+}
