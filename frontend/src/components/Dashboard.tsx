@@ -7,6 +7,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
 const API_SERVICE_URL = import.meta.env.VITE_API_SERVICE_URL || 'http://localhost:3002';
+const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localhost:3001';
 
 interface DashboardProps {
   token: string;
@@ -41,7 +42,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/auth/profile', {
+      const response = await axios.get(`${AUTH_SERVICE_URL}/auth/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(response.data);
