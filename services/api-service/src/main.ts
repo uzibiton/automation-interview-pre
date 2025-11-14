@@ -9,15 +9,20 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS
+  const allowedOrigins =
+    process.env.NODE_ENV === 'production'
+      ? [process.env.FRONTEND_URL, /\.run\.app$/] // Allow Cloud Run domains in production
+      : ['http://localhost:3000', 'http://localhost'];
+
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost'],
+    origin: allowedOrigins,
     credentials: true,
   });
 
   // Enable validation
   app.useGlobalPipes(new ValidationPipe());
 
-  const port = 3002; // API service always uses port 3002
+  const port = process.env.PORT || 3002; // Use PORT env var (Cloud Run) or default to 3002
   await app.listen(port);
   console.log(`🚀 API Service running on port ${port}`);
 }

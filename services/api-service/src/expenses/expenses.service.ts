@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Expense } from './expense.entity';
@@ -9,10 +9,13 @@ import { CreateExpenseDto, UpdateExpenseDto } from './dto/expense.dto';
 @Injectable()
 export class ExpensesService {
   constructor(
+    @Optional()
     @InjectRepository(Expense)
     private expensesRepository: Repository<Expense>,
+    @Optional()
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
+    @Optional()
     @InjectRepository(SubCategory)
     private subCategoriesRepository: Repository<SubCategory>,
   ) {}
