@@ -1,0 +1,74 @@
+# =============================================================================
+# Python Testing Dependencies
+# =============================================================================
+# ARCHITECTURE EXPLANATION (for interviews):
+# Python is used for specialized testing tools where Python excels:
+# - Security testing (OWASP ZAP)
+# - Performance testing (Locust for complex scenarios)
+# - ML-based visual testing (OpenCV)
+# - Data processing and analysis
+# =============================================================================
+
+# -------------------------
+# Performance Testing
+# -------------------------
+locust==2.20.0              # Load testing framework
+gevent==23.9.1              # Async networking for Locust
+
+# -------------------------
+# Security Testing
+# -------------------------
+python-owasp-zap-v2.4==0.0.21  # OWASP ZAP API client
+bandit==1.7.5               # Security linter for Python code
+safety==2.3.5               # Dependency vulnerability scanner
+
+# -------------------------
+# Visual Testing (ML-based)
+# -------------------------
+# opencv-python removed - causes build issues with Python 3.12 in Alpine
+# For visual testing, use Playwright's built-in screenshot comparison instead
+# If advanced ML-based visual testing is needed, consider:
+#   - opencv-python-headless (smaller, no GUI)
+#   - Pre-built wheels from PyPI
+#   - Different base image (Debian instead of Alpine)
+pillow==10.4.0              # Image processing (lightweight alternative)
+
+# -------------------------
+# Test Reporting
+# -------------------------
+pytest==8.3.3               # Python testing framework (for Python tests)
+pytest-html==4.1.1          # HTML test reports
+allure-pytest==2.13.5       # Allure integration
+
+# -------------------------
+# Utilities
+# -------------------------
+requests==2.31.0            # HTTP library for API calls
+python-dotenv==1.0.0        # Environment variable management
+pyyaml==6.0.1               # YAML parsing for configs
+
+# =============================================================================
+# INSTALLATION:
+# =============================================================================
+# In Docker:
+#   RUN pip3 install --no-cache-dir -r requirements.txt
+#
+# Locally:
+#   pip install -r requirements.txt
+#
+# =============================================================================
+# USAGE NOTES (for interviews):
+# =============================================================================
+# Most tests are written in TypeScript (Jest, Playwright) because:
+# - Application is TypeScript/JavaScript
+# - Better type safety and IDE support
+# - Consistent language across codebase
+#
+# Python is used strategically for:
+# - Tools that are Python-native (OWASP ZAP, Locust)
+# - ML/AI features (visual testing with OpenCV)
+# - Data analysis and reporting
+# - Complex performance scenarios
+#
+# This hybrid approach leverages the best of both ecosystems.
+# =============================================================================
