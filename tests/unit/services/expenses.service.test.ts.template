@@ -1,0 +1,389 @@
+/**
+ * =============================================================================
+ * Unit Test Example: Expense Service
+ * =============================================================================
+ * PURPOSE: Demonstrate unit testing best practices for interviews
+ *
+ * KEY CONCEPTS SHOWCASED:
+ * 1. AAA Pattern (Arrange, Act, Assert)
+ * 2. Test tagging for suite organization
+ * 3. Descriptive test names
+ * 4. Mocking external dependencies
+ * 5. Edge case coverage
+ * 6. Test independence
+ * =============================================================================
+ */
+
+import { ExpensesService } from '../../../services/api-service/src/expenses/expenses.service';
+
+describe('ExpensesService @unit @smoke', () => {
+  let service: ExpensesService;
+  let mockRepository: any;
+
+  // Setup before each test - ensures test independence
+  beforeEach(() => {
+    // Mock the database repository
+    mockRepository = {
+      find: jest.fn(),
+      findOne: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      save: jest.fn(),
+    };
+
+    // Create service instance with mocked dependencies
+    service = new ExpensesService(mockRepository);
+  });
+
+  // Cleanup after each test
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // ==========================================================================
+  // CALCULATION TESTS @sanity
+  // ==========================================================================
+  describe('calculateTotal @sanity', () => {
+    test('should return 0 for empty expense list', () => {
+      // Arrange
+      const expenses = [];
+
+      // Act
+      const total = service.calculateTotal(expenses);
+
+      // Assert
+      expect(total).toBe(0);
+    });
+
+    test('should calculate total for single expense', () => {
+      // Arrange
+      const expenses = [{ amount: 100, category: 'food' }];
+
+      // Act
+      const total = service.calculateTotal(expenses);
+
+      // Assert
+      expect(total).toBe(100);
+    });
+
+    test('should calculate total for multiple expenses @critical', () => {
+      // Arrange
+      const expenses = [
+        { amount: 100, category: 'food' },
+        { amount: 200, category: 'transport' },
+        { amount: 50, category: 'entertainment' },
+      ];
+
+      // Act
+      const total = service.calculateTotal(expenses);
+
+      // Assert
+      expect(total).toBe(350);
+    });
+
+    test('should handle decimal amounts correctly', () => {
+      // Arrange
+      const expenses = [
+        { amount: 10.99, category: 'food' },
+        { amount: 20.5, category: 'transport' },
+      ];
+
+      // Act
+      const total = service.calculateTotal(expenses);
+
+      // Assert
+      expect(total).toBe(31.49);
+    });
+  });
+
+  // ==========================================================================
+  // CATEGORY FILTERING TESTS @regression
+  // ==========================================================================
+  describe('filterByCategory @regression', () => {
+    test('should return expenses matching category', () => {
+      // Arrange
+      const expenses = [
+        { id: 1, amount: 100, category: 'food' },
+        { id: 2, amount: 200, category: 'transport' },
+        { id: 3, amount: 50, category: 'food' },
+      ];
+
+      // Act
+      const filtered = service.filterByCategory(expenses, 'food');
+
+      // Assert
+      expect(filtered).toHaveLength(2);
+      expect(filtered[0].category).toBe('food');
+      expect(filtered[1].category).toBe('food');
+    });
+
+    test('should return empty array when no matches found', () => {
+      // Arrange
+      const expenses = [{ id: 1, amount: 100, category: 'food' }];
+
+      // Act
+      const filtered = service.filterByCategory(expenses, 'nonexistent');
+
+      // Assert
+      expect(filtered).toHaveLength(0);
+    });
+
+    test('should be case-insensitive', () => {
+      // Arrange
+      const expenses = [
+        { id: 1, amount: 100, category: 'Food' },
+        { id: 2, amount: 200, category: 'FOOD' },
+      ];
+
+      // Act
+      const filtered = service.filterByCategory(expenses, 'food');
+
+      // Assert
+      expect(filtered).toHaveLength(2);
+    });
+  });
+
+  // ==========================================================================
+  // CREATE EXPENSE TESTS @critical
+  // ==========================================================================
+  describe('createExpense @critical', () => {
+    test('should create expense with valid data @smoke', async () => {
+      // Arrange
+      const expenseData = {
+        amount: 100,
+        category: 'food',
+        description: 'Lunch',
+        date: new Date('2024-01-15'),
+      };
+
+      const savedExpense = { id: 1, ...expenseData };
+      mockRepository.save.mockResolvedValue(savedExpense);
+
+      // Act
+      const result = await service.createExpense(expenseData);
+
+      // Assert
+      expect(mockRepository.save).toHaveBeenCalledWith(expenseData);
+      expect(result).toEqual(savedExpense);
+      expect(result.id).toBeDefined();
+    });
+
+    test('should reject negative amounts', async () => {
+      // Arrange
+      const expenseData = {
+        amount: -100,
+        category: 'food',
+        description: 'Invalid',
+      };
+
+      // Act & Assert
+      await expect(service.createExpense(expenseData)).rejects.toThrow('Amount must be positive');
+    });
+
+    test('should reject zero amounts', async () => {
+      // Arrange
+      const expenseData = {
+        amount: 0,
+        category: 'food',
+        description: 'Invalid',
+      };
+
+      // Act & Assert
+      await expect(service.createExpense(expenseData)).rejects.toThrow('Amount must be positive');
+    });
+
+    test('should reject invalid categories', async () => {
+      // Arrange
+      const expenseData = {
+        amount: 100,
+        category: 'invalid-category',
+        description: 'Test',
+      };
+
+      // Act & Assert
+      await expect(service.createExpense(expenseData)).rejects.toThrow('Invalid category');
+    });
+
+    test('should reject amounts exceeding maximum', async () => {
+      // Arrange
+      const expenseData = {
+        amount: 1000000, // Exceeds max allowed
+        category: 'food',
+        description: 'Too large',
+      };
+
+      // Act & Assert
+      await expect(service.createExpense(expenseData)).rejects.toThrow(
+        'Amount exceeds maximum allowed',
+      );
+    });
+  });
+
+  // ==========================================================================
+  // UPDATE EXPENSE TESTS @regression
+  // ==========================================================================
+  describe('updateExpense @regression', () => {
+    test('should update existing expense', async () => {
+      // Arrange
+      const existingExpense = {
+        id: 1,
+        amount: 100,
+        category: 'food',
+        description: 'Original',
+      };
+
+      const updateData = {
+        amount: 150,
+        description: 'Updated',
+      };
+
+      mockRepository.findOne.mockResolvedValue(existingExpense);
+      mockRepository.save.mockResolvedValue({
+        ...existingExpense,
+        ...updateData,
+      });
+
+      // Act
+      const result = await service.updateExpense(1, updateData);
+
+      // Assert
+      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(result.amount).toBe(150);
+      expect(result.description).toBe('Updated');
+      expect(result.category).toBe('food'); // Unchanged fields preserved
+    });
+
+    test('should throw error when expense not found', async () => {
+      // Arrange
+      mockRepository.findOne.mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(service.updateExpense(999, { amount: 100 })).rejects.toThrow(
+        'Expense not found',
+      );
+    });
+  });
+
+  // ==========================================================================
+  // DELETE EXPENSE TESTS @regression
+  // ==========================================================================
+  describe('deleteExpense @regression', () => {
+    test('should delete existing expense', async () => {
+      // Arrange
+      const existingExpense = {
+        id: 1,
+        amount: 100,
+        category: 'food',
+      };
+
+      mockRepository.findOne.mockResolvedValue(existingExpense);
+      mockRepository.delete.mockResolvedValue({ affected: 1 });
+
+      // Act
+      await service.deleteExpense(1);
+
+      // Assert
+      expect(mockRepository.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
+      expect(mockRepository.delete).toHaveBeenCalledWith(1);
+    });
+
+    test('should throw error when deleting non-existent expense', async () => {
+      // Arrange
+      mockRepository.findOne.mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(service.deleteExpense(999)).rejects.toThrow('Expense not found');
+    });
+  });
+
+  // ==========================================================================
+  // DATE RANGE FILTERING @regression
+  // ==========================================================================
+  describe('getExpensesByDateRange @regression', () => {
+    test('should return expenses within date range', async () => {
+      // Arrange
+      const startDate = new Date('2024-01-01');
+      const endDate = new Date('2024-01-31');
+
+      const expenses = [
+        { id: 1, amount: 100, date: new Date('2024-01-15') },
+        { id: 2, amount: 200, date: new Date('2024-01-20') },
+      ];
+
+      mockRepository.find.mockResolvedValue(expenses);
+
+      // Act
+      const result = await service.getExpensesByDateRange(startDate, endDate);
+
+      // Assert
+      expect(mockRepository.find).toHaveBeenCalledWith({
+        where: {
+          date: expect.any(Object), // Between query
+        },
+      });
+      expect(result).toHaveLength(2);
+    });
+
+    test('should return empty array when no expenses in range', async () => {
+      // Arrange
+      mockRepository.find.mockResolvedValue([]);
+
+      // Act
+      const result = await service.getExpensesByDateRange(
+        new Date('2024-01-01'),
+        new Date('2024-01-31'),
+      );
+
+      // Assert
+      expect(result).toHaveLength(0);
+    });
+  });
+});
+
+/**
+ * =============================================================================
+ * INTERVIEW TALKING POINTS:
+ * =============================================================================
+ *
+ * 1. TEST ORGANIZATION:
+ *    - Grouped by functionality (calculate, filter, create, update, delete)
+ *    - Tagged for different test suites (@smoke, @sanity, @regression, @critical)
+ *    - Clear describe blocks create hierarchical structure
+ *
+ * 2. TEST INDEPENDENCE:
+ *    - Each test sets up its own data (beforeEach)
+ *    - No tests depend on others
+ *    - Mocks are cleared after each test
+ *
+ * 3. AAA PATTERN:
+ *    - Arrange: Set up test data and mocks
+ *    - Act: Execute the function being tested
+ *    - Assert: Verify the expected outcome
+ *
+ * 4. EDGE CASES:
+ *    - Empty arrays
+ *    - Null/undefined values
+ *    - Boundary conditions (negative, zero, maximum)
+ *    - Invalid inputs
+ *
+ * 5. MOCKING:
+ *    - Database repository is mocked
+ *    - Tests run fast without real DB
+ *    - Can control exact responses
+ *    - Isolates unit under test
+ *
+ * 6. ASSERTIONS:
+ *    - Specific and meaningful
+ *    - Test behavior, not implementation
+ *    - Verify side effects (function calls)
+ *    - Check error handling
+ *
+ * 7. MAINTAINABILITY:
+ *    - Descriptive test names explain what's being tested
+ *    - Comments explain why, not what
+ *    - Reusable test data
+ *    - Easy to add new tests
+ *
+ * =============================================================================
+ */

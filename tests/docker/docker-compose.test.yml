@@ -1,0 +1,269 @@
+# =============================================================================
+# Docker Compose for Testing Infrastructure
+# =============================================================================
+# ARCHITECTURE EXPLANATION (for interviews):
+# This docker-compose file orchestrates the complete testing environment,
+# including the app services, databases, and test runners.
+#
+# WHY THIS STRUCTURE:
+# 1. Tests run in isolated containers matching production environment
+# 2. Services (auth, api, db) are available for integration/e2e tests
+# 3. Volume mounts allow live code changes without rebuilding
+# 4. Different test suites can run in parallel
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database for Testing
+  # ---------------------------------------------------------------------------
+  # PURPOSE: Provides test database for integration tests
+  # ISOLATION: Uses separate test data, cleaned between test runs
+  test-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: expenses_test
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+    ports:
+      - '5433:5432' # Different port to avoid conflicts with dev DB
+    volumes:
+      - test-db-data:/var/lib/postgresql/data
+      - ../../database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U test_user -d expenses_test']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Auth Service (for integration/e2e tests)
+  # ---------------------------------------------------------------------------
+  # PURPOSE: Running auth service that tests can call
+  # NOTE: Only starts when integration/e2e tests run
+  test-auth-service:
+    build:
+      context: ../../services/auth-service
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgresql://test_user:test_password@test-db:5432/expenses_test
+      - JWT_SECRET=test-secret-key-for-testing
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - FRONTEND_URL=http://localhost:5173
+    ports:
+      - '3001:3001'
+    depends_on:
+      test-db:
+        condition: service_healthy
+    profiles:
+      - integration
+      - e2e
+
+  # ---------------------------------------------------------------------------
+  # API Service (for integration/e2e tests)
+  # ---------------------------------------------------------------------------
+  # PURPOSE: Running API service that tests can call
+  test-api-service:
+    build:
+      context: ../../services/api-service
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgresql://test_user:test_password@test-db:5432/expenses_test
+      - AUTH_SERVICE_URL=http://test-auth-service:3001
+    ports:
+      - '3002:3002'
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-auth-service:
+        condition: service_started
+    profiles:
+      - integration
+      - e2e
+
+  # ---------------------------------------------------------------------------
+  # Frontend (for e2e tests only)
+  # ---------------------------------------------------------------------------
+  # PURPOSE: Running frontend for full end-to-end testing
+  test-frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      - VITE_AUTH_SERVICE_URL=http://test-auth-service:3001
+      - VITE_API_SERVICE_URL=http://test-api-service:3002
+    ports:
+      - '5173:5173'
+    depends_on:
+      - test-auth-service
+      - test-api-service
+    profiles:
+      - e2e
+
+  # ---------------------------------------------------------------------------
+  # Unit Tests Runner
+  # ---------------------------------------------------------------------------
+  # PURPOSE: Runs fast unit tests (no external dependencies)
+  # EXECUTION TIME: ~2 minutes
+  # RUNS: @smoke, @sanity tagged tests
+  test-unit:
+    build:
+      context: ../..
+      dockerfile: tests/docker/test.Dockerfile
+      target: test
+    working_dir: /app/tests/config
+    volumes:
+      # Mount source code (read-only for safety)
+      - ../../services:/app/services:ro
+      - ../../frontend/src:/app/frontend/src:ro
+      # Mount test files (read-write for reports)
+      - ../unit:/app/tests/unit
+      - ../fixtures:/app/tests/fixtures
+      # Mount configs
+      - ../config:/app/tests/config
+      # Preserve node_modules in container
+      - test-node-modules:/app/tests/config/node_modules
+    environment:
+      - TEST_TYPE=unit
+      - CI=true
+    command: npm run test:unit
+    profiles:
+      - unit
+
+  # ---------------------------------------------------------------------------
+  # Integration Tests Runner
+  # ---------------------------------------------------------------------------
+  # PURPOSE: Tests API endpoints and database interactions
+  # EXECUTION TIME: ~5 minutes
+  # REQUIRES: Database and services running
+  test-integration:
+    build:
+      context: ../..
+      dockerfile: tests/docker/test.Dockerfile
+      target: test
+    volumes:
+      - ../../services:/app/services:ro
+      - ../integration:/app/tests/integration
+      - ../fixtures:/app/tests/fixtures
+      - ../config:/app/tests/config
+      - test-node-modules:/app/node_modules
+    environment:
+      - TEST_TYPE=integration
+      - DATABASE_URL=postgresql://test_user:test_password@test-db:5432/expenses_test
+      - AUTH_SERVICE_URL=http://test-auth-service:3001
+      - API_SERVICE_URL=http://test-api-service:3002
+    command: npm run test:integration
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-auth-service:
+        condition: service_started
+      test-api-service:
+        condition: service_started
+    profiles:
+      - integration
+
+  # ---------------------------------------------------------------------------
+  # E2E Tests Runner
+  # ---------------------------------------------------------------------------
+  # PURPOSE: Full browser-based end-to-end testing with Playwright
+  # EXECUTION TIME: ~15 minutes
+  # REQUIRES: All services + frontend running
+  test-e2e:
+    build:
+      context: ../..
+      dockerfile: tests/docker/test.Dockerfile
+      target: test
+    volumes:
+      - ../e2e:/app/tests/e2e
+      - ../fixtures:/app/tests/fixtures
+      - ../config:/app/tests/config
+      - test-node-modules:/app/node_modules
+      # Mount for test artifacts (screenshots, videos)
+      - ../e2e/test-results:/app/tests/e2e/test-results
+    environment:
+      - TEST_TYPE=e2e
+      - BASE_URL=http://test-frontend:5173
+      - API_URL=http://test-api-service:3002
+      - HEADLESS=true
+    command: npm run test:e2e
+    depends_on:
+      - test-frontend
+      - test-api-service
+      - test-auth-service
+    profiles:
+      - e2e
+
+  # ---------------------------------------------------------------------------
+  # Performance Tests (K6)
+  # ---------------------------------------------------------------------------
+  # PURPOSE: Load and stress testing of API endpoints
+  # USES: K6 for performance metrics
+  test-performance:
+    image: grafana/k6:latest
+    volumes:
+      - ../non-functional/performance/k6:/scripts
+    environment:
+      - API_URL=http://test-api-service:3002
+    command: run /scripts/load-test.js
+    depends_on:
+      - test-api-service
+    profiles:
+      - performance
+
+  # ---------------------------------------------------------------------------
+  # Security Tests (OWASP ZAP)
+  # ---------------------------------------------------------------------------
+  # PURPOSE: Security vulnerability scanning
+  # USES: Python-based OWASP ZAP
+  test-security:
+    build:
+      context: ../..
+      dockerfile: tests/docker/test.Dockerfile
+      target: test
+    volumes:
+      - ../non-functional/security:/app/tests/security
+    environment:
+      - TARGET_URL=http://test-api-service:3002
+    command: python3 tests/security/zap/zap_scan.py
+    depends_on:
+      - test-api-service
+    profiles:
+      - security
+
+# =============================================================================
+# Volumes
+# =============================================================================
+# Named volumes for data persistence and performance
+volumes:
+  test-db-data:
+    driver: local
+  test-node-modules:
+    driver: local
+# =============================================================================
+# USAGE EXAMPLES (for your interview demo):
+# =============================================================================
+#
+# Run unit tests only (fast):
+#   docker-compose -f tests/docker/docker-compose.test.yml --profile unit up --abort-on-container-exit
+#
+# Run integration tests:
+#   docker-compose -f tests/docker/docker-compose.test.yml --profile integration up --abort-on-container-exit
+#
+# Run full e2e tests:
+#   docker-compose -f tests/docker/docker-compose.test.yml --profile e2e up --abort-on-container-exit
+#
+# Run all tests (complete suite):
+#   docker-compose -f tests/docker/docker-compose.test.yml --profile unit --profile integration --profile e2e up --abort-on-container-exit
+#
+# Run performance tests:
+#   docker-compose -f tests/docker/docker-compose.test.yml --profile performance up --abort-on-container-exit
+#
+# Clean up:
+#   docker-compose -f tests/docker/docker-compose.test.yml down -v
+#
+# =============================================================================

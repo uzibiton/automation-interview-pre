@@ -45,7 +45,7 @@ function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <h1>Task Manager</h1>
+        <h1>Expense Tracker</h1>
         <p style={{ marginBottom: '20px', color: '#666' }}>
           {isRegisterMode ? 'Create your account' : 'Sign in to manage your tasks'}
         </p>

@@ -25,6 +25,7 @@
     "db:reset": "docker-compose down -v && docker-compose up postgres -d"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "concurrently": "^8.2.2",
     "prettier": "^3.6.2"
   },

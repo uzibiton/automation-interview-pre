@@ -23,7 +23,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const port = process.env.PORT || 3002; // Use PORT env var (Cloud Run) or default to 3002
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0'); // Listen on all interfaces for Cloud Run
   console.log(`🚀 API Service running on port ${port}`);
 }
 
