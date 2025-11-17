@@ -168,7 +168,7 @@ test.describe('Create Expense Workflow @e2e @smoke @critical', () => {
     // Go to dashboard and record current total
     await page.click('[data-testid="nav-dashboard"]');
     const initialTotalText = await page.locator('[data-testid="total-expenses"]').textContent();
-    const initialTotal = parseFloat(initialTotalText.replace('$', '').replace(',', ''));
+    const initialTotal = parseFloat((initialTotalText ?? '0').replace('$', '').replace(',', ''));
 
     // Create new expense
     await page.click('[data-testid="nav-expenses"]');
@@ -186,7 +186,7 @@ test.describe('Create Expense Workflow @e2e @smoke @critical', () => {
     // Verify total is updated
     await page.waitForTimeout(1000); // Wait for dashboard to refresh
     const newTotalText = await page.locator('[data-testid="total-expenses"]').textContent();
-    const newTotal = parseFloat(newTotalText.replace('$', '').replace(',', ''));
+    const newTotal = parseFloat((newTotalText ?? '0').replace('$', '').replace(',', ''));
 
     expect(newTotal).toBe(initialTotal + 150.0);
   });

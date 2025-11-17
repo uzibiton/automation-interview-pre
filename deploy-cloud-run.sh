@@ -69,13 +69,7 @@ gcloud run deploy auth-service \
   --min-instances 1 \
   --max-instances 10 \
   --memory 512Mi \
-  --set-env-vars "
-DATABASE_TYPE=$DATABASE_TYPE,
-FIREBASE_PROJECT_ID=$PROJECT_ID,
-JWT_SECRET=${JWT_SECRET:-change-this-secret},
-GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID},
-GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-"
+  --set-env-vars "DATABASE_TYPE=$DATABASE_TYPE,FIREBASE_PROJECT_ID=$PROJECT_ID,JWT_SECRET=${JWT_SECRET:-change-this-secret},GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID},GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}"
 
 AUTH_SERVICE_URL=$(gcloud run services describe auth-service --platform managed --region $REGION --format 'value(status.url)')
 echo -e "${GREEN}Auth Service deployed at: ${AUTH_SERVICE_URL}${NC}"
