@@ -74,5 +74,15 @@ postgres_data/
 *.cert
 .env.save
 
+# Google Cloud service account keys (NEVER COMMIT!)
+*-key.json
+*.json
+# But allow specific JSON files
+!package.json
+!package-lock.json
+!tsconfig*.json
+!*config.json
+!manifest.json
+
 # Reference folder (not part of the project)
 reference-expenses/
