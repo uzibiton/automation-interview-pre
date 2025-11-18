@@ -29,7 +29,13 @@ on:
         options:
           - production
           - staging
+          - branch-env
         default: production
+      deploy_from_branch:
+        description: 'Deploy from any branch (creates branch-named environment)'
+        required: false
+        type: boolean
+        default: false
 
 # Define jobs that run in sequence
 jobs:
@@ -75,8 +81,8 @@ jobs:
     needs: unit-tests # Wait for tests to pass
     runs-on: ubuntu-latest
 
-    # Only build on main branch (not on PRs), or if unit-tests was skipped
-    if: ${{ (github.ref == 'refs/heads/main') || (inputs.skip_tests && github.event_name == 'workflow_dispatch') }}
+    # Build on main, or manual dispatch with deploy_from_branch=true, or skip_tests
+    if: ${{ (github.ref == 'refs/heads/main') || (inputs.deploy_from_branch && github.event_name == 'workflow_dispatch') || (inputs.skip_tests && github.event_name == 'workflow_dispatch') }}
 
     steps:
       - name: Checkout code
@@ -144,12 +150,30 @@ jobs:
       - name: Set service suffix based on environment
         id: env_config
         run: |
-          if [ "${{ inputs.environment }}" = "staging" ]; then
+          # Determine environment suffix
+          if [ "${{ inputs.deploy_from_branch }}" = "true" ]; then
+            # Use branch name as suffix (sanitize it for Cloud Run naming)
+            BRANCH_NAME="${{ github.ref_name }}"
+            SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]')
+            echo "suffix=-${SANITIZED_BRANCH}" >> $GITHUB_OUTPUT
+            echo "region=us-central1" >> $GITHUB_OUTPUT
+            echo "env_name=${SANITIZED_BRANCH}" >> $GITHUB_OUTPUT
+          elif [ "${{ inputs.environment }}" = "staging" ]; then
             echo "suffix=-staging" >> $GITHUB_OUTPUT
             echo "region=us-central1" >> $GITHUB_OUTPUT
+            echo "env_name=staging" >> $GITHUB_OUTPUT
+          elif [ "${{ inputs.environment }}" = "branch-env" ]; then
+            # Use branch name for branch-env option
+            BRANCH_NAME="${{ github.ref_name }}"
+            SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]')
+            echo "suffix=-${SANITIZED_BRANCH}" >> $GITHUB_OUTPUT
+            echo "region=us-central1" >> $GITHUB_OUTPUT
+            echo "env_name=${SANITIZED_BRANCH}" >> $GITHUB_OUTPUT
           else
+            # Production
             echo "suffix=" >> $GITHUB_OUTPUT
             echo "region=us-central1" >> $GITHUB_OUTPUT
+            echo "env_name=production" >> $GITHUB_OUTPUT
           fi
 
       - name: Deploy Auth Service
@@ -184,8 +208,12 @@ jobs:
 
       - name: Output deployment URLs
         run: |
-          ENV="${{ inputs.environment || 'production' }}"
-          echo "🚀 Deployment Complete to $ENV!"
+          ENV="${{ steps.env_config.outputs.env_name }}"
+          echo "🚀 Deployment Complete to ${ENV}!"
+          echo "Environment: ${ENV}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo ""
+          echo "Service URLs:"
           echo "Auth Service: $(gcloud run services describe auth-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')"
           echo "API Service: $(gcloud run services describe api-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')"
           echo "Frontend: $(gcloud run services describe frontend${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')"
