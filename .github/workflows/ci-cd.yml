@@ -1,0 +1,191 @@
+name: CI/CD Pipeline
+
+# Triggers: When to run this workflow
+on:
+  # Trigger on push to main branch
+  # Comment out the push trigger if you want manual-only deployments
+  push:
+    branches:
+      - main
+
+  # Trigger on pull requests to main
+  pull_request:
+    branches:
+      - main
+
+  # Allow manual trigger from GitHub UI
+  # This is always available regardless of push/PR triggers
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: 'Skip unit tests (not recommended)'
+        required: false
+        type: boolean
+        default: false
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - production
+          - staging
+        default: production
+
+# Define jobs that run in sequence
+jobs:
+  # ============================================================================
+  # JOB 1: Run Unit Tests
+  # ============================================================================
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    # Skip tests if manual trigger with skip_tests=true
+    if: ${{ !inputs.skip_tests }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install test dependencies
+        run: npm ci
+        working-directory: tests/config
+
+      - name: Run unit tests
+        run: npm run test:unit
+        working-directory: tests/config
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: tests/config/coverage/
+
+  # ============================================================================
+  # JOB 2: Build Docker Images
+  # Only runs if unit tests pass (or if tests were skipped)
+  # ============================================================================
+  build:
+    name: Build Services
+    needs: unit-tests # Wait for tests to pass
+    runs-on: ubuntu-latest
+
+    # Only build on main branch (not on PRs), or if unit-tests was skipped
+    if: ${{ (github.ref == 'refs/heads/main') || (inputs.skip_tests && github.event_name == 'workflow_dispatch') }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker
+
+      - name: Build Auth Service
+        run: |
+          cd services/auth-service
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:${{ github.sha }} .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:latest .
+
+      - name: Build API Service
+        run: |
+          cd services/api-service
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:${{ github.sha }} .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:latest .
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }} .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest .
+
+      - name: Push images to GCR
+        run: |
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:latest
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:latest
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
+
+  # ============================================================================
+  # JOB 3: Deploy to Cloud Run
+  # Only runs if build succeeds
+  # ============================================================================
+  deploy:
+    name: Deploy to Cloud Run
+    needs: build # Wait for build to complete
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set service suffix based on environment
+        id: env_config
+        run: |
+          if [ "${{ inputs.environment }}" = "staging" ]; then
+            echo "suffix=-staging" >> $GITHUB_OUTPUT
+            echo "region=us-central1" >> $GITHUB_OUTPUT
+          else
+            echo "suffix=" >> $GITHUB_OUTPUT
+            echo "region=us-central1" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy Auth Service
+        run: |
+          gcloud run deploy auth-service${{ steps.env_config.outputs.suffix }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:${{ github.sha }} \
+            --region ${{ steps.env_config.outputs.region }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars "DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},JWT_SECRET=${{ secrets.JWT_SECRET }},GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}"
+
+      - name: Deploy API Service
+        run: |
+          AUTH_SERVICE_URL=$(gcloud run services describe auth-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')
+          gcloud run deploy api-service${{ steps.env_config.outputs.suffix }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:${{ github.sha }} \
+            --region ${{ steps.env_config.outputs.region }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars "DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},AUTH_SERVICE_URL=$AUTH_SERVICE_URL"
+
+      - name: Deploy Frontend
+        run: |
+          AUTH_SERVICE_URL=$(gcloud run services describe auth-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')
+          API_SERVICE_URL=$(gcloud run services describe api-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')
+          gcloud run deploy frontend${{ steps.env_config.outputs.suffix }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }} \
+            --region ${{ steps.env_config.outputs.region }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars "VITE_AUTH_SERVICE_URL=$AUTH_SERVICE_URL,VITE_API_SERVICE_URL=$API_SERVICE_URL,VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
+
+      - name: Output deployment URLs
+        run: |
+          ENV="${{ inputs.environment || 'production' }}"
+          echo "🚀 Deployment Complete to $ENV!"
+          echo "Auth Service: $(gcloud run services describe auth-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')"
+          echo "API Service: $(gcloud run services describe api-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')"
+          echo "Frontend: $(gcloud run services describe frontend${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')"
