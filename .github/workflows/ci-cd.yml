@@ -67,7 +67,7 @@ jobs:
       env_name: ${{ steps.set_env.outputs.env_name }}
       env_suffix: ${{ steps.set_env.outputs.env_suffix }}
       should_run_e2e: ${{ steps.set_env.outputs.should_run_e2e }}
-      
+
     steps:
       - name: Determine environment
         id: set_env
@@ -202,11 +202,11 @@ jobs:
           AUTH_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
           API_URL=$(gcloud run services describe api-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
           FRONTEND_URL=$(gcloud run services describe frontend${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
-          
+
           echo "auth_url=$AUTH_URL" >> $GITHUB_OUTPUT
           echo "api_url=$API_URL" >> $GITHUB_OUTPUT
           echo "frontend_url=$FRONTEND_URL" >> $GITHUB_OUTPUT
-          
+
           echo "🚀 Deployment Complete to ${{ needs.setup.outputs.env_name }}!"
           echo "Frontend: $FRONTEND_URL"
           echo "API: $API_URL"
@@ -275,10 +275,10 @@ jobs:
             const fs = require('fs');
             const envName = '${{ needs.setup.outputs.env_name }}';
             const frontendUrl = '${{ needs.deploy.outputs.frontend_url }}';
-            
+
             let message = `## 🧪 E2E Test Results for ${envName}\n\n`;
             message += `**Environment URL**: ${frontendUrl}\n\n`;
-            
+
             if ('${{ job.status }}' === 'success') {
               message += '✅ All smoke tests passed!\n\n';
               message += '**Next Steps:**\n';
@@ -288,7 +288,7 @@ jobs:
               message += '❌ Some tests failed. Please check the workflow logs.\n\n';
               message += '**Action Required:** Fix failing tests before merging.\n';
             }
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -304,7 +304,7 @@ jobs:
           echo "**Environment**: ${{ needs.setup.outputs.env_name }}" >> $GITHUB_STEP_SUMMARY
           echo "**Frontend URL**: ${{ needs.deploy.outputs.frontend_url }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ job.status }}" = "success" ]; then
             echo "✅ All smoke tests passed!" >> $GITHUB_STEP_SUMMARY
           else
@@ -333,9 +333,9 @@ jobs:
           PR_NUMBER="${{ github.event.pull_request.number }}"
           SUFFIX="-pr-${PR_NUMBER}"
           REGION="us-central1"
-          
+
           echo "🧹 Cleaning up PR environment: pr-${PR_NUMBER}"
-          
+
           # Delete services if they exist
           for service in frontend api-service auth-service; do
             if gcloud run services describe ${service}${SUFFIX} --region ${REGION} 2>/dev/null; then
@@ -343,5 +343,5 @@ jobs:
               gcloud run services delete ${service}${SUFFIX} --region ${REGION} --quiet
             fi
           done
-          
+
           echo "✅ Cleanup complete!"
