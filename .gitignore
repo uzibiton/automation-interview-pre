@@ -54,6 +54,12 @@ desktop.ini
 coverage/
 .nyc_output
 *.lcov
+tests/reports/
+tests/e2e/test-results/
+test-results/
+playwright-report/
+allure-results/
+allure-report/
 
 # Docker
 .dockerignore
