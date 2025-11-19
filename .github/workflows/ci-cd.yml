@@ -40,10 +40,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install test dependencies
         run: npm ci
+        working-directory: tests/config
 
       - name: Run unit tests
         run: npm run test:unit
