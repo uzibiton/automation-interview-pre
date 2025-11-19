@@ -2,40 +2,26 @@ name: CI/CD Pipeline
 
 # Triggers: When to run this workflow
 on:
-  # Trigger on push to main branch
-  # Comment out the push trigger if you want manual-only deployments
+  # Trigger on push to main branch - deploys to staging automatically
   push:
     branches:
       - main
 
-  # Trigger on pull requests to main
+  # Trigger on pull requests - deploys to temporary PR environment
   pull_request:
     branches:
       - main
 
-  # Allow manual trigger from GitHub UI
-  # This is always available regardless of push/PR triggers
+  # Manual trigger for production deployment only
   workflow_dispatch:
     inputs:
-      skip_tests:
-        description: 'Skip unit tests (not recommended)'
-        required: false
-        type: boolean
-        default: false
       environment:
-        description: 'Deployment environment'
+        description: 'Deployment environment (production only via manual trigger)'
         required: true
         type: choice
         options:
           - production
-          - staging
-          - branch-env
         default: production
-      deploy_from_branch:
-        description: 'Deploy from any branch (creates branch-named environment)'
-        required: false
-        type: boolean
-        default: false
 
 # Define jobs that run in sequence
 jobs:
@@ -45,8 +31,6 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
-    # Skip tests if manual trigger with skip_tests=true
-    if: ${{ !inputs.skip_tests }}
 
     steps:
       - name: Checkout code
@@ -56,10 +40,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
 
-      - name: Install test dependencies
+      - name: Install dependencies
         run: npm ci
-        working-directory: tests/config
 
       - name: Run unit tests
         run: npm run test:unit
@@ -69,20 +53,50 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: unit-test-results
           path: tests/config/coverage/
 
   # ============================================================================
-  # JOB 2: Build Docker Images
-  # Only runs if unit tests pass (or if tests were skipped)
+  # JOB 2: Determine Deployment Environment
+  # ============================================================================
+  setup:
+    name: Setup Environment
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    outputs:
+      env_name: ${{ steps.set_env.outputs.env_name }}
+      env_suffix: ${{ steps.set_env.outputs.env_suffix }}
+      should_run_e2e: ${{ steps.set_env.outputs.should_run_e2e }}
+      
+    steps:
+      - name: Determine environment
+        id: set_env
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Manual trigger = production
+            echo "env_name=production" >> $GITHUB_OUTPUT
+            echo "env_suffix=" >> $GITHUB_OUTPUT
+            echo "should_run_e2e=false" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            # PR = temporary environment
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+            echo "env_name=pr-${PR_NUMBER}" >> $GITHUB_OUTPUT
+            echo "env_suffix=-pr-${PR_NUMBER}" >> $GITHUB_OUTPUT
+            echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+          else
+            # Push to main = staging
+            echo "env_name=staging" >> $GITHUB_OUTPUT
+            echo "env_suffix=-staging" >> $GITHUB_OUTPUT
+            echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+          fi
+
+  # ============================================================================
+  # JOB 3: Build Docker Images
   # ============================================================================
   build:
     name: Build Services
-    needs: unit-tests # Wait for tests to pass
+    needs: setup
     runs-on: ubuntu-latest
-
-    # Build on main, or manual dispatch with deploy_from_branch=true, or skip_tests
-    if: ${{ (github.ref == 'refs/heads/main') || (inputs.deploy_from_branch && github.event_name == 'workflow_dispatch') || (inputs.skip_tests && github.event_name == 'workflow_dispatch') }}
 
     steps:
       - name: Checkout code
@@ -127,12 +141,11 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
 
   # ============================================================================
-  # JOB 3: Deploy to Cloud Run
-  # Only runs if build succeeds
+  # JOB 4: Deploy to Cloud Run
   # ============================================================================
   deploy:
-    name: Deploy to Cloud Run
-    needs: build # Wait for build to complete
+    name: Deploy to ${{ needs.setup.outputs.env_name }}
+    needs: [setup, build]
     runs-on: ubuntu-latest
 
     steps:
@@ -147,73 +160,188 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Set service suffix based on environment
-        id: env_config
+      - name: Set deployment configuration
+        id: config
         run: |
-          # Determine environment suffix
-          if [ "${{ inputs.deploy_from_branch }}" = "true" ]; then
-            # Use branch name as suffix (sanitize it for Cloud Run naming)
-            BRANCH_NAME="${{ github.ref_name }}"
-            SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]')
-            echo "suffix=-${SANITIZED_BRANCH}" >> $GITHUB_OUTPUT
-            echo "region=us-central1" >> $GITHUB_OUTPUT
-            echo "env_name=${SANITIZED_BRANCH}" >> $GITHUB_OUTPUT
-          elif [ "${{ inputs.environment }}" = "staging" ]; then
-            echo "suffix=-staging" >> $GITHUB_OUTPUT
-            echo "region=us-central1" >> $GITHUB_OUTPUT
-            echo "env_name=staging" >> $GITHUB_OUTPUT
-          elif [ "${{ inputs.environment }}" = "branch-env" ]; then
-            # Use branch name for branch-env option
-            BRANCH_NAME="${{ github.ref_name }}"
-            SANITIZED_BRANCH=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]')
-            echo "suffix=-${SANITIZED_BRANCH}" >> $GITHUB_OUTPUT
-            echo "region=us-central1" >> $GITHUB_OUTPUT
-            echo "env_name=${SANITIZED_BRANCH}" >> $GITHUB_OUTPUT
-          else
-            # Production
-            echo "suffix=" >> $GITHUB_OUTPUT
-            echo "region=us-central1" >> $GITHUB_OUTPUT
-            echo "env_name=production" >> $GITHUB_OUTPUT
-          fi
+          echo "suffix=${{ needs.setup.outputs.env_suffix }}" >> $GITHUB_OUTPUT
+          echo "region=us-central1" >> $GITHUB_OUTPUT
 
       - name: Deploy Auth Service
         run: |
-          gcloud run deploy auth-service${{ steps.env_config.outputs.suffix }} \
+          gcloud run deploy auth-service${{ steps.config.outputs.suffix }} \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:${{ github.sha }} \
-            --region ${{ steps.env_config.outputs.region }} \
+            --region ${{ steps.config.outputs.region }} \
             --platform managed \
             --allow-unauthenticated \
             --set-env-vars "DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},JWT_SECRET=${{ secrets.JWT_SECRET }},GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}"
 
       - name: Deploy API Service
         run: |
-          AUTH_SERVICE_URL=$(gcloud run services describe auth-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')
-          gcloud run deploy api-service${{ steps.env_config.outputs.suffix }} \
+          AUTH_SERVICE_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          gcloud run deploy api-service${{ steps.config.outputs.suffix }} \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:${{ github.sha }} \
-            --region ${{ steps.env_config.outputs.region }} \
+            --region ${{ steps.config.outputs.region }} \
             --platform managed \
             --allow-unauthenticated \
             --set-env-vars "DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},AUTH_SERVICE_URL=$AUTH_SERVICE_URL"
 
       - name: Deploy Frontend
         run: |
-          AUTH_SERVICE_URL=$(gcloud run services describe auth-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')
-          API_SERVICE_URL=$(gcloud run services describe api-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')
-          gcloud run deploy frontend${{ steps.env_config.outputs.suffix }} \
+          AUTH_SERVICE_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          API_SERVICE_URL=$(gcloud run services describe api-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          gcloud run deploy frontend${{ steps.config.outputs.suffix }} \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }} \
-            --region ${{ steps.env_config.outputs.region }} \
+            --region ${{ steps.config.outputs.region }} \
             --platform managed \
             --allow-unauthenticated \
             --set-env-vars "VITE_AUTH_SERVICE_URL=$AUTH_SERVICE_URL,VITE_API_SERVICE_URL=$API_SERVICE_URL,VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
 
-      - name: Output deployment URLs
+      - name: Capture deployment URLs
+        id: urls
         run: |
-          ENV="${{ steps.env_config.outputs.env_name }}"
-          echo "🚀 Deployment Complete to ${ENV}!"
-          echo "Environment: ${ENV}"
-          echo "Branch: ${{ github.ref_name }}"
-          echo ""
-          echo "Service URLs:"
-          echo "Auth Service: $(gcloud run services describe auth-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')"
-          echo "API Service: $(gcloud run services describe api-service${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')"
-          echo "Frontend: $(gcloud run services describe frontend${{ steps.env_config.outputs.suffix }} --region ${{ steps.env_config.outputs.region }} --format='value(status.url)')"
+          AUTH_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          API_URL=$(gcloud run services describe api-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          FRONTEND_URL=$(gcloud run services describe frontend${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          
+          echo "auth_url=$AUTH_URL" >> $GITHUB_OUTPUT
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+          echo "frontend_url=$FRONTEND_URL" >> $GITHUB_OUTPUT
+          
+          echo "🚀 Deployment Complete to ${{ needs.setup.outputs.env_name }}!"
+          echo "Frontend: $FRONTEND_URL"
+          echo "API: $API_URL"
+          echo "Auth: $AUTH_URL"
+
+    outputs:
+      frontend_url: ${{ steps.urls.outputs.frontend_url }}
+      api_url: ${{ steps.urls.outputs.api_url }}
+      auth_url: ${{ steps.urls.outputs.auth_url }}
+
+  # ============================================================================
+  # JOB 5: Run E2E Smoke Tests (PR and Staging only)
+  # ============================================================================
+  e2e-tests:
+    name: E2E Smoke Tests
+    needs: [setup, deploy]
+    runs-on: ubuntu-latest
+    if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Create dynamic environment file
+        run: |
+          cat > tests/config/.env.${{ needs.setup.outputs.env_name }} << EOF
+          BASE_URL=${{ needs.deploy.outputs.frontend_url }}
+          API_URL=${{ needs.deploy.outputs.api_url }}
+          AUTH_URL=${{ needs.deploy.outputs.auth_url }}
+          TEST_USER_EMAIL=test@example.com
+          TEST_USER_PASSWORD=testpassword123
+          EOF
+
+      - name: Run E2E smoke tests
+        run: TEST_ENV=${{ needs.setup.outputs.env_name }} npm run test:e2e:smoke
+        env:
+          CI: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results-${{ needs.setup.outputs.env_name }}
+          path: |
+            tests/reports/
+            test-results/
+          retention-days: 7
+
+      - name: Comment PR with test results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const envName = '${{ needs.setup.outputs.env_name }}';
+            const frontendUrl = '${{ needs.deploy.outputs.frontend_url }}';
+            
+            let message = `## 🧪 E2E Test Results for ${envName}\n\n`;
+            message += `**Environment URL**: ${frontendUrl}\n\n`;
+            
+            if ('${{ job.status }}' === 'success') {
+              message += '✅ All smoke tests passed!\n\n';
+              message += '**Next Steps:**\n';
+              message += '1. Review the deployed environment\n';
+              message += '2. Once approved, this will deploy to staging when merged to main\n';
+            } else {
+              message += '❌ Some tests failed. Please check the workflow logs.\n\n';
+              message += '**Action Required:** Fix failing tests before merging.\n';
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🧪 E2E Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment**: ${{ needs.setup.outputs.env_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Frontend URL**: ${{ needs.deploy.outputs.frontend_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ All smoke tests passed!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Some tests failed. Check logs for details." >> $GITHUB_STEP_SUMMARY
+          fi
+
+  # ============================================================================
+  # JOB 6: Cleanup PR Environment (on PR close/merge)
+  # ============================================================================
+  cleanup:
+    name: Cleanup PR Environment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Delete PR services
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          SUFFIX="-pr-${PR_NUMBER}"
+          REGION="us-central1"
+          
+          echo "🧹 Cleaning up PR environment: pr-${PR_NUMBER}"
+          
+          # Delete services if they exist
+          for service in frontend api-service auth-service; do
+            if gcloud run services describe ${service}${SUFFIX} --region ${REGION} 2>/dev/null; then
+              echo "Deleting ${service}${SUFFIX}..."
+              gcloud run services delete ${service}${SUFFIX} --region ${REGION} --quiet
+            fi
+          done
+          
+          echo "✅ Cleanup complete!"
