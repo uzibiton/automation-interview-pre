@@ -1,0 +1,55 @@
+name: Cleanup PR Environment
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  cleanup:
+    name: Cleanup PR-${{ github.event.pull_request.number }} Environment
+    runs-on: ubuntu-latest
+    # Only run cleanup if services were likely deployed
+    if: github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Delete PR services
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          SUFFIX="-pr-${PR_NUMBER}"
+          REGION="us-central1"
+
+          echo "🧹 Cleaning up PR environment: pr-${PR_NUMBER}"
+
+          # Delete services if they exist
+          for service in frontend api-service auth-service; do
+            if gcloud run services describe ${service}${SUFFIX} --region ${REGION} 2>/dev/null; then
+              echo "Deleting ${service}${SUFFIX}..."
+              gcloud run services delete ${service}${SUFFIX} --region ${REGION} --quiet
+            else
+              echo "${service}${SUFFIX} not found, skipping..."
+            fi
+          done
+
+          echo "✅ Cleanup complete!"
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: ${{ github.event.pull_request.number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🧹 PR environment `pr-${{ github.event.pull_request.number }}` has been cleaned up and all Cloud Run services have been deleted.'
+            });
