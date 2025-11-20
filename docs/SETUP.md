@@ -1,6 +1,7 @@
 # Setup Instructions
 
 ## System Requirements
+
 - Docker Desktop (Windows/Mac) or Docker Engine (Linux)
 - Docker Compose
 - Git
@@ -8,6 +9,7 @@
 ## Step-by-Step Setup
 
 ### 1. Clone and Navigate
+
 ```bash
 cd /c/data/code/automation-interview-pre
 ```
@@ -15,16 +17,24 @@ cd /c/data/code/automation-interview-pre
 ### 2. Configure Google OAuth (Optional)
 
 #### Create Google OAuth Credentials:
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing
-3. Enable "Google+ API"
+2. Select project: `skillful-eon-477917-b7` (or create new)
+3. Enable Firebase and Firestore if using database features
 4. Go to "Credentials" → "Create Credentials" → "OAuth client ID"
-5. Application type: "Web application"
-6. Add authorized redirect URIs:
+5. Application type: **Web application**
+6. Add **Authorized JavaScript origins**:
+   - `http://localhost:3000`
+   - `http://localhost:5173`
+7. Add **Authorized redirect URIs**:
    - `http://localhost:3001/auth/google/callback`
-7. Copy Client ID and Client Secret
+   - For deployed environments, add:
+     - `https://auth-service-staging-773292472093.us-central1.run.app/auth/google/callback`
+     - `https://auth-service-773292472093.us-central1.run.app/auth/google/callback`
+8. Copy Client ID and Client Secret
 
 #### Update .env file:
+
 ```bash
 cp .env.example .env
 # Edit .env with your credentials
@@ -33,16 +43,19 @@ cp .env.example .env
 ### 3. Build and Start Services
 
 #### First time setup:
+
 ```bash
 docker-compose up --build
 ```
 
 #### Subsequent runs:
+
 ```bash
 docker-compose up
 ```
 
 #### Run in background:
+
 ```bash
 docker-compose up -d
 ```
@@ -50,11 +63,13 @@ docker-compose up -d
 ### 4. Verify Services
 
 Check all containers are running:
+
 ```bash
 docker-compose ps
 ```
 
 Expected output:
+
 ```
 NAME                IMAGE                       STATUS
 test-postgres       postgres:15-alpine          Up
@@ -76,11 +91,13 @@ nginx-gateway       nginx:alpine                Up
 If you don't have Google OAuth configured yet, you can still test:
 
 1. Get test user token from database:
+
 ```bash
 docker exec -it test-postgres psql -U testuser -d testdb
 ```
 
 2. In psql:
+
 ```sql
 SELECT * FROM users;
 ```
@@ -90,6 +107,7 @@ SELECT * FROM users;
 ## Useful Commands
 
 ### View logs:
+
 ```bash
 # All services
 docker-compose logs -f
@@ -101,26 +119,31 @@ docker-compose logs -f frontend
 ```
 
 ### Stop services:
+
 ```bash
 docker-compose down
 ```
 
 ### Stop and remove volumes (clean database):
+
 ```bash
 docker-compose down -v
 ```
 
 ### Rebuild specific service:
+
 ```bash
 docker-compose up --build auth-service
 ```
 
 ### Connect to PostgreSQL:
+
 ```bash
 docker exec -it test-postgres psql -U testuser -d testdb
 ```
 
 ### Common SQL Queries:
+
 ```sql
 -- View all users
 SELECT * FROM users;
@@ -129,19 +152,20 @@ SELECT * FROM users;
 SELECT * FROM tasks;
 
 -- View tasks with user info
-SELECT t.*, u.email, u.name 
-FROM tasks t 
+SELECT t.*, u.email, u.name
+FROM tasks t
 JOIN users u ON t.user_id = u.id;
 
 -- Count tasks by status
-SELECT status, COUNT(*) 
-FROM tasks 
+SELECT status, COUNT(*)
+FROM tasks
 GROUP BY status;
 ```
 
 ## Troubleshooting
 
 ### Port already in use:
+
 ```bash
 # Find what's using the port (example for 3000)
 netstat -ano | findstr :3000
@@ -151,6 +175,7 @@ taskkill /PID <PID> /F
 ```
 
 ### Database connection errors:
+
 ```bash
 # Reset database
 docker-compose down -v
@@ -158,6 +183,7 @@ docker-compose up --build
 ```
 
 ### Container build errors:
+
 ```bash
 # Clean docker cache
 docker system prune -a
@@ -165,6 +191,7 @@ docker-compose build --no-cache
 ```
 
 ### View container errors:
+
 ```bash
 docker-compose logs <service-name>
 ```
@@ -188,6 +215,7 @@ docker-compose logs <service-name>
 ## Next Steps
 
 Once the system is running, you can:
+
 1. Create automation tests (Playwright, Selenium)
 2. Write API tests (Python/pytest, Postman)
 3. Practice SQL queries

@@ -118,29 +118,67 @@ gcloud firestore databases create --region=us-central1
 
 ### Step 4: Setup Google OAuth
 
-1. Go to: https://console.cloud.google.com/apis/credentials
+1. Go to: https://console.cloud.google.com/apis/credentials?project=skillful-eon-477917-b7
 2. Click "Create Credentials" → "OAuth 2.0 Client ID"
-3. Application type: "Web application"
-4. Name: "Expense Tracker"
-5. Authorized redirect URIs:
+3. Application type: **Web application**
+4. Name: "Expense Tracker Web Client"
+5. **Authorized JavaScript origins**:
+   - `http://localhost:3000`
+   - `http://localhost:5173`
+   - `https://frontend-staging-773292472093.us-central1.run.app`
+   - `https://frontend-773292472093.us-central1.run.app`
+6. **Authorized redirect URIs**:
    - `http://localhost:3001/auth/google/callback` (development)
-   - `https://auth-service-xxx.run.app/auth/google/callback` (production - add after deployment)
-6. Save Client ID and Client Secret
+   - `https://auth-service-staging-773292472093.us-central1.run.app/auth/google/callback` (staging)
+   - `https://auth-service-773292472093.us-central1.run.app/auth/google/callback` (production)
+7. Save Client ID and Client Secret
 
-### Step 5: Configure Environment Variables
+**Note:** For PR environments, manually add redirect URIs as needed:
+
+- `https://auth-service-pr-{number}-773292472093.us-central1.run.app/auth/google/callback`
+- `https://frontend-pr-{number}-773292472093.us-central1.run.app`
+
+### Step 5: Configure GitHub Secrets
+
+For CI/CD deployment, configure these secrets in GitHub:
+https://github.com/uzibiton/automation-interview-pre/settings/secrets/actions
+
+**Required secrets:**
+
+```
+GCP_PROJECT_ID=skillful-eon-477917-b7
+FIREBASE_PROJECT_ID=skillful-eon-477917-b7
+GCP_SA_KEY=<contents of github-actions-key.json>
+JWT_SECRET=<generate with: openssl rand -base64 32>
+GOOGLE_CLIENT_ID=773292472093-2k7ikkmj4f3tl8r885s0pkkun3dr7bra.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+```
+
+**To create service account key:**
 
 ```bash
-# Copy the example file
-cp .env.cloudrun .env
+# Create service account
+gcloud iam service-accounts create github-actions \
+  --display-name="GitHub Actions Service Account" \
+  --project=skillful-eon-477917-b7
 
-# Edit .env with your values
-nano .env
+# Grant necessary roles
+gcloud projects add-iam-policy-binding skillful-eon-477917-b7 \
+  --member="serviceAccount:github-actions@skillful-eon-477917-b7.iam.gserviceaccount.com" \
+  --role="roles/run.admin"
 
-# Required variables:
-GCP_PROJECT_ID=your-project-id
-GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your-client-secret
-JWT_SECRET=$(openssl rand -base64 32)  # Generate random secret
+gcloud projects add-iam-policy-binding skillful-eon-477917-b7 \
+  --member="serviceAccount:github-actions@skillful-eon-477917-b7.iam.gserviceaccount.com" \
+  --role="roles/artifactregistry.repoAdmin"
+
+gcloud projects add-iam-policy-binding skillful-eon-477917-b7 \
+  --member="serviceAccount:github-actions@skillful-eon-477917-b7.iam.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountUser"
+
+# Create key
+gcloud iam service-accounts keys create github-actions-key.json \
+  --iam-account=github-actions@skillful-eon-477917-b7.iam.gserviceaccount.com \
+  --project=skillful-eon-477917-b7
 ```
 
 ### Step 6: Setup Secrets (Recommended for Production)
