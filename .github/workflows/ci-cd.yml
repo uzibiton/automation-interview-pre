@@ -23,6 +23,11 @@ on:
           - production
         default: production
 
+# Prevent concurrent deployments to the same environment
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref }}
+  cancel-in-progress: false
+
 # Define jobs that run in sequence
 jobs:
   # ============================================================================
