@@ -186,7 +186,7 @@ jobs:
         run: |
           AUTH_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)' 2>/dev/null || echo "")
           if [ -z "$AUTH_URL" ]; then
-            AUTH_URL="https://auth-service${{ steps.config.outputs.suffix }}-hjcsve3jia-uc.a.run.app"
+            AUTH_URL="https://auth-service${{ steps.config.outputs.suffix }}-buuath6a3q-uc.a.run.app"
           fi
           GOOGLE_CALLBACK_URL="$AUTH_URL/auth/google/callback"
           echo "⚠️  Google OAuth Callback URL: $GOOGLE_CALLBACK_URL"
