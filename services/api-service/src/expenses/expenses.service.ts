@@ -136,7 +136,7 @@ export class ExpensesService {
 
   async getCategories(language: string = 'en'): Promise<Category[]> {
     if (this.useFirestore) {
-      return this.firestoreRepo.getCategories();
+      return this.firestoreRepo.getCategories() as any;
     }
     return this.categoriesRepository.find({
       order: { nameEn: 'ASC' },
@@ -145,7 +145,7 @@ export class ExpensesService {
 
   async getSubCategories(categoryId: number): Promise<SubCategory[]> {
     if (this.useFirestore) {
-      return this.firestoreRepo.getSubCategories(categoryId);
+      return this.firestoreRepo.getSubCategories(categoryId) as any;
     }
     return this.subCategoriesRepository.find({
       where: { categoryId },
