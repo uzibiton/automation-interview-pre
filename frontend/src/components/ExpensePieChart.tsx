@@ -3,10 +3,11 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { getApiServiceUrl } from '../utils/config';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const API_SERVICE_URL = import.meta.env.VITE_API_SERVICE_URL || 'http://localhost:3002';
+const API_SERVICE_URL = getApiServiceUrl();
 
 interface ExpensePieChartProps {
   token: string;

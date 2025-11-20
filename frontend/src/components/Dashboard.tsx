@@ -5,9 +5,10 @@ import ExpenseForm from './ExpenseForm';
 import ExpensePieChart from './ExpensePieChart';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
+import { getApiServiceUrl, getAuthServiceUrl } from '../utils/config';
 
-const API_SERVICE_URL = import.meta.env.VITE_API_SERVICE_URL || 'http://localhost:3002';
-const AUTH_SERVICE_URL = import.meta.env.VITE_AUTH_SERVICE_URL || 'http://localhost:3001';
+const API_SERVICE_URL = getApiServiceUrl();
+const AUTH_SERVICE_URL = getAuthServiceUrl();
 
 interface DashboardProps {
   token: string;

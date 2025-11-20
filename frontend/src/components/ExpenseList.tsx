@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { getApiServiceUrl } from '../utils/config';
 
-const API_SERVICE_URL = import.meta.env.VITE_API_SERVICE_URL || 'http://localhost:3002';
+const API_SERVICE_URL = getApiServiceUrl();
 
 interface Expense {
   id: number;

@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getAuthServiceUrl, getGoogleClientId } from '../utils/config';
 
-// Support runtime config (for production) or build-time env vars (for development)
-const AUTH_SERVICE_URL =
-  (window as any).ENV?.VITE_AUTH_SERVICE_URL ||
-  import.meta.env.VITE_AUTH_SERVICE_URL ||
-  'http://localhost:3001';
-const GOOGLE_CLIENT_ID =
-  (window as any).ENV?.VITE_GOOGLE_CLIENT_ID || import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const AUTH_SERVICE_URL = getAuthServiceUrl();
+const GOOGLE_CLIENT_ID = getGoogleClientId();
 
 function Login() {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
