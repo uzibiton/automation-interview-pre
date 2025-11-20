@@ -189,6 +189,8 @@ jobs:
             AUTH_URL="https://auth-service${{ steps.config.outputs.suffix }}-hjcsve3jia-uc.a.run.app"
           fi
           GOOGLE_CALLBACK_URL="$AUTH_URL/auth/google/callback"
+          echo "⚠️  Google OAuth Callback URL: $GOOGLE_CALLBACK_URL"
+          echo "⚠️  Add this URL to Google Cloud Console: https://console.cloud.google.com/apis/credentials"
           gcloud run deploy auth-service${{ steps.config.outputs.suffix }} \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:${{ github.sha }} \
             --region ${{ steps.config.outputs.region }} \
