@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18n';
+import { useTranslation } from 'react-i18next';
 import { getApiServiceUrl } from '../utils/config';
 
 const API_SERVICE_URL = getApiServiceUrl();
