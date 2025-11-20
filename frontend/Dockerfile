@@ -28,6 +28,9 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+COPY generate-config.sh /docker-entrypoint.d/generate-config.sh
+RUN chmod +x /docker-entrypoint.d/generate-config.sh
+
 EXPOSE 8080
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/docker-entrypoint.d/generate-config.sh"]
