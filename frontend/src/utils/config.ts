@@ -18,9 +18,5 @@ export const getApiServiceUrl = (): string => {
 };
 
 export const getGoogleClientId = (): string => {
-  return (
-    (window as any).ENV?.VITE_GOOGLE_CLIENT_ID ||
-    import.meta.env.VITE_GOOGLE_CLIENT_ID ||
-    ''
-  );
+  return (window as any).ENV?.VITE_GOOGLE_CLIENT_ID || import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 };
