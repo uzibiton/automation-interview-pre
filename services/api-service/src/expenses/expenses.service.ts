@@ -5,9 +5,13 @@ import { Expense } from './expense.entity';
 import { Category } from './category.entity';
 import { SubCategory } from './sub-category.entity';
 import { CreateExpenseDto, UpdateExpenseDto } from './dto/expense.dto';
+import { FirestoreRepository } from '../database/firestore.repository';
 
 @Injectable()
 export class ExpensesService {
+  private firestoreRepo: FirestoreRepository;
+  private useFirestore: boolean;
+
   constructor(
     @Optional()
     @InjectRepository(Expense)
@@ -18,7 +22,12 @@ export class ExpensesService {
     @Optional()
     @InjectRepository(SubCategory)
     private subCategoriesRepository: Repository<SubCategory>,
-  ) {}
+  ) {
+    this.useFirestore = process.env.DATABASE_TYPE === 'firestore';
+    if (this.useFirestore) {
+      this.firestoreRepo = new FirestoreRepository();
+    }
+  }
 
   async findAll(
     userId: number,
@@ -126,12 +135,18 @@ export class ExpensesService {
   }
 
   async getCategories(language: string = 'en'): Promise<Category[]> {
+    if (this.useFirestore) {
+      return this.firestoreRepo.getCategories();
+    }
     return this.categoriesRepository.find({
       order: { nameEn: 'ASC' },
     });
   }
 
   async getSubCategories(categoryId: number): Promise<SubCategory[]> {
+    if (this.useFirestore) {
+      return this.firestoreRepo.getSubCategories(categoryId);
+    }
     return this.subCategoriesRepository.find({
       where: { categoryId },
       order: { nameEn: 'ASC' },
