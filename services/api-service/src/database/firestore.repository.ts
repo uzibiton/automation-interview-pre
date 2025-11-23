@@ -65,12 +65,31 @@ export class FirestoreRepository implements IExpenseRepository {
       query = query.where('amount', '<=', filters.maxAmount);
     }
 
-    const snapshot = await query.orderBy('date', 'desc').get();
-
-    return snapshot.docs.map((doc: any) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    // Try with orderBy, but catch index errors and retry without it
+    try {
+      const snapshot = await query.orderBy('date', 'desc').get();
+      return snapshot.docs.map((doc: any) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error: any) {
+      // If index is missing, fetch without orderBy and sort in memory
+      if (error.code === 9) {
+        console.log('Index not available, sorting in memory');
+        const snapshot = await query.get();
+        const docs = snapshot.docs.map((doc: any) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        // Sort by date descending in memory
+        return docs.sort((a, b) => {
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          return dateB - dateA;
+        });
+      }
+      throw error;
+    }
   }
 
   async findOne(id: string | number, userId: number | string): Promise<Expense | null> {
