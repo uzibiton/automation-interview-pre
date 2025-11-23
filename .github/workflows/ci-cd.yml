@@ -12,16 +12,17 @@ on:
     branches:
       - main
 
-  # Manual trigger for production deployment only
+  # Manual trigger for any environment
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deployment environment (production only via manual trigger)'
+        description: 'Deployment environment'
         required: true
         type: choice
         options:
+          - staging
           - production
-        default: production
+        default: staging
 
 # Prevent concurrent deployments to the same environment
 concurrency:
@@ -78,10 +79,17 @@ jobs:
         id: set_env
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            # Manual trigger = production
-            echo "env_name=production" >> $GITHUB_OUTPUT
-            echo "env_suffix=" >> $GITHUB_OUTPUT
-            echo "should_run_e2e=false" >> $GITHUB_OUTPUT
+            # Manual trigger - use input
+            ENV="${{ github.event.inputs.environment }}"
+            if [ "$ENV" = "production" ]; then
+              echo "env_name=production" >> $GITHUB_OUTPUT
+              echo "env_suffix=" >> $GITHUB_OUTPUT
+              echo "should_run_e2e=false" >> $GITHUB_OUTPUT
+            else
+              echo "env_name=staging" >> $GITHUB_OUTPUT
+              echo "env_suffix=-staging" >> $GITHUB_OUTPUT
+              echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+            fi
           elif [ "${{ github.event_name }}" = "pull_request" ]; then
             # PR = temporary environment
             PR_NUMBER="${{ github.event.pull_request.number }}"
