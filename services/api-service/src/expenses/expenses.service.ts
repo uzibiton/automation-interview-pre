@@ -158,45 +158,6 @@ export class ExpensesService {
     };
   }
 
-    switch (period) {
-      case 'week':
-        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
-        break;
-      case 'year':
-        startDate = new Date(now.getFullYear(), 0, 1);
-        break;
-      case 'month':
-      default:
-        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-        break;
-    }
-
-    const expenses = await this.expensesRepository
-      .createQueryBuilder('expense')
-      .where('expense.userId = :userId', { userId })
-      .andWhere('expense.date >= :startDate', { startDate })
-      .getMany();
-
-    const total = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
-
-    const byCategory = await this.expensesRepository
-      .createQueryBuilder('expense')
-      .select('expense.categoryId', 'categoryId')
-      .addSelect('SUM(expense.amount)', 'total')
-      .addSelect('COUNT(*)', 'count')
-      .where('expense.userId = :userId', { userId })
-      .andWhere('expense.date >= :startDate', { startDate })
-      .groupBy('expense.categoryId')
-      .getRawMany();
-
-    return {
-      total,
-      count: expenses.length,
-      period,
-      byCategory,
-    };
-  }
-
   async getCategories(language: string = 'en'): Promise<Category[]> {
     if (this.useFirestore) {
       return this.firestoreRepo.getCategories() as any;
