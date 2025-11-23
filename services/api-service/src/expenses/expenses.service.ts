@@ -33,6 +33,10 @@ export class ExpensesService {
     userId: number,
     filters?: { startDate?: string; endDate?: string; categoryId?: number },
   ): Promise<Expense[]> {
+    if (this.useFirestore) {
+      return this.firestoreRepo.findAll(userId, filters) as any;
+    }
+
     const query = this.expensesRepository
       .createQueryBuilder('expense')
       .where('expense.userId = :userId', { userId })
@@ -58,6 +62,10 @@ export class ExpensesService {
   }
 
   async findOne(userId: number, id: number): Promise<Expense> {
+    if (this.useFirestore) {
+      return this.firestoreRepo.findOne(userId, id) as any;
+    }
+
     const expense = await this.expensesRepository.findOne({
       where: { id, userId },
     });
@@ -70,6 +78,10 @@ export class ExpensesService {
   }
 
   async create(userId: number, createExpenseDto: CreateExpenseDto): Promise<Expense> {
+    if (this.useFirestore) {
+      return this.firestoreRepo.create(userId, createExpenseDto) as any;
+    }
+
     const expense = this.expensesRepository.create({
       ...createExpenseDto,
       userId,
@@ -79,6 +91,10 @@ export class ExpensesService {
   }
 
   async update(userId: number, id: number, updateExpenseDto: UpdateExpenseDto): Promise<Expense> {
+    if (this.useFirestore) {
+      return this.firestoreRepo.update(userId, id, updateExpenseDto) as any;
+    }
+
     const expense = await this.findOne(userId, id);
 
     Object.assign(expense, updateExpenseDto);
@@ -87,11 +103,19 @@ export class ExpensesService {
   }
 
   async delete(userId: number, id: number): Promise<void> {
+    if (this.useFirestore) {
+      return this.firestoreRepo.delete(userId, id);
+    }
+
     const expense = await this.findOne(userId, id);
     await this.expensesRepository.remove(expense);
   }
 
   async getStats(userId: number, period: string = 'month'): Promise<any> {
+    if (this.useFirestore) {
+      return this.firestoreRepo.getStats(userId, period);
+    }
+
     const now = new Date();
     let startDate: Date;
 
