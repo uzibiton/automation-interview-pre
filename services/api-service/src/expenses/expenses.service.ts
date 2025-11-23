@@ -112,12 +112,51 @@ export class ExpensesService {
   }
 
   async getStats(userId: number, period: string = 'month'): Promise<any> {
-    if (this.useFirestore) {
-      return this.firestoreRepo.getStats(userId, period);
-    }
-
     const now = new Date();
     let startDate: Date;
+
+    switch (period) {
+      case 'week':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+        break;
+      case 'year':
+        startDate = new Date(now.getFullYear(), 0, 1);
+        break;
+      case 'month':
+      default:
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+    }
+
+    if (this.useFirestore) {
+      return this.firestoreRepo.getStats(userId, { startDate, endDate: now });
+    }
+
+    const expenses = await this.expensesRepository
+      .createQueryBuilder('expense')
+      .where('expense.userId = :userId', { userId })
+      .andWhere('expense.date >= :startDate', { startDate })
+      .getMany();
+
+    const total = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
+
+    const byCategory = await this.expensesRepository
+      .createQueryBuilder('expense')
+      .select('expense.categoryId', 'categoryId')
+      .addSelect('SUM(expense.amount)', 'total')
+      .addSelect('COUNT(*)', 'count')
+      .where('expense.userId = :userId', { userId })
+      .andWhere('expense.date >= :startDate', { startDate })
+      .groupBy('expense.categoryId')
+      .getRawMany();
+
+    return {
+      total,
+      count: expenses.length,
+      period,
+      byCategory,
+    };
+  }
 
     switch (period) {
       case 'week':

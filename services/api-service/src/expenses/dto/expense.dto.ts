@@ -12,8 +12,7 @@ export class CreateExpenseDto {
   amount: number;
 
   @IsString()
-  @IsOptional()
-  currency?: string;
+  currency: string;
 
   @IsString()
   @IsOptional()
@@ -23,8 +22,7 @@ export class CreateExpenseDto {
   date: string;
 
   @IsString()
-  @IsOptional()
-  paymentMethod?: string;
+  paymentMethod: string;
 
   @IsArray()
   @IsOptional()
