@@ -30,8 +30,8 @@ export interface CreateExpenseDto {
 export interface ExpenseStats {
   total: number;
   count: number;
-  by_category: { category: string; total: number }[];
-  by_month: { month: string; total: number }[];
+  byCategory: { categoryId: number; total: number }[];
+  byMonth: { month: string; total: number }[];
 }
 
 export interface Category {

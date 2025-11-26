@@ -169,12 +169,10 @@ export class FirestoreRepository implements IExpenseRepository {
       categoryMap.set(categoryId, (categoryMap.get(categoryId) || 0) + amount);
     }
 
-    // Get category names
-    const categories = await this.getCategories();
-    const by_category = Array.from(categoryMap.entries()).map(([categoryId, total]) => {
-      const category = categories.find((c) => c.id === categoryId);
+    // Return category data with categoryId for frontend to resolve names
+    const byCategory = Array.from(categoryMap.entries()).map(([categoryId, total]) => {
       return {
-        category: category?.nameEn || 'Unknown',
+        categoryId,
         total,
       };
     });
@@ -182,8 +180,8 @@ export class FirestoreRepository implements IExpenseRepository {
     return {
       total,
       count: expenses.length,
-      by_category,
-      by_month: [], // Implement if needed
+      byCategory,
+      byMonth: [], // Implement if needed
     };
   }
 

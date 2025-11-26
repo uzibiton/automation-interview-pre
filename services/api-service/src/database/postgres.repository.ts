@@ -94,23 +94,22 @@ export class PostgresRepository implements IExpenseRepository {
       return sum + amount;
     }, 0);
 
-    const by_category = await this.expenseRepository
+    const categoryStats = await this.expenseRepository
       .createQueryBuilder('expense')
-      .select('category.nameEn', 'category')
+      .select('expense.categoryId', 'categoryId')
       .addSelect('SUM(expense.amount)', 'total')
-      .leftJoin(Category, 'category', 'category.id = expense.categoryId')
       .where('expense.userId = :userId', { userId: Number(userId) })
-      .groupBy('category.nameEn')
+      .groupBy('expense.categoryId')
       .getRawMany();
 
     return {
       total,
       count: expenses.length,
-      by_category: by_category.map((item) => ({
-        category: item.category,
+      byCategory: categoryStats.map((item) => ({
+        categoryId: parseInt(item.categoryId),
         total: parseFloat(item.total),
       })),
-      by_month: [], // Implement if needed
+      byMonth: [], // Implement if needed
     };
   }
 
