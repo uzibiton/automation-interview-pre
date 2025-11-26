@@ -50,7 +50,14 @@ export class FirestoreRepository implements IExpenseRepository {
     let query: any = this.expenses.where('userId', '==', String(userId));
 
     if (filters?.startDate && filters?.endDate) {
-      query = query.where('date', '>=', filters.startDate).where('date', '<=', filters.endDate);
+      // Convert Date objects to YYYY-MM-DD string format for comparison
+      const startDateStr = filters.startDate instanceof Date 
+        ? filters.startDate.toISOString().split('T')[0]
+        : filters.startDate;
+      const endDateStr = filters.endDate instanceof Date
+        ? filters.endDate.toISOString().split('T')[0]
+        : filters.endDate;
+      query = query.where('date', '>=', startDateStr).where('date', '<=', endDateStr);
     }
 
     if (filters?.categoryId) {
