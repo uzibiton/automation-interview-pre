@@ -153,6 +153,7 @@ export class FirestoreRepository implements IExpenseRepository {
 
   async getStats(userId: number | string, filters?: ExpenseFilters): Promise<ExpenseStats> {
     const expenses = await this.findAll(userId, filters);
+    console.log(`[STATS] Found ${expenses.length} expenses for user ${userId}`, { filters, expenses: expenses.map(e => ({ id: e.id, amount: e.amount, categoryId: e.categoryId, date: e.date })) });
 
     const total = expenses.reduce((sum, exp) => {
       const amount = typeof exp.amount === 'string' ? parseFloat(exp.amount) : exp.amount;
@@ -177,12 +178,14 @@ export class FirestoreRepository implements IExpenseRepository {
       };
     });
 
-    return {
+    const result = {
       total,
       count: expenses.length,
       byCategory,
       byMonth: [], // Implement if needed
     };
+    console.log('[STATS] Returning stats:', result);
+    return result;
   }
 
   async getCategories(): Promise<Category[]> {
