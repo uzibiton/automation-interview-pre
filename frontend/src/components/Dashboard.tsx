@@ -58,9 +58,16 @@ function Dashboard({ token, onLogout }: DashboardProps) {
       const response = await axios.get(`${API_SERVICE_URL}/expenses/stats?period=month`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setStats(response.data);
+      const data = response.data || {};
+      setStats({
+        total: data.total || 0,
+        totalAmount: data.totalAmount || data.total || 0,
+        count: data.count || 0,
+        byCategory: Array.isArray(data.byCategory) ? data.byCategory : [],
+      });
     } catch (error) {
       console.error('Failed to fetch stats', error);
+      setStats({ total: 0, totalAmount: 0, count: 0, byCategory: [] });
     }
   };
 

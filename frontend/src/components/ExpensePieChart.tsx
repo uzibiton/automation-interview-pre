@@ -54,10 +54,18 @@ function ExpensePieChart({ token, refreshKey }: ExpensePieChartProps) {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
-      setCategories(categoriesRes.data);
-      setStats(statsRes.data);
+      setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
+      const statsData = statsRes.data || {};
+      setStats({
+        total: statsData.total || 0,
+        totalAmount: statsData.totalAmount || statsData.total || 0,
+        count: statsData.count || 0,
+        byCategory: Array.isArray(statsData.byCategory) ? statsData.byCategory : [],
+      });
     } catch (error) {
       console.error('Failed to fetch chart data', error);
+      setCategories([]);
+      setStats({ total: 0, totalAmount: 0, count: 0, byCategory: [] });
     } finally {
       setLoading(false);
     }

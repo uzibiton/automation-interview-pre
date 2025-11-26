@@ -47,10 +47,11 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
       const response = await axios.get(`${API_SERVICE_URL}/expenses`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setExpenses(response.data);
+      setExpenses(Array.isArray(response.data) ? response.data : []);
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch expenses', error);
+      setExpenses([]);
       setLoading(false);
     }
   };
@@ -60,9 +61,10 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
       const response = await axios.get(`${API_SERVICE_URL}/expenses/categories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setCategories(response.data);
+      setCategories(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Failed to fetch categories', error);
+      setCategories([]);
     }
   };
 

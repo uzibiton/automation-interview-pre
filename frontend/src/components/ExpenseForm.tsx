@@ -58,9 +58,10 @@ function ExpenseForm({ token, onSuccess }: ExpenseFormProps) {
       const response = await axios.get(`${API_SERVICE_URL}/expenses/categories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setCategories(response.data);
+      setCategories(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Failed to fetch categories', error);
+      setCategories([]);
     }
   };
 
@@ -72,9 +73,10 @@ function ExpenseForm({ token, onSuccess }: ExpenseFormProps) {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      setSubCategories(response.data);
+      setSubCategories(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Failed to fetch subcategories', error);
+      setSubCategories([]);
     }
   };
 
