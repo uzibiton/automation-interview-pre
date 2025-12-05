@@ -66,20 +66,20 @@ export default defineConfig({
     [
       'html',
       {
-        outputFolder: `../reports/${new Date().toISOString().replace(/[:.]/g, '-')}/html-report`,
+        outputFolder: `../test-results/${new Date().toISOString().replace(/[:.]/g, '-')}/html-report`,
         open: 'never',
       },
     ],
     [
       'json',
       {
-        outputFile: `../reports/${new Date().toISOString().replace(/[:.]/g, '-')}/results.json`,
+        outputFile: `../test-results/${new Date().toISOString().replace(/[:.]/g, '-')}/results.json`,
       },
     ],
     [
       'junit',
       {
-        outputFile: `../reports/${new Date().toISOString().replace(/[:.]/g, '-')}/junit.xml`,
+        outputFile: `../test-results/${new Date().toISOString().replace(/[:.]/g, '-')}/junit.xml`,
       },
     ],
     ['list'], // Console output

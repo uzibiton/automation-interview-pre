@@ -14,12 +14,14 @@
 // 5. Code coverage out of the box
 // =============================================================================
 
+const path = require('path');
+
 module.exports = {
   // Root directory for tests (where test files are located)
-  rootDir: '../',
+  rootDir: path.resolve(__dirname, '../'),
 
-  // Tell Jest where to find node_modules (in config directory)
-  moduleDirectories: ['node_modules', '<rootDir>/config/node_modules'],
+  // Tell Jest where to find node_modules
+  moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
 
   // Test environment setup
   testEnvironment: 'node', // Default for API/backend tests
@@ -28,7 +30,7 @@ module.exports = {
   projects: [
     {
       displayName: 'unit',
-      rootDir: '../',
+      rootDir: path.resolve(__dirname, '../'),
       testEnvironment: 'node',
       testMatch: ['<rootDir>/unit/**/*.test.ts', '<rootDir>/unit/**/*.spec.ts'],
       setupFilesAfterEnv: ['<rootDir>/config/jest.setup.js'],
@@ -46,7 +48,7 @@ module.exports = {
     },
     {
       displayName: 'component',
-      rootDir: '../',
+      rootDir: path.resolve(__dirname, '../'),
       testEnvironment: 'jsdom', // Browser-like environment for React components
       testMatch: ['<rootDir>/component/**/*.test.tsx', '<rootDir>/component/**/*.spec.tsx'],
       setupFilesAfterEnv: ['<rootDir>/config/jest.setup.js'],
@@ -69,7 +71,7 @@ module.exports = {
     },
     {
       displayName: 'integration',
-      rootDir: '../',
+      rootDir: path.resolve(__dirname, '../'),
       testEnvironment: 'node',
       testMatch: ['<rootDir>/integration/**/*.test.ts', '<rootDir>/integration/**/*.spec.ts'],
       setupFilesAfterEnv: ['<rootDir>/config/jest.setup.js'],
@@ -87,7 +89,7 @@ module.exports = {
     },
     {
       displayName: 'contract',
-      rootDir: '../',
+      rootDir: path.resolve(__dirname, '../'),
       testEnvironment: 'node',
       testMatch: ['<rootDir>/contract/**/*.pact.test.ts'],
       setupFilesAfterEnv: ['<rootDir>/config/jest.setup.js'],
@@ -110,9 +112,9 @@ module.exports = {
 
   // Path aliases (matching tsconfig.json)
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/../src/$1',
-    '^@services/(.*)$': '<rootDir>/../services/$1',
-    '^@frontend/(.*)$': '<rootDir>/../frontend/src/$1',
+    '^@/(.*)$': '<rootDir>/../app/src/$1',
+    '^@services/(.*)$': '<rootDir>/../app/services/$1',
+    '^@frontend/(.*)$': '<rootDir>/../app/frontend/src/$1',
     '^@fixtures/(.*)$': '<rootDir>/fixtures/$1',
   },
 
@@ -121,8 +123,8 @@ module.exports = {
   coverageDirectory: '<rootDir>/../coverage',
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
   collectCoverageFrom: [
-    '../services/**/*.{ts,tsx}',
-    '../frontend/src/**/*.{ts,tsx}',
+    '../app/services/**/*.{ts,tsx}',
+    '../app/frontend/src/**/*.{ts,tsx}',
     '!**/*.d.ts',
     '!**/node_modules/**',
     '!**/*.config.{ts,js}',

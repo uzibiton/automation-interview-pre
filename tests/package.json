@@ -4,6 +4,13 @@
   "description": "E2E and integration tests for expense tracking application",
   "private": true,
   "scripts": {
+    "test": "npm run test:unit",
+    "test:unit": "jest --config=config/jest.config.js --selectProjects=unit",
+    "test:component": "jest --config=config/jest.config.js --selectProjects=component",
+    "test:integration": "jest --config=config/jest.config.js --selectProjects=integration",
+    "test:contract": "jest --config=config/jest.config.js --selectProjects=contract",
+    "test:watch": "jest --config=config/jest.config.js --watch",
+    "test:coverage": "jest --config=config/jest.config.js --coverage",
     "test:e2e": "playwright test --config=config/playwright.config.ts",
     "test:e2e:headed": "playwright test --config=config/playwright.config.ts --headed",
     "test:e2e:debug": "playwright test --config=config/playwright.config.ts --debug",
@@ -17,7 +24,16 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.6",
     "cross-env": "^10.1.0",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
   }
 }
