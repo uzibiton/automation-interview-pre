@@ -12,12 +12,15 @@ build/
 out/
 
 # Environment variables (SENSITIVE!)
+environments/.env
+environments/.env.local
+environments/.env*.local
+environments/.env.production
+environments/.env.development
+environments/.env.test
 .env
 .env.local
 .env*.local
-.env.production
-.env.development
-.env.test
 
 # Logs
 *.log
@@ -69,6 +72,7 @@ allure-report/
 temp/
 tmp/
 *.tmp
+src/
 
 # PostgreSQL data (if running locally)
 postgres_data/
@@ -79,6 +83,8 @@ postgres_data/
 *.key
 *.cert
 .env.save
+.pr-test
+.test-oauth
 
 # Google Cloud service account keys (NEVER COMMIT!)
 *-key.json
@@ -89,6 +95,9 @@ postgres_data/
 !tsconfig*.json
 !*config.json
 !manifest.json
+
+# Yarn (using npm)
+yarn.lock
 
 # Reference folder (not part of the project)
 reference-expenses/
