@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
 import { ExpensesModule } from './expenses/expenses.module';
@@ -22,6 +23,14 @@ const databaseConfig =
       ];
 
 @Module({
-  imports: [...databaseConfig, HttpModule, ExpensesModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    ...databaseConfig,
+    HttpModule,
+    ExpensesModule,
+  ],
 })
 export class AppModule {}
