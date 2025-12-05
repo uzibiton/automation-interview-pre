@@ -128,19 +128,19 @@ jobs:
 
       - name: Build Auth Service
         run: |
-          cd services/auth-service
+          cd app/services/auth-service
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:${{ github.sha }} .
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:latest .
 
       - name: Build API Service
         run: |
-          cd services/api-service
+          cd app/services/api-service
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:${{ github.sha }} .
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:latest .
 
       - name: Build Frontend
         run: |
-          cd frontend
+          cd app/frontend
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }} .
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest .
 

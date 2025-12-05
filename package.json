@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "services/auth-service",
-    "services/api-service",
-    "frontend"
+    "app/services/auth-service",
+    "app/services/api-service",
+    "app/frontend"
   ],
   "scripts": {
     "install:all": "npm install",
@@ -15,8 +15,8 @@
     "dev:frontend": "npm run dev --workspace=frontend",
     "build:all": "npm run build --workspaces",
     "clean": "npm run clean:modules && npm run clean:build",
-    "clean:modules": "rm -rf node_modules services/*/node_modules frontend/node_modules",
-    "clean:build": "rm -rf services/*/dist frontend/dist",
+    "clean:modules": "rm -rf node_modules app/services/*/node_modules app/frontend/node_modules",
+    "clean:build": "rm -rf app/services/*/dist app/frontend/dist",
     "docker:up": "docker-compose up --build",
     "docker:down": "docker-compose down",
     "docker:clean": "docker-compose down -v && docker system prune -f",

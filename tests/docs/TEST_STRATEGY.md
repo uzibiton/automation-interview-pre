@@ -650,11 +650,34 @@ test.describe('Expenses Page Visual Tests @visual', () => {
 
 ### 8. Non-Functional Tests
 
+> **Note**: Non-functional tests validate **how well** the system performs (quality attributes), not **what** it does (functionality).
+>
+> **Full documentation**: See `/tests/non-functional/README.md` for complete guide
+
+**Current Structure**:
+
+```
+tests/non-functional/
+├── README.md              ← Complete guide to all types
+├── accessibility/         ← WCAG compliance tests (planned)
+├── lighthouse/            ← Web quality audits (planned)
+├── performance/           ← Load and stress testing (active)
+│   ├── k6/               ← JavaScript-based load testing
+│   └── locust/           ← Python-based load testing
+└── security/             ← Vulnerability scanning (active)
+    ├── zap/              ← OWASP ZAP dynamic scanning
+    ├── bandit/           ← Python code security analysis
+    └── dependency/       ← Vulnerable dependency scanning
+```
+
 #### Performance Testing
 
 **Purpose**: Validate system performance under load
 
-**Tools**: K6 (JavaScript), Locust (Python)
+**Tools**:
+
+- **k6** - Modern JavaScript-based load testing
+- **Locust** - Python-based distributed load testing
 
 **Example**:
 
