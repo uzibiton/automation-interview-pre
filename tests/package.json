@@ -1,0 +1,23 @@
+{
+  "name": "automation-tests",
+  "version": "1.0.0",
+  "description": "E2E and integration tests for expense tracking application",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test --config=config/playwright.config.ts",
+    "test:e2e:headed": "playwright test --config=config/playwright.config.ts --headed",
+    "test:e2e:debug": "playwright test --config=config/playwright.config.ts --debug",
+    "test:e2e:local": "cross-env TEST_ENV=local playwright test --config=config/playwright.config.ts",
+    "test:e2e:docker": "cross-env TEST_ENV=docker playwright test --config=config/playwright.config.ts",
+    "test:e2e:staging": "cross-env TEST_ENV=staging playwright test --config=config/playwright.config.ts",
+    "test:e2e:production": "cross-env TEST_ENV=production playwright test --config=config/playwright.config.ts",
+    "test:smoke": "playwright test --config=config/playwright.config.ts --grep @smoke",
+    "report:open": "playwright show-report",
+    "install": "npx playwright install --with-deps"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.2.3"
+  }
+}

@@ -202,7 +202,7 @@ export default defineConfig({
   // },
 
   // Output folder for test artifacts (screenshots, videos, traces)
-  outputDir: `../reports/${new Date().toISOString().replace(/[:.]/g, '-')}/test-artifacts`,
+  outputDir: `../test-results/${new Date().toISOString().replace(/[:.]/g, '-')}/test-artifacts`,
 });
 
 /**
