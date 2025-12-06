@@ -162,6 +162,10 @@ jobs:
     name: Deploy to ${{ needs.setup.outputs.env_name }}
     needs: [setup, build]
     runs-on: ubuntu-latest
+    outputs:
+      frontend_url: ${{ steps.frontend_url.outputs.url }}
+      auth_url: ${{ steps.auth_service.outputs.url }}
+      callback_url: ${{ steps.auth_service.outputs.callback_url }}
 
     steps:
       - name: Checkout code
@@ -204,6 +208,8 @@ jobs:
             AUTH_URL="https://auth-service${{ steps.config.outputs.suffix }}-buuath6a3q-uc.a.run.app"
           fi
           GOOGLE_CALLBACK_URL="$AUTH_URL/auth/google/callback"
+          echo "url=$AUTH_URL" >> $GITHUB_OUTPUT
+          echo "callback_url=$GOOGLE_CALLBACK_URL" >> $GITHUB_OUTPUT
           echo "⚠️  Google OAuth Callback URL: $GOOGLE_CALLBACK_URL"
           echo "⚠️  Add this URL to Google Cloud Console: https://console.cloud.google.com/apis/credentials"
           gcloud run deploy auth-service${{ steps.config.outputs.suffix }} \
@@ -318,15 +324,24 @@ jobs:
             const fs = require('fs');
             const envName = '${{ needs.setup.outputs.env_name }}';
             const frontendUrl = '${{ needs.deploy.outputs.frontend_url }}';
+            const authUrl = '${{ needs.deploy.outputs.auth_url }}';
+            const callbackUrl = '${{ needs.deploy.outputs.callback_url }}';
 
             let message = `## 🧪 E2E Test Results for ${envName}\n\n`;
-            message += `**Environment URL**: ${frontendUrl}\n\n`;
+            message += `**Frontend URL**: ${frontendUrl}\n`;
+            message += `**Auth Service**: ${authUrl}\n\n`;
+            
+            message += `### ⚠️ Google OAuth Setup Required\n`;
+            message += `To test Google Sign-In on this PR environment, add this redirect URI to [Google Console](https://console.cloud.google.com/apis/credentials):\n\n`;
+            message += `\`\`\`\n${callbackUrl}\n\`\`\`\n\n`;
+            message += `**Note:** Email/password authentication works without this step.\n\n`;
 
             if ('${{ job.status }}' === 'success') {
               message += '✅ All smoke tests passed!\n\n';
               message += '**Next Steps:**\n';
               message += '1. Review the deployed environment\n';
-              message += '2. Once approved, this will deploy to staging when merged to main\n';
+              message += '2. (Optional) Add OAuth redirect URI to test Google Sign-In\n';
+              message += '3. Once approved, this will deploy to staging when merged to main\n';
             } else {
               message += '❌ Some tests failed. Please check the workflow logs.\n\n';
               message += '**Action Required:** Fix failing tests before merging.\n';
