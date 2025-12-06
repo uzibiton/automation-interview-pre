@@ -7,6 +7,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "expenses": "Expenses",
+    "analytics": "Analytics",
     "addExpense": "Add Expense",
     "categories": "Categories"
   },
@@ -23,8 +24,19 @@
     "switchToLogin": "Login",
     "switchToRegister": "Register"
   },
+  "dashboard": {
+    "description": "Overview of your expense tracking",
+    "quickLinks": "Quick Links",
+    "viewCharts": "View expense charts and statistics",
+    "manageExpenses": "Add, edit, and manage your expenses"
+  },
+  "analytics": {
+    "description": "Visualize your spending patterns with charts and statistics",
+    "viewExpenses": "View Expense List"
+  },
   "expenses": {
     "title": "My Expenses",
+    "pageDescription": "Manage all your expenses in one place",
     "noExpenses": "No expenses yet",
     "addNew": "Add New Expense",
     "totalSpent": "Total Spent",
@@ -41,7 +53,8 @@
     "edit": "Edit",
     "delete": "Delete",
     "filter": "Filter",
-    "allCategories": "All Categories"
+    "allCategories": "All Categories",
+    "viewAnalytics": "View Analytics"
   },
   "paymentMethods": {
     "credit_card": "Credit Card",
