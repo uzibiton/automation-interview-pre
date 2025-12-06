@@ -422,6 +422,251 @@ After code review, QA should document:
 - Performance test with 1000+ expenses
 ```
 
+### Onboarding as a New SDET: How to Review Code Effectively
+
+When joining a new team as an SDET, you're expected to review code but don't know the codebase yet. This is a common challenge. Here's a practical ramp-up strategy:
+
+#### First 2 Weeks: Learning Phase (Observer Mode)
+
+**Goal:** Understand before you critique
+
+**Activities:**
+1. **Don't Review Alone Yet**
+   - Attend code review meetings
+   - Read other people's review comments
+   - Learn what the team values (performance? security? testability?)
+   - Observe patterns: what gets approved vs. what gets sent back
+
+2. **Read Code Without Reviewing**
+   - Clone the repo and explore
+   - Read through key files (main services, utilities, common components)
+   - Run the application locally
+   - Set up debugging and trace through user flows
+
+3. **Ask Questions Freely**
+   - "What is this service responsible for?"
+   - "Where is the authentication logic?"
+   - "How does data flow from frontend to backend?"
+   - Frame as learning, not criticism
+
+4. **Document Your Learning**
+   - Create personal notes: "Auth Service uses JWT, stored in localStorage"
+   - Draw architecture diagrams
+   - Map dependencies between services
+   - Note common patterns (error handling, validation approach)
+
+**What NOT to Do:**
+- ❌ Don't give strong opinions on code you don't understand
+- ❌ Don't nitpick code style (unless it's a clear bug)
+- ❌ Don't block PRs while you're learning
+
+#### Week 3-4: Cautious Participation
+
+**Goal:** Start contributing with low-risk reviews
+
+**Activities:**
+1. **Start with Test Code Reviews**
+   - Review other people's test PRs (you're the test expert!)
+   - Check test coverage, test patterns, POM implementation
+   - This builds credibility in your domain
+
+2. **Review Small PRs**
+   - Bug fixes (1-2 files changed)
+   - UI tweaks
+   - Documentation updates
+   - These are easier to understand without deep context
+
+3. **Ask Questions, Not Demands**
+   - Instead of: "This is wrong, you should do X"
+   - Say: "I'm still learning the codebase - could you explain why this approach was chosen? I'm wondering if X might also work?"
+   - Or: "I noticed this pattern - is this the standard approach for error handling here?"
+
+4. **Focus on QA Perspective**
+   - Comment on testability: "Could we add a test ID here?"
+   - Comment on edge cases: "What happens if this array is empty?"
+   - Comment on error handling: "Should we show an error message to the user?"
+   - These are valid regardless of codebase knowledge
+
+**What You Can Safely Comment On (Even When New):**
+- ✅ Missing null checks
+- ✅ Missing error handling
+- ✅ Missing user feedback (loading states, error messages)
+- ✅ Testability issues (missing test IDs, hard to mock)
+- ✅ Edge cases not handled
+- ✅ Missing tests for new code
+
+**What to Avoid:**
+- ⚠️ Architecture suggestions (you don't know the full picture yet)
+- ⚠️ Performance optimization (might be premature)
+- ⚠️ Refactoring suggestions (might not fit team patterns)
+
+#### Month 2: Confident Reviewer
+
+**Goal:** Full participation with context
+
+**Activities:**
+1. **Review All PR Types**
+   - You now understand major components
+   - You know common patterns
+   - You can spot deviations from standards
+
+2. **Use the 3-Level Review Approach**
+   - Understand change → Understand context → Plan tests
+   - Check dependencies (you now know what depends on what)
+   - Assess risk (you understand critical paths)
+
+3. **Suggest Improvements**
+   - "In other parts of the codebase, we handle this with Pattern X. Could that work here?"
+   - "I noticed Service Y has similar logic. Could we extract a shared utility?"
+   - Show you've learned the patterns
+
+4. **Contribute to Standards**
+   - Suggest test coverage standards
+   - Propose testability guidelines
+   - Share test automation best practices
+
+#### Practical Strategy for Each PR Review (As a New SDET)
+
+**Step 1: Classify Your Knowledge (30 seconds)**
+Ask yourself:
+- Do I understand this area of the codebase? (Yes/Somewhat/No)
+- Is this a critical path? (Auth, payments, data integrity)
+- Is this related to testing? (Test infrastructure, test code)
+
+**Step 2: Adjust Review Depth**
+
+**If you understand the area:**
+- Do full 3-level review (change, context, test planning)
+- Comment on architecture, patterns, and implementation details
+
+**If you somewhat understand:**
+- Focus on code quality: null checks, error handling, edge cases
+- Ask questions about patterns you don't recognize
+- Focus on testability
+
+**If you don't understand:**
+- Review at surface level: obvious bugs, missing tests
+- Ask clarifying questions: "Could you explain what this function does?"
+- Focus on QA concerns: testability, error messages, edge cases
+- **Approve** unless you see obvious issues, but comment: "Approved from testability perspective. I'm still learning this area, so deferred to others on implementation details."
+
+**Step 3: Frame Comments Appropriately**
+
+**High Confidence (you know this area):**
+```markdown
+**Issue:** This validation is missing a null check for `user.email`. This will throw an error if email is undefined.
+
+**Suggestion:** Add: `if (!user?.email) { throw new ValidationError(...) }`
+```
+
+**Medium Confidence (you're learning):**
+```markdown
+**Question:** I noticed this doesn't validate the email format. Is there validation happening elsewhere, or should we add it here?
+
+I see in `UserService` we use `isValidEmail()` helper - should we use that here too?
+```
+
+**Low Confidence (new to this area):**
+```markdown
+**Testability Note:** Could we add a `data-testid="submit-button"` attribute here? This would make E2E testing easier.
+
+Also, I'm still learning this part of the codebase - could you help me understand how error handling works in this service?
+```
+
+#### Building Context Rapidly
+
+**Shortcuts to Learn Codebase Faster:**
+
+1. **Trace User Flows**
+   - Pick a critical user journey (e.g., "user logs in")
+   - Set breakpoints and step through the code
+   - Document the flow: Frontend → API → Service → Database
+
+2. **Read Tests First**
+   - Tests show how code is intended to be used
+   - Tests reveal edge cases and business rules
+   - Tests show dependencies and mocking patterns
+
+3. **Use IDE Tools**
+   - "Find All References" - see where a function is used
+   - "Go to Definition" - understand what something does
+   - "Show Call Hierarchy" - see the call stack
+
+4. **Pair with Developers**
+   - Ask for a walkthrough of a PR
+   - Screen share and ask questions
+   - Shadow a developer for a day
+
+5. **Review Bug Fixes**
+   - Bug fix PRs are small and focused
+   - They reveal common issues
+   - They show you what can go wrong
+
+#### Red Flags to Watch For (Safe to Flag Even When New)
+
+**Always Comment On:**
+- 🚩 No tests added for new code
+- 🚩 Hardcoded credentials or secrets
+- 🚩 console.log or debugging code left in
+- 🚩 Commented-out code blocks
+- 🚩 TODO comments without a tracking issue
+- 🚩 Very large PRs (500+ lines) - suggest splitting
+- 🚩 Missing error handling for async operations
+- 🚩 SQL injection risks (string concatenation in queries)
+- 🚩 XSS risks (unsanitized user input rendered in HTML)
+
+**These are universally bad regardless of project context.**
+
+#### Sample First PR Review (Week 1)
+
+```markdown
+## QA Review - PR #47 (Add User Profile Page)
+
+**Context:** I'm new to the team and still learning the codebase, so I focused on testability and edge cases. Deferring to others on architecture and patterns.
+
+### ✅ Looks Good
+- Nice component structure, easy to follow
+- Loading state implemented
+- Error boundary in place
+
+### 💡 Testability Suggestions
+1. Could we add test IDs to key elements?
+   - `data-testid="profile-avatar"`
+   - `data-testid="profile-name"`
+   - `data-testid="edit-profile-button"`
+
+2. Is the API endpoint `/api/users/:id` available for integration testing? This would help test the full flow.
+
+### ❓ Questions (I'm Learning)
+1. **Line 34:** I see we're using `localStorage.getItem('userId')`. Is there a shared auth utility for this, or is direct localStorage access the pattern here?
+
+2. **Line 56:** What happens if the API call fails? I see we catch the error, but should we show a message to the user?
+
+3. **General:** I'm still learning how navigation works in this app. Should clicking "Edit" navigate to a new page, or open a modal?
+
+### 🧪 Test Plan
+I can write E2E tests for this after it merges:
+- Load profile page
+- Verify user data displays
+- Test edit button click
+- Test with no user data (edge case)
+- Test with API failure (error case)
+
+**Status:** Approved from testability perspective. Looks good to me, but I'm still ramping up on this codebase so deferring to senior team members on implementation details.
+
+---
+Thanks for the clear code! Let me know if you'd like help writing tests for this feature. 🙌
+```
+
+#### Key Mindset for New SDETs
+
+1. **You bring value from Day 1** - Your QA perspective is valuable even without codebase knowledge
+2. **Questions are contributions** - Asking "what if this is null?" improves quality
+3. **Focus on testability** - This is your domain expertise
+4. **Be humble but confident** - "I'm learning X" + "This needs a null check" = good balance
+5. **Build trust gradually** - Start with test reviews, expand to code reviews
+6. **Document your learning** - Future you will thank present you
+
 #### Phase 4: Test Automation with POM
 **Trigger:** Feature merged to main  
 **Branch:** QA creates separate test branch (e.g., `test/pom-feature-name`)
