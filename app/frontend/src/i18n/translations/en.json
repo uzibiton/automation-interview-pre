@@ -54,7 +54,11 @@
     "delete": "Delete",
     "filter": "Filter",
     "allCategories": "All Categories",
-    "viewAnalytics": "View Analytics"
+    "viewAnalytics": "View Analytics",
+    "saving": "Saving...",
+    "saveFailed": "Failed to save expense",
+    "createFailed": "Failed to create expense",
+    "updateFailed": "Failed to update expense"
   },
   "paymentMethods": {
     "credit_card": "Credit Card",

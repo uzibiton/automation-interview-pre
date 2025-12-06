@@ -152,7 +152,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
       onClose();
     } catch (error) {
       console.error('Failed to save expense', error);
-      alert(`Failed to ${isEditMode ? 'update' : 'create'} expense`);
+      alert(t(isEditMode ? 'expenses.updateFailed' : 'expenses.createFailed'));
     } finally {
       setLoading(false);
     }
@@ -277,7 +277,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
               {t('expenses.cancel')}
             </button>
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? 'Saving...' : (isEditMode ? t('expenses.save') : t('expenses.addNew'))}
+              {loading ? t('expenses.saving') : (isEditMode ? t('expenses.save') : t('expenses.addNew'))}
             </button>
           </div>
         </form>

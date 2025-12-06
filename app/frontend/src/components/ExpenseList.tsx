@@ -155,14 +155,13 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
                 <button
                   onClick={() => handleEdit(expense)}
                   className="btn btn-secondary btn-sm"
-                  style={{ fontSize: '0.8em', padding: '4px 8px', marginRight: '8px' }}
+                  style={{ marginRight: '8px' }}
                 >
                   {t('expenses.edit')}
                 </button>
                 <button
                   onClick={() => handleDelete(expense.id)}
                   className="btn btn-danger btn-sm"
-                  style={{ fontSize: '0.8em', padding: '4px 8px' }}
                 >
                   {t('expenses.delete')}
                 </button>

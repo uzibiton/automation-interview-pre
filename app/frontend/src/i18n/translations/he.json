@@ -54,7 +54,11 @@
     "delete": "מחק",
     "filter": "סינון",
     "allCategories": "כל הקטגוריות",
-    "viewAnalytics": "צפה באנליטיקס"
+    "viewAnalytics": "צפה באנליטיקס",
+    "saving": "שומר...",
+    "saveFailed": "נכשל בשמירת ההוצאה",
+    "createFailed": "נכשל ביצירת ההוצאה",
+    "updateFailed": "נכשל בעדכון ההוצאה"
   },
   "paymentMethods": {
     "credit_card": "כרטיס אשראי",
