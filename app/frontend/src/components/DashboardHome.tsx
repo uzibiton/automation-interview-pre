@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import ExpenseForm from './ExpenseForm';
+import ExpenseDialog from './ExpenseDialog';
 
 interface Stats {
   total: number;
@@ -19,20 +19,23 @@ interface DashboardHomeProps {
 function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [showForm, setShowForm] = useState(searchParams.get('add') === 'true');
+  const [showDialog, setShowDialog] = useState(searchParams.get('add') === 'true');
 
   useEffect(() => {
     if (searchParams.get('add') === 'true') {
-      setShowForm(true);
-      // Remove the query param after opening form
+      setShowDialog(true);
+      // Remove the query param after opening dialog
       searchParams.delete('add');
       setSearchParams(searchParams, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
   const handleExpenseCreated = () => {
-    setShowForm(false);
     onUpdate();
+  };
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
   };
 
   return (
@@ -63,12 +66,6 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
         </div>
       </div>
 
-      {showForm && (
-        <div style={{ marginBottom: '24px' }}>
-          <ExpenseForm token={token} onSuccess={handleExpenseCreated} />
-        </div>
-      )}
-
       <div className="quick-links">
         <h3>{t('dashboard.quickLinks')}</h3>
         <div className="quick-links-grid">
@@ -88,6 +85,13 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
           </Link>
         </div>
       </div>
+
+      <ExpenseDialog
+        token={token}
+        isOpen={showDialog}
+        onClose={handleCloseDialog}
+        onSuccess={handleExpenseCreated}
+      />
     </div>
   );
 }

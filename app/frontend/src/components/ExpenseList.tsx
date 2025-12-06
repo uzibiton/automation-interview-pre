@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { getApiServiceUrl } from '../utils/config';
+import ExpenseDialog from './ExpenseDialog';
 
 const API_SERVICE_URL = getApiServiceUrl();
 
@@ -36,6 +37,7 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
   useEffect(() => {
     fetchExpenses();
@@ -92,6 +94,18 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
     }
   };
 
+  const handleEdit = (expense: Expense) => {
+    setEditingExpense(expense);
+  };
+
+  const handleCloseDialog = () => {
+    setEditingExpense(null);
+  };
+
+  const handleExpenseUpdated = () => {
+    onUpdate();
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -139,6 +153,13 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
               <td>{expense.paymentMethod ? t(`paymentMethods.${expense.paymentMethod}`) : '-'}</td>
               <td>
                 <button
+                  onClick={() => handleEdit(expense)}
+                  className="btn btn-secondary btn-sm"
+                  style={{ fontSize: '0.8em', padding: '4px 8px', marginRight: '8px' }}
+                >
+                  {t('expenses.edit')}
+                </button>
+                <button
                   onClick={() => handleDelete(expense.id)}
                   className="btn btn-danger btn-sm"
                   style={{ fontSize: '0.8em', padding: '4px 8px' }}
@@ -150,6 +171,14 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
           ))}
         </tbody>
       </table>
+
+      <ExpenseDialog
+        token={token}
+        isOpen={!!editingExpense}
+        onClose={handleCloseDialog}
+        onSuccess={handleExpenseUpdated}
+        expense={editingExpense}
+      />
     </div>
   );
 }

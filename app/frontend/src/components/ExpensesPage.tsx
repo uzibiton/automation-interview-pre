@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ExpenseList from './ExpenseList';
-import ExpenseForm from './ExpenseForm';
+import ExpenseDialog from './ExpenseDialog';
 
 interface ExpensesPageProps {
   token: string;
@@ -13,24 +13,23 @@ interface ExpensesPageProps {
 function ExpensesPage({ token, refreshKey, onUpdate }: ExpensesPageProps) {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [showForm, setShowForm] = useState(searchParams.get('add') === 'true');
+  const [showDialog, setShowDialog] = useState(searchParams.get('add') === 'true');
 
   useEffect(() => {
     if (searchParams.get('add') === 'true') {
-      setShowForm(true);
-      // Remove the query param after opening form
+      setShowDialog(true);
+      // Remove the query param after opening dialog
       searchParams.delete('add');
       setSearchParams(searchParams, { replace: true });
     }
   }, [searchParams, setSearchParams]);
 
   const handleExpenseCreated = () => {
-    setShowForm(false);
     onUpdate();
   };
 
-  const toggleForm = () => {
-    setShowForm(!showForm);
+  const handleCloseDialog = () => {
+    setShowDialog(false);
   };
 
   return (
@@ -47,6 +46,13 @@ function ExpensesPage({ token, refreshKey, onUpdate }: ExpensesPageProps) {
       </div>
 
       <ExpenseList token={token} refreshKey={refreshKey} onUpdate={onUpdate} />
+
+      <ExpenseDialog
+        token={token}
+        isOpen={showDialog}
+        onClose={handleCloseDialog}
+        onSuccess={handleExpenseCreated}
+      />
     </div>
   );
 }
