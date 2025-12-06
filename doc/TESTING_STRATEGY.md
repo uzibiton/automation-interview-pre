@@ -54,7 +54,7 @@ This project follows a **Hybrid Development-QA Approach** where features are dev
 **Environment:** PR preview environment or staging
 
 **Activities:**
-1. **Code Review** - Team reviews dev changes
+1. **Code Review** - Team reviews dev changes (see Code Review Best Practices below)
 2. **Manual Testing** - QA executes manual test plan:
    - Functional testing (happy paths)
    - Negative testing (error cases)
@@ -199,6 +199,227 @@ No error message, no console logs.
 5. Actual: Nothing happens
 
 **Note:** This is UNRELATED to PR #20 - discovered during exploratory testing.
+```
+
+### Code Review Best Practices for QA
+
+Code review is a critical QA activity that catches issues before testing begins. QA brings a unique perspective focused on testability, edge cases, and user impact.
+
+#### The Context Problem
+
+**Don't Just Review the Diff**
+- Changes can affect code that isn't changed (dependencies, shared utilities, global state)
+- Unchanged code can affect the changes (existing bugs, integration points, side effects)
+- The diff shows WHAT changed, but not always WHY or HOW it impacts the system
+
+**Example:**
+```
+PR changes function calculateTotal() in utils/math.ts
+But 15 other files import and use calculateTotal()
+Reviewing only the diff misses potential breaking changes in those 15 files
+```
+
+#### Comprehensive Review Approach
+
+**Level 1: Understand the Change (5-10 min)**
+1. **Read PR Description**
+   - What problem is being solved?
+   - What are the acceptance criteria?
+   - What is the expected behavior?
+
+2. **Review the Diff**
+   - What files were changed?
+   - What is the scope of changes?
+   - Are there any red flags? (large functions, complex logic, many file changes)
+
+3. **Check PR Size**
+   - Small PR (< 200 lines) - easier to review thoroughly
+   - Medium PR (200-500 lines) - need extra time
+   - Large PR (> 500 lines) - consider asking for split
+
+**Level 2: Understand the Context (10-20 min)**
+1. **Read Changed Files Completely**
+   - Don't just read the highlighted diff lines
+   - Read the entire function/class that was modified
+   - Understand the logic flow before and after the change
+
+2. **Check Dependencies**
+   - What other files import the changed code?
+   - Use IDE "Find All References" or grep to find usages
+   - Open and review files that depend on the changes
+
+3. **Check Reverse Dependencies**
+   - What does the changed code depend on?
+   - Are there shared utilities or services being used?
+   - Could changes to those dependencies break this PR in the future?
+
+4. **Check Related Files**
+   - If frontend changed, check the backend API it calls
+   - If API changed, check the database schema
+   - If service changed, check its tests and mocks
+
+**Level 3: Test Planning from Code (10-15 min)**
+1. **Identify Test Scenarios from Code**
+   - Look for conditional logic (if/else) - each branch needs testing
+   - Look for loops - test with 0, 1, many items
+   - Look for error handling - test error cases
+   - Look for validation - test boundary values
+
+2. **Spot Potential Issues**
+   - Missing null checks
+   - Array operations without length check
+   - Async operations without error handling
+   - Hard-coded values that should be configurable
+   - Missing input validation
+
+3. **Check Testability**
+   - Is the code easy to test?
+   - Are there complex nested conditions? (hard to test all paths)
+   - Is business logic mixed with UI? (hard to unit test)
+   - Can you mock dependencies easily?
+
+#### QA-Specific Review Checklist
+
+**Functional Concerns:**
+- [ ] Does the code meet the acceptance criteria?
+- [ ] Are all edge cases handled? (empty data, null values, max limits)
+- [ ] Is error handling comprehensive? (network errors, validation errors, server errors)
+- [ ] Are success and failure paths both implemented?
+- [ ] Is user feedback provided? (loading states, error messages, success confirmations)
+
+**Testability Concerns:**
+- [ ] Are test IDs or data-testid attributes added for E2E testing?
+- [ ] Can the feature be tested without UI? (API endpoints available)
+- [ ] Are there clear, testable acceptance criteria?
+- [ ] Is the feature isolated or tightly coupled? (coupling = harder to test)
+
+**Data & State Concerns:**
+- [ ] How does this affect existing data?
+- [ ] Is there data migration needed?
+- [ ] Are default values provided for new fields?
+- [ ] Is state management clear? (where is data stored, how is it updated)
+
+**Integration Concerns:**
+- [ ] How does this integrate with existing features?
+- [ ] Could this break existing functionality? (regression risk)
+- [ ] Are API contracts maintained? (breaking changes to endpoints)
+- [ ] Is backward compatibility preserved?
+
+**Performance Concerns:**
+- [ ] Are there any obvious performance issues? (n+1 queries, large loops)
+- [ ] Is data fetched efficiently? (pagination, lazy loading)
+- [ ] Are there memory leaks? (event listeners not cleaned up, subscriptions not unsubscribed)
+
+**Security Concerns:**
+- [ ] Is user input validated and sanitized?
+- [ ] Are API endpoints protected? (authentication, authorization)
+- [ ] Is sensitive data exposed? (passwords, tokens in logs)
+- [ ] Is data encrypted where necessary?
+
+**User Experience Concerns:**
+- [ ] Are loading states shown for async operations?
+- [ ] Are error messages helpful and user-friendly?
+- [ ] Is the UI responsive? (mobile, tablet, desktop)
+- [ ] Are there accessibility considerations? (keyboard nav, screen readers)
+
+#### When to Ask Questions in Code Review
+
+**Always Ask:**
+- "Why was this approach chosen?" (if not clear from PR description)
+- "How does this handle [edge case]?" (if not obvious in code)
+- "What happens if [error scenario]?" (if error handling missing)
+- "Should this be tested?" (if no tests added for new logic)
+
+**Examples:**
+```markdown
+## Code Review Questions
+
+1. **Line 45:** What happens if `user.expenses` is null or undefined? Should we add a null check?
+
+2. **Line 67:** This validation allows negative amounts. Is that intentional for refunds, or should we prevent it?
+
+3. **File `ExpenseService.ts`:** I see this service is used by 8 other components. Have you tested that this change doesn't break any of them?
+
+4. **General:** I noticed the PR adds a new API endpoint but no tests. Should we add integration tests for this?
+
+5. **Testability:** Could we add a `data-testid="expense-total"` attribute to the total amount div? This would help with E2E testing.
+```
+
+#### How Much Code Review is Enough?
+
+**Minimum (Every PR):**
+- Read PR description
+- Review all changed files completely (not just diff)
+- Check for obvious bugs and missing error handling
+- Verify testability (test IDs, API endpoints)
+
+**Standard (Most PRs):**
+- All of minimum +
+- Check files that import/depend on changed code
+- Identify test scenarios from code logic
+- Ask clarifying questions
+
+**Deep Dive (Complex/Risky PRs):**
+- All of standard +
+- Trace through entire user flow in codebase
+- Check database schema and migration files
+- Review related backend/frontend pairs
+- Check CI/CD configuration changes
+- Review documentation updates
+
+**Signs You Need Deep Dive:**
+- PR touches authentication/authorization
+- PR modifies database schema
+- PR changes shared utilities used everywhere
+- PR has 500+ lines changed
+- PR description says "refactor" or "rewrite"
+
+#### Code Review Output for QA
+
+After code review, QA should document:
+
+1. **Test Scenarios Identified**
+   - List specific test cases derived from code logic
+   - Note edge cases that need explicit testing
+
+2. **Questions/Concerns**
+   - Tag developer with questions
+   - Note areas of uncertainty
+
+3. **Risk Assessment**
+   - High risk: affects authentication, payments, data integrity
+   - Medium risk: affects existing features, many dependencies
+   - Low risk: isolated new feature, well-tested
+
+4. **Testing Strategy Adjustments**
+   - Do we need extra regression testing?
+   - Should we add performance testing?
+   - Do we need to test with production data volume?
+
+**Example:**
+```markdown
+## QA Code Review Summary - PR #25
+
+### Test Scenarios Identified
+1. Test expense deletion with 0 expenses
+2. Test expense deletion with 1 expense
+3. Test expense deletion with 100+ expenses (performance)
+4. Test expense deletion when user has no permissions (should fail)
+5. Test expense deletion when expense belongs to different user (should fail)
+6. Test expense deletion when database is unavailable (error handling)
+
+### Questions
+- @developer Line 34: Should we show confirmation dialog before deletion?
+- @developer How should this behave for archived expenses?
+
+### Risk Assessment
+**Medium Risk** - This endpoint is used by mobile app and web app. Changes could affect both.
+
+### Recommended Testing
+- Standard functional testing
+- Add regression test for expense list page (depends on this endpoint)
+- Check mobile app compatibility
+- Performance test with 1000+ expenses
 ```
 
 #### Phase 4: Test Automation with POM
