@@ -49,18 +49,18 @@ jobs:
 
       - name: Install test dependencies
         run: npm ci
-        working-directory: tests/config
+        working-directory: tests
 
       - name: Run unit tests
         run: npm run test:unit
-        working-directory: tests/config
+        working-directory: tests
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-results
-          path: tests/config/coverage/
+          path: tests/coverage/
 
   # ============================================================================
   # JOB 2: Determine Deployment Environment
@@ -128,19 +128,19 @@ jobs:
 
       - name: Build Auth Service
         run: |
-          cd services/auth-service
+          cd app/services/auth-service
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:${{ github.sha }} .
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:latest .
 
       - name: Build API Service
         run: |
-          cd services/api-service
+          cd app/services/api-service
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:${{ github.sha }} .
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:latest .
 
       - name: Build Frontend
         run: |
-          cd frontend
+          cd app/frontend
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }} .
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest .
 
@@ -271,12 +271,15 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: tests/package-lock.json
 
       - name: Install dependencies
         run: npm ci
+        working-directory: tests
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+        working-directory: tests
 
       - name: Create dynamic environment file
         run: |
@@ -290,6 +293,7 @@ jobs:
 
       - name: Run E2E smoke tests
         run: TEST_ENV=${{ needs.setup.outputs.env_name }} npm run test:e2e:smoke
+        working-directory: tests
         env:
           CI: true
 

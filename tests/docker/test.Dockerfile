@@ -22,11 +22,15 @@ FROM node:18-alpine AS node-base
 WORKDIR /app
 
 # Copy package files for dependency installation
-COPY tests/config/package.json tests/config/package-lock.json* ./
+COPY tests/package.json tests/package-lock.json* ./
+
+# Set environment variable to skip Playwright browser installation during npm ci
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 # Install Node.js testing dependencies
 # --production=false ensures dev dependencies are installed
-RUN npm ci --production=false
+# --ignore-scripts skips the "install" script that tries to install Playwright browsers
+RUN npm ci --production=false --ignore-scripts
 
 # -----------------------------------------------------------------------------
 # Stage 2: Python Environment Setup

@@ -30,7 +30,7 @@ services:
       - '5433:5432' # Different port to avoid conflicts with dev DB
     volumes:
       - test-db-data:/var/lib/postgresql/data
-      - ../../database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../../app/database/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U test_user -d expenses_test']
       interval: 5s
@@ -44,7 +44,7 @@ services:
   # NOTE: Only starts when integration/e2e tests run
   test-auth-service:
     build:
-      context: ../../services/auth-service
+      context: ../../app/services/auth-service
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=test
@@ -68,7 +68,7 @@ services:
   # PURPOSE: Running API service that tests can call
   test-api-service:
     build:
-      context: ../../services/api-service
+      context: ../../app/services/api-service
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=test
@@ -91,7 +91,7 @@ services:
   # PURPOSE: Running frontend for full end-to-end testing
   test-frontend:
     build:
-      context: ../../frontend
+      context: ../../app/frontend
       dockerfile: Dockerfile.dev
     environment:
       - VITE_AUTH_SERVICE_URL=http://test-auth-service:3001
@@ -118,8 +118,8 @@ services:
     working_dir: /app/tests/config
     volumes:
       # Mount source code (read-only for safety)
-      - ../../services:/app/services:ro
-      - ../../frontend/src:/app/frontend/src:ro
+      - ../../app/services:/app/services:ro
+      - ../../app/frontend/src:/app/frontend/src:ro
       # Mount test files (read-write for reports)
       - ../unit:/app/tests/unit
       - ../fixtures:/app/tests/fixtures
@@ -146,7 +146,7 @@ services:
       dockerfile: tests/docker/test.Dockerfile
       target: test
     volumes:
-      - ../../services:/app/services:ro
+      - ../../app/services:/app/services:ro
       - ../integration:/app/tests/integration
       - ../fixtures:/app/tests/fixtures
       - ../config:/app/tests/config
