@@ -19,6 +19,7 @@
     "test:e2e:staging": "cross-env TEST_ENV=staging playwright test --config=config/playwright.config.ts",
     "test:e2e:production": "cross-env TEST_ENV=production playwright test --config=config/playwright.config.ts",
     "test:smoke": "playwright test --config=config/playwright.config.ts --grep @smoke",
+    "test:e2e:smoke": "playwright test --config=config/playwright.config.ts --grep @smoke",
     "report:open": "playwright show-report",
     "install": "npx playwright install --with-deps"
   },
