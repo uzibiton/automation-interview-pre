@@ -2,7 +2,7 @@
 
 Multi-environment expense tracking application with comprehensive testing infrastructure for SDET interview showcase.
 
-👤 **[About the Author](ABOUTME.md)**
+👤 **[About the Author](doc/ABOUTME.md)** | 📋 **[Testing Strategy](doc/TESTING_STRATEGY.md)**
 
 ## 📁 Project Structure
 

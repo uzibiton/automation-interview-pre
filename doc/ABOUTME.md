@@ -8,7 +8,7 @@
 
 **Contact:**
 - GitHub: [@uzibiton](https://github.com/uzibiton)
-- LinkedIn: [Uzi Biton](https://www.linkedin.com/in/uzi-biton)
+- LinkedIn: [Uzi Biton](https://www.linkedin.com/in/uzibiton)
 
 ### Expertise
 
