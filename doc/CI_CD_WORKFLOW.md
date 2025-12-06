@@ -165,6 +165,8 @@ git push origin feature/my-feature
 - Comments on PR with test results and URLs
 - PR cannot be merged if tests fail
 
+**Note:** If your PR only contains documentation changes (files in `doc/`, root-level `*.md` files, or `.github/ISSUE_TEMPLATE/`), the CI pipeline will be skipped automatically to save resources.
+
 ### 2. Automatic: Main Branch
 
 When you merge a PR to `main`:
@@ -180,6 +182,8 @@ When you merge a PR to `main`:
 - If tests fail, staging deployment is marked as failed
 - Production deployment remains unchanged
 
+**Note:** If your commit only contains documentation changes (files in `doc/`, root-level `*.md` files, or `.github/ISSUE_TEMPLATE/`), the CI pipeline will be skipped automatically to save resources.
+
 ### 3. Manual: Production Deployment
 
 Go to GitHub Actions → CI/CD Pipeline → Run workflow:
@@ -194,6 +198,8 @@ Inputs:
 - Deploys to production environment
 - NO automatic E2E tests (manual validation recommended)
 - Updates production services with latest `main` branch code
+
+**Note:** Manual workflow runs bypass the paths-ignore rules, so you can force CI to run even for documentation-only changes if needed.
 
 ## E2E Test Strategy
 

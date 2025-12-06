@@ -71,11 +71,17 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'doc/**'
+      - '*.md'
+      - '.github/ISSUE_TEMPLATE/**'
 ```
 
 **What happens:** Full pipeline (Test → Build → Deploy)
 
 **Use case:** After merging a PR, automatically deploy to production
+
+**Documentation-only changes:** CI is skipped to save resources when only documentation files are modified
 
 ### 2. **Pull Request to Main**
 
@@ -84,11 +90,17 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - 'doc/**'
+      - '*.md'
+      - '.github/ISSUE_TEMPLATE/**'
 ```
 
 **What happens:** Tests only (no build/deploy)
 
 **Use case:** Validate changes before merging
+
+**Documentation-only changes:** CI is skipped to save resources when only documentation files are modified
 
 ### 3. **Manual Trigger**
 
@@ -104,6 +116,7 @@ on:
 - Emergency hotfix deployment
 - Re-deploy after fixing secrets
 - Testing the pipeline
+- Force CI run for documentation changes (bypasses paths-ignore)
 
 **How to trigger:**
 
@@ -112,6 +125,22 @@ on:
 3. Click "Run workflow"
 4. Select branch
 5. Click "Run workflow" button
+
+---
+
+### 📝 Skipped Paths (Documentation Changes)
+
+The CI pipeline is automatically skipped when commits only modify:
+
+- **`doc/**`** - All files in the documentation directory
+- **`*.md`** - Root-level markdown files (README.md, RUN-LOCALLY.md, etc.)
+- **`.github/ISSUE_TEMPLATE/**`** - Issue and PR templates
+
+**Why?** Documentation changes don't affect code functionality and don't require testing, building, or deployment.
+
+**Note:** If a commit includes both documentation AND code changes, the CI will run normally.
+
+**Manual override:** You can still run CI for documentation-only changes using the Manual Trigger (workflow_dispatch)
 
 ---
 
