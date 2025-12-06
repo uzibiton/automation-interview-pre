@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 
@@ -14,7 +14,22 @@ function Navigation({ userName, userAvatar, onLogout }: NavigationProps) {
 
   return (
     <div className="header">
-      <h1>💰 {t('app.title')}</h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <h1>💰 {t('app.title')}</h1>
+        <Link 
+          to="/?add=true" 
+          className="btn btn-primary" 
+          style={{ 
+            fontSize: '24px', 
+            padding: '10px 20px',
+            fontWeight: 'bold',
+            boxShadow: '0 2px 8px rgba(0, 123, 255, 0.3)',
+            minWidth: '50px'
+          }}
+        >
+          ➕
+        </Link>
+      </div>
       <nav className="main-nav">
         <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} end>
           {t('nav.dashboard')}

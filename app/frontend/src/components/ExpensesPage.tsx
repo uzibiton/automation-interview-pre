@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ExpenseList from './ExpenseList';
 import ExpenseForm from './ExpenseForm';
@@ -11,31 +11,40 @@ interface ExpensesPageProps {
 }
 
 function ExpensesPage({ token, refreshKey, onUpdate }: ExpensesPageProps) {
-  const { translate } = useTranslation();
-  const [showForm, setShowForm] = useState(false);
+  const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [showForm, setShowForm] = useState(searchParams.get('add') === 'true');
+
+  useEffect(() => {
+    if (searchParams.get('add') === 'true') {
+      setShowForm(true);
+      // Remove the query param after opening form
+      searchParams.delete('add');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleExpenseCreated = () => {
     setShowForm(false);
     onUpdate();
   };
 
+  const toggleForm = () => {
+    setShowForm(!showForm);
+  };
+
   return (
     <div className="container">
       <div className="page-header">
-        <h2>{translate('expenses.title')}</h2>
-        <p className="page-description">{translate('expenses.pageDescription')}</p>
+        <h2>{t('expenses.title')}</h2>
+        <p className="page-description">{t('expenses.pageDescription')}</p>
       </div>
 
       <div className="page-actions-row">
-        <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
-          {showForm ? translate('expenses.cancel') : translate('expenses.addNew')}
-        </button>
         <Link to="/analytics" className="btn btn-secondary">
-          {translate('expenses.viewAnalytics')}
+          {t('expenses.viewAnalytics')}
         </Link>
       </div>
-
-      {showForm && <ExpenseForm token={token} onSuccess={handleExpenseCreated} />}
 
       <ExpenseList token={token} refreshKey={refreshKey} onUpdate={onUpdate} />
     </div>

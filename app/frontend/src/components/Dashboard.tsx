@@ -86,7 +86,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
       <Routes>
         <Route
           path="/"
-          element={<DashboardHome stats={stats} />}
+          element={<DashboardHome stats={stats} token={token} onUpdate={handleUpdate} />}
         />
         <Route
           path="/analytics"

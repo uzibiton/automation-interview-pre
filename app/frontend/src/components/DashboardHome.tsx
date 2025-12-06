@@ -1,6 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import ExpenseForm from './ExpenseForm';
 
 interface Stats {
   total: number;
@@ -11,57 +12,78 @@ interface Stats {
 
 interface DashboardHomeProps {
   stats: Stats;
+  token: string;
+  onUpdate: () => void;
 }
 
-function DashboardHome({ stats }: DashboardHomeProps) {
-  const { translate } = useTranslation();
+function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
+  const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [showForm, setShowForm] = useState(searchParams.get('add') === 'true');
+
+  useEffect(() => {
+    if (searchParams.get('add') === 'true') {
+      setShowForm(true);
+      // Remove the query param after opening form
+      searchParams.delete('add');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  const handleExpenseCreated = () => {
+    setShowForm(false);
+    onUpdate();
+  };
 
   return (
     <div className="container">
       <div className="page-header">
         <div>
-          <h2>{translate('nav.dashboard')}</h2>
-          <p className="page-description">{translate('dashboard.description')}</p>
+          <h2>{t('nav.dashboard')}</h2>
+          <p className="page-description">{t('dashboard.description')}</p>
         </div>
-        <Link to="/expenses/new" className="btn btn-primary">
-          {translate('expenses.addExpense')}
-        </Link>
       </div>
 
       <div className="stats">
         <div className="stat-card">
-          <h3>{translate('expenses.thisMonth')}</h3>
+          <h3>{t('expenses.thisMonth')}</h3>
           <div className="value">${stats.totalAmount?.toFixed(2) || '0.00'}</div>
         </div>
         <div className="stat-card">
-          <h3>{translate('stats.count')}</h3>
+          <h3>{t('stats.count')}</h3>
           <div className="value" style={{ color: '#2196f3' }}>
             {stats.count || 0}
           </div>
         </div>
         <div className="stat-card">
-          <h3>{translate('stats.byCategory')}</h3>
+          <h3>{t('stats.byCategory')}</h3>
           <div className="value" style={{ fontSize: '14px' }}>
-            {stats.byCategory?.length || 0} {translate('nav.categories')}
+            {stats.byCategory?.length || 0} {t('nav.categories')}
           </div>
         </div>
       </div>
 
+      {showForm && (
+        <div style={{ marginBottom: '24px' }}>
+          <ExpenseForm token={token} onSuccess={handleExpenseCreated} />
+        </div>
+      )}
+
       <div className="quick-links">
-        <h3>{translate('dashboard.quickLinks')}</h3>
+        <h3>{t('dashboard.quickLinks')}</h3>
         <div className="quick-links-grid">
           <Link to="/analytics" className="quick-link-card">
             <div className="quick-link-icon">📊</div>
             <div className="quick-link-content">
-              <h4>{translate('nav.analytics')}</h4>
-              <p>{translate('dashboard.viewCharts')}</p>
+              <h4>{t('nav.analytics')}</h4>
+              <p>{t('dashboard.viewCharts')}</p>
             </div>
           </Link>
           <Link to="/expenses" className="quick-link-card">
             <div className="quick-link-icon">📝</div>
             <div className="quick-link-content">
-              <h4>{translate('nav.expenses')}</h4>
-              <p>{translate('dashboard.manageExpenses')}</p>
+              <h4>{t('nav.expenses')}</h4>
+              <p>{t('dashboard.manageExpenses')}</p>
             </div>
           </Link>
         </div>
