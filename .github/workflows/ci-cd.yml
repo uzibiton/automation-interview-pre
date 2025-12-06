@@ -8,11 +8,19 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'doc/**'
+      - '*.md'
+      - '.github/ISSUE_TEMPLATE/**'
 
   # Trigger on pull requests - deploys to temporary PR environment
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - 'doc/**'
+      - '*.md'
+      - '.github/ISSUE_TEMPLATE/**'
 
   # Manual trigger for any environment
   workflow_dispatch:
