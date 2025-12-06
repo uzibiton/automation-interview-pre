@@ -5,8 +5,7 @@
   "workspaces": [
     "app/services/auth-service",
     "app/services/api-service",
-    "app/frontend",
-    "tests"
+    "app/frontend"
   ],
   "scripts": {
     "install:all": "npm install",
