@@ -162,10 +162,6 @@ jobs:
     name: Deploy to ${{ needs.setup.outputs.env_name }}
     needs: [setup, build]
     runs-on: ubuntu-latest
-    outputs:
-      frontend_url: ${{ steps.frontend_url.outputs.url }}
-      auth_url: ${{ steps.auth_service.outputs.url }}
-      callback_url: ${{ steps.auth_service.outputs.callback_url }}
 
     steps:
       - name: Checkout code
@@ -260,6 +256,7 @@ jobs:
       frontend_url: ${{ steps.urls.outputs.frontend_url }}
       api_url: ${{ steps.urls.outputs.api_url }}
       auth_url: ${{ steps.urls.outputs.auth_url }}
+      callback_url: ${{ steps.auth_service.outputs.callback_url }}
 
   # ============================================================================
   # JOB 5: Run E2E Smoke Tests (PR and Staging only)
