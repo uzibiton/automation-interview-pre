@@ -7,6 +7,7 @@
   "nav": {
     "dashboard": "לוח בקרה",
     "expenses": "הוצאות",
+    "analytics": "אנליטיקס",
     "addExpense": "הוסף הוצאה",
     "categories": "קטגוריות"
   },
@@ -23,8 +24,19 @@
     "switchToLogin": "התחבר",
     "switchToRegister": "הרשם"
   },
+  "dashboard": {
+    "description": "סקירה כללית של מעקב ההוצאות שלך",
+    "quickLinks": "קישורים מהירים",
+    "viewCharts": "צפה בגרפים וסטטיסטיקות הוצאות",
+    "manageExpenses": "הוסף, ערוך ונהל את ההוצאות שלך"
+  },
+  "analytics": {
+    "description": "הצג את דפוסי ההוצאות שלך באמצעות גרפים וסטטיסטיקות",
+    "viewExpenses": "צפה ברשימת הוצאות"
+  },
   "expenses": {
     "title": "ההוצאות שלי",
+    "pageDescription": "נהל את כל ההוצאות שלך במקום אחד",
     "noExpenses": "אין הוצאות עדיין",
     "addNew": "הוסף הוצאה חדשה",
     "totalSpent": "סה״כ הוצאות",
@@ -41,7 +53,8 @@
     "edit": "ערוך",
     "delete": "מחק",
     "filter": "סינון",
-    "allCategories": "כל הקטגוריות"
+    "allCategories": "כל הקטגוריות",
+    "viewAnalytics": "צפה באנליטיקס"
   },
   "paymentMethods": {
     "credit_card": "כרטיס אשראי",

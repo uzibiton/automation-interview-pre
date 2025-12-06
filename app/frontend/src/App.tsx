@@ -70,7 +70,7 @@ function App() {
         <Route path="/login" element={token ? <Navigate to="/" /> : <Login />} />
         <Route path="/auth/callback" element={<AuthCallback onLogin={handleLogin} />} />
         <Route
-          path="/"
+          path="/*"
           element={
             token ? <Dashboard token={token} onLogout={handleLogout} /> : <Navigate to="/login" />
           }
