@@ -11,7 +11,7 @@ interface ExpensesPageProps {
 }
 
 function ExpensesPage({ token, refreshKey, onUpdate }: ExpensesPageProps) {
-  const { t } = useTranslation();
+  const { translate } = useTranslation();
   const [showForm, setShowForm] = useState(false);
 
   const handleExpenseCreated = () => {
@@ -22,16 +22,16 @@ function ExpensesPage({ token, refreshKey, onUpdate }: ExpensesPageProps) {
   return (
     <div className="container">
       <div className="page-header">
-        <h2>{t('expenses.title')}</h2>
-        <p className="page-description">{t('expenses.pageDescription')}</p>
+        <h2>{translate('expenses.title')}</h2>
+        <p className="page-description">{translate('expenses.pageDescription')}</p>
       </div>
 
       <div className="page-actions-row">
         <button onClick={() => setShowForm(!showForm)} className="btn btn-primary">
-          {showForm ? t('expenses.cancel') : t('expenses.addNew')}
+          {showForm ? translate('expenses.cancel') : translate('expenses.addNew')}
         </button>
         <Link to="/analytics" className="btn btn-secondary">
-          {t('expenses.viewAnalytics')}
+          {translate('expenses.viewAnalytics')}
         </Link>
       </div>
 
