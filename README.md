@@ -2,7 +2,9 @@
 
 Multi-environment expense tracking application with comprehensive testing infrastructure for SDET interview showcase.
 
-👤 **[About the Author](doc/ABOUTME.md)** | 📋 **[Testing Strategy](doc/TESTING_STRATEGY.md)**
+👤 **[About the Author](doc/ABOUTME.md)** | 📋 **[Testing Strategy](doc/TESTING_STRATEGY.md)** | 📝 **[Issue Template Tracking](.github/ISSUE_TEMPLATE/TRACKING.md)**
+
+> **Note:** Issue Template Tracking helps you see which feature requests and tasks have been created as GitHub issues vs. which are still available as templates.
 
 ## 📁 Project Structure
 
