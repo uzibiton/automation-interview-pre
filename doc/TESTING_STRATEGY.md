@@ -78,6 +78,129 @@ This project follows a **Hybrid Development-QA Approach** where features are dev
 - Exploratory testing notes
 - Sign-off for dev merge
 
+### Issue Classification & Scope Management
+
+During manual testing, QA will encounter various types of issues. Proper classification and scope management is critical for efficient workflow.
+
+#### Issue Definitions
+
+**Bug (Severity: High)**
+- Functionality does NOT meet explicitly stated requirements
+- Feature behaves differently than documented acceptance criteria
+- Previously working functionality is broken (regression)
+- **Example:** "Login button should redirect to dashboard, but redirects to profile page instead"
+
+**Defect (Severity: Medium)**
+- Behavior that violates common sense or obvious expectations, even if not explicitly stated in requirements
+- Poor user experience that makes the feature difficult or confusing to use
+- **Subjectivity Note:** "Obvious" can be subjective - use team judgment and UX best practices
+- **Example:** "Delete button has no confirmation dialog - user can accidentally delete data"
+
+**Enhancement Request (Severity: Low)**
+- Suggestion for improvement beyond current requirements
+- Better way to implement existing functionality
+- Nice-to-have features discovered during testing
+- **Example:** "Add keyboard shortcut for save action"
+
+**Question/Clarification**
+- Uncertainty about expected behavior
+- Missing or unclear requirements
+- Needs product owner input
+- **Example:** "Should negative numbers be allowed in the amount field?"
+
+#### Scope Management During PR Review
+
+**Rule 1: Address PR-Related Issues First**
+- QA should log all issues found related to the PR's scope
+- Developer must fix these before PR can merge
+- These issues are "blocking" for the current PR
+
+**Rule 2: Out-of-Scope Issues - Document Separately**
+- If QA discovers issues in areas NOT touched by the current PR:
+  - Create separate GitHub issue (do NOT block current PR)
+  - Tag with appropriate label (e.g., `found-during-testing`, `unrelated`)
+  - Add note: "Found while testing PR #XX"
+  - Notify team in standup or Slack if urgent
+
+**Rule 3: Consider Connection to PR**
+- If out-of-scope issue is RELATED to PR changes:
+  - Example: PR changes authentication, and you find OAuth bug
+  - Mention in PR comments: "FYI: noticed OAuth issue, created Issue #XX"
+  - Developer can choose to fix it or defer
+- If UNRELATED to PR changes:
+  - Example: PR adds expense page, you find bug in settings page
+  - Just create separate issue, no need to mention in PR
+
+**Rule 4: Respect Developer Workflow**
+- Developers want to close their tasks - this is reasonable
+- Don't force scope creep on the current PR
+- Balance quality advocacy with pragmatic delivery
+- Use judgment: if it's trivial and related, suggest; if it's major or unrelated, separate issue
+
+#### Example Scenarios
+
+**Scenario 1: Testing "Add Expense Graph" PR**
+- ✅ **PR-Scoped Issue:** Graph doesn't display when no data - BLOCK PR, must fix
+- ✅ **Related Enhancement:** Graph could use better colors - Create separate issue, mention in PR
+- ❌ **Unrelated Bug:** Settings page save button broken - Create separate issue, don't mention in PR
+
+**Scenario 2: Testing "Google OAuth Login" PR**
+- ✅ **PR-Scoped Bug:** OAuth redirect fails - BLOCK PR, must fix
+- ✅ **Related Defect:** No error message when OAuth fails - BLOCK PR or create issue based on severity
+- ⚠️ **Related but Minor:** Login page could use better styling - Create enhancement issue
+- ❌ **Unrelated Bug:** Expense deletion confirmation missing - Create separate issue
+
+**Scenario 3: Ambiguous Requirements**
+- Testing PR for "expense filters"
+- Find: Negative amounts are allowed in filter inputs
+- **Action:** 
+  1. Check requirements - not specified
+  2. Use common sense - negative amounts in expense filter seems questionable
+  3. Log as "Question/Clarification" issue
+  4. Tag developer and PO for decision
+  5. Can be non-blocking if edge case
+
+#### Communication Best Practices
+
+**In PR Comments:**
+```markdown
+## Test Results
+
+### ✅ Passed
+- Login with valid credentials works
+- OAuth redirect successful
+- Session persists after refresh
+
+### ❌ Blocking Issues (PR Scope)
+1. **Bug:** OAuth fails with redirect_uri_mismatch on staging [see logs]
+2. **Defect:** No error message displayed when OAuth fails
+
+### 💡 Observations (Non-Blocking)
+- Consider adding loading spinner during OAuth redirect
+- Created Issue #XX for unrelated settings page bug found during testing
+```
+
+**In Separate Issue:**
+```markdown
+## Issue: Settings Save Button Not Working
+
+**Found During:** Manual testing of PR #20 (Add Expense Graph)
+
+**Severity:** Bug
+
+**Description:** Clicking save button on settings page does nothing.
+No error message, no console logs.
+
+**Steps to Reproduce:**
+1. Navigate to Settings page
+2. Change any setting
+3. Click Save button
+4. Expected: Settings saved, confirmation message shown
+5. Actual: Nothing happens
+
+**Note:** This is UNRELATED to PR #20 - discovered during exploratory testing.
+```
+
 #### Phase 4: Test Automation with POM
 **Trigger:** Feature merged to main  
 **Branch:** QA creates separate test branch (e.g., `test/pom-feature-name`)
