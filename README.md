@@ -118,6 +118,7 @@ Comprehensive documentation covering requirements, design, testing, and workflow
 #### 🚀 Development & Workflows
 | Document | Description | Related Docs |
 |----------|-------------|--------------|
+| **[Task & Bug Management](doc/TASK_BUG_MANAGEMENT.md)** | **Issue tracking, workflows, and best practices** | **→ [Issue Templates](.github/ISSUE_TEMPLATE/)** |
 | [PR Workflow Guide](doc/PR_WORKFLOW_GUIDE.md) | Complete PR process from task to merge | → [Testing Strategy](doc/TESTING_STRATEGY.md) |
 | [Development Insights](doc/DEVELOPMENT_INSIGHTS.md) | Lessons learned and best practices | → [PR Workflow](doc/PR_WORKFLOW_GUIDE.md) |
 | [GitHub Actions Setup](doc/GITHUB_ACTIONS_SETUP.md) | CI/CD configuration details | → [Workflows](.github/workflows/) |
@@ -169,7 +170,9 @@ Deployment              Quality Metrics
 **I want to...**
 - **Understand the project** → Start with [ABOUTME.md](doc/ABOUTME.md)
 - **Run locally** → [RUN_LOCALLY.md](doc/RUN_LOCALLY.md)
+- **Report a bug** → [Task & Bug Management](doc/TASK_BUG_MANAGEMENT.md) + [Bug Templates](.github/ISSUE_TEMPLATE/)
 - **Add a feature** → [PR Workflow](doc/PR_WORKFLOW_GUIDE.md) + [Issue Templates](.github/ISSUE_TEMPLATE/)
+- **Track issues** → [Task & Bug Management](doc/TASK_BUG_MANAGEMENT.md)
 - **Write tests** → [Testing Strategy](doc/TESTING_STRATEGY.md) + [E2E Guide](tests/E2E-QUICK-START.md)
 - **Deploy** → [Deployment Guide](doc/DEPLOYMENT.md)
 - **Debug CI/CD** → [CI/CD Pipeline](doc/CI_CD_PIPELINE.md)
