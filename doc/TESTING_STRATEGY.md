@@ -4,6 +4,191 @@
 
 This project implements a comprehensive multi-layered testing strategy designed to ensure quality at every level of the application stack. The testing pyramid approach is used to balance test coverage, execution speed, and maintenance effort.
 
+## Development & QA Workflow
+
+This project follows a **Hybrid Development-QA Approach** where features are developed and merged first, followed by comprehensive test automation. This approach maximizes development velocity while maintaining high quality through systematic testing.
+
+### Workflow Phases
+
+#### Phase 1: Requirements & Planning
+**Participants:** Product Owner, Developer, QA
+
+**Activities:**
+1. **Requirements Review** - QA reviews feature requirements and acceptance criteria
+2. **Test Planning** - QA creates test plan covering:
+   - Test scenarios and cases
+   - Test data requirements
+   - Edge cases and negative tests
+   - Automation scope
+   - Risk assessment
+3. **Test Plan Review** - Team reviews and approves test plan
+4. **Dev Kickoff** - Developer begins implementation
+
+**QA Deliverables:**
+- Test plan document
+- Test data requirements
+- Risk assessment
+
+#### Phase 2: Development & Parallel QA Preparation
+**Developer:** Implements feature on dev branch  
+**QA:** Prepares test automation infrastructure in parallel
+
+**Developer Activities:**
+- Code feature implementation
+- Write unit tests
+- Update component tests
+- Local testing
+- Create Pull Request
+
+**QA Activities (Parallel):**
+- Set up test data
+- Prepare test fixtures
+- Design Page Object Model structure (if new pages/components)
+- Review automated test coverage gaps
+- Prepare manual test cases
+
+**Timeline:** Overlapping work streams
+
+#### Phase 3: Dev Complete - Manual Testing & Exploratory Testing
+**Trigger:** Developer PR is ready for review  
+**Environment:** PR preview environment or staging
+
+**Activities:**
+1. **Code Review** - Team reviews dev changes
+2. **Manual Testing** - QA executes manual test plan:
+   - Functional testing (happy paths)
+   - Negative testing (error cases)
+   - Boundary testing (edge cases)
+   - Cross-browser testing (if UI changes)
+   - Integration testing (with other features)
+3. **Exploratory Testing** - QA performs:
+   - Unscripted testing
+   - User journey validation
+   - UX/UI observations
+   - Performance observations
+   - Accessibility checks
+4. **Bug Reporting** - QA logs any issues found
+5. **Bug Fixes** - Developer addresses issues
+6. **Retest** - QA validates fixes
+7. **Dev Branch Merge** - Once approved, feature merges to main
+
+**QA Deliverables:**
+- Manual test execution report
+- Bug reports (if any)
+- Exploratory testing notes
+- Sign-off for dev merge
+
+#### Phase 4: Test Automation with POM
+**Trigger:** Feature merged to main  
+**Branch:** QA creates separate test branch (e.g., `test/pom-feature-name`)
+
+**Activities:**
+1. **Page Object Model Implementation**
+   - Create/update page objects for new UI elements
+   - Implement reusable methods
+   - Follow POM best practices (encapsulation, single responsibility)
+2. **E2E Test Automation**
+   - Write comprehensive E2E tests using POM
+   - Cover all test scenarios from test plan
+   - Include positive, negative, and edge cases
+   - Add appropriate test tags (@smoke, @regression, @critical)
+3. **Test Data Setup**
+   - Create test fixtures
+   - Set up test users and permissions
+   - Prepare mock data
+4. **Local Test Execution**
+   - Run tests against local environment
+   - Debug and fix flaky tests
+   - Optimize test performance
+5. **Create Test PR**
+   - Submit PR with test automation
+   - Include test execution evidence
+   - Document new test coverage
+
+**QA Deliverables:**
+- Page Object Model classes
+- E2E test suite
+- Test fixtures and data
+- Test execution report
+- Test documentation
+
+#### Phase 5: Test Merge & CI Integration
+**Trigger:** Test PR approved
+
+**Activities:**
+1. **Test PR Review** - Team reviews test implementation
+2. **CI Validation** - Tests run in CI pipeline against staging
+3. **Test Branch Merge** - Tests merge to main
+4. **CI Integration** - Tests now run automatically on all future PRs
+5. **Documentation Update** - Update test coverage documentation
+
+**Timeline:** Tests are now part of regression suite
+
+### Visual Workflow Timeline
+
+```
+Requirements & Planning (Week 1)
+├── PO/Dev/QA: Requirements review
+├── QA: Test planning
+└── Team: Test plan review
+        ↓
+Development & QA Prep (Week 1-2)
+├── Dev: Feature implementation ────────┐
+└── QA: Parallel test prep (POM design) │
+        ↓                                │
+Manual Testing (Week 2)                  │
+├── QA: Manual test execution ←─────────┘
+├── QA: Exploratory testing
+├── Dev: Bug fixes
+└── QA: Retest & sign-off
+        ↓
+    [DEV MERGE]
+        ↓
+Test Automation (Week 2-3)
+├── QA: POM implementation
+├── QA: E2E test writing
+├── QA: Local test execution
+└── QA: Test PR creation
+        ↓
+    [TEST MERGE]
+        ↓
+CI Integration (Week 3+)
+└── Tests run on all future PRs
+```
+
+### Additional QA Activities
+
+Throughout the workflow, QA performs:
+
+1. **Exploratory Testing** - Unscripted testing to discover unexpected issues
+2. **Test Data Preparation** - Creating realistic test data sets
+3. **Bug Triage** - Prioritizing and categorizing defects
+4. **Regression Testing** - Ensuring existing features still work
+5. **Accessibility Testing** - WCAG compliance validation
+6. **Security Testing** - Basic security checks (input validation, auth)
+7. **Cross-Browser Testing** - Verifying UI across browsers
+8. **Test Reporting** - Metrics on test coverage, execution, and defects
+9. **Dev-QA Handoff** - Clear communication of feature status
+
+### Benefits of This Approach
+
+**For Development:**
+- ✅ Faster feature delivery (not blocked on test automation)
+- ✅ Early manual validation catches critical issues
+- ✅ Dev can move to next feature while QA automates
+
+**For QA:**
+- ✅ Time to write comprehensive, maintainable tests
+- ✅ Opportunity for exploratory testing
+- ✅ Can showcase SDET skills with proper POM architecture
+- ✅ Tests are additive, not blocking
+
+**For Project:**
+- ✅ Balanced velocity and quality
+- ✅ Growing automation coverage
+- ✅ Early feedback from manual testing
+- ✅ CI runs become more robust over time
+
 ## Testing Pyramid
 
 ```
