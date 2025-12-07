@@ -2,28 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { getApiServiceUrl } from '../utils/config';
+import { getLocalizedName } from '../utils/i18n.utils';
+import { Expense, Category } from '../types/expense.types';
+import ExpenseDialog from './ExpenseDialog';
+import ConfirmationDialog from './ConfirmationDialog';
 
 const API_SERVICE_URL = getApiServiceUrl();
-
-interface Expense {
-  id: number;
-  amount: string | number;
-  currency: string;
-  categoryId: number;
-  subCategoryId: number;
-  description: string;
-  date: string;
-  paymentMethod: string;
-  labels: string[];
-}
-
-interface Category {
-  id: number;
-  nameEn: string;
-  nameHe: string;
-  icon: string;
-  color: string;
-}
 
 interface ExpenseListProps {
   token: string;
@@ -32,10 +16,12 @@ interface ExpenseListProps {
 }
 
 function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
-  const { t, i18n } = useTranslation();
+  const { t: translation, i18n } = useTranslation();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [deletingExpenseId, setDeletingExpenseId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchExpenses();
@@ -71,7 +57,7 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   const getCategoryName = (categoryId: number) => {
     const category = categories.find((c) => c.id === categoryId);
     if (!category) return '';
-    return i18n.language === 'he' ? category.nameHe : category.nameEn;
+    return getLocalizedName(category, i18n.language);
   };
 
   const getCategoryIcon = (categoryId: number) => {
@@ -79,17 +65,40 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
     return category?.icon || '📝';
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm(t('expenses.delete') + '?')) return;
+  const handleDeleteClick = (id: number) => {
+    setDeletingExpenseId(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingExpenseId) return;
 
     try {
-      await axios.delete(`${API_SERVICE_URL}/expenses/${id}`, {
+      await axios.delete(`${API_SERVICE_URL}/expenses/${deletingExpenseId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      setDeletingExpenseId(null);
       onUpdate();
     } catch (error) {
       console.error('Failed to delete expense', error);
+      setDeletingExpenseId(null);
+      // Note: In production, this should show a proper error notification/toast
     }
+  };
+
+  const handleCancelDelete = () => {
+    setDeletingExpenseId(null);
+  };
+
+  const handleEdit = (expense: Expense) => {
+    setEditingExpense(expense);
+  };
+
+  const handleCloseDialog = () => {
+    setEditingExpense(null);
+  };
+
+  const handleExpenseUpdated = () => {
+    onUpdate();
   };
 
   if (loading) {
@@ -99,22 +108,22 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   if (expenses.length === 0) {
     return (
       <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
-        <p>{t('expenses.noExpenses')}</p>
+        <p>{translation('expenses.noExpenses')}</p>
       </div>
     );
   }
 
   return (
     <div>
-      <h2>{t('expenses.title')}</h2>
+      <h2>{translation('expenses.title')}</h2>
       <table className="table">
         <thead>
           <tr>
-            <th>{t('expenses.date')}</th>
-            <th>{t('expenses.category')}</th>
-            <th>{t('expenses.description')}</th>
-            <th>{t('expenses.amount')}</th>
-            <th>{t('expenses.paymentMethod')}</th>
+            <th>{translation('expenses.date')}</th>
+            <th>{translation('expenses.category')}</th>
+            <th>{translation('expenses.description')}</th>
+            <th>{translation('expenses.amount')}</th>
+            <th>{translation('expenses.paymentMethod')}</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -136,20 +145,43 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
                   : expense.amount
                 ).toFixed(2)}
               </td>
-              <td>{expense.paymentMethod ? t(`paymentMethods.${expense.paymentMethod}`) : '-'}</td>
+              <td>{expense.paymentMethod ? translation(`paymentMethods.${expense.paymentMethod}`) : '-'}</td>
               <td>
                 <button
-                  onClick={() => handleDelete(expense.id)}
-                  className="btn btn-danger btn-sm"
-                  style={{ fontSize: '0.8em', padding: '4px 8px' }}
+                  onClick={() => handleEdit(expense)}
+                  className="btn btn-secondary btn-sm"
+                  style={{ marginRight: '8px' }}
                 >
-                  {t('expenses.delete')}
+                  {translation('expenses.edit')}
+                </button>
+                <button
+                  onClick={() => handleDeleteClick(expense.id)}
+                  className="btn btn-danger btn-sm"
+                >
+                  {translation('expenses.delete')}
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <ExpenseDialog
+        token={token}
+        isOpen={!!editingExpense}
+        onClose={handleCloseDialog}
+        onSuccess={handleExpenseUpdated}
+        expense={editingExpense}
+      />
+
+      <ConfirmationDialog
+        isOpen={!!deletingExpenseId}
+        title={translation('expenses.deleteConfirmTitle')}
+        message={translation('expenses.deleteConfirmMessage')}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        type="danger"
+      />
     </div>
   );
 }

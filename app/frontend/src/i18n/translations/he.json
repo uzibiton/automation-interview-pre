@@ -34,6 +34,12 @@
     "description": "הצג את דפוסי ההוצאות שלך באמצעות גרפים וסטטיסטיקות",
     "viewExpenses": "צפה ברשימת הוצאות"
   },
+  "common": {
+    "confirm": "אישור",
+    "cancel": "ביטול",
+    "yes": "כן",
+    "no": "לא"
+  },
   "expenses": {
     "title": "ההוצאות שלי",
     "pageDescription": "נהל את כל ההוצאות שלך במקום אחד",
@@ -54,7 +60,17 @@
     "delete": "מחק",
     "filter": "סינון",
     "allCategories": "כל הקטגוריות",
-    "viewAnalytics": "צפה באנליטיקס"
+    "viewAnalytics": "צפה באנליטיקס",
+    "saving": "שומר...",
+    "saveFailed": "נכשל בשמירת ההוצאה",
+    "createFailed": "נכשל ביצירת ההוצאה",
+    "updateFailed": "נכשל בעדכון ההוצאה",
+    "deleteConfirmTitle": "מחק הוצאה",
+    "deleteConfirmMessage": "האם אתה בטוח שברצונך למחוק הוצאה זו? לא ניתן לבטל פעולה זו.",
+    "addConfirmTitle": "הוסף הוצאה",
+    "addConfirmMessage": "האם אתה בטוח שברצונך להוסיף הוצאה זו?",
+    "editConfirmTitle": "עדכן הוצאה",
+    "editConfirmMessage": "האם אתה בטוח שברצונך לשמור שינויים אלה?"
   },
   "paymentMethods": {
     "credit_card": "כרטיס אשראי",

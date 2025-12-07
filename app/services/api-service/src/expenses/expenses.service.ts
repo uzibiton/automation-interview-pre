@@ -61,13 +61,13 @@ export class ExpensesService {
     return query.getMany();
   }
 
-  async findOne(userId: number, id: number): Promise<Expense> {
+  async findOne(userId: number, id: string | number): Promise<Expense> {
     if (this.useFirestore) {
-      return this.firestoreRepo.findOne(userId, id) as any;
+      return this.firestoreRepo.findOne(id, userId) as any;
     }
 
     const expense = await this.expensesRepository.findOne({
-      where: { id, userId },
+      where: { id: typeof id === 'string' ? parseInt(id) : id, userId },
     });
 
     if (!expense) {
@@ -90,9 +90,9 @@ export class ExpensesService {
     return this.expensesRepository.save(expense);
   }
 
-  async update(userId: number, id: number, updateExpenseDto: UpdateExpenseDto): Promise<Expense> {
+  async update(userId: number, id: string | number, updateExpenseDto: UpdateExpenseDto): Promise<Expense> {
     if (this.useFirestore) {
-      return this.firestoreRepo.update(userId, id, updateExpenseDto) as any;
+      return this.firestoreRepo.update(id, userId, updateExpenseDto) as any;
     }
 
     const expense = await this.findOne(userId, id);
@@ -102,9 +102,9 @@ export class ExpensesService {
     return this.expensesRepository.save(expense);
   }
 
-  async delete(userId: number, id: number): Promise<void> {
+  async delete(userId: number, id: string | number): Promise<void> {
     if (this.useFirestore) {
-      return this.firestoreRepo.delete(userId, id);
+      return this.firestoreRepo.delete(id, userId);
     }
 
     const expense = await this.findOne(userId, id);

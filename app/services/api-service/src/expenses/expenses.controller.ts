@@ -52,7 +52,7 @@ export class ExpensesController {
 
   @Get(':id')
   async getExpense(@Req() req, @Param('id') id: string) {
-    return this.expensesService.findOne(req.user.id, parseInt(id));
+    return this.expensesService.findOne(req.user.id, id);
   }
 
   @Post()
@@ -66,12 +66,12 @@ export class ExpensesController {
     @Param('id') id: string,
     @Body() updateExpenseDto: UpdateExpenseDto,
   ) {
-    return this.expensesService.update(req.user.id, parseInt(id), updateExpenseDto);
+    return this.expensesService.update(req.user.id, id, updateExpenseDto);
   }
 
   @Delete(':id')
   async deleteExpense(@Req() req, @Param('id') id: string) {
-    await this.expensesService.delete(req.user.id, parseInt(id));
+    await this.expensesService.delete(req.user.id, id);
     return { message: 'Expense deleted successfully' };
   }
 }

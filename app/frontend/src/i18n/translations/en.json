@@ -34,6 +34,12 @@
     "description": "Visualize your spending patterns with charts and statistics",
     "viewExpenses": "View Expense List"
   },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No"
+  },
   "expenses": {
     "title": "My Expenses",
     "pageDescription": "Manage all your expenses in one place",
@@ -54,7 +60,17 @@
     "delete": "Delete",
     "filter": "Filter",
     "allCategories": "All Categories",
-    "viewAnalytics": "View Analytics"
+    "viewAnalytics": "View Analytics",
+    "saving": "Saving...",
+    "saveFailed": "Failed to save expense",
+    "createFailed": "Failed to create expense",
+    "updateFailed": "Failed to update expense",
+    "deleteConfirmTitle": "Delete Expense",
+    "deleteConfirmMessage": "Are you sure you want to delete this expense? This action cannot be undone.",
+    "addConfirmTitle": "Add Expense",
+    "addConfirmMessage": "Are you sure you want to add this expense?",
+    "editConfirmTitle": "Update Expense",
+    "editConfirmMessage": "Are you sure you want to save these changes?"
   },
   "paymentMethods": {
     "credit_card": "Credit Card",
