@@ -4,6 +4,12 @@ on:
   issues:
     types: [opened]
 
+permissions:
+  issues: write
+  contents: read
+  # Note: GitHub Projects (beta) requires a PAT with project scope
+  # The default GITHUB_TOKEN doesn't have access to Projects v2
+
 jobs:
   add-to-project:
     name: Add issue to project board
@@ -14,4 +20,5 @@ jobs:
         with:
           # Your project: QA Backlog & Test Planning
           project-url: https://github.com/users/uzibiton/projects/2
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Use PAT with 'project' scope stored in GitHub secrets
+          github-token: ${{ secrets.GH_PROJECT_TOKEN }}
