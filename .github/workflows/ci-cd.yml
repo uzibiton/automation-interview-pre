@@ -10,7 +10,7 @@ on:
       - main
     paths-ignore:
       - 'docs/**'
-      - '*.md'
+      - '**/*.md'
       - '.github/ISSUE_TEMPLATE/**'
 
   # Trigger on pull requests - deploys to temporary PR environment
@@ -19,7 +19,7 @@ on:
       - main
     paths-ignore:
       - 'docs/**'
-      - '*.md'
+      - '**/*.md'
       - '.github/ISSUE_TEMPLATE/**'
 
   # Manual trigger for any environment
