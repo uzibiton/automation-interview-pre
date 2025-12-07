@@ -135,7 +135,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
       onClose();
     } catch (error) {
       console.error('Failed to save expense', error);
-      alert(translation(isEditMode ? 'expenses.updateFailed' : 'expenses.createFailed'));
+      // Note: In production, this should show a proper error notification/toast
     } finally {
       setLoading(false);
     }

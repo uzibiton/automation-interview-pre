@@ -51,7 +51,7 @@ function ConfirmationDialog({
         </div>
         <div className="modal-actions">
           <button type="button" className="btn btn-secondary" onClick={onCancel}>
-            {cancelText || translation('expenses.cancel')}
+            {cancelText || translation('common.cancel')}
           </button>
           <button type="button" className={getConfirmButtonClass()} onClick={onConfirm}>
             {confirmText || translation('common.confirm')}

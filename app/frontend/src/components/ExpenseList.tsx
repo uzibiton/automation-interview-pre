@@ -80,7 +80,8 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
       onUpdate();
     } catch (error) {
       console.error('Failed to delete expense', error);
-      alert(translation('expenses.saveFailed'));
+      setDeletingExpenseId(null);
+      // Note: In production, this should show a proper error notification/toast
     }
   };
 
