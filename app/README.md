@@ -472,7 +472,7 @@ Supports English and Hebrew with RTL layout:
 ## Related Documentation
 
 - [Run Locally Guide](../RUN-LOCALLY.md)
-- [Deployment Guide](../doc/DEPLOYMENT.md)
-- [Cloud Run Setup](../doc/CLOUD_RUN_README.md)
-- [Testing Strategy](../doc/TESTING_STRATEGY.md)
-- [API Reference](../doc/API_REFERENCE.md)
+- [Deployment Guide](../docs/devops/DEPLOYMENT.md)
+- [Cloud Run Setup](../docs/devops/CLOUD_RUN_README.md)
+- [Testing Strategy](../docs/qa/TESTING_STRATEGY.md)
+- [API Reference](../docs/dev/API_REFERENCE.md)
