@@ -6,6 +6,7 @@ This is a full-stack expense tracking application built with a microservices arc
 
 ## Architecture Diagram
 
+### Infrastructure Layout
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                         Nginx Gateway                        │
@@ -27,6 +28,143 @@ This is a full-stack expense tracking application built with a microservices arc
               │  Firestore  │
               │  (Optional) │
               └─────────────┘
+```
+
+### Request Flow
+
+#### 1. Login Flow
+```
+┌─────────┐                                        ┌────────────┐
+│ User    │                                        │Google OAuth│
+└────┬────┘                                        └─────┬──────┘
+     │ 1. Click "Login"                                  │
+     ▼                                                   │
+┌─────────┐                                              │
+│Frontend │                                              │
+└────┬────┘                                              │
+     │ 2. POST /auth/google {oauth_token}               │
+     ▼                                                   │
+┌──────────┐                                             │
+│Auth      │ 3. Validate with Google ──────────────────►│
+│Service   │◄─────────────────────── 4. User profile    │
+└────┬─────┘                                             │
+     │ 5. Generate JWT token                             │
+     │ 6. Create/update user in DB                       │
+     ▼                                                   │
+┌──────────┐                                             │
+│Database  │                                             │
+└────┬─────┘                                             │
+     │ 7. Return JWT token                               │
+     ▼                                                   │
+┌─────────┐                                              │
+│Frontend │ 8. Store JWT, redirect to dashboard         │
+└─────────┘                                              │
+```
+
+#### 2. Create Expense Flow
+```
+┌─────────┐
+│ User    │
+└────┬────┘
+     │ 1. Fill form, click "Save"
+     ▼
+┌─────────┐
+│Frontend │
+└────┬────┘
+     │ 2. POST /expenses {expense_data}
+     │    Authorization: Bearer <JWT>
+     ▼
+┌──────────┐
+│API       │ 3. Validate JWT token
+│Service   │ 4. Verify user owns this data
+└────┬─────┘
+     │ 5. INSERT INTO expenses...
+     ▼
+┌──────────┐
+│Database  │ (PostgreSQL or Firestore)
+└────┬─────┘
+     │ 6. Return created expense
+     ▼
+┌──────────┐
+│API       │ 7. Format response
+│Service   │
+└────┬─────┘
+     │ 8. { id: "123", amount: 50, ... }
+     ▼
+┌─────────┐
+│Frontend │ 9. Close modal, refresh list
+└─────────┘
+```
+
+#### 3. View Expenses Flow
+```
+┌─────────┐
+│ User    │
+└────┬────┘
+     │ 1. Navigate to Expenses page
+     ▼
+┌─────────┐
+│Frontend │
+└────┬────┘
+     │ 2. GET /expenses?startDate=...&endDate=...
+     │    Authorization: Bearer <JWT>
+     ▼
+┌──────────┐
+│API       │ 3. Validate JWT token
+│Service   │ 4. Parse filters
+└────┬─────┘
+     │ 5. SELECT * FROM expenses WHERE...
+     ▼
+┌──────────┐
+│Database  │
+└────┬─────┘
+     │ 6. Return expense records
+     ▼
+┌──────────┐
+│API       │ 7. Format response
+│Service   │
+└────┬─────┘
+     │ 8. [{id: "1", amount: 50}, {id: "2", amount: 30}, ...]
+     ▼
+┌─────────┐
+│Frontend │ 9. Render table and charts
+└─────────┘
+```
+
+#### 4. Edit/Delete Flow
+```
+┌─────────┐
+│ User    │
+└────┬────┘
+     │ 1. Click Edit/Delete button
+     ▼
+┌─────────┐
+│Frontend │ 2. Show confirmation dialog
+└────┬────┘
+     │ 3. PUT /expenses/:id {updated_data}
+     │    or DELETE /expenses/:id
+     │    Authorization: Bearer <JWT>
+     ▼
+┌──────────┐
+│API       │ 4. Validate JWT token
+│Service   │ 5. Verify user owns this expense
+└────┬─────┘
+     │ 6. UPDATE/DELETE FROM expenses WHERE id=...
+     ▼
+┌──────────┐
+│Database  │
+└────┬─────┘
+     │ 7. Confirm operation
+     ▼
+┌──────────┐
+│API       │ 8. Return success
+│Service   │
+└────┬─────┘
+     │ 9. { message: "Success" }
+     ▼
+┌─────────┐
+│Frontend │ 10. Close modal, refresh list
+└─────────┘
 ```
 
 ## Project Structure
