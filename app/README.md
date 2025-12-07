@@ -471,7 +471,7 @@ Supports English and Hebrew with RTL layout:
 
 ## Related Documentation
 
-- [Run Locally Guide](../RUN-LOCALLY.md)
+- [Run Locally Guide](../docs/dev/RUN-LOCALLY.md)
 - [Deployment Guide](../docs/devops/DEPLOYMENT.md)
 - [Cloud Run Setup](../docs/devops/CLOUD_RUN_README.md)
 - [Testing Strategy](../docs/qa/TESTING_STRATEGY.md)
