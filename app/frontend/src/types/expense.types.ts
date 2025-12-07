@@ -26,5 +26,6 @@ export interface Expense {
   description: string;
   date: string;
   paymentMethod: string;
+  /** Optional array of label/tag strings for categorizing expenses */
   labels?: string[];
 }
