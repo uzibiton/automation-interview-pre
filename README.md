@@ -105,112 +105,24 @@ npm run test:e2e:docker             # Docker environment
 - **Staging**: https://frontend-staging-773292472093.us-central1.run.app
 - **Production**: https://frontend-773292472093.us-central1.run.app
 
-## 📚 Documentation Hub
+## 📚 Documentation
 
-Comprehensive documentation covering requirements, design, testing, and workflows.
+📖 **[Complete Table of Contents](docs/TABLE_OF_CONTENTS.md)** - Full documentation index with all guides and resources
 
-### 📖 Table of Contents
+### Quick Links
+- **[Run Locally](docs/dev/RUN_LOCALLY.md)** - Get started with local development
+- **[Application Architecture](app/README.md)** - System design and data flow
+- **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** - Comprehensive QA approach
+- **[PR Workflow Guide](docs/qa/PR_WORKFLOW_GUIDE.md)** - Contribute to the project
+- **[Deployment Guide](docs/devops/DEPLOYMENT.md)** - Deploy to staging/production
+- **[SDET Demo Script](docs/demo/SDET_DEMO_SCRIPT.md)** - Interview presentation
 
-#### 🎯 Getting Started
-| Document | Description | Audience |
-|----------|-------------|----------|
-| [Quick Start Guide](docs/dev/RUN_LOCALLY.md) | Run the app locally with Docker | Developers, QA |
-| [About the Project](docs/general/ABOUTME.md) | Project overview and author info | Everyone |
-| [Project Status](docs/general/PROJECT_STATUS.md) | Current state, roadmap, and priorities | Team, Stakeholders |
-
-#### 📋 Requirements & Planning
-| Document | Description | Related Docs |
-|----------|-------------|--------------|
-| [Feature Requirements](docs/dev/INSTRUCTIONS.md) | User stories and acceptance criteria | → [Test Strategy](docs/qa/TESTING_STRATEGY.md), [Issue Templates](.github/ISSUE_TEMPLATE/) |
-| [Issue Template Tracking](.github/ISSUE_TEMPLATE/TRACKING.md) | Track which templates have been converted to issues | → [GitHub Issues](../../issues) |
-| [API Reference](docs/dev/API_REFERENCE.md) | API endpoints, request/response formats | → [Contract Tests](tests/contract/), [E2E Tests](tests/e2e/) |
-
-#### 🎨 Design & Architecture
-| Document | Description | Related Docs |
-|----------|-------------|--------------|
-| **[Application Architecture](app/README.md)** | **Microservices architecture, tech stack, data flow** | **→ [System Diagram](app/README.md#architecture-diagram)** |
-| [System Architecture](docs/devops/DEPLOYMENT_SUMMARY.md) | High-level architecture and components | → [Deployment Guide](docs/devops/DEPLOYMENT.md) |
-| [Database Schema](app/database/README.md) | Database tables, relationships, migrations | → [Integration Tests](tests/integration/) |
-| [CI/CD Pipeline](docs/devops/CI_CD_PIPELINE.md) | Build, test, and deployment automation | → [GitHub Actions](.github/workflows/ci-cd.yml) |
-| [Cloud Run Setup](docs/devops/CLOUD_RUN_MANAGEMENT.md) | GCP Cloud Run configuration and management | → [Deployment Scripts](environments/) |
-
-#### 🧪 Testing & Quality
-| Document | Description | Related Tests |
-|----------|-------------|---------------|
-| **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** | **Comprehensive QA approach and workflows** | **→ All test suites** |
-| [E2E Test Guide](tests/E2E-QUICK-START.md) | End-to-end testing with Playwright | → [E2E Tests](tests/e2e/) |
-| [Multi-Environment Testing](tests/README-MULTI-ENV-E2E.md) | Test across local, staging, production | → [E2E Config](tests/config/playwright.config.ts) |
-| [Test Implementation Summary](tests/IMPLEMENTATION_SUMMARY.md) | What's tested and coverage overview | → [Test Results](tests/reports/) |
-
-#### 🚀 Development & Workflows
-| Document | Description | Related Docs |
-|----------|-------------|--------------|
-| **[Task & Bug Management](docs/qa/TASK_BUG_MANAGEMENT.md)** | **Issue tracking, workflows, and best practices** | **→ [Issue Templates](.github/ISSUE_TEMPLATE/)** |
-| [PR Workflow Guide](docs/qa/PR_WORKFLOW_GUIDE.md) | Complete PR process from task to merge | → [Testing Strategy](docs/qa/TESTING_STRATEGY.md) |
-| [Development Insights](docs/dev/DEVELOPMENT_INSIGHTS.md) | Lessons learned and best practices | → [PR Workflow](docs/qa/PR_WORKFLOW_GUIDE.md) |
-| [GitHub Actions Setup](docs/devops/GITHUB_ACTIONS_SETUP.md) | CI/CD configuration details | → [Workflows](.github/workflows/) |
-| [Cloud Run Deployment](docs/devops/DEPLOYMENT.md) | Deploy to staging and production | → [Cloud Run Management](docs/devops/CLOUD_RUN_MANAGEMENT.md) |
-
-#### 📊 Demo & Presentation
-| Document | Description | Audience |
-|----------|-------------|----------|
-| [SDET Demo Script](docs/demo/SDET_DEMO_SCRIPT.md) | 15-minute interview demonstration | Interviewers, QA Managers |
-| [15-Min Senior Demo](docs/demo/15MIN_SENIOR_DEMO.md) | Senior SDET showcase script | Senior Hiring Managers |
-| [Testing Strategy Highlights](docs/qa/TESTING_STRATEGY.md#demo-talking-points) | Key testing accomplishments | Technical Interviewers |
-
-#### 🔗 Quick Reference
-| Document | Description | Use When |
-|----------|-------------|----------|
-| [Session Resume](docs/general/SESSION_RESUME.md) | Resume work after interruption | Starting new session |
-| [PWA Testing Guide](docs/qa/PWA_TESTING.md) | Progressive Web App testing | Testing offline/mobile features |
-| [Conversion Summary](docs/dev/CONVERSION_SUMMARY.md) | Firestore to PostgreSQL migration | Understanding data layer changes |
-
-### 🗺️ Document Relationships
-
-```
-Requirements & Features
-    ↓
-[INSTRUCTIONS.md] ──→ [Issue Templates] ──→ [GitHub Issues]
-    ↓                       ↓
-[API_REFERENCE.md]    [Testing Strategy]
-    ↓                       ↓
-Design & Architecture   Test Plans & Execution
-    ↓                       ↓
-[CI/CD Pipeline] ────→ [E2E Tests] ────→ [Test Reports]
-    ↓                       ↓
-Deployment              Quality Metrics
-    ↓                       ↓
-[Cloud Run] ←──────── [Multi-Env Testing]
-```
-
-### 📝 Documentation Standards
-
-- **Requirements**: User stories with acceptance criteria
-- **Design**: Architecture diagrams and technical decisions
-- **Testing**: Test plans with traceability to requirements
-- **Workflows**: Step-by-step guides with examples
-- **APIs**: OpenAPI/Swagger specs with examples
-- **Issues**: Standardized templates with investigation steps
-
-### 🔍 Finding What You Need
-
-**I want to...**
-- **Understand the project** → Start with [ABOUTME.md](docs/general/ABOUTME.md)
-- **Run locally** → [RUN_LOCALLY.md](docs/dev/RUN_LOCALLY.md)
-- **Report a bug** → [Task & Bug Management](docs/qa/TASK_BUG_MANAGEMENT.md) + [Bug Templates](.github/ISSUE_TEMPLATE/)
-- **Add a feature** → [PR Workflow](docs/qa/PR_WORKFLOW_GUIDE.md) + [Issue Templates](.github/ISSUE_TEMPLATE/)
-- **Track issues** → [Task & Bug Management](docs/qa/TASK_BUG_MANAGEMENT.md)
-- **Write tests** → [Testing Strategy](docs/qa/TESTING_STRATEGY.md) + [E2E Guide](tests/E2E-QUICK-START.md)
-- **Deploy** → [Deployment Guide](docs/devops/DEPLOYMENT.md)
-- **Debug CI/CD** → [CI/CD Pipeline](docs/devops/CI_CD_PIPELINE.md)
-- **Demo for interview** → [SDET Demo Script](docs/demo/SDET_DEMO_SCRIPT.md)
-
-### 📚 Additional Resources
-
-- **Code Examples**: [tests/e2e/](tests/e2e/) - Real test implementations
-- **Sample Reports**: [docs/demo/sample-reports/](docs/demo/sample-reports/) - Test execution reports
-- **Screenshots**: [docs/demo/screenshots/](docs/demo/screenshots/) - Visual documentation
-- **Scripts**: [docs/demo/scripts/](docs/demo/scripts/) - Automation utilities
+### Documentation Structure
+- **[docs/general/](docs/general/)** - Project overview and status
+- **[docs/dev/](docs/dev/)** - Development setup and API docs
+- **[docs/qa/](docs/qa/)** - Testing and quality assurance
+- **[docs/devops/](docs/devops/)** - CI/CD and deployment
+- **[docs/demo/](docs/demo/)** - Presentation materials
 
 ## 🧪 Testing Infrastructure
 
