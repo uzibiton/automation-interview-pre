@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getApiServiceUrl } from '../utils/config';
 import { getLocalizedName } from '../utils/i18n.utils';
 import { Category, SubCategory, Expense } from '../types/expense.types';
+import ConfirmationDialog from './ConfirmationDialog';
 
 const API_SERVICE_URL = getApiServiceUrl();
 
@@ -29,6 +30,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
     paymentMethod: 'credit_card',
   });
   const [loading, setLoading] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const isEditMode = !!expense;
 
@@ -97,8 +99,13 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmSave = async () => {
+    setShowConfirmation(false);
     setLoading(true);
 
     try {
@@ -132,6 +139,10 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCancelConfirmation = () => {
+    setShowConfirmation(false);
   };
 
   const handleClose = () => {
@@ -250,6 +261,15 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
           </div>
         </form>
       </div>
+
+      <ConfirmationDialog
+        isOpen={showConfirmation}
+        title={translation(isEditMode ? 'expenses.editConfirmTitle' : 'expenses.addConfirmTitle')}
+        message={translation(isEditMode ? 'expenses.editConfirmMessage' : 'expenses.addConfirmMessage')}
+        onConfirm={handleConfirmSave}
+        onCancel={handleCancelConfirmation}
+        type="info"
+      />
     </div>
   );
 }

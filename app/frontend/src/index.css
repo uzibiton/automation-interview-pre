@@ -366,6 +366,16 @@ textarea.form-control {
   font-size: 12px;
 }
 
+/* Button warning */
+.btn-warning {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.btn-warning:hover {
+  background-color: #e0a800;
+}
+
 /* Modal styles */
 .modal-overlay {
   position: fixed;
@@ -442,6 +452,21 @@ textarea.form-control {
   gap: 10px;
   justify-content: flex-end;
   margin-top: 20px;
+}
+
+/* Confirmation dialog */
+.confirmation-dialog {
+  max-width: 450px;
+}
+
+.confirmation-message {
+  padding: 20px;
+}
+
+.confirmation-message p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
 }
 
 /* Responsive styles */
