@@ -2,34 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { getApiServiceUrl } from '../utils/config';
+import { getLocalizedName } from '../utils/i18n.utils';
+import { Category, SubCategory, Expense } from '../types/expense.types';
 
 const API_SERVICE_URL = getApiServiceUrl();
-
-interface Category {
-  id: number;
-  nameEn: string;
-  nameHe: string;
-  icon: string;
-  color: string;
-}
-
-interface SubCategory {
-  id: number;
-  categoryId: number;
-  nameEn: string;
-  nameHe: string;
-}
-
-interface Expense {
-  id: number;
-  categoryId: number;
-  subCategoryId?: number;
-  amount: string | number;
-  currency: string;
-  description: string;
-  date: string;
-  paymentMethod: string;
-}
 
 interface ExpenseDialogProps {
   token: string;
@@ -40,7 +16,7 @@ interface ExpenseDialogProps {
 }
 
 function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDialogProps) {
-  const { t, i18n } = useTranslation();
+  const { t: translation, i18n } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const [formData, setFormData] = useState({
@@ -152,7 +128,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
       onClose();
     } catch (error) {
       console.error('Failed to save expense', error);
-      alert(t(isEditMode ? 'expenses.updateFailed' : 'expenses.createFailed'));
+      alert(translation(isEditMode ? 'expenses.updateFailed' : 'expenses.createFailed'));
     } finally {
       setLoading(false);
     }
@@ -164,37 +140,29 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
     }
   };
 
-  const getCategoryName = (category: Category) => {
-    return i18n.language === 'he' ? category.nameHe : category.nameEn;
-  };
-
-  const getSubCategoryName = (subCategory: SubCategory) => {
-    return i18n.language === 'he' ? subCategory.nameHe : subCategory.nameEn;
-  };
-
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>{isEditMode ? t('expenses.edit') : t('expenses.addNew')}</h3>
+          <h3>{isEditMode ? translation('expenses.edit') : translation('expenses.addNew')}</h3>
           <button className="modal-close" onClick={handleClose} disabled={loading}>
             ✕
           </button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>{t('expenses.category')}</label>
+            <label>{translation('expenses.category')}</label>
             <select
               value={formData.categoryId}
               onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
               required
             >
-              <option value="">{t('expenses.allCategories')}</option>
+              <option value="">{translation('expenses.allCategories')}</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
-                  {category.icon} {getCategoryName(category)}
+                  {category.icon} {getLocalizedName(category, i18n.language)}
                 </option>
               ))}
             </select>
@@ -202,7 +170,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
 
           {subCategories.length > 0 && (
             <div className="form-group">
-              <label>{t('expenses.subCategory')}</label>
+              <label>{translation('expenses.subCategory')}</label>
               <select
                 value={formData.subCategoryId}
                 onChange={(e) => setFormData({ ...formData, subCategoryId: e.target.value })}
@@ -210,7 +178,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
                 <option value="">-</option>
                 {subCategories.map((subCategory) => (
                   <option key={subCategory.id} value={subCategory.id}>
-                    {getSubCategoryName(subCategory)}
+                    {getLocalizedName(subCategory, i18n.language)}
                   </option>
                 ))}
               </select>
@@ -218,7 +186,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
           )}
 
           <div className="form-group">
-            <label>{t('expenses.amount')}</label>
+            <label>{translation('expenses.amount')}</label>
             <div style={{ display: 'flex', gap: '10px' }}>
               <input
                 type="number"
@@ -241,7 +209,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
           </div>
 
           <div className="form-group">
-            <label>{t('expenses.date')}</label>
+            <label>{translation('expenses.date')}</label>
             <input
               type="date"
               value={formData.date}
@@ -251,20 +219,20 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
           </div>
 
           <div className="form-group">
-            <label>{t('expenses.paymentMethod')}</label>
+            <label>{translation('expenses.paymentMethod')}</label>
             <select
               value={formData.paymentMethod}
               onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
             >
-              <option value="credit_card">{t('paymentMethods.credit_card')}</option>
-              <option value="debit_card">{t('paymentMethods.debit_card')}</option>
-              <option value="cash">{t('paymentMethods.cash')}</option>
-              <option value="bank_transfer">{t('paymentMethods.bank_transfer')}</option>
+              <option value="credit_card">{translation('paymentMethods.credit_card')}</option>
+              <option value="debit_card">{translation('paymentMethods.debit_card')}</option>
+              <option value="cash">{translation('paymentMethods.cash')}</option>
+              <option value="bank_transfer">{translation('paymentMethods.bank_transfer')}</option>
             </select>
           </div>
 
           <div className="form-group">
-            <label>{t('expenses.description')}</label>
+            <label>{translation('expenses.description')}</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -274,10 +242,10 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
 
           <div className="modal-actions">
             <button type="button" className="btn btn-secondary" onClick={handleClose} disabled={loading}>
-              {t('expenses.cancel')}
+              {translation('expenses.cancel')}
             </button>
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? t('expenses.saving') : (isEditMode ? t('expenses.save') : t('expenses.addNew'))}
+              {loading ? translation('expenses.saving') : (isEditMode ? translation('expenses.save') : translation('expenses.addNew'))}
             </button>
           </div>
         </form>
