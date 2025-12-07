@@ -1,5 +1,17 @@
 # Complete PR Workflow: From Task to Merge
 
+## Table of Contents
+1. [Take a Task](#1-take-a-task)
+2. [Create Feature Branch](#2-create-feature-branch)
+3. [Implement Changes](#3-implement-changes)
+4. [Push Branch & Create PR](#4-push-branch--create-pr)
+5. [PR Review Process](#5-pr-review-process)
+   - [Review Comment Types](#review-comment-types)
+6. [Address Review Feedback](#6-address-review-feedback)
+7. [Final Approval](#7-final-approval)
+8. [Merge PR](#8-merge-pr)
+9. [Common Gotchas & Lessons Learned](#common-gotchas--lessons-learned)
+
 ## 1. Take a Task
 - Review issue/task description
 - Understand requirements and acceptance criteria
@@ -53,10 +65,26 @@ git push origin feature/descriptive-name
 4. Click "Start a review" (first comment)
 
 **Add Comments:**
-- Inline comments on specific lines
-- General comments on overall approach
-- Ask questions for clarification
-- Suggest improvements
+
+### Review Comment Types
+
+Use these prefixes to clarify comment intent:
+
+- **❓ Question:** - Need clarification, no action required until answered
+  - Example: `❓ Question: Why did we choose ISO format here instead of timestamp?`
+  - Author answers, may or may not change code
+
+- **💬 Comment:** - FYI/observation, non-blocking, no action needed
+  - Example: `💬 Comment: Nice error handling here`
+  - Example: `💬 Comment: This could be refactored later (not blocking)`
+
+- **🔧 Fix (blocking):** - Must be addressed before merge
+  - Example: `🔧 Fix: This will throw error if userId is undefined`
+  - Example: `🔧 Fix: Missing test coverage for edge case`
+
+- **💡 Suggestion (non-blocking):** - Improvement idea, author decides
+  - Example: `💡 Suggestion: Consider extracting this to a helper function`
+  - Example: `💡 Suggestion: Could use optional chaining here`
 
 **Submit Review:**
 1. Click "Review changes" button (top right)
