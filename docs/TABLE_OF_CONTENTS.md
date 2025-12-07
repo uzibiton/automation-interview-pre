@@ -14,6 +14,7 @@ Comprehensive guide to all project documentation organized by category and use c
 ### 📋 Requirements & Planning
 | Document | Description | Related Docs |
 |----------|-------------|--------------|
+| **[Requirements Template](qa/REQUIREMENTS_TEMPLATE.md)** | **Template for documenting feature requirements** | **→ [HLD](dev/HLD_TEMPLATE.md), [Test Plan](qa/TEST_PLAN_TEMPLATE.md)** |
 | [Feature Requirements](dev/INSTRUCTIONS.md) | User stories and acceptance criteria | → [Test Strategy](qa/TESTING_STRATEGY.md), [Issue Templates](../.github/ISSUE_TEMPLATE/) |
 | [Issue Template Tracking](../.github/ISSUE_TEMPLATE/TRACKING.md) | Track which templates have been converted to issues | → [GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues) |
 | [API Reference](dev/API_REFERENCE.md) | API endpoints, request/response formats | → [Contract Tests](../tests/contract/), [E2E Tests](../tests/e2e/) |
@@ -21,17 +22,20 @@ Comprehensive guide to all project documentation organized by category and use c
 ### 🎨 Design & Architecture
 | Document | Description | Related Docs |
 |----------|-------------|--------------|
+| **[High-Level Design Template](dev/HLD_TEMPLATE.md)** | **Template for system architecture documentation** | **→ [Requirements](qa/REQUIREMENTS_TEMPLATE.md), [Detailed Design](dev/DETAILED_DESIGN_TEMPLATE.md)** |
+| **[Detailed Design Template](dev/DETAILED_DESIGN_TEMPLATE.md)** | **Template for component implementation details** | **→ [HLD](dev/HLD_TEMPLATE.md), [Test Plan](qa/TEST_PLAN_TEMPLATE.md)** |
 | **[Application Architecture](../app/README.md)** | **Microservices architecture, tech stack, data flow** | **→ [System Diagram](../app/README.md#architecture-diagram)** |
 | [System Architecture](devops/DEPLOYMENT_SUMMARY.md) | High-level architecture and components | → [Deployment Guide](devops/DEPLOYMENT.md) |
 | [Database Schema](../app/database/README.md) | Database tables, relationships, migrations | → [Integration Tests](../tests/integration/) |
 | [CI/CD Pipeline](devops/CI_CD_PIPELINE.md) | Build, test, and deployment automation | → [GitHub Actions](../.github/workflows/ci-cd.yml) |
-| [Cloud Run Setup](devops/CLOUD_RUN_MANAGEMENT.md) | GCP Cloud Run configuration and management | → [Deployment Scripts](../environments/) |
-
 ### 🧪 Testing & Quality
 | Document | Description | Related Tests |
 |----------|-------------|---------------|
+| **[Test Plan Template](qa/TEST_PLAN_TEMPLATE.md)** | **Template for feature/release test planning** | **→ [Requirements](qa/REQUIREMENTS_TEMPLATE.md), [Testing Strategy](qa/TESTING_STRATEGY.md)** |
 | **[Testing Strategy](qa/TESTING_STRATEGY.md)** | **Comprehensive QA approach and workflows** | **→ All test suites** |
 | [E2E Test Guide](../tests/E2E-QUICK-START.md) | End-to-end testing with Playwright | → [E2E Tests](../tests/e2e/) |
+| [Multi-Environment Testing](../tests/README-MULTI-ENV-E2E.md) | Test across local, staging, production | → [E2E Config](../tests/config/playwright.config.ts) |
+| [Test Implementation Summary](../tests/IMPLEMENTATION_SUMMARY.md) | What's tested and coverage overview | → [Test Results](../tests/reports/) |
 | [Multi-Environment Testing](../tests/README-MULTI-ENV-E2E.md) | Test across local, staging, production | → [E2E Config](../tests/config/playwright.config.ts) |
 | [Test Implementation Summary](../tests/IMPLEMENTATION_SUMMARY.md) | What's tested and coverage overview | → [Test Results](../tests/reports/) |
 

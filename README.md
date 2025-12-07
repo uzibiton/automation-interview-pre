@@ -1,6 +1,17 @@
-# Automation Interview Pre - Expense Tracker
+# Automation Framework - Expense Tracker
 
 Multi-environment expense tracking application with comprehensive testing infrastructure for SDET interview showcase.
+
+## 🎯 Project Purpose
+
+This project demonstrates **QA planning and strategic thinking** rather than just testing a specific application. The focus is on:
+
+- **Issue lifecycle management**: Template → Issue → Development → Review → Testing → Deployment
+- **AI-assisted development**: Using GitHub Copilot agents to implement features based on defined requirements
+- **Iterative quality process**: Manual testing, pipeline validation, and continuous improvement
+- **Professional practices**: Issue tracking, PR reviews, automated testing, cloud deployment
+
+**The Application**: A web-based expense tracker with microservices architecture (Auth, API, Frontend), deployed on Google Cloud Run with PostgreSQL/Firestore databases and CI/CD via GitHub Actions.
 
 👤 **[About the Author](docs/general/ABOUTME.md)** | 📋 **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** | 📝 **[Issue Template Tracking](.github/ISSUE_TEMPLATE/TRACKING.md)**
 
