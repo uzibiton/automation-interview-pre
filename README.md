@@ -102,6 +102,7 @@ Comprehensive documentation covering requirements, design, testing, and workflow
 #### 🎨 Design & Architecture
 | Document | Description | Related Docs |
 |----------|-------------|--------------|
+| **[Application Architecture](app/README.md)** | **Microservices architecture, tech stack, data flow** | **→ [System Diagram](app/README.md#architecture-diagram)** |
 | [System Architecture](doc/DEPLOYMENT_SUMMARY.md) | High-level architecture and components | → [Deployment Guide](doc/DEPLOYMENT.md) |
 | [Database Schema](app/database/README.md) | Database tables, relationships, migrations | → [Integration Tests](tests/integration/) |
 | [CI/CD Pipeline](doc/CI_CD_PIPELINE.md) | Build, test, and deployment automation | → [GitHub Actions](.github/workflows/ci-cd.yml) |
