@@ -121,7 +121,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
 
       if (isEditMode && expense) {
         // Update existing expense
-        await axios.patch(`${API_SERVICE_URL}/expenses/${expense.id}`, payload, {
+        await axios.put(`${API_SERVICE_URL}/expenses/${expense.id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
       } else {

@@ -63,7 +63,7 @@ export class ExpensesService {
 
   async findOne(userId: number, id: number): Promise<Expense> {
     if (this.useFirestore) {
-      return this.firestoreRepo.findOne(userId, id) as any;
+      return this.firestoreRepo.findOne(id, userId) as any;
     }
 
     const expense = await this.expensesRepository.findOne({
@@ -92,7 +92,7 @@ export class ExpensesService {
 
   async update(userId: number, id: number, updateExpenseDto: UpdateExpenseDto): Promise<Expense> {
     if (this.useFirestore) {
-      return this.firestoreRepo.update(userId, id, updateExpenseDto) as any;
+      return this.firestoreRepo.update(id, userId, updateExpenseDto) as any;
     }
 
     const expense = await this.findOne(userId, id);
@@ -104,7 +104,7 @@ export class ExpensesService {
 
   async delete(userId: number, id: number): Promise<void> {
     if (this.useFirestore) {
-      return this.firestoreRepo.delete(userId, id);
+      return this.firestoreRepo.delete(id, userId);
     }
 
     const expense = await this.findOne(userId, id);
