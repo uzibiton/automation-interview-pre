@@ -1,85 +1,89 @@
-# QA Automation Interview Preparation
+# Documentation Hub
 
-## Test Application System
-A full-stack microservices application built for automation testing practice.
+Welcome to the documentation for the Automation Interview Pre project - an expense tracking application with comprehensive testing infrastructure.
 
-### Architecture
-- **Frontend**: React with TypeScript
-- **Backend**: Two NestJS microservices
-  - Auth Service (Port 3001) - Google OAuth authentication
-  - API Service (Port 3002) - Task management API
-- **Database**: PostgreSQL
-- **Gateway**: Nginx reverse proxy
-- **Containerization**: Docker & Docker Compose
+## 📂 Documentation Structure
 
-### Quick Start
+### 📖 [general/](general/) - Project Overview & Status
+General project information and tracking:
+- **[ABOUTME.md](general/ABOUTME.md)** - Project overview and author information
+- **[PROJECT_STATUS.md](general/PROJECT_STATUS.md)** - Current status, roadmap, and priorities
+- **[SESSION_RESUME.md](general/SESSION_RESUME.md)** - Resume work after interruption
+- **[temp.md](general/temp.md)** - Temporary notes and scratchpad
 
-#### 1. Prerequisites
-- Docker and Docker Compose installed
-- Google OAuth credentials (optional, for authentication)
+### 💻 [dev/](dev/) - Development Documentation
+Setup, configuration, and development guides:
+- **[RUN_LOCALLY.md](dev/RUN_LOCALLY.md)** - Run the app locally with Docker
+- **[SETUP.md](dev/SETUP.md)** - Initial setup instructions
+- **[INSTRUCTIONS.md](dev/INSTRUCTIONS.md)** - Feature requirements and user stories
+- **[API_REFERENCE.md](dev/API_REFERENCE.md)** - API endpoints and specifications
+- **[DEVELOPMENT_INSIGHTS.md](dev/DEVELOPMENT_INSIGHTS.md)** - Lessons learned and best practices
+- **[CONVERSION_SUMMARY.md](dev/CONVERSION_SUMMARY.md)** - Firestore to PostgreSQL migration
 
-#### 2. Setup Environment Variables
-```bash
-cp .env.example .env
-```
+### 🧪 [qa/](qa/) - QA & Testing
+Testing strategy and quality assurance processes:
+- **[TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)** - Comprehensive QA approach
+- **[TESTING.md](qa/TESTING.md)** - Testing implementation details
+- **[PWA_TESTING.md](qa/PWA_TESTING.md)** - Progressive Web App testing guide
+- **[PR_WORKFLOW_GUIDE.md](qa/PR_WORKFLOW_GUIDE.md)** - Pull request workflow
+- **[PR_TEST.md](qa/PR_TEST.md)** - PR testing guidelines
+- **[TASK_BUG_MANAGEMENT.md](qa/TASK_BUG_MANAGEMENT.md)** - Issue tracking and workflows
 
-Edit `.env` file with your Google OAuth credentials (or skip for now):
-- Get credentials from: https://console.cloud.google.com/apis/credentials
-- Authorized redirect URI: `http://localhost:3001/auth/google/callback`
+### 🚀 [devops/](devops/) - CI/CD & Deployment
+DevOps, infrastructure, and deployment:
+- **[CI_CD_PIPELINE.md](devops/CI_CD_PIPELINE.md)** - CI/CD pipeline documentation
+- **[CI_CD_WORKFLOW.md](devops/CI_CD_WORKFLOW.md)** - Workflow details
+- **[DEPLOYMENT.md](devops/DEPLOYMENT.md)** - Deployment guide
+- **[DEPLOYMENT_SUMMARY.md](devops/DEPLOYMENT_SUMMARY.md)** - Deployment overview
+- **[CLOUD_RUN_MANAGEMENT.md](devops/CLOUD_RUN_MANAGEMENT.md)** - Cloud Run configuration
+- **[CLOUD_RUN_README.md](devops/CLOUD_RUN_README.md)** - Cloud Run setup
+- **[GITHUB_ACTIONS_SETUP.md](devops/GITHUB_ACTIONS_SETUP.md)** - GitHub Actions configuration
 
-#### 3. Start the System
-```bash
-docker-compose up --build
-```
+### 🎨 [ui/](ui/) - UI/UX Documentation
+User interface and experience guides:
+- **[GITHUB_UI_GUIDE.md](ui/GITHUB_UI_GUIDE.md)** - GitHub UI navigation guide
 
-#### 4. Access the Application
-- **Frontend**: http://localhost:3000
-- **Auth Service**: http://localhost:3001
-- **API Service**: http://localhost:3002
-- **Nginx Gateway**: http://localhost
-- **PostgreSQL**: localhost:5432
+### 🎬 [demo/](demo/) - Demo Materials
+Presentation materials and demo scripts:
+- **[SDET_DEMO_SCRIPT.md](demo/SDET_DEMO_SCRIPT.md)** - 15-minute interview demonstration
+- **[15MIN_SENIOR_DEMO.md](demo/15MIN_SENIOR_DEMO.md)** - Senior SDET showcase
+- **[DEMO_SCRIPT.md](demo/DEMO_SCRIPT.md)** - General demo script
+- **[datasets/](demo/datasets/)** - Sample data for demos
+- **[presentation/](demo/presentation/)** - Presentation materials
+- **[sample-reports/](demo/sample-reports/)** - Test execution reports
+- **[screenshots/](demo/screenshots/)** - Visual documentation
+- **[scripts/](demo/scripts/)** - Demo automation scripts
+- **[videos/](demo/videos/)** - Video demonstrations
 
-### API Endpoints for Testing
+## 🔍 Quick Navigation
 
-#### Auth Service (3001)
-- `GET /auth/google` - Initiate Google OAuth
-- `GET /auth/google/callback` - OAuth callback
-- `GET /auth/profile` - Get user profile (requires JWT)
-- `GET /auth/verify` - Verify JWT token
+**By Role:**
+- **Developers** → Start with [dev/RUN_LOCALLY.md](dev/RUN_LOCALLY.md)
+- **QA Engineers** → Check [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)
+- **DevOps** → See [devops/CI_CD_PIPELINE.md](devops/CI_CD_PIPELINE.md)
+- **Interviewers** → View [demo/SDET_DEMO_SCRIPT.md](demo/SDET_DEMO_SCRIPT.md)
 
-#### API Service (3002)
-- `GET /tasks` - Get all tasks (requires auth)
-- `POST /tasks` - Create task (requires auth)
-- `GET /tasks/:id` - Get single task (requires auth)
-- `PUT /tasks/:id` - Update task (requires auth)
-- `DELETE /tasks/:id` - Delete task (requires auth)
-- `GET /tasks/stats` - Get task statistics (requires auth)
+**By Task:**
+- **Run the app** → [dev/RUN_LOCALLY.md](dev/RUN_LOCALLY.md)
+- **Write tests** → [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)
+- **Deploy** → [devops/DEPLOYMENT.md](devops/DEPLOYMENT.md)
+- **Report bug** → [qa/TASK_BUG_MANAGEMENT.md](qa/TASK_BUG_MANAGEMENT.md)
+- **Submit PR** → [qa/PR_WORKFLOW_GUIDE.md](qa/PR_WORKFLOW_GUIDE.md)
 
-### Database Schema
-```sql
--- Users table
-users (id, email, name, google_id, avatar_url, created_at, updated_at)
+## 📋 Documentation Standards
 
--- Tasks table  
-tasks (id, user_id, title, description, status, priority, due_date, created_at, updated_at)
-```
+All documentation follows these principles:
+- **Clear structure** with table of contents
+- **Code examples** for technical concepts
+- **Links to related docs** for navigation
+- **Audience tags** (Dev, QA, DevOps, etc.)
+- **Date stamps** for version tracking
 
-### Technologies to Practice
-- ✅ **TypeScript** - Both frontend and backend
-- ✅ **Docker** - Containerization of all services
-- ✅ **PostgreSQL** - Relational database with SQL queries
-- ✅ **REST APIs** - Multiple endpoints for testing
-- ✅ **Authentication** - Google OAuth & JWT
-- ✅ **Microservices** - Service-to-service communication
-- ✅ **Nginx** - Reverse proxy configuration
+## 🔗 Related Resources
 
-### Next Steps for Automation Testing
-Now you can practice:
-1. **Playwright/TypeScript** - UI automation tests
-2. **Python/pytest** - API automation tests
-3. **Cucumber/BDD** - Behavior-driven test scenarios
-4. **GitHub Actions** - CI/CD pipeline setup
-5. **SQL** - Database validation queries
-6. **Docker** - Container management and testing
-7. **Kubernetes** - Orchestration (advanced)
+- **[Main README](../README.md)** - Project overview
+- **[App Architecture](../app/README.md)** - System architecture details
+- **[Tests README](../tests/README.md)** - Test suite documentation
+- **[GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues)** - Issue tracker
+- **[GitHub Projects](https://github.com/users/uzibiton/projects/2)** - QA Backlog & Test Planning
 
