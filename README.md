@@ -1,4 +1,4 @@
-# Automation Framework - Expense Tracker
+# Automation infrastructure - Expense Tracker
 
 Multi-environment expense tracking application with comprehensive testing infrastructure for SDET interview showcase.
 
