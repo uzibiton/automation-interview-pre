@@ -33,6 +33,41 @@ on:
           - staging
           - production
         default: staging
+      skip_static_analysis:
+        description: 'Skip static analysis'
+        required: false
+        type: boolean
+        default: false
+      skip_unit_tests:
+        description: 'Skip unit tests'
+        required: false
+        type: boolean
+        default: false
+      skip_prettier:
+        description: 'Skip Prettier check'
+        required: false
+        type: boolean
+        default: false
+      skip_eslint:
+        description: 'Skip ESLint'
+        required: false
+        type: boolean
+        default: false
+      skip_typecheck:
+        description: 'Skip TypeScript check'
+        required: false
+        type: boolean
+        default: false
+      skip_audit:
+        description: 'Skip npm audit'
+        required: false
+        type: boolean
+        default: false
+      skip_snyk:
+        description: 'Skip Snyk scan'
+        required: false
+        type: boolean
+        default: false
 
 # Prevent concurrent deployments to the same environment
 concurrency:
@@ -47,6 +82,10 @@ jobs:
   static-analysis:
     name: Static Analysis
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.skip_static_analysis != 'true' }}
+    permissions:
+      contents: read
+      security-events: write
 
     steps:
       - name: Checkout code
@@ -60,33 +99,38 @@ jobs:
       - name: Install root dependencies
         run: npm ci
 
-      - name: Check code formatting
+      - name: Check code formatting (Prettier)
+        if: ${{ github.event.inputs.skip_prettier != 'true' }}
         run: npm run format:check
         continue-on-error: true
 
       - name: Run ESLint
+        if: ${{ github.event.inputs.skip_eslint != 'true' }}
         run: npm run lint
         continue-on-error: true
 
       - name: TypeScript type check
+        if: ${{ github.event.inputs.skip_typecheck != 'true' }}
         run: npm run type-check
         continue-on-error: true
 
-      - name: npm audit
+      - name: npm audit (dependency vulnerabilities)
+        if: ${{ github.event.inputs.skip_audit != 'true' }}
         run: npm audit --audit-level=moderate
         continue-on-error: true
 
       - name: Run Snyk security scan
+        if: ${{ github.event.inputs.skip_snyk != 'true' }}
         uses: snyk/actions/node@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --severity-threshold=high --all-projects
+          args: --severity-threshold=high --all-projects --sarif-file-output=snyk.sarif
 
       - name: Upload Snyk results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        if: ${{ github.event.inputs.skip_snyk != 'true' && hashFiles('snyk.sarif') != '' }}
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: snyk.sarif
 
@@ -96,6 +140,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.skip_unit_tests != 'true' }}
 
     steps:
       - name: Checkout code
