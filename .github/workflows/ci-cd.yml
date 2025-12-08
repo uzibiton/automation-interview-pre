@@ -42,7 +42,56 @@ concurrency:
 # Define jobs that run in sequence
 jobs:
   # ============================================================================
-  # JOB 1: Run Unit Tests
+  # JOB 1: Static Analysis (runs in parallel with unit tests)
+  # ============================================================================
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Check code formatting
+        run: npm run format:check
+        continue-on-error: true
+
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: TypeScript type check
+        run: npm run type-check
+        continue-on-error: true
+
+      - name: npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --all-projects
+
+      - name: Upload Snyk results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: snyk.sarif
+
+  # ============================================================================
+  # JOB 2: Run Unit Tests (runs in parallel with static analysis)
   # ============================================================================
   unit-tests:
     name: Unit Tests
@@ -73,11 +122,11 @@ jobs:
           path: tests/coverage/
 
   # ============================================================================
-  # JOB 2: Determine Deployment Environment
+  # JOB 3: Determine Deployment Environment
   # ============================================================================
   setup:
     name: Setup Environment
-    needs: unit-tests
+    needs: [static-analysis, unit-tests]
     runs-on: ubuntu-latest
     outputs:
       env_name: ${{ steps.set_env.outputs.env_name }}
@@ -335,7 +384,7 @@ jobs:
             let message = `## 🧪 E2E Test Results for ${envName}\n\n`;
             message += `**Frontend URL**: ${frontendUrl}\n`;
             message += `**Auth Service**: ${authUrl}\n\n`;
-            
+
             message += `### ⚠️ Google OAuth Setup Required\n`;
             message += `To test Google Sign-In on this PR environment, add this redirect URI to [Google Console](https://console.cloud.google.com/apis/credentials):\n\n`;
             message += `\`\`\`\n${callbackUrl}\n\`\`\`\n\n`;
