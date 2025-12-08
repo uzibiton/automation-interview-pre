@@ -116,11 +116,25 @@ npm run test:e2e:docker             # Docker environment
 - **Staging**: https://frontend-staging-773292472093.us-central1.run.app
 - **Production**: https://frontend-773292472093.us-central1.run.app
 
+## 💡 Idea Management
+
+Have an idea for a future feature? We track ideas separately from active tasks:
+
+1. **Capture it**: Add to [docs/general/IDEAS.md](docs/general/IDEAS.md) using the template provided
+2. **Research**: Investigate feasibility and document findings
+3. **Mature**: When ready, create a GitHub issue using the [Idea/Investigation template](.github/ISSUE_TEMPLATE/template-idea.md)
+4. **Implement**: Convert to feature request and follow normal workflow
+
+**Current Ideas**: Offline-first architecture, native mobile apps
+
+📝 **Quick Links**: [New Idea Issue](https://github.com/uzibiton/automation-interview-pre/issues/new?template=template-idea.md) | [View All Ideas](https://github.com/uzibiton/automation-interview-pre/labels/type%3Aidea)
+
 ## 📚 Documentation
 
 📖 **[Complete Table of Contents](docs/TABLE_OF_CONTENTS.md)** - Full documentation index with all guides and resources
 
 ### Quick Links
+
 - **[Run Locally](docs/dev/RUN_LOCALLY.md)** - Get started with local development
 - **[Application Architecture](app/README.md)** - System design and data flow
 - **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** - Comprehensive QA approach
@@ -129,6 +143,7 @@ npm run test:e2e:docker             # Docker environment
 - **[SDET Demo Script](docs/demo/SDET_DEMO_SCRIPT.md)** - Interview presentation
 
 ### Documentation Structure
+
 - **[docs/general/](docs/general/)** - Project overview and status
 - **[docs/dev/](docs/dev/)** - Development setup and API docs
 - **[docs/qa/](docs/qa/)** - Testing and quality assurance

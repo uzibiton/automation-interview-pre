@@ -47,7 +47,7 @@ npm install
 - Firestore database with actual user data
 - Complete testing pyramid implementation
 
-**Show**: Navigate to `tests/docs/TEST_STRATEGY.md`
+**Show**: Navigate to `docs/qa/TEST_STRATEGY.md`
 
 - Scroll through table of contents
 - Highlight test pyramid diagram
@@ -196,7 +196,7 @@ ls -la scripts/
 
 ### Part 6: Testing Strategy Document (2 minutes)
 
-**Open**: `tests/docs/TEST_STRATEGY.md`
+**Open**: `docs/qa/TEST_STRATEGY.md`
 
 **Navigate to Key Sections**:
 

@@ -7,15 +7,16 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Testing Philosophy](#testing-philosophy)
-3. [Test Pyramid](#test-pyramid)
-4. [Architecture](#architecture)
-5. [Test Types](#test-types)
-6. [Docker Strategy](#docker-strategy)
-7. [Test Suites & Execution](#test-suites--execution)
-8. [CI/CD Integration](#cicd-integration)
-9. [Metrics & Reporting](#metrics--reporting)
-10. [Best Practices](#best-practices)
+2. [Development & QA Workflow](#development--qa-workflow)
+3. [Testing Philosophy](#testing-philosophy)
+4. [Test Pyramid](#test-pyramid)
+5. [Architecture](#architecture)
+6. [Test Types](#test-types)
+7. [Docker Strategy](#docker-strategy)
+8. [Test Suites & Execution](#test-suites--execution)
+9. [CI/CD Integration](#cicd-integration)
+10. [Metrics & Reporting](#metrics--reporting)
+11. [Best Practices](#best-practices)
 
 ---
 
@@ -34,6 +35,26 @@
 3. **Documentation**: Tests as living documentation
 4. **Speed**: Fast feedback loops for developers
 5. **Coverage**: Comprehensive testing across all layers
+
+---
+
+## Development & QA Workflow
+
+> **Note**: This section describes the QA process and workflow. For technical testing architecture, see [Testing Philosophy](#testing-philosophy) below.
+
+This project follows a **Hybrid Development-QA Approach** where features are developed and merged first, followed by comprehensive test automation. This approach maximizes development velocity while maintaining high quality through systematic testing.
+
+### Workflow Phases
+
+For detailed workflow phases, issue classification, scope management, and code review best practices, see [docs/qa/TESTING_STRATEGY.md](TESTING_STRATEGY.md).
+
+**Summary**:
+
+- **Phase 1**: Requirements & Planning (QA creates test plan)
+- **Phase 2**: Development & Parallel QA Preparation
+- **Phase 3**: Manual Testing & Exploratory Testing
+- **Phase 4**: Test Automation (after dev merge)
+- **Phase 5**: Continuous Testing in CI/CD
 
 ---
 
@@ -719,9 +740,53 @@ export default function () {
 
 #### Security Testing
 
-**Purpose**: Identify security vulnerabilities
+**Purpose**: Identify security vulnerabilities across multiple layers
 
-**Tools**: OWASP ZAP, Bandit, Safety
+Security testing includes multiple approaches, each catching different types of vulnerabilities:
+
+##### 1. Static Analysis (SAST)
+
+**What**: Analyzes code WITHOUT running the application  
+**When**: During development, in CI/CD pipeline  
+**Tools**: Snyk, npm audit, SonarQube, CodeQL, Semgrep
+
+**Checks**:
+
+- **Dependency vulnerabilities**: Known CVEs in npm packages
+- **Code vulnerabilities**: Unsafe patterns (eval, innerHTML, SQL concatenation)
+- **Secret detection**: Hardcoded passwords, API keys, tokens
+- **License compliance**: Open source license issues
+- **Infrastructure as Code**: Docker, Kubernetes, Terraform misconfigurations
+
+**Example**:
+
+```bash
+# Dependency scanning
+npm audit --audit-level=moderate
+
+# Snyk scanning (Issue #45)
+snyk test --severity-threshold=high
+snyk code test  # Code analysis
+snyk container test  # Docker image scanning
+
+# ESLint security rules
+npx eslint . --ext .ts,.tsx --plugin security
+```
+
+##### 2. Dynamic Analysis (DAST)
+
+**What**: Tests RUNNING application by simulating attacks  
+**When**: Against deployed environments (staging/production)  
+**Tools**: OWASP ZAP, Burp Suite, Nikto
+
+**Checks**:
+
+- SQL injection attempts
+- XSS (Cross-Site Scripting) attacks
+- CSRF token validation
+- Authentication/authorization bypass
+- Session management issues
+- API security (rate limiting, input validation)
 
 **Example**:
 
@@ -757,13 +822,65 @@ for alert in high_risk:
     print(f"- {alert['alert']}: {alert['description']}")
 ```
 
-**Checks Include**:
+##### 3. Interactive Analysis (IAST)
 
-- SQL injection
-- XSS vulnerabilities
-- CSRF protection
-- Authentication issues
-- Dependency vulnerabilities
+**What**: Monitors application during test execution  
+**When**: While running integration/E2E tests  
+**Tools**: Contrast Security, Hdiv Security
+
+**Benefits**:
+
+- Real-time vulnerability detection
+- Combines static + dynamic approaches
+- Low false positive rate
+- Identifies exact vulnerable code paths
+
+##### 4. Penetration Testing
+
+**What**: Manual ethical hacking by security experts  
+**When**: Before major releases, quarterly security audits  
+**Scope**: Business logic flaws, complex attack chains, social engineering
+
+**Approach**:
+
+- Reconnaissance and information gathering
+- Vulnerability assessment
+- Exploitation attempts
+- Post-exploitation analysis
+- Detailed reporting with remediation steps
+
+##### Security Testing Strategy
+
+**Phase 1: Shift-Left (Development)**
+
+- Static analysis in IDE and pre-commit hooks
+- Dependency scanning on every build
+- Secret detection in commits
+
+**Phase 2: CI/CD Pipeline**
+
+- Automated SAST scans (Snyk, CodeQL)
+- Container image scanning
+- License compliance checks
+
+**Phase 3: Pre-Production**
+
+- DAST scans against staging environment
+- Automated penetration testing (OWASP ZAP)
+- API security testing
+
+**Phase 4: Production**
+
+- Runtime security monitoring
+- Periodic penetration testing
+- Bug bounty program (future)
+
+**Current Implementation**:
+
+- ✅ npm audit (basic dependency scanning)
+- 🔄 Snyk integration (Issue #45) - comprehensive SAST
+- 📋 OWASP ZAP (planned) - DAST
+- 📋 Manual penetration testing (as needed)
 
 #### Accessibility Testing
 
@@ -1268,7 +1385,7 @@ pipeline {
 
 ### Test Metrics Tracked
 
-#### Coverage Metrics
+#### Code Coverage Metrics
 
 - **Line Coverage**: % of code lines executed
 - **Branch Coverage**: % of conditional branches tested
@@ -1276,6 +1393,54 @@ pipeline {
 - **Statement Coverage**: % of statements executed
 
 **Target**: > 80% overall, > 90% for critical paths
+
+#### Requirements Coverage
+
+- **Requirement Traceability**: Each requirement has associated test cases
+- **Test Case Mapping**: Track requirement ID → test cases
+- **Acceptance Criteria Coverage**: All ACs have passing tests
+- **Feature Coverage**: % of features with automated tests
+
+**Target**: 100% of acceptance criteria covered
+
+#### API Coverage Metrics
+
+- **Endpoint Coverage**: % of API endpoints tested
+- **HTTP Method Coverage**: GET, POST, PUT, DELETE, PATCH tested per endpoint
+- **Status Code Coverage**: Success (2xx), client errors (4xx), server errors (5xx)
+- **Request Variation Coverage**: Headers, query params, body variations
+- **Error Scenario Coverage**: Validation errors, auth failures, edge cases
+
+**Target**: 100% of public endpoints, all status codes
+
+#### UI Coverage Metrics
+
+- **Screen Coverage**: % of screens/pages with tests
+- **User Journey Coverage**: Critical paths through application
+- **Navigation Coverage**: All routes and navigation flows tested
+- **Component Coverage**: % of reusable components tested
+- **Responsive Coverage**: Mobile, tablet, desktop breakpoints
+
+**Target**: 100% of critical journeys, 80%+ of screens
+
+#### Browser/Device Coverage
+
+- **Browser Coverage**: Chrome, Firefox, Safari, Edge
+- **Mobile Browser Coverage**: Mobile Chrome, Mobile Safari
+- **Device Types**: Desktop, tablet, mobile
+- **OS Coverage**: Windows, macOS, Linux, iOS, Android
+- **Viewport Coverage**: Common screen resolutions
+
+**Target**: 100% of critical journeys on primary browsers (Chrome, Safari)
+
+#### Test Type Coverage
+
+- **Test Pyramid Balance**: Unit > Integration > E2E > Visual
+- **Test Layer Coverage**: Frontend, Backend, API, Database
+- **Non-Functional Coverage**: Performance, security, accessibility, reliability
+- **Testing Approach**: Automated, manual exploratory, user acceptance
+
+**Target**: Balanced test pyramid with focus on lower layers
 
 #### Quality Metrics
 

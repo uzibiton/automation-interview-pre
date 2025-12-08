@@ -176,7 +176,7 @@ tests/
 
 ### Documentation
 
-#### `tests/docs/TEST_STRATEGY.md` ⭐ MOST IMPORTANT
+#### `docs/qa/TEST_STRATEGY.md` ⭐ MOST IMPORTANT
 
 **Purpose**: Comprehensive testing strategy and architecture
 **Length**: ~1000 lines
@@ -411,7 +411,7 @@ jobs:
 
 ### Before the Interview
 
-- [ ] Read `tests/docs/TEST_STRATEGY.md` completely
+- [ ] Read `docs/qa/TEST_STRATEGY.md` completely
 - [ ] Review `tests/demo/DEMO_SCRIPT.md`
 - [ ] Run smoke tests to ensure everything works
 - [ ] Practice the demo (15-minute version)
@@ -421,7 +421,7 @@ jobs:
 
 ### Demo Materials
 
-✅ `tests/docs/TEST_STRATEGY.md` - The foundation
+✅ `docs/qa/TEST_STRATEGY.md` - The foundation
 ✅ `tests/demo/DEMO_SCRIPT.md` - Your presentation guide
 ✅ `tests/unit/services/expenses.service.test.ts` - Unit test example
 ✅ `tests/e2e/expenses/create-expense.spec.ts` - E2E test example
