@@ -77,19 +77,26 @@ concurrency:
 # Define jobs that run in parallel
 jobs:
   # ============================================================================
-  # STAGE 1: Static Analysis
+  # STAGE 1: Static Analysis (parallel execution)
   # ============================================================================
-  
-  static-analysis:
-    name: Static Analysis
+
+  code-quality:
+    name: Code Quality
     runs-on: ubuntu-latest
     steps:
-      - name: Start Static Analysis Stage
-        run: echo "Starting Static Analysis stage"
+      - name: Start Code Quality Checks
+        run: echo "Starting code quality checks"
+
+  security-checks:
+    name: Security Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start Security Checks
+        run: echo "Starting security checks"
 
   prettier:
     name: Code Formatting
-    needs: static-analysis
+    needs: code-quality
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_prettier != 'true' }}
 
@@ -110,7 +117,7 @@ jobs:
 
   eslint:
     name: Linting
-    needs: static-analysis
+    needs: code-quality
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_eslint != 'true' }}
 
@@ -131,7 +138,7 @@ jobs:
 
   typecheck:
     name: Type Check
-    needs: static-analysis
+    needs: code-quality
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_typecheck != 'true' }}
 
@@ -152,7 +159,7 @@ jobs:
 
   npm-audit:
     name: Dependency Audit
-    needs: static-analysis
+    needs: security-checks
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_audit != 'true' }}
 
@@ -173,7 +180,7 @@ jobs:
 
   snyk:
     name: Security Scan
-    needs: static-analysis
+    needs: security-checks
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_snyk != 'true' }}
     permissions:
@@ -207,13 +214,12 @@ jobs:
           sarif_file: snyk.sarif
 
   # ============================================================================
-  # STAGE 2: Unit Tests
+  # STAGE 2: Unit Tests (runs in parallel with static analysis)
   # ============================================================================
 
   unit-tests:
     name: Unit Tests
-    needs: [prettier, eslint, typecheck, npm-audit, snyk]
-    if: always() && github.event.inputs.skip_unit_tests != 'true'
+    if: github.event.inputs.skip_unit_tests != 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -245,7 +251,7 @@ jobs:
   # ============================================================================
   setup:
     name: Setup Environment
-    needs: [unit-tests]
+    needs: [prettier, eslint, typecheck, npm-audit, snyk, unit-tests]
     if: always()
     runs-on: ubuntu-latest
     outputs:
@@ -285,7 +291,7 @@ jobs:
   # ============================================================================
   # STAGE 3: Build App
   # ============================================================================
-  
+
   build-app:
     name: Build App
     needs: setup
@@ -484,18 +490,10 @@ jobs:
   # ============================================================================
   # STAGE 4: Integration Tests
   # ============================================================================
-  
-  integration-tests-stage:
-    name: Integration Tests
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Start Integration Tests Stage
-        run: echo "Starting Integration Tests stage"
 
   build-test-runner:
     name: Build Test Runner
-    needs: integration-tests-stage
+    needs: setup
     runs-on: ubuntu-latest
 
     steps:
@@ -521,9 +519,17 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:${{ github.sha }}
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:latest
 
+  integration-tests-stage:
+    name: Integration Tests
+    needs: [deploy, build-test-runner]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start Integration Tests Stage
+        run: echo "Starting Integration Tests stage"
+
   run-integration-tests:
     name: API Integration
-    needs: build-test-runner
+    needs: [integration-tests-stage, setup, deploy]
     runs-on: ubuntu-latest
     if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
 
@@ -557,7 +563,7 @@ jobs:
   # ============================================================================
   # STAGE 5: E2E Sanity
   # ============================================================================
-  
+
   e2e-sanity:
     name: E2E Sanity
     needs: run-integration-tests
@@ -566,7 +572,7 @@ jobs:
     steps:
       - name: Start E2E Sanity Stage
         run: echo "Starting E2E Sanity stage"
-  
+
   e2e-tests:
     name: Smoke Tests
     needs: [setup, e2e-sanity]
