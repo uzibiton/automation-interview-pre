@@ -6,57 +6,81 @@ Complete guide for the GitHub Actions CI/CD pipeline that automates testing, bui
 
 ## 🎯 Overview
 
-This pipeline automates the entire software delivery process from code commit to production deployment.
+This pipeline automates the entire software delivery process from code commit to production deployment with maximum parallelization for speed and efficiency.
 
 ### Pipeline Flow:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     CODE PUSH/PR                            │
-│                          ↓                                  │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  STAGE 1: Unit Tests (2-3 minutes)                   │  │
-│  │  • Checkout code                                      │  │
-│  │  • Install Node.js dependencies                       │  │
-│  │  • Run Jest unit tests                                │  │
-│  │  • Generate coverage report                           │  │
-│  │  ✅ Pass → Continue                                   │  │
-│  │  ❌ Fail → STOP (no build/deploy)                     │  │
-│  └──────────────────────────────────────────────────────┘  │
-│                          ↓                                  │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  STAGE 2: Build (5-8 minutes)                        │  │
-│  │  • Only on 'main' branch                             │  │
-│  │  • Authenticate to Google Cloud                       │  │
-│  │  • Build Docker images:                               │  │
-│  │    - auth-service                                     │  │
-│  │    - api-service                                      │  │
-│  │    - frontend                                         │  │
-│  │  • Push images to Google Container Registry          │  │
-│  │  • Tag with commit SHA + 'latest'                    │  │
-│  │  ✅ Pass → Continue                                   │  │
-│  │  ❌ Fail → STOP (no deploy)                           │  │
-│  └──────────────────────────────────────────────────────┘  │
-│                          ↓                                  │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  STAGE 3: Deploy (3-5 minutes)                       │  │
-│  │  • Deploy auth-service to Cloud Run                  │  │
-│  │  • Deploy api-service to Cloud Run                   │  │
-│  │  • Deploy frontend to Cloud Run                      │  │
-│  │  • Set environment variables                          │  │
-│  │  • Output deployment URLs                            │  │
-│  │  ✅ Success → Live in Production                     │  │
-│  │  ❌ Fail → Previous version still running            │  │
-│  └──────────────────────────────────────────────────────┘  │
-│                          ↓                                  │
-│                  🎉 DEPLOYED TO PRODUCTION                 │
-└─────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────┐
+│                         CODE PUSH/PR                                │
+└───────────────────────────┬────────────────────────────────────────┘
+                            │
+        ┌───────────────────┼───────────────────┐
+        │                   │                   │
+        ▼                   ▼                   ▼
+┌───────────────┐   ┌───────────────┐   ┌───────────────┐
+│ Code Quality  │   │Security Checks│   │  Unit Tests   │
+│   (Gateway)   │   │   (Gateway)   │   │               │
+└───────┬───────┘   └───────┬───────┘   └───────────────┘
+        │                   │
+   ┌────┼────┐         ┌────┼────┐
+   ▼    ▼    ▼         ▼         ▼
+┌────┐┌────┐┌────┐  ┌────┐  ┌────┐
+│Pret││ESLt││Type│  │Audt│  │Snyk│
+│tier││int ││Chck│  │    │  │    │
+└────┘└────┘└────┘  └────┘  └────┘
+  │     │     │       │       │
+  └─────┴─────┴───────┴───────┴──────┐
+                                      │
+                                      ▼
+                          ┌────────────────────┐
+                          │Setup Environment   │
+                          └──────────┬─────────┘
+                  ┌──────────────────┼──────────────────┐
+                  │                  │                  │
+                  ▼                  ▼                  ▼
+         ┌────────────────┐  ┌────────────────┐  ┌────────────────┐
+         │   Build App    │  │ Build Test     │  │     Deploy     │
+         │   (Gateway)    │  │   Runner       │  │ (after builds) │
+         └────────┬───────┘  └────────────────┘  └────────┬───────┘
+              ┌───┼───┐                                   │
+              ▼   ▼   ▼                                   │
+          ┌────┐┌────┐┌────┐                             │
+          │Auth││API ││Frnt│                             │
+          └────┘└────┘└────┘                             │
+            │    │    │                                  │
+            └────┴────┴──────────────────────────────────┘
+                                    │
+                                    ▼
+                      ┌──────────────────────────┐
+                      │   Integration Tests      │
+                      │       (Gateway)          │
+                      └────────────┬─────────────┘
+                                   │
+                                   ▼
+                         ┌──────────────────┐
+                         │ API Integration  │
+                         └─────────┬────────┘
+                                   │
+                                   ▼
+                         ┌──────────────────┐
+                         │   E2E Sanity     │
+                         │    (Gateway)     │
+                         └─────────┬────────┘
+                                   │
+                                   ▼
+                         ┌──────────────────┐
+                         │  Smoke Tests     │
+                         └──────────────────┘
 ```
 
 ### Total Time:
 
-- **PR (tests only)**: 2-3 minutes
-- **Main branch (full pipeline)**: 10-16 minutes
+- **Stage 1 (Parallel)**: ~2-3 minutes (Code Quality + Security + Unit Tests)
+- **Build Stage (Parallel)**: ~5-8 minutes (Auth, API, Frontend, Test Runner)
+- **Deploy**: ~3-5 minutes
+- **Integration + E2E**: ~5-7 minutes
+- **Total (optimized)**: ~15-23 minutes (vs. ~30+ minutes sequential)
 
 ---
 
@@ -132,9 +156,9 @@ on:
 
 The CI pipeline is automatically skipped when commits only modify:
 
-- **`doc/**`** - All files in the documentation directory
+- **`doc/**`\*\* - All files in the documentation directory
 - **`*.md`** - Root-level markdown files (README.md, RUN-LOCALLY.md, etc.)
-- **`.github/ISSUE_TEMPLATE/**`** - Issue and PR templates
+- **`.github/ISSUE_TEMPLATE/**`\*\* - Issue and PR templates
 
 **Why?** Documentation changes don't affect code functionality and don't require testing, building, or deployment.
 
@@ -144,34 +168,142 @@ The CI pipeline is automatically skipped when commits only modify:
 
 ---
 
-## 📋 Jobs Breakdown
+## 📋 Pipeline Stages
 
-### Job 1: Unit Tests
+### Stage 1: Quality & Testing (Parallel Execution)
 
-**Purpose:** Fast validation of code quality
+Three independent job groups run simultaneously:
 
-**Duration:** 2-3 minutes
+#### 1.1 Code Quality Gateway
 
-**Steps:**
+Spawns parallel checks:
 
-1. **Checkout code** - Get the latest code
-2. **Setup Node.js** - Install Node 18 with npm cache
-3. **Install dependencies** - `npm ci` (clean install)
-4. **Run tests** - Execute Jest unit tests
-5. **Upload results** - Save coverage reports as artifacts
+- **Prettier** - Code formatting validation
+- **ESLint** - Linting and code style
+- **TypeCheck** - TypeScript type checking
 
-**Runs on:**
+**Duration:** ~1-2 minutes  
+**Skip by default:** Yes (not fully configured yet)
 
-- ✅ All PRs
-- ✅ Push to main
-- ✅ Manual trigger
+#### 1.2 Security Checks Gateway
 
-**What it tests:**
+Spawns parallel scans:
 
-- JavaScript/TypeScript unit tests
-- Component tests
-- Utility function tests
-- Business logic tests
+- **npm audit** - Dependency vulnerability scan
+- **Snyk** - Advanced security scanning with SARIF upload
+
+**Duration:** ~2-3 minutes  
+**Skip by default:** Snyk active, npm audit skipped
+
+#### 1.3 Unit Tests
+
+Independent test execution:
+
+- Jest unit tests across all workspaces
+- Coverage report generation
+- Artifact upload
+
+**Duration:** ~2-3 minutes  
+**Skip by default:** No (always runs)
+
+**Total Stage 1 Time:** ~2-3 minutes (parallel execution)
+
+---
+
+### Stage 2: Setup Environment
+
+**Purpose:** Determine deployment target and configuration
+
+**Duration:** <10 seconds
+
+**Logic:**
+
+- PR → temporary PR environment
+- Push to main → staging
+- Manual trigger → user-selected environment
+
+**Outputs:**
+
+- `env_name` - Environment name
+- `env_suffix` - Suffix for service names
+- `should_run_e2e` - Whether to run E2E tests
+
+---
+
+### Stage 3: Build App (Parallel Builds)
+
+Gateway job spawns 4 parallel builds:
+
+#### 3.1 Auth Service
+
+- Build Docker image
+- Tag with SHA + latest
+- Push to GCR
+
+#### 3.2 API Service
+
+- Build Docker image
+- Tag with SHA + latest
+- Push to GCR
+
+#### 3.3 Frontend
+
+- Build Docker image
+- Tag with SHA + latest
+- Push to GCR
+
+#### 3.4 Test Runner
+
+- Build test runner image
+- Tag with SHA + latest
+- Push to GCR
+
+**Duration:** ~5-8 minutes (parallel)  
+**Sequential would be:** ~20-32 minutes
+
+---
+
+### Stage 4: Deploy
+
+**Purpose:** Deploy services to Google Cloud Run
+
+**Duration:** ~3-5 minutes
+
+**Order:**
+
+1. Frontend (to get URL)
+2. Auth Service (needs frontend URL)
+3. API Service (needs auth URL)
+4. Frontend update (with backend URLs)
+
+**Outputs:**
+
+- Service URLs for all deployed services
+- OAuth callback URLs
+
+---
+
+### Stage 5: Integration Tests
+
+Gateway waits for deploy + test runner, then runs:
+
+- API integration tests
+- Service-to-service communication tests
+- Database integration tests
+
+**Duration:** ~3-5 minutes
+
+---
+
+### Stage 6: E2E Sanity
+
+Gateway spawns:
+
+- Smoke tests for critical user flows
+- Basic UI validation
+- Authentication flow tests
+
+**Duration:** ~2-4 minutes
 
 **Output:**
 
