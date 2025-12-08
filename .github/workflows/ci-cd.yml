@@ -81,7 +81,7 @@ jobs:
   # ============================================================================
 
   prettier:
-    name: "[Static Analysis] Code Formatting"
+    name: '[Static Analysis] Code Formatting'
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_prettier != 'true' }}
 
@@ -101,7 +101,7 @@ jobs:
         run: npm run format:check
 
   eslint:
-    name: "[Static Analysis] Linting"
+    name: '[Static Analysis] Linting'
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_eslint != 'true' }}
 
@@ -121,7 +121,7 @@ jobs:
         run: npm run lint
 
   typecheck:
-    name: "[Static Analysis] Type Check"
+    name: '[Static Analysis] Type Check'
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_typecheck != 'true' }}
 
@@ -141,7 +141,7 @@ jobs:
         run: npm run type-check
 
   npm-audit:
-    name: "[Static Analysis] Dependency Audit"
+    name: '[Static Analysis] Dependency Audit'
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_audit != 'true' }}
 
@@ -161,7 +161,7 @@ jobs:
         run: npm audit --audit-level=moderate
 
   snyk:
-    name: "[Static Analysis] Security Scan"
+    name: '[Static Analysis] Security Scan'
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_snyk != 'true' }}
     permissions:
@@ -194,10 +194,15 @@ jobs:
         with:
           sarif_file: snyk.sarif
 
+  # ============================================================================
+  # STAGE 2: Unit Tests
+  # ============================================================================
+
   unit-tests:
-    name: "[Static Analysis] Unit Tests"
+    name: '[Unit Tests] Run Tests'
+    needs: [prettier, eslint, typecheck, npm-audit, snyk]
+    if: always() && github.event.inputs.skip_unit_tests != 'true'
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.skip_unit_tests != 'true' }}
 
     steps:
       - name: Checkout code
@@ -224,11 +229,11 @@ jobs:
           path: tests/coverage/
 
   # ============================================================================
-  # Setup Environment (waits for all quality checks)
+  # Setup Environment
   # ============================================================================
   setup:
     name: Setup Environment
-    needs: [prettier, eslint, typecheck, npm-audit, snyk, unit-tests]
+    needs: [unit-tests]
     if: always()
     runs-on: ubuntu-latest
     outputs:
@@ -266,11 +271,11 @@ jobs:
           fi
 
   # ============================================================================
-  # STAGE 2: Build App
+  # STAGE 3: Build App
   # ============================================================================
 
   build-auth:
-    name: "[Build App] Auth Service"
+    name: '[Build App] Auth Service'
     needs: setup
     runs-on: ubuntu-latest
 
@@ -298,7 +303,7 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:latest
 
   build-api:
-    name: "[Build App] API Service"
+    name: '[Build App] API Service'
     needs: setup
     runs-on: ubuntu-latest
 
@@ -326,7 +331,7 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:latest
 
   build-frontend:
-    name: "[Build App] Frontend"
+    name: '[Build App] Frontend'
     needs: setup
     runs-on: ubuntu-latest
 
@@ -353,40 +358,12 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }}
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
 
-  build-test-runner:
-    name: "[Build App] Test Runner"
-    needs: setup
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker
-
-      - name: Build and push Test Runner
-        run: |
-          cd tests
-          docker build -f docker/test.Dockerfile -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:${{ github.sha }} .
-          docker build -f docker/test.Dockerfile -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:latest .
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:${{ github.sha }}
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:latest
-
   # ============================================================================
   # Deploy to Cloud Run
   # ============================================================================
   deploy:
     name: Deploy to ${{ needs.setup.outputs.env_name }}
-    needs: [setup, build-auth, build-api, build-frontend, build-test-runner]
+    needs: [setup, build-auth, build-api, build-frontend]
     runs-on: ubuntu-latest
 
     steps:
@@ -485,11 +462,40 @@ jobs:
       callback_url: ${{ steps.auth_service.outputs.callback_url }}
 
   # ============================================================================
-  # STAGE 3: Integration Tests
+  # STAGE 4: Integration Tests
   # ============================================================================
-  integration-tests:
-    name: "[Integration Tests] API Integration"
+
+  build-test-runner:
+    name: '[Integration Tests] Build Test Runner'
     needs: [setup, deploy]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker
+
+      - name: Build and push Test Runner
+        run: |
+          cd tests
+          docker build -f docker/test.Dockerfile -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:${{ github.sha }} .
+          docker build -f docker/test.Dockerfile -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:latest .
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:latest
+
+  integration-tests:
+    name: '[Integration Tests] API Integration'
+    needs: [setup, deploy, build-test-runner]
     runs-on: ubuntu-latest
     if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
 
@@ -521,10 +527,10 @@ jobs:
           path: tests/reports/
 
   # ============================================================================
-  # STAGE 4: E2E Sanity
+  # STAGE 5: E2E Sanity
   # ============================================================================
   e2e-tests:
-    name: "[E2E Sanity] Smoke Tests"
+    name: '[E2E Sanity] Smoke Tests'
     needs: [setup, deploy, integration-tests]
     runs-on: ubuntu-latest
     if: always() && needs.setup.outputs.should_run_e2e == 'true'
