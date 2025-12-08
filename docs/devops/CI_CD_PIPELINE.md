@@ -183,7 +183,9 @@ Spawns parallel checks:
 - **TypeCheck** - TypeScript type checking
 
 **Duration:** ~1-2 minutes  
-**Skip by default:** Yes (not fully configured yet)
+**Skipped:** Yes (default - not fully configured yet)  
+**Blocks Pipeline:** No (if: always() in setup job)  
+**Skip Option:** `skip_prettier`, `skip_eslint`, `skip_typecheck`
 
 #### 1.2 Security Checks Gateway
 
@@ -193,7 +195,9 @@ Spawns parallel scans:
 - **Snyk** - Advanced security scanning with SARIF upload
 
 **Duration:** ~2-3 minutes  
-**Skip by default:** Snyk active, npm audit skipped
+**Skipped:** npm audit=Yes (default), Snyk=No (active)  
+**Blocks Pipeline:** No (if: always() in setup job)  
+**Skip Option:** `skip_audit`, `skip_snyk`
 
 #### 1.3 Unit Tests
 
@@ -204,7 +208,9 @@ Independent test execution:
 - Artifact upload
 
 **Duration:** ~2-3 minutes  
-**Skip by default:** No (always runs)
+**Skipped:** No (always runs)  
+**Blocks Pipeline:** No (if: always() in setup job)  
+**Skip Option:** `skip_unit_tests`
 
 **Total Stage 1 Time:** ~2-3 minutes (parallel execution)
 
@@ -214,7 +220,10 @@ Independent test execution:
 
 **Purpose:** Determine deployment target and configuration
 
-**Duration:** <10 seconds
+**Duration:** <10 seconds  
+**Skipped:** No (always runs)  
+**Blocks Pipeline:** Yes (required by all build/deploy stages)  
+**Skip Option:** None
 
 **Logic:**
 
@@ -259,7 +268,10 @@ Gateway job spawns 4 parallel builds:
 - Push to GCR
 
 **Duration:** ~5-8 minutes (parallel)  
-**Sequential would be:** ~20-32 minutes
+**Sequential would be:** ~20-32 minutes  
+**Skipped:** No (always runs after setup)  
+**Blocks Pipeline:** Yes (deploy requires all builds)  
+**Skip Option:** None (critical for deployment)
 
 ---
 
@@ -267,7 +279,10 @@ Gateway job spawns 4 parallel builds:
 
 **Purpose:** Deploy services to Google Cloud Run
 
-**Duration:** ~3-5 minutes
+**Duration:** ~3-5 minutes  
+**Skipped:** No (always runs after builds)  
+**Blocks Pipeline:** Yes (integration tests require deployed services)  
+**Skip Option:** None (critical for deployment)
 
 **Order:**
 
@@ -291,7 +306,10 @@ Gateway waits for deploy + test runner, then runs:
 - Service-to-service communication tests
 - Database integration tests
 
-**Duration:** ~3-5 minutes
+**Duration:** ~3-5 minutes  
+**Skipped:** No (runs if should_run_e2e=true)  
+**Blocks Pipeline:** No (E2E runs even if integration fails, if: always())  
+**Skip Option:** Conditional on `should_run_e2e` output
 
 ---
 
@@ -303,13 +321,18 @@ Gateway spawns:
 - Basic UI validation
 - Authentication flow tests
 
-**Duration:** ~2-4 minutes
+**Duration:** ~2-4 minutes  
+**Skipped:** No (runs if should_run_e2e=true)  
+**Blocks Pipeline:** No (final stage, failure doesn't block deployment)  
+**Skip Option:** Conditional on `should_run_e2e` output
 
 **Output:**
 
 - Test results in GitHub UI
 - Coverage report as artifact
 - ✅/❌ status visible in PR
+
+**Note:** Currently failing - tests configured for localhost instead of deployed URLs. See Issue #53.
 
 ---
 
