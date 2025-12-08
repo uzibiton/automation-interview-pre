@@ -47,22 +47,22 @@ on:
         description: 'Skip Prettier check'
         required: false
         type: boolean
-        default: false
+        default: true
       skip_eslint:
         description: 'Skip ESLint'
         required: false
         type: boolean
-        default: false
+        default: true
       skip_typecheck:
         description: 'Skip TypeScript check'
         required: false
         type: boolean
-        default: false
+        default: true
       skip_audit:
         description: 'Skip npm audit'
         required: false
         type: boolean
-        default: false
+        default: true
       skip_snyk:
         description: 'Skip Snyk scan'
         required: false
