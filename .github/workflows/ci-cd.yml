@@ -77,11 +77,11 @@ concurrency:
 # Define jobs that run in parallel
 jobs:
   # ============================================================================
-  # Parallel Quality Checks
+  # STAGE 1: Static Analysis
   # ============================================================================
 
   prettier:
-    name: Code Formatting (Prettier)
+    name: "[Static Analysis] Code Formatting"
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_prettier != 'true' }}
 
@@ -101,7 +101,7 @@ jobs:
         run: npm run format:check
 
   eslint:
-    name: Linting (ESLint)
+    name: "[Static Analysis] Linting"
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_eslint != 'true' }}
 
@@ -121,7 +121,7 @@ jobs:
         run: npm run lint
 
   typecheck:
-    name: Type Check (TypeScript)
+    name: "[Static Analysis] Type Check"
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_typecheck != 'true' }}
 
@@ -141,7 +141,7 @@ jobs:
         run: npm run type-check
 
   npm-audit:
-    name: Dependency Audit (npm)
+    name: "[Static Analysis] Dependency Audit"
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_audit != 'true' }}
 
@@ -161,7 +161,7 @@ jobs:
         run: npm audit --audit-level=moderate
 
   snyk:
-    name: Security Scan (Snyk)
+    name: "[Static Analysis] Security Scan"
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_snyk != 'true' }}
     permissions:
@@ -195,7 +195,7 @@ jobs:
           sarif_file: snyk.sarif
 
   unit-tests:
-    name: Unit Tests
+    name: "[Static Analysis] Unit Tests"
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_unit_tests != 'true' }}
 
@@ -266,11 +266,11 @@ jobs:
           fi
 
   # ============================================================================
-  # Build Services (parallel builds)
+  # STAGE 2: Build App
   # ============================================================================
 
   build-auth:
-    name: Build Auth Service
+    name: "[Build App] Auth Service"
     needs: setup
     runs-on: ubuntu-latest
 
@@ -298,7 +298,7 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:latest
 
   build-api:
-    name: Build API Service
+    name: "[Build App] API Service"
     needs: setup
     runs-on: ubuntu-latest
 
@@ -326,7 +326,7 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:latest
 
   build-frontend:
-    name: Build Frontend
+    name: "[Build App] Frontend"
     needs: setup
     runs-on: ubuntu-latest
 
@@ -354,7 +354,7 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
 
   build-test-runner:
-    name: Build Test Runner
+    name: "[Build App] Test Runner"
     needs: setup
     runs-on: ubuntu-latest
 
@@ -485,13 +485,49 @@ jobs:
       callback_url: ${{ steps.auth_service.outputs.callback_url }}
 
   # ============================================================================
-  # JOB 5: Run E2E Smoke Tests (PR and Staging only)
+  # STAGE 3: Integration Tests
   # ============================================================================
-  e2e-tests:
-    name: E2E Smoke Tests
+  integration-tests:
+    name: "[Integration Tests] API Integration"
     needs: [setup, deploy]
     runs-on: ubuntu-latest
     if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: tests
+
+      - name: Run integration tests
+        run: npm run test:integration
+        working-directory: tests
+        env:
+          API_URL: ${{ needs.deploy.outputs.api_url }}
+          AUTH_URL: ${{ needs.deploy.outputs.auth_url }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: tests/reports/
+
+  # ============================================================================
+  # STAGE 4: E2E Sanity
+  # ============================================================================
+  e2e-tests:
+    name: "[E2E Sanity] Smoke Tests"
+    needs: [setup, deploy, integration-tests]
+    runs-on: ubuntu-latest
+    if: always() && needs.setup.outputs.should_run_e2e == 'true'
 
     steps:
       - name: Checkout code
