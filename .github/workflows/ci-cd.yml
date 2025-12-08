@@ -79,9 +79,17 @@ jobs:
   # ============================================================================
   # STAGE 1: Static Analysis
   # ============================================================================
+  
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start Static Analysis Stage
+        run: echo "Starting Static Analysis stage"
 
   prettier:
-    name: '[Static Analysis] Code Formatting'
+    name: Code Formatting
+    needs: static-analysis
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_prettier != 'true' }}
 
@@ -101,7 +109,8 @@ jobs:
         run: npm run format:check
 
   eslint:
-    name: '[Static Analysis] Linting'
+    name: Linting
+    needs: static-analysis
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_eslint != 'true' }}
 
@@ -121,7 +130,8 @@ jobs:
         run: npm run lint
 
   typecheck:
-    name: '[Static Analysis] Type Check'
+    name: Type Check
+    needs: static-analysis
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_typecheck != 'true' }}
 
@@ -141,7 +151,8 @@ jobs:
         run: npm run type-check
 
   npm-audit:
-    name: '[Static Analysis] Dependency Audit'
+    name: Dependency Audit
+    needs: static-analysis
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_audit != 'true' }}
 
@@ -161,7 +172,8 @@ jobs:
         run: npm audit --audit-level=moderate
 
   snyk:
-    name: '[Static Analysis] Security Scan'
+    name: Security Scan
+    needs: static-analysis
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.skip_snyk != 'true' }}
     permissions:
@@ -199,7 +211,7 @@ jobs:
   # ============================================================================
 
   unit-tests:
-    name: '[Unit Tests] Run Tests'
+    name: Unit Tests
     needs: [prettier, eslint, typecheck, npm-audit, snyk]
     if: always() && github.event.inputs.skip_unit_tests != 'true'
     runs-on: ubuntu-latest
@@ -273,10 +285,18 @@ jobs:
   # ============================================================================
   # STAGE 3: Build App
   # ============================================================================
+  
+  build-app:
+    name: Build App
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start Build App Stage
+        run: echo "Starting Build App stage"
 
   build-auth:
-    name: '[Build App] Auth Service'
-    needs: setup
+    name: Auth Service
+    needs: build-app
     runs-on: ubuntu-latest
 
     steps:
@@ -303,8 +323,8 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:latest
 
   build-api:
-    name: '[Build App] API Service'
-    needs: setup
+    name: API Service
+    needs: build-app
     runs-on: ubuntu-latest
 
     steps:
@@ -331,8 +351,8 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:latest
 
   build-frontend:
-    name: '[Build App] Frontend'
-    needs: setup
+    name: Frontend
+    needs: build-app
     runs-on: ubuntu-latest
 
     steps:
@@ -464,10 +484,18 @@ jobs:
   # ============================================================================
   # STAGE 4: Integration Tests
   # ============================================================================
+  
+  integration-tests-stage:
+    name: Integration Tests
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start Integration Tests Stage
+        run: echo "Starting Integration Tests stage"
 
   build-test-runner:
-    name: '[Integration Tests] Build Test Runner'
-    needs: [setup, deploy]
+    name: Build Test Runner
+    needs: integration-tests-stage
     runs-on: ubuntu-latest
 
     steps:
@@ -493,9 +521,9 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:${{ github.sha }}
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:latest
 
-  integration-tests:
-    name: '[Integration Tests] API Integration'
-    needs: [setup, deploy, build-test-runner]
+  run-integration-tests:
+    name: API Integration
+    needs: build-test-runner
     runs-on: ubuntu-latest
     if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
 
@@ -529,9 +557,19 @@ jobs:
   # ============================================================================
   # STAGE 5: E2E Sanity
   # ============================================================================
+  
+  e2e-sanity:
+    name: E2E Sanity
+    needs: run-integration-tests
+    runs-on: ubuntu-latest
+    if: always() && needs.setup.outputs.should_run_e2e == 'true'
+    steps:
+      - name: Start E2E Sanity Stage
+        run: echo "Starting E2E Sanity stage"
+  
   e2e-tests:
-    name: '[E2E Sanity] Smoke Tests'
-    needs: [setup, deploy, integration-tests]
+    name: Smoke Tests
+    needs: [setup, e2e-sanity]
     runs-on: ubuntu-latest
     if: always() && needs.setup.outputs.should_run_e2e == 'true'
 
