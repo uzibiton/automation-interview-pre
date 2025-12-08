@@ -74,15 +74,96 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref }}
   cancel-in-progress: false
 
-# Define jobs that run in sequence
+# Define jobs that run in parallel
 jobs:
   # ============================================================================
-  # JOB 1: Static Analysis (runs in parallel with unit tests)
+  # Parallel Quality Checks
   # ============================================================================
-  static-analysis:
-    name: Static Analysis
+
+  prettier:
+    name: Code Formatting (Prettier)
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.skip_static_analysis != 'true' }}
+    if: ${{ github.event.inputs.skip_prettier != 'true' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+  eslint:
+    name: Linting (ESLint)
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.skip_eslint != 'true' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+  typecheck:
+    name: Type Check (TypeScript)
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.skip_typecheck != 'true' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run type-check
+
+  npm-audit:
+    name: Dependency Audit (npm)
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.skip_audit != 'true' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+
+  snyk:
+    name: Security Scan (Snyk)
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.skip_snyk != 'true' }}
     permissions:
       contents: read
       security-events: write
@@ -96,31 +177,10 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install root dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Check code formatting (Prettier)
-        if: ${{ github.event.inputs.skip_prettier != 'true' }}
-        run: npm run format:check
-        continue-on-error: true
-
-      - name: Run ESLint
-        if: ${{ github.event.inputs.skip_eslint != 'true' }}
-        run: npm run lint
-        continue-on-error: true
-
-      - name: TypeScript type check
-        if: ${{ github.event.inputs.skip_typecheck != 'true' }}
-        run: npm run type-check
-        continue-on-error: true
-
-      - name: npm audit (dependency vulnerabilities)
-        if: ${{ github.event.inputs.skip_audit != 'true' }}
-        run: npm audit --audit-level=moderate
-        continue-on-error: true
-
-      - name: Run Snyk security scan
-        if: ${{ github.event.inputs.skip_snyk != 'true' }}
+      - name: Run Snyk scan
         uses: snyk/actions/node@master
         continue-on-error: true
         env:
@@ -128,15 +188,12 @@ jobs:
         with:
           args: --severity-threshold=high --all-projects --sarif-file-output=snyk.sarif
 
-      - name: Upload Snyk results to GitHub Security
-        if: ${{ github.event.inputs.skip_snyk != 'true' && hashFiles('snyk.sarif') != '' }}
+      - name: Upload results to GitHub Security
+        if: hashFiles('snyk.sarif') != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: snyk.sarif
 
-  # ============================================================================
-  # JOB 2: Run Unit Tests (runs in parallel with static analysis)
-  # ============================================================================
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
@@ -167,11 +224,12 @@ jobs:
           path: tests/coverage/
 
   # ============================================================================
-  # JOB 3: Determine Deployment Environment
+  # Setup Environment (waits for all quality checks)
   # ============================================================================
   setup:
     name: Setup Environment
-    needs: [static-analysis, unit-tests]
+    needs: [prettier, eslint, typecheck, npm-audit, snyk, unit-tests]
+    if: always()
     runs-on: ubuntu-latest
     outputs:
       env_name: ${{ steps.set_env.outputs.env_name }}
