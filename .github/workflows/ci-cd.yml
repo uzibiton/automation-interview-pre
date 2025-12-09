@@ -399,35 +399,6 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }}
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
 
-  build-test-runner:
-    name: Test Runner
-    needs: setup
-    if: always()
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker
-
-      - name: Build and push Test Runner
-        run: |
-          cd tests
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:${{ github.sha }} .
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:latest .
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:${{ github.sha }}
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:latest
-
   # ============================================================================
   # Deploy to Cloud Run
   # ============================================================================
