@@ -8,7 +8,7 @@
  * 1. Column header click interactions
  * 2. Sort order verification (ascending/descending)
  * 3. Visual indicator validation (↑ ↓ arrows)
- * 4. Multi-column sorting support
+ * 4. Single-column sorting behavior (only one column sorted at a time)
  * 5. Default sort behavior (newest first)
  * =============================================================================
  */

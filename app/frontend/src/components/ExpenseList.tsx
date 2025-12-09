@@ -146,14 +146,17 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
           compareResult = a.description.localeCompare(b.description);
           break;
         case 'category':
-          const categoryA = getCategoryName(a.categoryId);
-          const categoryB = getCategoryName(b.categoryId);
+          const categoryA = getCategoryName(a.categoryId) || 'Unknown';
+          const categoryB = getCategoryName(b.categoryId) || 'Unknown';
           compareResult = categoryA.localeCompare(categoryB);
           break;
         case 'amount':
           const amountA = typeof a.amount === 'string' ? parseFloat(a.amount) : a.amount;
           const amountB = typeof b.amount === 'string' ? parseFloat(b.amount) : b.amount;
-          compareResult = amountA - amountB;
+          // Handle NaN cases by treating them as 0
+          const validAmountA = isNaN(amountA) ? 0 : amountA;
+          const validAmountB = isNaN(amountB) ? 0 : amountB;
+          compareResult = validAmountA - validAmountB;
           break;
       }
 
