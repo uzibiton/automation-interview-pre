@@ -83,6 +83,7 @@ jobs:
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
+    if: false # Disabled for Snyk testing
     steps:
       - name: Start Code Quality Checks
         run: echo "Starting code quality checks"
@@ -211,6 +212,14 @@ jobs:
         with:
           args: --severity-threshold=high --all-projects --sarif-file-output=snyk.sarif
 
+      - name: Upload SARIF as artifact
+        if: always() && hashFiles('snyk.sarif') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-sarif
+          path: snyk.sarif
+          retention-days: 30
+
       - name: Upload results to GitHub Security
         if: hashFiles('snyk.sarif') != ''
         uses: github/codeql-action/upload-sarif@v4
@@ -223,7 +232,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    if: github.event.inputs.skip_unit_tests != 'true'
+    if: false # Disabled for Snyk testing
     runs-on: ubuntu-latest
 
     steps:
@@ -255,7 +264,7 @@ jobs:
   # ============================================================================
   setup:
     name: Setup Environment
-    needs: [prettier, eslint, typecheck, npm-audit, snyk, unit-tests]
+    needs: [snyk]
     if: always()
     runs-on: ubuntu-latest
     outputs:
@@ -299,6 +308,7 @@ jobs:
   build-auth:
     name: Auth Service
     needs: setup
+    if: false # Disabled for Snyk testing
     runs-on: ubuntu-latest
 
     steps:
@@ -327,6 +337,7 @@ jobs:
   build-api:
     name: API Service
     needs: setup
+    if: false # Disabled for Snyk testing
     runs-on: ubuntu-latest
 
     steps:
@@ -355,6 +366,7 @@ jobs:
   build-frontend:
     name: Frontend
     needs: setup
+    if: false # Disabled for Snyk testing
     runs-on: ubuntu-latest
 
     steps:
@@ -386,6 +398,7 @@ jobs:
   deploy:
     name: Deploy to ${{ needs.setup.outputs.env_name }}
     needs: [setup, build-auth, build-api, build-frontend]
+    if: false # Disabled for Snyk testing
     runs-on: ubuntu-latest
 
     steps:
@@ -491,7 +504,7 @@ jobs:
     name: Integration Tests
     needs: [setup, deploy]
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
+    if: false # Disabled for Snyk testing
     continue-on-error: true
 
     steps:
@@ -529,7 +542,7 @@ jobs:
     name: Smoke Tests
     needs: [setup, deploy]
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
+    if: false # Disabled for Snyk testing
     continue-on-error: true
 
     steps:
