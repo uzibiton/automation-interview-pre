@@ -547,9 +547,9 @@ jobs:
 
   smoke-tests:
     name: Smoke Tests
-    needs: [setup, deploy]
+    needs: [setup, deploy, integration-tests]
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
+    if: ${{ needs.setup.outputs.should_run_e2e == 'true' && always() }}
     continue-on-error: true
 
     steps:
