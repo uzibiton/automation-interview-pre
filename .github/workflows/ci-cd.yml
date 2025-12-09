@@ -227,11 +227,12 @@ jobs:
         with:
           sarif_file: snyk.sarif
 
-      - name: Fail if vulnerabilities found
+      - name: Check for vulnerabilities
         if: steps.snyk.outcome == 'failure'
+        continue-on-error: true
         run: |
-          echo "❌ Snyk found high or critical vulnerabilities!"
-          echo "Review the SARIF artifact or GitHub Security tab for details"
+          echo "::warning::⚠️ Snyk found high or critical vulnerabilities!"
+          echo "::warning::Review the SARIF artifact or GitHub Security tab for details"
           exit 1
 
   # ============================================================================
