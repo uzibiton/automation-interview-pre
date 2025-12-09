@@ -469,6 +469,10 @@ textarea.form-control {
   line-height: 1.5;
 }
 
+.confirmation-dialog .modal-actions {
+  padding: 20px;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .header {
