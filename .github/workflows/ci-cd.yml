@@ -256,8 +256,9 @@ jobs:
         working-directory: tests
 
       - name: Run unit tests
-        run: npm run test:unit
+        run: npm run test:unit -- --maxWorkers=2 --forceExit
         working-directory: tests
+        timeout-minutes: 5
 
       - name: Upload test results
         if: always()
