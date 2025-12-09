@@ -10,9 +10,9 @@ describe('API Health Check', () => {
 
   it('should return 200 from health endpoint', async () => {
     const response = await fetch(`${apiUrl}/health`);
-    
+
     expect(response.status).toBe(200);
-    
+
     const data = await response.json();
     expect(data).toHaveProperty('status');
     expect(data.status).toBe('healthy');
@@ -22,9 +22,9 @@ describe('API Health Check', () => {
     const startTime = Date.now();
     const response = await fetch(`${apiUrl}/health`);
     const endTime = Date.now();
-    
+
     const responseTime = endTime - startTime;
-    
+
     expect(response.ok).toBe(true);
     expect(responseTime).toBeLessThan(2000); // Should respond within 2 seconds
   });
