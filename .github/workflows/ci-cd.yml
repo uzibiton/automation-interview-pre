@@ -239,7 +239,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    if: false  # Disabled for testing - hangs in CI
+    if: github.event.inputs.skip_unit_tests != 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -273,7 +273,7 @@ jobs:
   setup:
     name: Setup Environment
     needs: [prettier, eslint, typecheck, npm-audit, snyk, unit-tests]
-    if: false # Disabled for testing
+    if: always()
     runs-on: ubuntu-latest
     outputs:
       env_name: ${{ steps.set_env.outputs.env_name }}
@@ -316,7 +316,7 @@ jobs:
   build-auth:
     name: Auth Service
     needs: setup
-    if: false # Disabled for testing
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
@@ -345,7 +345,7 @@ jobs:
   build-api:
     name: API Service
     needs: setup
-    if: false # Disabled for testing
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
@@ -374,7 +374,7 @@ jobs:
   build-frontend:
     name: Frontend
     needs: setup
-    if: false # Disabled for testing
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
@@ -406,7 +406,7 @@ jobs:
   deploy:
     name: Deploy to ${{ needs.setup.outputs.env_name }}
     needs: [setup, build-auth, build-api, build-frontend]
-    if: false # Disabled for testing
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
@@ -512,7 +512,7 @@ jobs:
     name: Integration Tests
     needs: [setup, deploy]
     runs-on: ubuntu-latest
-    if: false # Disabled for testing
+    if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
     continue-on-error: true
 
     steps:
@@ -550,7 +550,7 @@ jobs:
     name: Smoke Tests
     needs: [setup, deploy, integration-tests]
     runs-on: ubuntu-latest
-    if: false # Disabled for testing
+    if: ${{ needs.setup.outputs.should_run_e2e == 'true' && always() }}
     continue-on-error: true
 
     steps:
