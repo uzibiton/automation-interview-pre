@@ -10,7 +10,7 @@ describe('API Service Availability', () => {
 
   it('should return 404 from root endpoint (API is running)', async () => {
     const response = await fetch(`${apiUrl}/`);
-    
+
     // API service returns 404 for root but this confirms it's running
     expect([404, 200]).toContain(response.status);
   });
@@ -19,9 +19,9 @@ describe('API Service Availability', () => {
     const startTime = Date.now();
     const response = await fetch(`${apiUrl}/`);
     const endTime = Date.now();
-    
+
     const responseTime = endTime - startTime;
-    
+
     // Just check that we got a response (404 is fine, means API is up)
     expect(response.status).toBeDefined();
     expect(responseTime).toBeLessThan(2000); // Should respond within 2 seconds
