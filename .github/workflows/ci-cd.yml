@@ -83,7 +83,6 @@ jobs:
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
-    if: false # Disabled for Snyk testing
     steps:
       - name: Start Code Quality Checks
         run: echo "Starting code quality checks"
@@ -227,12 +226,11 @@ jobs:
         with:
           sarif_file: snyk.sarif
 
-      - name: Check for vulnerabilities
+      - name: Fail on vulnerabilities (non-blocking)
         if: steps.snyk.outcome == 'failure'
-        continue-on-error: true
         run: |
-          echo "::warning::⚠️ Snyk found high or critical vulnerabilities!"
-          echo "::warning::Review the SARIF artifact or GitHub Security tab for details"
+          echo "❌ Snyk found high or critical vulnerabilities!"
+          echo "Review the SARIF artifact or GitHub Security tab for details"
           exit 1
 
   # ============================================================================
@@ -241,7 +239,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
-    if: false # Disabled for Snyk testing
+    if: github.event.inputs.skip_unit_tests != 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -273,7 +271,7 @@ jobs:
   # ============================================================================
   setup:
     name: Setup Environment
-    needs: [snyk]
+    needs: [prettier, eslint, typecheck, npm-audit, snyk, unit-tests]
     if: always()
     runs-on: ubuntu-latest
     outputs:
@@ -317,7 +315,6 @@ jobs:
   build-auth:
     name: Auth Service
     needs: setup
-    if: false # Disabled for Snyk testing
     runs-on: ubuntu-latest
 
     steps:
@@ -346,7 +343,6 @@ jobs:
   build-api:
     name: API Service
     needs: setup
-    if: false # Disabled for Snyk testing
     runs-on: ubuntu-latest
 
     steps:
@@ -375,7 +371,6 @@ jobs:
   build-frontend:
     name: Frontend
     needs: setup
-    if: false # Disabled for Snyk testing
     runs-on: ubuntu-latest
 
     steps:
@@ -401,13 +396,41 @@ jobs:
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }}
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
 
+  build-test-runner:
+    name: Test Runner
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker
+
+      - name: Build and push Test Runner
+        run: |
+          cd tests
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:${{ github.sha }} .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:latest .
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/test-runner:latest
+
   # ============================================================================
   # Deploy to Cloud Run
   # ============================================================================
   deploy:
     name: Deploy to ${{ needs.setup.outputs.env_name }}
     needs: [setup, build-auth, build-api, build-frontend]
-    if: false # Disabled for Snyk testing
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
@@ -513,7 +536,7 @@ jobs:
     name: Integration Tests
     needs: [setup, deploy]
     runs-on: ubuntu-latest
-    if: false # Disabled for Snyk testing
+    if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
     continue-on-error: true
 
     steps:
@@ -551,7 +574,7 @@ jobs:
     name: Smoke Tests
     needs: [setup, deploy]
     runs-on: ubuntu-latest
-    if: false # Disabled for Snyk testing
+    if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
     continue-on-error: true
 
     steps:
