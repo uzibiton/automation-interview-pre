@@ -205,8 +205,9 @@ jobs:
         run: npm ci
 
       - name: Run Snyk scan
-        uses: snyk/actions/node@master
+        id: snyk
         continue-on-error: true
+        uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
@@ -221,10 +222,17 @@ jobs:
           retention-days: 30
 
       - name: Upload results to GitHub Security
-        if: hashFiles('snyk.sarif') != ''
+        if: always() && hashFiles('snyk.sarif') != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: snyk.sarif
+
+      - name: Fail if vulnerabilities found
+        if: steps.snyk.outcome == 'failure'
+        run: |
+          echo "❌ Snyk found high or critical vulnerabilities!"
+          echo "Review the SARIF artifact or GitHub Security tab for details"
+          exit 1
 
   # ============================================================================
   # STAGE 2: Unit Tests (runs in parallel with static analysis)
