@@ -9,7 +9,7 @@ import ConfirmationDialog from './ConfirmationDialog';
 
 const API_SERVICE_URL = getApiServiceUrl();
 
-type SortField = 'date' | 'description' | 'category' | 'amount' | null;
+type SortField = 'date' | 'description' | 'category' | 'amount' | 'paymentMethod' | null;
 type SortDirection = 'asc' | 'desc' | null;
 
 interface ExpenseListProps {
@@ -158,6 +158,11 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
           const validAmountB = isNaN(amountB) ? 0 : amountB;
           compareResult = validAmountA - validAmountB;
           break;
+        case 'paymentMethod':
+          const paymentA = a.paymentMethod || '';
+          const paymentB = b.paymentMethod || '';
+          compareResult = paymentA.localeCompare(paymentB);
+          break;
       }
 
       return sortDirection === 'asc' ? compareResult : -compareResult;
@@ -192,18 +197,25 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
         <thead>
           <tr>
             <th className="sortable-header" onClick={() => handleSort('date')}>
-              {translation('expenses.date')}{getSortIcon('date')}
+              {translation('expenses.date')}
+              {getSortIcon('date')}
             </th>
             <th className="sortable-header" onClick={() => handleSort('category')}>
-              {translation('expenses.category')}{getSortIcon('category')}
+              {translation('expenses.category')}
+              {getSortIcon('category')}
             </th>
             <th className="sortable-header" onClick={() => handleSort('description')}>
-              {translation('expenses.description')}{getSortIcon('description')}
+              {translation('expenses.description')}
+              {getSortIcon('description')}
             </th>
             <th className="sortable-header" onClick={() => handleSort('amount')}>
-              {translation('expenses.amount')}{getSortIcon('amount')}
+              {translation('expenses.amount')}
+              {getSortIcon('amount')}
             </th>
-            <th>{translation('expenses.paymentMethod')}</th>
+            <th className="sortable-header" onClick={() => handleSort('paymentMethod')}>
+              {translation('expenses.paymentMethod')}
+              {getSortIcon('paymentMethod')}
+            </th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -225,7 +237,13 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
                   : expense.amount
                 ).toFixed(2)}
               </td>
-              <td>{expense.paymentMethod ? translation(`paymentMethods.${expense.paymentMethod}`) : '-'}</td>
+              <td>
+                {expense.paymentMethod
+                  ? translation(
+                      `paymentMethods.${expense.paymentMethod.toLowerCase().replace(/ /g, '_')}`,
+                    )
+                  : '-'}
+              </td>
               <td>
                 <button
                   onClick={() => handleEdit(expense)}
