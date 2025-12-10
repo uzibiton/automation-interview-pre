@@ -9,6 +9,9 @@ import ConfirmationDialog from './ConfirmationDialog';
 
 const API_SERVICE_URL = getApiServiceUrl();
 
+type SortField = 'date' | 'description' | 'category' | 'amount' | 'paymentMethod' | null;
+type SortDirection = 'asc' | 'desc' | null;
+
 interface ExpenseListProps {
   token: string;
   refreshKey: number;
@@ -22,6 +25,8 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   const [loading, setLoading] = useState(true);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [deletingExpenseId, setDeletingExpenseId] = useState<number | null>(null);
+  const [sortField, setSortField] = useState<SortField>('date');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   useEffect(() => {
     fetchExpenses();
@@ -33,7 +38,8 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
       const response = await axios.get(`${API_SERVICE_URL}/expenses`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setExpenses(Array.isArray(response.data) ? response.data : []);
+      const fetchedExpenses = Array.isArray(response.data) ? response.data : [];
+      setExpenses(fetchedExpenses);
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch expenses', error);
@@ -101,6 +107,75 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
     onUpdate();
   };
 
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      // Cycle through: asc -> desc -> null
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        setSortField(null);
+        setSortDirection(null);
+      }
+    } else {
+      // New field: start with ascending
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortedExpenses = () => {
+    if (!sortField || !sortDirection) {
+      // Default sort: date descending when no sort is active
+      return [...expenses].sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA;
+      });
+    }
+
+    return [...expenses].sort((a, b) => {
+      let compareResult = 0;
+
+      switch (sortField) {
+        case 'date':
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          compareResult = dateA - dateB;
+          break;
+        case 'description':
+          compareResult = a.description.localeCompare(b.description);
+          break;
+        case 'category':
+          const categoryA = getCategoryName(a.categoryId) || 'Unknown';
+          const categoryB = getCategoryName(b.categoryId) || 'Unknown';
+          compareResult = categoryA.localeCompare(categoryB);
+          break;
+        case 'amount':
+          const amountA = typeof a.amount === 'string' ? parseFloat(a.amount) : a.amount;
+          const amountB = typeof b.amount === 'string' ? parseFloat(b.amount) : b.amount;
+          // Handle NaN cases by treating them as 0
+          const validAmountA = isNaN(amountA) ? 0 : amountA;
+          const validAmountB = isNaN(amountB) ? 0 : amountB;
+          compareResult = validAmountA - validAmountB;
+          break;
+        case 'paymentMethod':
+          const paymentA = a.paymentMethod || '';
+          const paymentB = b.paymentMethod || '';
+          compareResult = paymentA.localeCompare(paymentB);
+          break;
+      }
+
+      return sortDirection === 'asc' ? compareResult : -compareResult;
+    });
+  };
+
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) {
+      return null;
+    }
+    return sortDirection === 'asc' ? ' ↑' : ' ↓';
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -113,22 +188,39 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
     );
   }
 
+  const sortedExpenses = getSortedExpenses();
+
   return (
     <div>
       <h2>{translation('expenses.title')}</h2>
       <table className="table">
         <thead>
           <tr>
-            <th>{translation('expenses.date')}</th>
-            <th>{translation('expenses.category')}</th>
-            <th>{translation('expenses.description')}</th>
-            <th>{translation('expenses.amount')}</th>
-            <th>{translation('expenses.paymentMethod')}</th>
+            <th className="sortable-header" onClick={() => handleSort('date')}>
+              {translation('expenses.date')}
+              {getSortIcon('date')}
+            </th>
+            <th className="sortable-header" onClick={() => handleSort('category')}>
+              {translation('expenses.category')}
+              {getSortIcon('category')}
+            </th>
+            <th className="sortable-header" onClick={() => handleSort('description')}>
+              {translation('expenses.description')}
+              {getSortIcon('description')}
+            </th>
+            <th className="sortable-header" onClick={() => handleSort('amount')}>
+              {translation('expenses.amount')}
+              {getSortIcon('amount')}
+            </th>
+            <th className="sortable-header" onClick={() => handleSort('paymentMethod')}>
+              {translation('expenses.paymentMethod')}
+              {getSortIcon('paymentMethod')}
+            </th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {expenses.map((expense) => (
+          {sortedExpenses.map((expense) => (
             <tr key={expense.id}>
               <td>{new Date(expense.date).toLocaleDateString()}</td>
               <td>
@@ -145,7 +237,13 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
                   : expense.amount
                 ).toFixed(2)}
               </td>
-              <td>{expense.paymentMethod ? translation(`paymentMethods.${expense.paymentMethod}`) : '-'}</td>
+              <td>
+                {expense.paymentMethod
+                  ? translation(
+                      `paymentMethods.${expense.paymentMethod.toLowerCase().replace(/ /g, '_')}`,
+                    )
+                  : '-'}
+              </td>
               <td>
                 <button
                   onClick={() => handleEdit(expense)}

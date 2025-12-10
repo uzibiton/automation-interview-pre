@@ -48,14 +48,16 @@ Comprehensive guide to all project documentation organized by category and use c
 
 ### 🚀 Development & Workflows
 
-| Document                                               | Description                                       | Related Docs                                             |
-| ------------------------------------------------------ | ------------------------------------------------- | -------------------------------------------------------- |
-| **[Task & Bug Management](qa/TASK_BUG_MANAGEMENT.md)** | **Issue tracking, workflows, and best practices** | **→ [Issue Templates](../.github/ISSUE_TEMPLATE/)**      |
-| **[Maintenance Schedule](dev/MAINTENANCE.md)**         | **Recurring maintenance tasks and tracking**      | **→ Weekly, Monthly, Quarterly checklists**              |
-| [PR Workflow Guide](qa/PR_WORKFLOW_GUIDE.md)           | Complete PR process from task to merge            | → [Testing Strategy](qa/TESTING_STRATEGY.md)             |
-| [Development Insights](dev/DEVELOPMENT_INSIGHTS.md)    | Lessons learned and best practices                | → [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)                 |
-| [GitHub Actions Setup](devops/GITHUB_ACTIONS_SETUP.md) | CI/CD configuration details                       | → [Workflows](../.github/workflows/)                     |
-| [Cloud Run Deployment](devops/DEPLOYMENT.md)           | Deploy to staging and production                  | → [Cloud Run Management](devops/CLOUD_RUN_MANAGEMENT.md) |
+| Document                                                 | Description                                       | Related Docs                                             |
+| -------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------- |
+| **[Task & Bug Management](qa/TASK_BUG_MANAGEMENT.md)**   | **Issue tracking, workflows, and best practices** | **→ [Issue Templates](../.github/ISSUE_TEMPLATE/)**      |
+| **[Maintenance Schedule](dev/MAINTENANCE.md)**           | **Recurring maintenance tasks and tracking**      | **→ Weekly, Monthly, Quarterly checklists**              |
+| **[Working with AI Agents](dev/WORKING_WITH_AGENTS.md)** | **Best practices for AI-assisted development**    | **→ [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)**             |
+| **[Database Tools](../tools/README.md)**                 | **Test data seeding and database management**     | **→ [Run Locally](dev/RUN_LOCALLY.md)**                  |
+| [PR Workflow Guide](qa/PR_WORKFLOW_GUIDE.md)             | Complete PR process from task to merge            | → [Testing Strategy](qa/TESTING_STRATEGY.md)             |
+| [Development Insights](dev/DEVELOPMENT_INSIGHTS.md)      | Lessons learned and best practices                | → [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)                 |
+| [GitHub Actions Setup](devops/GITHUB_ACTIONS_SETUP.md)   | CI/CD configuration details                       | → [Workflows](../.github/workflows/)                     |
+| [Cloud Run Deployment](devops/DEPLOYMENT.md)             | Deploy to staging and production                  | → [Cloud Run Management](devops/CLOUD_RUN_MANAGEMENT.md) |
 
 ### 📊 Demo & Presentation
 

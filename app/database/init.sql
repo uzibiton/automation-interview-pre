@@ -170,6 +170,12 @@ INSERT INTO users (email, name, google_id, avatar_url) VALUES
     ('admin@example.com', 'Admin User', 'google456', 'https://via.placeholder.com/150')
 ON CONFLICT (email) DO NOTHING;
 
+-- Insert standard test user for development and E2E tests
+-- Password: Test123!
+INSERT INTO users (email, name, password_hash) VALUES
+    ('test@expenses.local', 'Test User', '$2b$10$deWzoV5fs/.zOkxXdeETueCRNaSVF.xuR/4K0TSgMes5xB.cmNhFu')
+ON CONFLICT (email) DO NOTHING;
+
 -- Insert sample expenses
 INSERT INTO expenses (user_id, category_id, sub_category_id, amount, currency, description, date, payment_method) VALUES
     (1, 2, 5, 250.50, 'USD', 'Weekly groceries', CURRENT_DATE - INTERVAL '2 days', 'credit_card'),
