@@ -175,6 +175,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -199,23 +201,41 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run Snyk scan
-        uses: snyk/actions/node@master
+        id: snyk
         continue-on-error: true
+        uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high --all-projects --sarif-file-output=snyk.sarif
 
+      - name: Upload SARIF as artifact
+        if: always() && hashFiles('snyk.sarif') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-sarif
+          path: snyk.sarif
+          retention-days: 30
+
       - name: Upload results to GitHub Security
-        if: hashFiles('snyk.sarif') != ''
+        if: always() && hashFiles('snyk.sarif') != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: snyk.sarif
+
+      - name: Fail on vulnerabilities (non-blocking)
+        if: steps.snyk.outcome == 'failure'
+        run: |
+          echo "❌ Snyk found high or critical vulnerabilities!"
+          echo "Review the SARIF artifact or GitHub Security tab for details"
+          exit 1
 
   # ============================================================================
   # STAGE 2: Unit Tests (runs in parallel with static analysis)
@@ -234,14 +254,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: tests/package-lock.json
 
       - name: Install test dependencies
         run: npm ci
         working-directory: tests
 
       - name: Run unit tests
-        run: npm run test:unit
+        run: npm run test:unit -- --maxWorkers=2 --forceExit
         working-directory: tests
+        timeout-minutes: 5
 
       - name: Upload test results
         if: always()
@@ -299,6 +322,7 @@ jobs:
   build-auth:
     name: Auth Service
     needs: setup
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
@@ -327,6 +351,7 @@ jobs:
   build-api:
     name: API Service
     needs: setup
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
@@ -355,6 +380,7 @@ jobs:
   build-frontend:
     name: Frontend
     needs: setup
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
@@ -386,6 +412,7 @@ jobs:
   deploy:
     name: Deploy to ${{ needs.setup.outputs.env_name }}
     needs: [setup, build-auth, build-api, build-frontend]
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
@@ -491,7 +518,7 @@ jobs:
     name: Integration Tests
     needs: [setup, deploy]
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
+    if: ${{ needs.setup.outputs.should_run_e2e == 'true' && always() }}
     continue-on-error: true
 
     steps:
@@ -502,6 +529,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: tests/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -527,9 +556,9 @@ jobs:
 
   smoke-tests:
     name: Smoke Tests
-    needs: [setup, deploy]
+    needs: [setup, deploy, integration-tests]
     runs-on: ubuntu-latest
-    if: ${{ needs.setup.outputs.should_run_e2e == 'true' }}
+    if: ${{ needs.setup.outputs.should_run_e2e == 'true' && always() }}
     continue-on-error: true
 
     steps:
