@@ -3,6 +3,7 @@
 ## Prerequisites Check ✅
 
 Before starting, make sure you have:
+
 - [ ] Docker Desktop installed and running
 - [ ] Git installed
 - [ ] At least 4GB free RAM
@@ -11,6 +12,7 @@ Before starting, make sure you have:
 ## Installation Steps
 
 ### Step 1: Create Environment File
+
 ```bash
 # Copy the example environment file
 cp .env.example .env
@@ -19,12 +21,14 @@ cp .env.example .env
 **Note:** The app will work without Google OAuth configured. You can set it up later.
 
 ### Step 2: Start the Application
+
 ```bash
 # Build and start all services (first time)
 docker-compose up --build
 ```
 
 This will:
+
 - Build 3 Docker images (auth-service, api-service, frontend)
 - Download PostgreSQL and Nginx images
 - Create network and volumes
@@ -35,6 +39,7 @@ This will:
 ### Step 3: Wait for Services to Start
 
 Watch the logs until you see:
+
 ```
 ✅ postgres      | database system is ready to accept connections
 ✅ auth-service  | 🔐 Auth Service running on port 3001
@@ -46,6 +51,7 @@ Watch the logs until you see:
 ### Step 4: Access the Application
 
 Open your browser:
+
 - **Main App**: http://localhost:3000
 - **Auth API**: http://localhost:3001
 - **Tasks API**: http://localhost:3002
@@ -53,6 +59,7 @@ Open your browser:
 ## ⚠️ Common Issues & Fixes
 
 ### Issue 1: "Port already in use"
+
 ```bash
 # Check what's using the port (Windows)
 netstat -ano | findstr :3000
@@ -66,12 +73,14 @@ taskkill /PID <PID_NUMBER> /F
 ```
 
 ### Issue 2: "docker-compose: command not found"
+
 ```bash
 # Use docker compose (without hyphen) for newer Docker versions
 docker compose up --build
 ```
 
 ### Issue 3: Build fails with "no space left on device"
+
 ```bash
 # Clean Docker cache
 docker system prune -a
@@ -82,6 +91,7 @@ docker-compose up --build
 ```
 
 ### Issue 4: Container exits immediately
+
 ```bash
 # Check logs for specific service
 docker-compose logs auth-service
@@ -94,6 +104,7 @@ docker-compose up --build
 ```
 
 ### Issue 5: "Cannot connect to database"
+
 ```bash
 # Make sure PostgreSQL is ready
 docker-compose logs postgres
@@ -139,6 +150,7 @@ docker exec -it test-postgres psql -U testuser -d testdb
 ## 📊 Testing the Application
 
 ### 1. Database Check
+
 ```bash
 # Connect to database
 docker exec -it test-postgres psql -U testuser -d testdb
@@ -152,6 +164,7 @@ SELECT * FROM tasks;
 ### 2. API Testing (without authentication)
 
 Test health/public endpoints:
+
 ```bash
 # Check if services are running
 curl http://localhost:3001
@@ -159,6 +172,7 @@ curl http://localhost:3002
 ```
 
 ### 3. Frontend Testing
+
 1. Go to http://localhost:3000
 2. You should see the login page
 3. Click "Sign in with Google" (needs OAuth setup)
@@ -187,6 +201,7 @@ curl http://localhost:3002
    - Name: "Task Manager"
 
 5. **Add Authorized Redirect URIs**
+
    ```
    http://localhost:3001/auth/google/callback
    ```
@@ -196,6 +211,7 @@ curl http://localhost:3002
    - Copy "Client Secret"
 
 7. **Update .env file**
+
    ```bash
    GOOGLE_CLIENT_ID=your-client-id-here
    GOOGLE_CLIENT_SECRET=your-client-secret-here
@@ -211,26 +227,31 @@ curl http://localhost:3002
 Now that the system is running, practice:
 
 ### 1. API Testing
+
 - Use Postman/Insomnia to test endpoints
 - Write Python/pytest automation tests
 - Practice with curl commands
 
 ### 2. UI Testing
+
 - Write Playwright/Cypress tests
 - Practice Selenium WebDriver
 - Implement Page Object Model
 
 ### 3. Database Testing
+
 - Write SQL queries
 - Test data integrity
 - Practice joins and aggregations
 
 ### 4. Docker/DevOps
+
 - Understand docker-compose.yml
 - Practice container management
 - Learn Docker networking
 
 ### 5. Microservices
+
 - Understand service communication
 - Test inter-service calls
 - Practice API gateway patterns
@@ -299,16 +320,19 @@ All should return successful responses!
 If you encounter issues:
 
 1. **Check logs first:**
+
    ```bash
    docker-compose logs
    ```
 
 2. **Search for specific errors:**
+
    ```bash
    docker-compose logs | grep -i "error"
    ```
 
 3. **Clean slate restart:**
+
    ```bash
    docker-compose down -v
    docker system prune -a
@@ -323,6 +347,7 @@ If you encounter issues:
 ## 🎉 Success Indicators
 
 You'll know everything is working when:
+
 - ✅ All 5 containers show "Up" in `docker-compose ps`
 - ✅ http://localhost:3000 shows the login page
 - ✅ No error messages in logs
@@ -332,6 +357,7 @@ You'll know everything is working when:
 ## 📚 Next Steps
 
 Once everything is running:
+
 1. Explore the application UI
 2. Test the API endpoints with Postman
 3. Query the database

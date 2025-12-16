@@ -21,29 +21,32 @@
 
 ### Issue Types
 
-| Type | Description | Template | Example |
-|------|-------------|----------|---------|
-| **Bug** | Defects in existing functionality | `bug-*.md` | Login fails with valid credentials |
-| **Feature** | New functionality requests | `feature-*.md` | Add expense filtering by date range |
-| **Task** | Development/maintenance work | `issue-task-*.md` | Refactor authentication module |
-| **Enhancement** | Improvements to existing features | N/A | Improve page load performance |
-| **Question** | Clarification or investigation needed | N/A | How should token expiration be handled? |
+| Type            | Description                           | Template          | Example                                 |
+| --------------- | ------------------------------------- | ----------------- | --------------------------------------- |
+| **Bug**         | Defects in existing functionality     | `bug-*.md`        | Login fails with valid credentials      |
+| **Feature**     | New functionality requests            | `feature-*.md`    | Add expense filtering by date range     |
+| **Task**        | Development/maintenance work          | `issue-task-*.md` | Refactor authentication module          |
+| **Enhancement** | Improvements to existing features     | N/A               | Improve page load performance           |
+| **Question**    | Clarification or investigation needed | N/A               | How should token expiration be handled? |
 
 ### When to Create What
 
 **Create a Bug when:**
+
 - Existing feature doesn't work as expected
 - User reports incorrect behavior
 - Tests fail unexpectedly
 - Data inconsistency found
 
 **Create a Feature when:**
+
 - Adding new user-facing functionality
 - Implementing new user story
 - Adding new API endpoint
 - Building new component
 
 **Create a Task when:**
+
 - Technical debt needs addressing
 - Refactoring required
 - Infrastructure/tooling setup needed
@@ -59,11 +62,13 @@
 All templates located in `.github/ISSUE_TEMPLATE/`
 
 #### Bug Templates
+
 - `bug-delete-expense-confirmation.md` - Missing delete confirmation
 - `bug-oauth-redirect-uri-mismatch.md` - OAuth configuration issues
 - `bug-data-inconsistency-across-pages.md` - Data sync issues
 
 #### Feature Templates
+
 - `feature-edit-expense.md` - Edit expense functionality
 - `feature-table-ordering-and-filtering.md` - Data table enhancements
 - `feature-add-edit-expense-in-dialog.md` - Modal-based forms
@@ -71,6 +76,7 @@ All templates located in `.github/ISSUE_TEMPLATE/`
 - `feature-user-groups-and-admin.md` - Role management
 
 #### Task Templates
+
 - `issue-task-centralize-typescript-interfaces.md` - Code organization
 - `issue-task-test-auth-token-expiration.md` - Testing improvements
 - `issue-task-clean-db-temporary-solution.md` - Database maintenance
@@ -92,24 +98,30 @@ assignees: ''
 ---
 
 ## 📋 Description
+
 Clear problem statement
 
 ## 🎯 Goal
+
 What success looks like
 
 ## 📝 Implementation Steps
+
 1. Step 1
 2. Step 2
 3. Step 3
 
 ## ✅ Acceptance Criteria
+
 - [ ] Criterion 1
 - [ ] Criterion 2
 
 ## 🔗 Related Issues
+
 Links to dependencies
 
 ## 🏷️ Labels
+
 Suggested labels
 ```
 
@@ -127,18 +139,18 @@ Suggested labels
 
 ### State Definitions
 
-| State | Description | Actions |
-|-------|-------------|---------|
-| **Backlog** | Issue created, not yet prioritized | Triage, estimate |
-| **To Do** | Ready to work, prioritized | Assign, start work |
-| **In Progress** | Actively being worked on | Update progress |
-| **In Review** | PR submitted, awaiting review | Code review |
-| **Testing** | Changes deployed to test environment | QA validation |
-| **Blocked** | Cannot proceed due to dependency | Document blocker |
-| **Needs Info** | Requires clarification | Add questions |
-| **Needs Rework** | Review feedback to address | Fix issues |
-| **Failed Tests** | Tests failing in CI/CD | Debug, fix |
-| **Done** | Completed and verified | Close issue |
+| State            | Description                          | Actions            |
+| ---------------- | ------------------------------------ | ------------------ |
+| **Backlog**      | Issue created, not yet prioritized   | Triage, estimate   |
+| **To Do**        | Ready to work, prioritized           | Assign, start work |
+| **In Progress**  | Actively being worked on             | Update progress    |
+| **In Review**    | PR submitted, awaiting review        | Code review        |
+| **Testing**      | Changes deployed to test environment | QA validation      |
+| **Blocked**      | Cannot proceed due to dependency     | Document blocker   |
+| **Needs Info**   | Requires clarification               | Add questions      |
+| **Needs Rework** | Review feedback to address           | Fix issues         |
+| **Failed Tests** | Tests failing in CI/CD               | Debug, fix         |
+| **Done**         | Completed and verified               | Close issue        |
 
 ### Typical Flow
 
@@ -159,30 +171,30 @@ Suggested labels
 
 ### Priority Levels
 
-| Priority | Description | SLA | Example |
-|----------|-------------|-----|---------|
-| **P0 - Critical** | System down, security breach | Fix immediately | Database unavailable |
-| **P1 - High** | Major feature broken | Fix within 24h | Login not working |
-| **P2 - Medium** | Feature degraded | Fix within 1 week | Slow page load |
-| **P3 - Low** | Minor issue, cosmetic | Fix when possible | Typo in UI |
+| Priority          | Description                  | SLA               | Example              |
+| ----------------- | ---------------------------- | ----------------- | -------------------- |
+| **P0 - Critical** | System down, security breach | Fix immediately   | Database unavailable |
+| **P1 - High**     | Major feature broken         | Fix within 24h    | Login not working    |
+| **P2 - Medium**   | Feature degraded             | Fix within 1 week | Slow page load       |
+| **P3 - Low**      | Minor issue, cosmetic        | Fix when possible | Typo in UI           |
 
 ### Severity Levels (for Bugs)
 
-| Severity | Impact | User Affected | Example |
-|----------|--------|---------------|---------|
-| **Critical** | Complete feature failure | All users | Cannot add expenses |
-| **High** | Significant functionality loss | Most users | Delete button not working |
-| **Medium** | Partial functionality loss | Some users | Filter doesn't work for certain dates |
-| **Low** | Minor inconvenience | Few users | UI alignment issue |
+| Severity     | Impact                         | User Affected | Example                               |
+| ------------ | ------------------------------ | ------------- | ------------------------------------- |
+| **Critical** | Complete feature failure       | All users     | Cannot add expenses                   |
+| **High**     | Significant functionality loss | Most users    | Delete button not working             |
+| **Medium**   | Partial functionality loss     | Some users    | Filter doesn't work for certain dates |
+| **Low**      | Minor inconvenience            | Few users     | UI alignment issue                    |
 
 ### Priority vs Severity Matrix
 
 | Severity ↓ / Priority → | High | Medium | Low |
-|--------------------------|------|--------|-----|
-| **Critical** | P0 | P1 | P2 |
-| **High** | P1 | P2 | P3 |
-| **Medium** | P2 | P3 | P3 |
-| **Low** | P3 | P3 | P3 |
+| ----------------------- | ---- | ------ | --- |
+| **Critical**            | P0   | P1     | P2  |
+| **High**                | P1   | P2     | P3  |
+| **Medium**              | P2   | P3     | P3  |
+| **Low**                 | P3   | P3     | P3  |
 
 ---
 
@@ -191,6 +203,7 @@ Suggested labels
 ### GitHub Labels
 
 #### Type Labels
+
 - `bug` - Defect in functionality
 - `feature` - New functionality
 - `enhancement` - Improvement to existing feature
@@ -199,12 +212,14 @@ Suggested labels
 - `question` - Needs clarification
 
 #### Priority Labels
+
 - `priority:critical` - P0, immediate action
 - `priority:high` - P1, urgent
 - `priority:medium` - P2, normal
 - `priority:low` - P3, when possible
 
 #### Status Labels
+
 - `status:blocked` - Cannot proceed
 - `status:needs-info` - Requires clarification
 - `status:in-progress` - Actively being worked
@@ -212,6 +227,7 @@ Suggested labels
 - `status:testing` - In QA validation
 
 #### Component Labels
+
 - `frontend` - React frontend changes
 - `backend` - NestJS services changes
 - `database` - Schema or data changes
@@ -220,6 +236,7 @@ Suggested labels
 - `infrastructure` - Cloud/Docker changes
 
 #### Effort Labels
+
 - `effort:small` - < 2 hours
 - `effort:medium` - 2-8 hours
 - `effort:large` - > 8 hours
@@ -231,6 +248,7 @@ Suggested labels
 ### Creating Issues
 
 **✅ DO:**
+
 - Use descriptive titles
 - Include reproduction steps for bugs
 - Add acceptance criteria
@@ -241,6 +259,7 @@ Suggested labels
 - Set priority/severity
 
 **❌ DON'T:**
+
 - Create duplicate issues (search first)
 - Leave description empty
 - Mix multiple unrelated issues
@@ -254,51 +273,61 @@ Suggested labels
 # [BUG] Unable to delete expense - confirmation dialog not appearing
 
 ## 🐛 Description
-When clicking the delete button on an expense, the confirmation dialog 
+
+When clicking the delete button on an expense, the confirmation dialog
 does not appear, and the expense is not deleted.
 
 ## 📝 Reproduction Steps
+
 1. Navigate to Expenses page
 2. Click delete icon (🗑️) next to any expense
 3. Observe: Nothing happens
 4. Expected: Confirmation dialog should appear
 
 ## ✅ Expected Behavior
+
 - Confirmation dialog displays: "Are you sure you want to delete this expense?"
 - User can confirm or cancel
 - On confirm, expense is deleted and list updates
 
 ## 🖥️ Environment
+
 - Browser: Chrome 120
 - Environment: Staging
 - User: test@example.com
 
 ## 📸 Screenshots
+
 [Screenshot of expenses page with delete button]
 
 ## 🔍 Investigation
+
 - Console error: `handleDelete is not defined`
 - Likely missing event handler in ExpenseList component
 
 ## 🏷️ Labels
+
 `bug`, `frontend`, `priority:high`, `severity:high`
 ```
 
 ### Managing Issues
 
 **Daily:**
+
 - Review new issues, add labels
 - Update progress on assigned issues
 - Respond to questions/comments
 - Move issues through workflow states
 
 **Weekly:**
+
 - Triage backlog
 - Reprioritize based on feedback
 - Close stale issues
 - Review metrics
 
 **Sprint/Milestone:**
+
 - Plan upcoming work
 - Assign issues to sprint
 - Estimate effort
@@ -311,6 +340,7 @@ does not appear, and the expense is not deleted.
 ### Linking Issues to Code
 
 **In Commits:**
+
 ```bash
 git commit -m "Fix delete confirmation dialog
 
@@ -319,16 +349,20 @@ Related to #48"
 ```
 
 **In PRs:**
+
 ```markdown
 ## Description
+
 Add confirmation dialog for expense deletion
 
 ## Related Issues
+
 - Fixes #45 (delete confirmation)
 - Addresses feedback from #48 (UX improvements)
 ```
 
 **In Code Comments:**
+
 ```typescript
 // TODO: Refactor after #67 (centralize interfaces)
 // FIXME: Temporary workaround for #89 (data migration)
@@ -341,11 +375,13 @@ Track dependencies explicitly:
 
 ```markdown
 ## Dependencies
+
 - Blocked by #45 (need delete confirmation first)
 - Depends on #67 (interface centralization)
 - Related to #89 (same data layer)
 
 ## Blocks
+
 - #102 (edit functionality needs this first)
 - #105 (table refresh depends on this)
 ```
@@ -356,21 +392,23 @@ Track dependencies explicitly:
 
 ### Key Metrics to Track
 
-| Metric | Description | Target |
-|--------|-------------|--------|
-| **Open Issues** | Total open issues | Trending down |
-| **Avg Resolution Time** | Time from open to close | < 1 week for P2 |
-| **Bug Backlog** | Number of open bugs | < 10 |
-| **Reopened Issues** | Issues reopened after close | < 5% |
-| **Stale Issues** | No activity > 30 days | < 20% |
+| Metric                  | Description                 | Target          |
+| ----------------------- | --------------------------- | --------------- |
+| **Open Issues**         | Total open issues           | Trending down   |
+| **Avg Resolution Time** | Time from open to close     | < 1 week for P2 |
+| **Bug Backlog**         | Number of open bugs         | < 10            |
+| **Reopened Issues**     | Issues reopened after close | < 5%            |
+| **Stale Issues**        | No activity > 30 days       | < 20%           |
 
 ### Reports to Generate
 
 **Weekly Status:**
+
 ```markdown
 ## Week of Dec 6, 2025
 
 ### Completed (5)
+
 - #45 Delete confirmation dialog ✅
 - #48 UX improvements ✅
 - #67 Centralize interfaces ✅
@@ -378,14 +416,17 @@ Track dependencies explicitly:
 - #102 Edit functionality ✅
 
 ### In Progress (3)
+
 - #105 Table refresh (80% complete)
 - #112 Date filtering (50% complete)
 - #120 Token expiration (25% complete)
 
 ### Blocked (1)
+
 - #125 OAuth testing (waiting for credentials)
 
 ### New Issues (4)
+
 - #130 Data inconsistency (P1, assigned)
 - #131 Hot reload Docker (P2, backlog)
 - #132 Test coverage (P3, backlog)
@@ -403,17 +444,20 @@ Track story points/issues completed per sprint
 ## 📚 Additional Resources
 
 ### Related Documentation
+
 - [Testing Strategy](TESTING_STRATEGY.md) - How testing relates to issue management
 - [PR Workflow Guide](PR_WORKFLOW_GUIDE.md) - How PRs link to issues
 - [Issue Template Tracking](.github/ISSUE_TEMPLATE/TRACKING.md) - Template status
 
 ### Tools
+
 - **GitHub Issues** - Issue tracking
 - **GitHub Projects** - Kanban boards
 - **GitHub Milestones** - Sprint planning
 - **Labels** - Organization and filtering
 
 ### Templates Location
+
 - **Browse all**: `.github/ISSUE_TEMPLATE/`
 - **Create issue**: Click "New Issue" → Choose template
 - **Track usage**: [TRACKING.md](.github/ISSUE_TEMPLATE/TRACKING.md)

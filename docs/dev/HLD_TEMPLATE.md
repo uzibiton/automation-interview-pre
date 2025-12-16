@@ -4,34 +4,39 @@
 
 ## Document Information
 
-| Field | Value |
-|-------|-------|
-| **Feature/System Name** | [Feature/System Name] |
-| **Document Type** | High-Level Design |
-| **Author** | [Your Name] |
-| **Date Created** | [YYYY-MM-DD] |
-| **Last Updated** | [YYYY-MM-DD] |
-| **Status** | [Draft/In Review/Approved/Implemented] |
-| **Version** | [1.0] |
-| **Related Docs** | [Requirements](../qa/REQUIREMENTS_TEMPLATE.md), [Detailed Design](DETAILED_DESIGN_TEMPLATE.md) |
+| Field                   | Value                                                                                          |
+| ----------------------- | ---------------------------------------------------------------------------------------------- |
+| **Feature/System Name** | [Feature/System Name]                                                                          |
+| **Document Type**       | High-Level Design                                                                              |
+| **Author**              | [Your Name]                                                                                    |
+| **Date Created**        | [YYYY-MM-DD]                                                                                   |
+| **Last Updated**        | [YYYY-MM-DD]                                                                                   |
+| **Status**              | [Draft/In Review/Approved/Implemented]                                                         |
+| **Version**             | [1.0]                                                                                          |
+| **Related Docs**        | [Requirements](../qa/REQUIREMENTS_TEMPLATE.md), [Detailed Design](DETAILED_DESIGN_TEMPLATE.md) |
 
 ## 1. Overview
 
 ### Purpose
+
 Brief description of what this system/feature does and why it exists.
 
 ### Scope
+
 What is included and excluded in this design document.
 
 **In Scope:**
+
 - Component/feature 1
 - Component/feature 2
 
 **Out of Scope:**
+
 - Component/feature 3
 - Component/feature 4
 
 ### Goals & Objectives
+
 - Goal 1: [Specific, measurable goal]
 - Goal 2: [Specific, measurable goal]
 - Goal 3: [Specific, measurable goal]
@@ -39,18 +44,21 @@ What is included and excluded in this design document.
 ## 2. System Context
 
 ### Current State
+
 Description of the existing system/architecture (if applicable).
 
 ### Proposed State
+
 What the system will look like after implementation.
 
 ### Stakeholders
-| Role | Name | Interest/Concern |
-|------|------|------------------|
-| Product Owner | [Name] | Business value |
-| Tech Lead | [Name] | Technical feasibility |
-| DevOps | [Name] | Deployment & operations |
-| QA Lead | [Name] | Testability |
+
+| Role          | Name   | Interest/Concern        |
+| ------------- | ------ | ----------------------- |
+| Product Owner | [Name] | Business value          |
+| Tech Lead     | [Name] | Technical feasibility   |
+| DevOps        | [Name] | Deployment & operations |
+| QA Lead       | [Name] | Testability             |
 
 ## 3. Architecture Overview
 
@@ -80,19 +88,20 @@ What the system will look like after implementation.
 
 ### Component Overview
 
-| Component | Technology | Purpose | Scalability |
-|-----------|------------|---------|-------------|
-| Frontend | React + TypeScript | User interface | Horizontal |
-| Auth Service | NestJS | Authentication & authorization | Horizontal |
-| API Service | NestJS | Business logic & data access | Horizontal |
-| Database | PostgreSQL/Firestore | Data persistence | Vertical/Sharding |
-| Cache | Redis | Performance optimization | Horizontal |
+| Component    | Technology           | Purpose                        | Scalability       |
+| ------------ | -------------------- | ------------------------------ | ----------------- |
+| Frontend     | React + TypeScript   | User interface                 | Horizontal        |
+| Auth Service | NestJS               | Authentication & authorization | Horizontal        |
+| API Service  | NestJS               | Business logic & data access   | Horizontal        |
+| Database     | PostgreSQL/Firestore | Data persistence               | Vertical/Sharding |
+| Cache        | Redis                | Performance optimization       | Horizontal        |
 
 ## 4. Data Flow
 
 ### Request Flow Diagram
 
 #### Example: User Login Flow
+
 ```
 ┌──────┐                                        ┌────────────┐
 │ User │                                        │Google OAuth│
@@ -116,6 +125,7 @@ What the system will look like after implementation.
 ```
 
 ### Data Flow Description
+
 1. User initiates action in frontend
 2. Frontend sends request to appropriate service
 3. Service validates request and processes
@@ -128,6 +138,7 @@ What the system will look like after implementation.
 ### 5.1 Frontend
 
 **Technology Stack:**
+
 - React 18+
 - TypeScript
 - Vite (build tool)
@@ -135,50 +146,61 @@ What the system will look like after implementation.
 - React Query (state management)
 
 **Key Components:**
+
 - Authentication: Login, registration, OAuth flow
 - Expense Management: Create, read, update, delete
 - Filtering & Search: Dynamic filtering UI
 - Reporting: Charts and visualizations
 
 **State Management:**
+
 - Server state: React Query
 - Local state: React hooks
 - Global state: Context API
 
 **Routing:**
+
 - React Router v6
 - Protected routes with auth guards
 
 ### 5.2 Backend Services
 
 #### Auth Service
+
 **Responsibilities:**
+
 - User authentication (Google OAuth)
 - JWT token generation and validation
 - User profile management
 
 **Endpoints:**
+
 - `POST /auth/google` - OAuth login
 - `GET /auth/verify` - Verify JWT token
 - `GET /auth/profile` - Get user profile
 
 **Dependencies:**
+
 - Google OAuth API
 - JWT library
 
 #### API Service
+
 **Responsibilities:**
+
 - Business logic for expenses
 - Data validation and transformation
 - Database operations
 
 **Endpoints:**
+
 - `GET /expenses` - List expenses with filters
 - `POST /expenses` - Create expense
 - `PUT /expenses/:id` - Update expense
 - `DELETE /expenses/:id` - Delete expense
 
 **Dependencies:**
+
 - Auth Service (for token verification)
 - Database
 
@@ -187,6 +209,7 @@ What the system will look like after implementation.
 **Type:** PostgreSQL / Firestore
 
 **Schema Design:**
+
 ```sql
 -- Users table
 CREATE TABLE users (
@@ -220,18 +243,21 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 ## 6. API Design
 
 ### RESTful Principles
+
 - Resource-based URLs
 - HTTP verbs (GET, POST, PUT, DELETE)
 - Stateless communication
 - JSON request/response format
 
 ### Authentication
+
 - JWT tokens in Authorization header
 - Token format: `Bearer <token>`
 - Token expiration: 24 hours
 - Refresh token strategy: [If applicable]
 
 ### Error Handling
+
 ```json
 {
   "error": {
@@ -248,6 +274,7 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 ```
 
 ### Pagination
+
 ```json
 {
   "data": [...],
@@ -263,11 +290,13 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 ## 7. Security Design
 
 ### Authentication & Authorization
+
 - OAuth 2.0 with Google
 - JWT tokens for API authentication
 - Role-based access control (if applicable)
 
 ### Data Security
+
 - HTTPS/TLS for all communications
 - Password hashing: bcrypt (if applicable)
 - Input validation and sanitization
@@ -275,6 +304,7 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 - XSS prevention: Output encoding
 
 ### API Security
+
 - Rate limiting: [X] requests per minute
 - CORS configuration
 - API key validation (if applicable)
@@ -282,17 +312,20 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 ## 8. Performance & Scalability
 
 ### Performance Requirements
+
 - Page load time: < 2 seconds
 - API response time: < 500ms (95th percentile)
 - Database query time: < 100ms
 
 ### Scalability Strategy
+
 - Horizontal scaling: Add more service instances
 - Load balancing: Distribute traffic
 - Caching: Redis for frequently accessed data
 - Database optimization: Indexing, query optimization
 
 ### Caching Strategy
+
 - Cache frequently accessed data (user profiles, categories)
 - Cache expiration: Time-based (TTL)
 - Cache invalidation: On data updates
@@ -300,19 +333,22 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 ## 9. Infrastructure & Deployment
 
 ### Deployment Architecture
+
 - **Platform:** Google Cloud Run
 - **Container:** Docker
 - **Orchestration:** Cloud Run auto-scaling
 - **Database:** Cloud SQL / Firestore
 
 ### Environments
-| Environment | Purpose | URL |
-|-------------|---------|-----|
-| Local | Development | http://localhost:3000 |
-| Staging | Pre-production testing | [Staging URL] |
-| Production | Live system | [Production URL] |
+
+| Environment | Purpose                | URL                   |
+| ----------- | ---------------------- | --------------------- |
+| Local       | Development            | http://localhost:3000 |
+| Staging     | Pre-production testing | [Staging URL]         |
+| Production  | Live system            | [Production URL]      |
 
 ### CI/CD Pipeline
+
 1. Code commit to GitHub
 2. GitHub Actions trigger
 3. Run tests (unit, integration, e2e)
@@ -324,20 +360,24 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 ## 10. Monitoring & Observability
 
 ### Logging
+
 - Structured logging (JSON format)
 - Log levels: DEBUG, INFO, WARN, ERROR
 - Correlation IDs for request tracking
 
 ### Metrics
+
 - Application metrics: Response time, error rate, throughput
 - Infrastructure metrics: CPU, memory, network
 - Business metrics: User activity, feature usage
 
 ### Alerting
+
 - Critical: Service down, high error rate
 - Warning: Degraded performance, high resource usage
 
 ### Tools
+
 - Logging: Winston/Pino
 - Monitoring: Google Cloud Monitoring
 - Error tracking: Sentry (if applicable)
@@ -345,12 +385,14 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 ## 11. Error Handling & Recovery
 
 ### Error Handling Strategy
+
 - Graceful degradation
 - User-friendly error messages
 - Detailed error logging
 - Automatic retry for transient errors
 
 ### Disaster Recovery
+
 - Database backups: Daily automated backups
 - Backup retention: 30 days
 - Recovery time objective (RTO): < 4 hours
@@ -359,6 +401,7 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 ## 12. Testing Strategy
 
 ### Test Levels
+
 - Unit tests: Business logic, utilities
 - Integration tests: API endpoints, database operations
 - E2E tests: Critical user flows
@@ -370,15 +413,18 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 ## 13. Dependencies
 
 ### External Dependencies
+
 - Google OAuth API
 - Third-party libraries (npm packages)
 - Cloud services (Cloud Run, Cloud SQL)
 
 ### Internal Dependencies
+
 - Authentication service (for API service)
 - Shared libraries/utilities
 
 ### Dependency Management
+
 - Version pinning in package.json
 - Regular dependency updates
 - Security vulnerability scanning
@@ -386,11 +432,13 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 ## 14. Assumptions & Constraints
 
 ### Assumptions
+
 - Users have stable internet connection
 - Modern browser support (Chrome, Firefox, Safari)
 - Google OAuth availability
 
 ### Constraints
+
 - Budget: [Amount]
 - Timeline: [Duration]
 - Team size: [Number of developers]
@@ -398,33 +446,34 @@ CREATE INDEX idx_expenses_category ON expenses(category);
 
 ## 15. Risks & Mitigation
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| Third-party service outage | High | Low | Implement retry logic, fallback mechanisms |
-| Database performance degradation | Medium | Medium | Optimize queries, add caching, database scaling |
-| Security vulnerability | High | Medium | Regular security audits, automated scanning |
+| Risk                             | Impact | Probability | Mitigation                                      |
+| -------------------------------- | ------ | ----------- | ----------------------------------------------- |
+| Third-party service outage       | High   | Low         | Implement retry logic, fallback mechanisms      |
+| Database performance degradation | Medium | Medium      | Optimize queries, add caching, database scaling |
+| Security vulnerability           | High   | Medium      | Regular security audits, automated scanning     |
 
 ## 16. Future Enhancements
 
 Features/improvements planned for future releases:
+
 - Enhancement 1: [Description]
 - Enhancement 2: [Description]
 - Enhancement 3: [Description]
 
 ## 17. Approval
 
-| Role | Name | Signature | Date |
-|------|------|-----------|------|
-| Architect | [Name] | | |
-| Tech Lead | [Name] | | |
-| DevOps Lead | [Name] | | |
-| Security Lead | [Name] | | |
+| Role          | Name   | Signature | Date |
+| ------------- | ------ | --------- | ---- |
+| Architect     | [Name] |           |      |
+| Tech Lead     | [Name] |           |      |
+| DevOps Lead   | [Name] |           |      |
+| Security Lead | [Name] |           |      |
 
 ## 18. Change Log
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | [Date] | [Name] | Initial version |
+| Version | Date   | Author | Changes         |
+| ------- | ------ | ------ | --------------- |
+| 1.0     | [Date] | [Name] | Initial version |
 
 ## 19. References
 

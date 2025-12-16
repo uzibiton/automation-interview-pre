@@ -26,7 +26,7 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the application
     await page.goto('/');
-    
+
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
   });
@@ -38,7 +38,7 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
 
     // Get all date cells (first column in tbody)
     const rows = await table.locator('tbody tr').all();
-    
+
     if (rows.length >= 2) {
       const dates: Date[] = [];
       for (const row of rows) {
@@ -61,11 +61,11 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
     await expect(table).toBeVisible({ timeout: 10000 });
 
     const dateHeader = table.locator('thead th').filter({ hasText: /date/i }).first();
-    
+
     // First click: ascending (check for ↑)
     await dateHeader.click();
     await expect(dateHeader).toContainText('↑');
-    
+
     // Verify ascending order
     const ascRows = await table.locator('tbody tr').all();
     if (ascRows.length >= 2) {
@@ -77,7 +77,7 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
           ascDates.push(new Date(dateText));
         }
       }
-      
+
       // Verify dates are in ascending order (oldest first)
       for (let i = 0; i < ascDates.length - 1; i++) {
         expect(ascDates[i].getTime()).toBeLessThanOrEqual(ascDates[i + 1].getTime());
@@ -87,7 +87,7 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
     // Second click: descending (check for ↓)
     await dateHeader.click();
     await expect(dateHeader).toContainText('↓');
-    
+
     // Third click: remove sort (back to default)
     await dateHeader.click();
     // Should not have sort indicator after third click
@@ -100,12 +100,15 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
     const table = page.locator('table.table');
     await expect(table).toBeVisible({ timeout: 10000 });
 
-    const descriptionHeader = table.locator('thead th').filter({ hasText: /description/i }).first();
-    
+    const descriptionHeader = table
+      .locator('thead th')
+      .filter({ hasText: /description/i })
+      .first();
+
     // Click to sort ascending
     await descriptionHeader.click();
     await expect(descriptionHeader).toContainText('↑');
-    
+
     // Get descriptions and verify alphabetical order
     const rows = await table.locator('tbody tr').all();
     if (rows.length >= 2) {
@@ -119,7 +122,7 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
           }
         }
       }
-      
+
       // Verify alphabetical order
       for (let i = 0; i < descriptions.length - 1; i++) {
         expect(descriptions[i].localeCompare(descriptions[i + 1])).toBeLessThanOrEqual(0);
@@ -135,16 +138,19 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
     const table = page.locator('table.table');
     await expect(table).toBeVisible({ timeout: 10000 });
 
-    const categoryHeader = table.locator('thead th').filter({ hasText: /category/i }).first();
-    
+    const categoryHeader = table
+      .locator('thead th')
+      .filter({ hasText: /category/i })
+      .first();
+
     // Click to sort ascending
     await categoryHeader.click();
     await expect(categoryHeader).toContainText('↑');
-    
+
     // Click again for descending
     await categoryHeader.click();
     await expect(categoryHeader).toContainText('↓');
-    
+
     // Click third time to remove sort
     await categoryHeader.click();
     const headerText = await categoryHeader.textContent();
@@ -156,12 +162,15 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
     const table = page.locator('table.table');
     await expect(table).toBeVisible({ timeout: 10000 });
 
-    const amountHeader = table.locator('thead th').filter({ hasText: /amount/i }).first();
-    
+    const amountHeader = table
+      .locator('thead th')
+      .filter({ hasText: /amount/i })
+      .first();
+
     // Click to sort ascending
     await amountHeader.click();
     await expect(amountHeader).toContainText('↑');
-    
+
     // Get amounts and verify numerical order
     const rows = await table.locator('tbody tr').all();
     if (rows.length >= 2) {
@@ -179,7 +188,7 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
           }
         }
       }
-      
+
       // Verify ascending numerical order
       for (let i = 0; i < amounts.length - 1; i++) {
         expect(amounts[i]).toBeLessThanOrEqual(amounts[i + 1]);
@@ -196,7 +205,7 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
     await expect(table).toBeVisible({ timeout: 10000 });
 
     const dateHeader = table.locator('thead th.sortable-header').first();
-    
+
     // Check if the header has cursor pointer style
     await expect(dateHeader).toHaveClass(/sortable-header/);
   });
@@ -206,16 +215,19 @@ test.describe('Expense Table Sorting @e2e @sorting @expenses', () => {
     await expect(table).toBeVisible({ timeout: 10000 });
 
     const dateHeader = table.locator('thead th').filter({ hasText: /date/i }).first();
-    const amountHeader = table.locator('thead th').filter({ hasText: /amount/i }).first();
-    
+    const amountHeader = table
+      .locator('thead th')
+      .filter({ hasText: /amount/i })
+      .first();
+
     // Sort by date
     await dateHeader.click();
     await expect(dateHeader).toContainText('↑');
-    
+
     // Now sort by amount
     await amountHeader.click();
     await expect(amountHeader).toContainText('↑');
-    
+
     // Date header should no longer have sort indicator
     const dateText = await dateHeader.textContent();
     expect(dateText).not.toContain('↑');

@@ -3,6 +3,7 @@
 This document captures learnings, patterns, and best practices discovered during development of this project.
 
 ## Table of Contents
+
 - [Bug Fixing Workflow](#bug-fixing-workflow)
 - [CI/CD Challenges](#cicd-challenges)
 - [Testing Strategy](#testing-strategy)
@@ -17,19 +18,23 @@ This document captures learnings, patterns, and best practices discovered during
 **Real-world best practices:**
 
 #### Fix Before Review (Recommended for CI-caught issues)
+
 **When:**
+
 - Bug is caught by automated tests (CI/CD)
 - Bug is obvious and quick to fix (typo, syntax error)
 - Bug blocks the main feature from working
 - You're still in active development on the PR
 
 **Why:**
+
 - ✅ Reviewers see clean, working code
 - ✅ Saves reviewer time (no review wasted on broken code)
 - ✅ Shows attention to quality
 - ✅ Faster merge (no "fix and re-review" cycle)
 
 **Process:**
+
 1. CI fails or obvious bug discovered
 2. Fix immediately in same branch
 3. Push fix
@@ -39,18 +44,22 @@ This document captures learnings, patterns, and best practices discovered during
 **Important Note:** CI doesn't catch everything! See "Early QA Intervention" below.
 
 #### Fix After Review Started (Sometimes necessary)
+
 **When:**
+
 - Bug is found during code review
 - Bug is in edge case reviewer discovered
 - Breaking change in main branch causes conflict
 - Bug is environment-specific (works locally, fails in staging)
 
 **Why:**
+
 - ✅ Reviewer is already engaged
 - ✅ Shows responsiveness to feedback
 - ✅ Some bugs only visible to fresh eyes
 
 **Process:**
+
 1. Review submitted → bug found
 2. Comment acknowledging the bug
 3. Push fix quickly
@@ -60,6 +69,7 @@ This document captures learnings, patterns, and best practices discovered during
 #### Early QA Intervention (Real-world QA perspective)
 
 **The Reality:** CI only catches technical bugs, not:
+
 - UX issues
 - Requirements misalignment
 - Missing functionality
@@ -96,6 +106,7 @@ This document captures learnings, patterns, and best practices discovered during
    - Both QA and code review must pass before merge
 
 **Benefits:**
+
 - ✅ Catches bugs early (cheaper to fix)
 - ✅ QA has time to prepare test coverage
 - ✅ Requirements validation happens before code review
@@ -103,6 +114,7 @@ This document captures learnings, patterns, and best practices discovered during
 - ✅ Higher quality merges to main
 
 **Process Flow:**
+
 ```
 Developer → Stable Branch → QA Testing → Bug Fixes → QA Approval
                                                           ↓
@@ -110,6 +122,7 @@ Developer → Stable Branch → QA Testing → Bug Fixes → QA Approval
 ```
 
 **Communication Pattern:**
+
 - Developer: "Branch `feature/xyz` ready for QA - PR preview at [URL]"
 - QA: Tests, finds 3 bugs, comments on PR
 - Developer: Fixes bugs, pushes, comments "Fixed in commit abc123"
@@ -118,12 +131,15 @@ Developer → Stable Branch → QA Testing → Bug Fixes → QA Approval
 - Team: Reviews code (knowing feature is already QA-approved)
 
 #### The Golden Rule:
+
 **"Never request review on a failing build"**
+
 - Always wait for CI to be green before asking for review
 - Exception: If you specifically want help debugging a CI failure
 
 **The QA Corollary:**
 **"Green CI doesn't mean ready for merge - QA validation is separate"**
+
 - CI = Technical correctness (syntax, tests pass)
 - QA = Functional correctness (requirements, UX, edge cases)
 - Both needed before merge
@@ -135,6 +151,7 @@ Developer → Stable Branch → QA Testing → Bug Fixes → QA Approval
 ### Challenge: "Works Locally, Fails in CI/Deploy"
 
 **Common Causes:**
+
 1. **Environment Variables**
    - Missing in CI
    - Different values in CI vs local
@@ -161,6 +178,7 @@ Developer → Stable Branch → QA Testing → Bug Fixes → QA Approval
    - Network configuration
 
 ### Solution 1: CI Integration Testing (Recommended)
+
 Add a stage to CI that runs full Docker stack:
 
 ```yaml
@@ -169,24 +187,26 @@ integration-test:
   steps:
     - name: Start full stack
       run: docker-compose up -d
-    
+
     - name: Wait for services
       run: sleep 30
-    
+
     - name: Run smoke tests
       run: npm run test:integration
-    
+
     - name: Cleanup
       run: docker-compose down
 ```
 
 **Benefits:**
+
 - Catches environment issues before deploy
 - Tests service-to-service communication
 - Validates Docker configuration
 - Builds confidence in deploys
 
 ### Solution 2: Local CI Simulation
+
 Run CI commands locally before pushing:
 
 ```bash
@@ -201,21 +221,25 @@ docker-compose -f docker-compose.test.yml run --rm test-runner
 ```
 
 ### Solution 3: Error Reporting Workflow
+
 When remote deploy fails:
 
 **Option A: Quick Fix (Recommended)**
+
 1. Copy error from CI/logs
 2. Share with team/AI assistant in chat
 3. Fix immediately
 4. Push and verify
 
 **Option B: Tracked Fix (For complex bugs)**
+
 1. Create GitHub issue with error details
 2. Link issue to PR
 3. Fix and reference issue in commit
 4. Close issue when merged
 
 **When to use which:**
+
 - **Option A**: Obvious fixes, typos, missing imports, config errors
 - **Option B**: Complex bugs, unclear root cause, needs investigation, affects multiple PRs
 
@@ -266,6 +290,7 @@ Push → Unit Tests → Integration Tests → E2E Tests → Deploy
 ### Current Setup
 
 **Environments:**
+
 - **Local**: Docker Compose
 - **PR Preview**: Cloud Run (per-PR environments)
 - **Staging**: Cloud Run (auto-deploy from main)
@@ -274,12 +299,14 @@ Push → Unit Tests → Integration Tests → E2E Tests → Deploy
 ### PR Preview Environments
 
 **Lifecycle:**
+
 1. PR opened → Deploy to `service-pr-{number}`
 2. PR updated → Redeploy
 3. PR closed → Auto-cleanup (via workflow)
 4. Timeout → Cleanup after 30 days (proposed)
 
 **Benefits:**
+
 - Test in production-like environment
 - Share working demo with stakeholders
 - Catch deployment issues early
@@ -290,7 +317,9 @@ Push → Unit Tests → Integration Tests → E2E Tests → Deploy
 ## Lessons Learned
 
 ### 1. Always Run Tests Locally First
+
 Before pushing:
+
 ```bash
 npm run test:unit
 npm run test:e2e:local
@@ -298,19 +327,23 @@ docker-compose up  # Verify services start
 ```
 
 ### 2. Fix CI Failures Immediately
+
 - Don't let broken builds linger
 - Don't request review on red builds
 - Quick fixes show professionalism
 
 ### 3. Use Descriptive Commit Messages
+
 Bad: `fix bug`
 Good: `fix: Correct API endpoint path in frontend config`
 
 ### 4. Test Deployment Changes in PR Previews
+
 - Don't wait for staging to catch deploy issues
 - Use PR previews as pre-staging validation
 
 ### 5. Document Decisions
+
 - Add insights to this file
 - Update README when processes change
 - Keep team aligned
@@ -320,11 +353,13 @@ Good: `fix: Correct API endpoint path in frontend config`
 ## Common Deployment Issues
 
 ### Issue: OAuth Redirect URI Mismatch
+
 **Symptom:** Google Sign-In works locally but fails on staging/production with `Error 400: redirect_uri_mismatch`
 
 **Root Cause:** Google Cloud Console doesn't have staging/production URLs in authorized redirect URIs
 
 **Solution:**
+
 1. Get deployed auth service URL from Cloud Run
 2. Add `{auth-service-url}/auth/google/callback` to Google Console
 3. Wait 1-2 minutes for propagation
@@ -333,11 +368,13 @@ Good: `fix: Correct API endpoint path in frontend config`
 **Prevention:** Add OAuth setup to deployment checklist
 
 ### Issue: Shared Firestore Database
+
 **Symptom:** Test users accumulate across all environments (local, staging, production)
 
 **Root Cause:** All environments use same Firestore database
 
 **Impact:**
+
 - Cannot start with clean database state
 - Test data pollutes production
 - Manual cleanup is tedious
@@ -350,6 +387,7 @@ Good: `fix: Correct API endpoint path in frontend config`
 ## Future Improvements
 
 ### Proposed Enhancements
+
 1. ✅ Add CI integration test stage (run full Docker stack)
 2. ⏳ Add timeout-based PR environment cleanup
 3. ⏳ Improve error reporting (send CI failures to Slack)
@@ -359,6 +397,7 @@ Good: `fix: Correct API endpoint path in frontend config`
 7. ⏳ Use Firestore emulator for local development
 
 ### Questions to Address
+
 - Should we add visual regression testing?
 - How to handle database migrations in PR previews?
 - Should E2E tests run against PR previews?

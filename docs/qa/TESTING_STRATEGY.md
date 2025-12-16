@@ -11,9 +11,11 @@ This project follows a **Hybrid Development-QA Approach** where features are dev
 ### Workflow Phases
 
 #### Phase 1: Requirements & Planning
+
 **Participants:** Product Owner, Developer, QA
 
 **Activities:**
+
 1. **Requirements Review** - QA reviews feature requirements and acceptance criteria
 2. **Test Planning** - QA creates test plan covering:
    - Test scenarios and cases
@@ -25,15 +27,18 @@ This project follows a **Hybrid Development-QA Approach** where features are dev
 4. **Dev Kickoff** - Developer begins implementation
 
 **QA Deliverables:**
+
 - Test plan document
 - Test data requirements
 - Risk assessment
 
 #### Phase 2: Development & Parallel QA Preparation
+
 **Developer:** Implements feature on dev branch  
 **QA:** Prepares test automation infrastructure in parallel
 
 **Developer Activities:**
+
 - Code feature implementation
 - Write unit tests
 - Update component tests
@@ -41,6 +46,7 @@ This project follows a **Hybrid Development-QA Approach** where features are dev
 - Create Pull Request
 
 **QA Activities (Parallel):**
+
 - Set up test data
 - Prepare test fixtures
 - Design Page Object Model structure (if new pages/components)
@@ -50,10 +56,12 @@ This project follows a **Hybrid Development-QA Approach** where features are dev
 **Timeline:** Overlapping work streams
 
 #### Phase 3: Dev Complete - Manual Testing & Exploratory Testing
+
 **Trigger:** Developer PR is ready for review  
 **Environment:** PR preview environment or staging
 
 **Activities:**
+
 1. **Code Review** - Team reviews dev changes (see Code Review Best Practices below)
 2. **Manual Testing** - QA executes manual test plan:
    - Functional testing (happy paths)
@@ -73,6 +81,7 @@ This project follows a **Hybrid Development-QA Approach** where features are dev
 7. **Dev Branch Merge** - Once approved, feature merges to main
 
 **QA Deliverables:**
+
 - Manual test execution report
 - Bug reports (if any)
 - Exploratory testing notes
@@ -85,24 +94,28 @@ During manual testing, QA will encounter various types of issues. Proper classif
 #### Issue Definitions
 
 **Bug (Severity: High)**
+
 - Functionality does NOT meet explicitly stated requirements
 - Feature behaves differently than documented acceptance criteria
 - Previously working functionality is broken (regression)
 - **Example:** "Login button should redirect to dashboard, but redirects to profile page instead"
 
 **Defect (Severity: Medium)**
+
 - Behavior that violates common sense or obvious expectations, even if not explicitly stated in requirements
 - Poor user experience that makes the feature difficult or confusing to use
 - **Subjectivity Note:** "Obvious" can be subjective - use team judgment and UX best practices
 - **Example:** "Delete button has no confirmation dialog - user can accidentally delete data"
 
 **Enhancement Request (Severity: Low)**
+
 - Suggestion for improvement beyond current requirements
 - Better way to implement existing functionality
 - Nice-to-have features discovered during testing
 - **Example:** "Add keyboard shortcut for save action"
 
 **Question/Clarification**
+
 - Uncertainty about expected behavior
 - Missing or unclear requirements
 - Needs product owner input
@@ -111,11 +124,13 @@ During manual testing, QA will encounter various types of issues. Proper classif
 #### Scope Management During PR Review
 
 **Rule 1: Address PR-Related Issues First**
+
 - QA should log all issues found related to the PR's scope
 - Developer must fix these before PR can merge
 - These issues are "blocking" for the current PR
 
 **Rule 2: Out-of-Scope Issues - Document Separately**
+
 - If QA discovers issues in areas NOT touched by the current PR:
   - Create separate GitHub issue (do NOT block current PR)
   - Tag with appropriate label (e.g., `found-during-testing`, `unrelated`)
@@ -123,6 +138,7 @@ During manual testing, QA will encounter various types of issues. Proper classif
   - Notify team in standup or Slack if urgent
 
 **Rule 3: Consider Connection to PR**
+
 - If out-of-scope issue is RELATED to PR changes:
   - Example: PR changes authentication, and you find OAuth bug
   - Mention in PR comments: "FYI: noticed OAuth issue, created Issue #XX"
@@ -132,6 +148,7 @@ During manual testing, QA will encounter various types of issues. Proper classif
   - Just create separate issue, no need to mention in PR
 
 **Rule 4: Respect Developer Workflow**
+
 - Developers want to close their tasks - this is reasonable
 - Don't force scope creep on the current PR
 - Balance quality advocacy with pragmatic delivery
@@ -140,20 +157,23 @@ During manual testing, QA will encounter various types of issues. Proper classif
 #### Example Scenarios
 
 **Scenario 1: Testing "Add Expense Graph" PR**
+
 - ✅ **PR-Scoped Issue:** Graph doesn't display when no data - BLOCK PR, must fix
 - ✅ **Related Enhancement:** Graph could use better colors - Create separate issue, mention in PR
 - ❌ **Unrelated Bug:** Settings page save button broken - Create separate issue, don't mention in PR
 
 **Scenario 2: Testing "Google OAuth Login" PR**
+
 - ✅ **PR-Scoped Bug:** OAuth redirect fails - BLOCK PR, must fix
 - ✅ **Related Defect:** No error message when OAuth fails - BLOCK PR or create issue based on severity
 - ⚠️ **Related but Minor:** Login page could use better styling - Create enhancement issue
 - ❌ **Unrelated Bug:** Expense deletion confirmation missing - Create separate issue
 
 **Scenario 3: Ambiguous Requirements**
+
 - Testing PR for "expense filters"
 - Find: Negative amounts are allowed in filter inputs
-- **Action:** 
+- **Action:**
   1. Check requirements - not specified
   2. Use common sense - negative amounts in expense filter seems questionable
   3. Log as "Question/Clarification" issue
@@ -163,24 +183,29 @@ During manual testing, QA will encounter various types of issues. Proper classif
 #### Communication Best Practices
 
 **In PR Comments:**
+
 ```markdown
 ## Test Results
 
 ### ✅ Passed
+
 - Login with valid credentials works
 - OAuth redirect successful
 - Session persists after refresh
 
 ### ❌ Blocking Issues (PR Scope)
+
 1. **Bug:** OAuth fails with redirect_uri_mismatch on staging [see logs]
 2. **Defect:** No error message displayed when OAuth fails
 
 ### 💡 Observations (Non-Blocking)
+
 - Consider adding loading spinner during OAuth redirect
 - Created Issue #XX for unrelated settings page bug found during testing
 ```
 
 **In Separate Issue:**
+
 ```markdown
 ## Issue: Settings Save Button Not Working
 
@@ -192,6 +217,7 @@ During manual testing, QA will encounter various types of issues. Proper classif
 No error message, no console logs.
 
 **Steps to Reproduce:**
+
 1. Navigate to Settings page
 2. Change any setting
 3. Click Save button
@@ -208,11 +234,13 @@ Code review is a critical QA activity that catches issues before testing begins.
 #### The Context Problem
 
 **Don't Just Review the Diff**
+
 - Changes can affect code that isn't changed (dependencies, shared utilities, global state)
 - Unchanged code can affect the changes (existing bugs, integration points, side effects)
 - The diff shows WHAT changed, but not always WHY or HOW it impacts the system
 
 **Example:**
+
 ```
 PR changes function calculateTotal() in utils/math.ts
 But 15 other files import and use calculateTotal()
@@ -222,6 +250,7 @@ Reviewing only the diff misses potential breaking changes in those 15 files
 #### Comprehensive Review Approach
 
 **Level 1: Understand the Change (5-10 min)**
+
 1. **Read PR Description**
    - What problem is being solved?
    - What are the acceptance criteria?
@@ -238,6 +267,7 @@ Reviewing only the diff misses potential breaking changes in those 15 files
    - Large PR (> 500 lines) - consider asking for split
 
 **Level 2: Understand the Context (10-20 min)**
+
 1. **Read Changed Files Completely**
    - Don't just read the highlighted diff lines
    - Read the entire function/class that was modified
@@ -259,6 +289,7 @@ Reviewing only the diff misses potential breaking changes in those 15 files
    - If service changed, check its tests and mocks
 
 **Level 3: Test Planning from Code (10-15 min)**
+
 1. **Identify Test Scenarios from Code**
    - Look for conditional logic (if/else) - each branch needs testing
    - Look for loops - test with 0, 1, many items
@@ -281,6 +312,7 @@ Reviewing only the diff misses potential breaking changes in those 15 files
 #### QA-Specific Review Checklist
 
 **Functional Concerns:**
+
 - [ ] Does the code meet the acceptance criteria?
 - [ ] Are all edge cases handled? (empty data, null values, max limits)
 - [ ] Is error handling comprehensive? (network errors, validation errors, server errors)
@@ -288,35 +320,41 @@ Reviewing only the diff misses potential breaking changes in those 15 files
 - [ ] Is user feedback provided? (loading states, error messages, success confirmations)
 
 **Testability Concerns:**
+
 - [ ] Are test IDs or data-testid attributes added for E2E testing?
 - [ ] Can the feature be tested without UI? (API endpoints available)
 - [ ] Are there clear, testable acceptance criteria?
 - [ ] Is the feature isolated or tightly coupled? (coupling = harder to test)
 
 **Data & State Concerns:**
+
 - [ ] How does this affect existing data?
 - [ ] Is there data migration needed?
 - [ ] Are default values provided for new fields?
 - [ ] Is state management clear? (where is data stored, how is it updated)
 
 **Integration Concerns:**
+
 - [ ] How does this integrate with existing features?
 - [ ] Could this break existing functionality? (regression risk)
 - [ ] Are API contracts maintained? (breaking changes to endpoints)
 - [ ] Is backward compatibility preserved?
 
 **Performance Concerns:**
+
 - [ ] Are there any obvious performance issues? (n+1 queries, large loops)
 - [ ] Is data fetched efficiently? (pagination, lazy loading)
 - [ ] Are there memory leaks? (event listeners not cleaned up, subscriptions not unsubscribed)
 
 **Security Concerns:**
+
 - [ ] Is user input validated and sanitized?
 - [ ] Are API endpoints protected? (authentication, authorization)
 - [ ] Is sensitive data exposed? (passwords, tokens in logs)
 - [ ] Is data encrypted where necessary?
 
 **User Experience Concerns:**
+
 - [ ] Are loading states shown for async operations?
 - [ ] Are error messages helpful and user-friendly?
 - [ ] Is the UI responsive? (mobile, tablet, desktop)
@@ -325,12 +363,14 @@ Reviewing only the diff misses potential breaking changes in those 15 files
 #### When to Ask Questions in Code Review
 
 **Always Ask:**
+
 - "Why was this approach chosen?" (if not clear from PR description)
 - "How does this handle [edge case]?" (if not obvious in code)
 - "What happens if [error scenario]?" (if error handling missing)
 - "Should this be tested?" (if no tests added for new logic)
 
 **Examples:**
+
 ```markdown
 ## Code Review Questions
 
@@ -348,18 +388,21 @@ Reviewing only the diff misses potential breaking changes in those 15 files
 #### How Much Code Review is Enough?
 
 **Minimum (Every PR):**
+
 - Read PR description
 - Review all changed files completely (not just diff)
 - Check for obvious bugs and missing error handling
 - Verify testability (test IDs, API endpoints)
 
 **Standard (Most PRs):**
+
 - All of minimum +
 - Check files that import/depend on changed code
 - Identify test scenarios from code logic
 - Ask clarifying questions
 
 **Deep Dive (Complex/Risky PRs):**
+
 - All of standard +
 - Trace through entire user flow in codebase
 - Check database schema and migration files
@@ -368,6 +411,7 @@ Reviewing only the diff misses potential breaking changes in those 15 files
 - Review documentation updates
 
 **Signs You Need Deep Dive:**
+
 - PR touches authentication/authorization
 - PR modifies database schema
 - PR changes shared utilities used everywhere
@@ -397,10 +441,12 @@ After code review, QA should document:
    - Do we need to test with production data volume?
 
 **Example:**
+
 ```markdown
 ## QA Code Review Summary - PR #25
 
 ### Test Scenarios Identified
+
 1. Test expense deletion with 0 expenses
 2. Test expense deletion with 1 expense
 3. Test expense deletion with 100+ expenses (performance)
@@ -409,13 +455,16 @@ After code review, QA should document:
 6. Test expense deletion when database is unavailable (error handling)
 
 ### Questions
+
 - @developer Line 34: Should we show confirmation dialog before deletion?
 - @developer How should this behave for archived expenses?
 
 ### Risk Assessment
+
 **Medium Risk** - This endpoint is used by mobile app and web app. Changes could affect both.
 
 ### Recommended Testing
+
 - Standard functional testing
 - Add regression test for expense list page (depends on this endpoint)
 - Check mobile app compatibility
@@ -431,6 +480,7 @@ When joining a new team as an SDET, you're expected to review code but don't kno
 **Goal:** Understand before you critique
 
 **Activities:**
+
 1. **Don't Review Alone Yet**
    - Attend code review meetings
    - Read other people's review comments
@@ -456,6 +506,7 @@ When joining a new team as an SDET, you're expected to review code but don't kno
    - Note common patterns (error handling, validation approach)
 
 **What NOT to Do:**
+
 - ❌ Don't give strong opinions on code you don't understand
 - ❌ Don't nitpick code style (unless it's a clear bug)
 - ❌ Don't block PRs while you're learning
@@ -465,6 +516,7 @@ When joining a new team as an SDET, you're expected to review code but don't kno
 **Goal:** Start contributing with low-risk reviews
 
 **Activities:**
+
 1. **Start with Test Code Reviews**
    - Review other people's test PRs (you're the test expert!)
    - Check test coverage, test patterns, POM implementation
@@ -488,6 +540,7 @@ When joining a new team as an SDET, you're expected to review code but don't kno
    - These are valid regardless of codebase knowledge
 
 **What You Can Safely Comment On (Even When New):**
+
 - ✅ Missing null checks
 - ✅ Missing error handling
 - ✅ Missing user feedback (loading states, error messages)
@@ -496,6 +549,7 @@ When joining a new team as an SDET, you're expected to review code but don't kno
 - ✅ Missing tests for new code
 
 **What to Avoid:**
+
 - ⚠️ Architecture suggestions (you don't know the full picture yet)
 - ⚠️ Performance optimization (might be premature)
 - ⚠️ Refactoring suggestions (might not fit team patterns)
@@ -505,6 +559,7 @@ When joining a new team as an SDET, you're expected to review code but don't kno
 **Goal:** Full participation with context
 
 **Activities:**
+
 1. **Review All PR Types**
    - You now understand major components
    - You know common patterns
@@ -529,6 +584,7 @@ When joining a new team as an SDET, you're expected to review code but don't kno
 
 **Step 1: Classify Your Knowledge (30 seconds)**
 Ask yourself:
+
 - Do I understand this area of the codebase? (Yes/Somewhat/No)
 - Is this a critical path? (Auth, payments, data integrity)
 - Is this related to testing? (Test infrastructure, test code)
@@ -536,15 +592,18 @@ Ask yourself:
 **Step 2: Adjust Review Depth**
 
 **If you understand the area:**
+
 - Do full 3-level review (change, context, test planning)
 - Comment on architecture, patterns, and implementation details
 
 **If you somewhat understand:**
+
 - Focus on code quality: null checks, error handling, edge cases
 - Ask questions about patterns you don't recognize
 - Focus on testability
 
 **If you don't understand:**
+
 - Review at surface level: obvious bugs, missing tests
 - Ask clarifying questions: "Could you explain what this function does?"
 - Focus on QA concerns: testability, error messages, edge cases
@@ -553,6 +612,7 @@ Ask yourself:
 **Step 3: Frame Comments Appropriately**
 
 **High Confidence (you know this area):**
+
 ```markdown
 **Issue:** This validation is missing a null check for `user.email`. This will throw an error if email is undefined.
 
@@ -560,6 +620,7 @@ Ask yourself:
 ```
 
 **Medium Confidence (you're learning):**
+
 ```markdown
 **Question:** I noticed this doesn't validate the email format. Is there validation happening elsewhere, or should we add it here?
 
@@ -567,6 +628,7 @@ I see in `UserService` we use `isValidEmail()` helper - should we use that here 
 ```
 
 **Low Confidence (new to this area):**
+
 ```markdown
 **Testability Note:** Could we add a `data-testid="submit-button"` attribute here? This would make E2E testing easier.
 
@@ -605,6 +667,7 @@ Also, I'm still learning this part of the codebase - could you help me understan
 #### Red Flags to Watch For (Safe to Flag Even When New)
 
 **Always Comment On:**
+
 - 🚩 No tests added for new code
 - 🚩 Hardcoded credentials or secrets
 - 🚩 console.log or debugging code left in
@@ -625,11 +688,13 @@ Also, I'm still learning this part of the codebase - could you help me understan
 **Context:** I'm new to the team and still learning the codebase, so I focused on testability and edge cases. Deferring to others on architecture and patterns.
 
 ### ✅ Looks Good
+
 - Nice component structure, easy to follow
 - Loading state implemented
 - Error boundary in place
 
 ### 💡 Testability Suggestions
+
 1. Could we add test IDs to key elements?
    - `data-testid="profile-avatar"`
    - `data-testid="profile-name"`
@@ -638,6 +703,7 @@ Also, I'm still learning this part of the codebase - could you help me understan
 2. Is the API endpoint `/api/users/:id` available for integration testing? This would help test the full flow.
 
 ### ❓ Questions (I'm Learning)
+
 1. **Line 34:** I see we're using `localStorage.getItem('userId')`. Is there a shared auth utility for this, or is direct localStorage access the pattern here?
 
 2. **Line 56:** What happens if the API call fails? I see we catch the error, but should we show a message to the user?
@@ -645,7 +711,9 @@ Also, I'm still learning this part of the codebase - could you help me understan
 3. **General:** I'm still learning how navigation works in this app. Should clicking "Edit" navigate to a new page, or open a modal?
 
 ### 🧪 Test Plan
+
 I can write E2E tests for this after it merges:
+
 - Load profile page
 - Verify user data displays
 - Test edit button click
@@ -655,6 +723,7 @@ I can write E2E tests for this after it merges:
 **Status:** Approved from testability perspective. Looks good to me, but I'm still ramping up on this codebase so deferring to senior team members on implementation details.
 
 ---
+
 Thanks for the clear code! Let me know if you'd like help writing tests for this feature. 🙌
 ```
 
@@ -668,10 +737,12 @@ Thanks for the clear code! Let me know if you'd like help writing tests for this
 6. **Document your learning** - Future you will thank present you
 
 #### Phase 4: Test Automation with POM
+
 **Trigger:** Feature merged to main  
 **Branch:** QA creates separate test branch (e.g., `test/pom-feature-name`)
 
 **Activities:**
+
 1. **Page Object Model Implementation**
    - Create/update page objects for new UI elements
    - Implement reusable methods
@@ -695,6 +766,7 @@ Thanks for the clear code! Let me know if you'd like help writing tests for this
    - Document new test coverage
 
 **QA Deliverables:**
+
 - Page Object Model classes
 - E2E test suite
 - Test fixtures and data
@@ -702,9 +774,11 @@ Thanks for the clear code! Let me know if you'd like help writing tests for this
 - Test documentation
 
 #### Phase 5: Test Merge & CI Integration
+
 **Trigger:** Test PR approved
 
 **Activities:**
+
 1. **Test PR Review** - Team reviews test implementation
 2. **CI Validation** - Tests run in CI pipeline against staging
 3. **Test Branch Merge** - Tests merge to main
@@ -762,17 +836,20 @@ Throughout the workflow, QA performs:
 ### Benefits of This Approach
 
 **For Development:**
+
 - ✅ Faster feature delivery (not blocked on test automation)
 - ✅ Early manual validation catches critical issues
 - ✅ Dev can move to next feature while QA automates
 
 **For QA:**
+
 - ✅ Time to write comprehensive, maintainable tests
 - ✅ Opportunity for exploratory testing
 - ✅ Can showcase SDET skills with proper POM architecture
 - ✅ Tests are additive, not blocking
 
 **For Project:**
+
 - ✅ Balanced velocity and quality
 - ✅ Growing automation coverage
 - ✅ Early feedback from manual testing
@@ -796,152 +873,181 @@ Throughout the workflow, QA performs:
 ## Test Layers
 
 ### 1. Unit Tests
+
 **Location:** `tests/unit/`
 
 **Purpose:** Test individual functions, methods, and utilities in isolation.
 
 **Characteristics:**
+
 - Fast execution (< 1 second per test)
 - No external dependencies
 - High code coverage target (>80%)
 - Run on every commit
 
 **Technologies:**
+
 - Jest
 - Testing utilities
 
 **Examples:**
+
 - Math utilities validation
 - String formatting functions
 - Date manipulation helpers
 
 ### 2. Component Tests
+
 **Location:** `tests/component/`
 
 **Purpose:** Test React components in isolation with mocked dependencies.
 
 **Characteristics:**
+
 - Test user interactions
 - Verify rendering logic
 - Mock API calls and services
 - Fast feedback loop
 
 **Technologies:**
+
 - Jest
 - React Testing Library
 - Testing Library User Event
 
 ### 3. Integration Tests
+
 **Location:** `tests/integration/`
 
 **Purpose:** Test interactions between services, APIs, and database.
 
 **Characteristics:**
+
 - Test API endpoints
 - Verify database operations
 - Test service-to-service communication
 - Use test database
 
 **Technologies:**
+
 - Jest
 - Supertest (for API testing)
 - Test database fixtures
 
 ### 4. Contract Tests
+
 **Location:** `tests/contract/`
 
 **Purpose:** Verify API contracts between consumers and providers.
 
 **Characteristics:**
+
 - Ensure backward compatibility
 - Validate API schemas
 - Test request/response formats
 - Consumer-driven contracts
 
 **Technologies:**
+
 - Pact (or similar contract testing tools)
 - JSON Schema validation
 
 ### 5. End-to-End Tests
+
 **Location:** `tests/e2e/`
 
 **Purpose:** Test complete user workflows through the UI.
 
 **Characteristics:**
+
 - Simulate real user behavior
 - Test critical user journeys
 - Run against deployed environments
 - Slower execution
 
 **Technologies:**
+
 - Playwright
 - Cross-browser testing
 - Multi-environment support
 
 **Test Categories:**
+
 - `@smoke` - Critical path tests (run on every deployment)
 - `@sanity` - Basic functionality verification
 - `@regression` - Full feature coverage
 - `@critical` - Business-critical flows
 
 ### 6. Visual Regression Tests
+
 **Location:** `tests/visual/`
 
 **Purpose:** Detect unintended visual changes in the UI.
 
 **Characteristics:**
+
 - Screenshot comparison
 - Pixel-by-pixel diffing
 - Cross-browser validation
 - Baseline management
 
 **Technologies:**
+
 - Playwright visual comparison
 - Percy or similar tools
 
 ### 7. Performance Tests
+
 **Location:** `tests/non-functional/performance/`
 
 **Purpose:** Validate application performance under load.
 
 **Characteristics:**
+
 - Load testing
 - Stress testing
 - Response time monitoring
 - Resource utilization
 
 **Technologies:**
+
 - K6
 - Lighthouse (for frontend performance)
 - Custom metrics collection
 
 ### 8. Security Tests
+
 **Location:** `tests/non-functional/security/`
 
 **Purpose:** Identify security vulnerabilities.
 
 **Characteristics:**
+
 - OWASP Top 10 validation
 - Authentication/Authorization testing
 - Input validation
 - SQL injection, XSS prevention
 
 **Technologies:**
+
 - OWASP ZAP
 - Custom security test suites
 
 ### 9. Accessibility Tests
+
 **Location:** `tests/non-functional/accessibility/`
 
 **Purpose:** Ensure application is accessible to all users.
 
 **Characteristics:**
+
 - WCAG 2.1 compliance
 - Screen reader compatibility
 - Keyboard navigation
 - Color contrast validation
 
 **Technologies:**
+
 - Axe-core
 - Pa11y
 - Playwright accessibility tools
@@ -949,6 +1055,7 @@ Throughout the workflow, QA performs:
 ## Test Execution Strategy
 
 ### Local Development
+
 ```bash
 # Run unit tests (fast feedback)
 npm run test:unit
@@ -966,24 +1073,28 @@ npm run test:unit -- path/to/test.spec.ts
 ### CI/CD Pipeline
 
 #### On Pull Request
+
 1. **Unit Tests** - Must pass before merge
 2. **Component Tests** - Validate UI components
 3. **Integration Tests** - Test API contracts
 4. **E2E Smoke Tests** - Critical path validation against PR environment
 
 #### On Main Branch Push
+
 1. All tests from PR
 2. **Full E2E Regression** - Complete test suite
 3. **Performance Tests** - Baseline validation
 4. **Security Scan** - Vulnerability detection
 
 #### Scheduled (Nightly)
+
 1. **Visual Regression** - Full UI comparison
 2. **Extended Performance Tests** - Load and stress testing
 3. **Accessibility Audit** - Complete WCAG validation
 4. **Cross-browser Testing** - All supported browsers
 
 ### Docker Testing
+
 ```bash
 # Run tests in Docker (CI simulation)
 docker-compose -f tests/docker/docker-compose.test.yml --profile unit up
@@ -993,12 +1104,14 @@ docker-compose -f tests/docker/docker-compose.test.yml --profile e2e up
 ## Test Data Management
 
 ### Strategy
+
 - **Unit/Component:** Inline fixtures and mocks
 - **Integration:** Test database with seed data
 - **E2E:** Isolated test accounts and data per environment
 - **Cleanup:** Automatic test data cleanup after runs
 
 ### Test Database
+
 - Separate database for testing
 - Reset between test runs
 - Seed with known data sets
@@ -1007,13 +1120,16 @@ docker-compose -f tests/docker/docker-compose.test.yml --profile e2e up
 ## Environment Management
 
 ### Test Environments
+
 1. **Local** - Developer machine with Docker
 2. **PR Environment** - Temporary Cloud Run instances
 3. **Staging** - Pre-production environment
 4. **Production** - Read-only smoke tests only
 
 ### Configuration
+
 Each environment has its own configuration:
+
 - `tests/config/.env.local`
 - `tests/config/.env.staging`
 - `tests/config/.env.production`
@@ -1022,16 +1138,17 @@ Dynamic configuration generated in CI for PR environments.
 
 ## Code Coverage Goals
 
-| Test Layer | Target Coverage | Priority |
-|-----------|----------------|----------|
-| Unit Tests | >80% | High |
-| Component Tests | >70% | High |
-| Integration Tests | >60% | Medium |
-| E2E Tests | Critical paths | Medium |
+| Test Layer        | Target Coverage | Priority |
+| ----------------- | --------------- | -------- |
+| Unit Tests        | >80%            | High     |
+| Component Tests   | >70%            | High     |
+| Integration Tests | >60%            | Medium   |
+| E2E Tests         | Critical paths  | Medium   |
 
 ## Test Reporting
 
 ### Artifacts Generated
+
 - **JUnit XML** - For CI integration
 - **HTML Reports** - Human-readable results
 - **Allure Reports** - Detailed test execution reports
@@ -1039,6 +1156,7 @@ Dynamic configuration generated in CI for PR environments.
 - **Screenshots/Videos** - E2E test failures
 
 ### Report Access
+
 - CI pipeline artifacts
 - Playwright HTML report: `npx playwright show-report`
 - Coverage report: `tests/coverage/lcov-report/index.html`
@@ -1046,6 +1164,7 @@ Dynamic configuration generated in CI for PR environments.
 ## Best Practices
 
 ### Writing Tests
+
 1. **Follow AAA Pattern** - Arrange, Act, Assert
 2. **Test One Thing** - Each test should validate one behavior
 3. **Use Descriptive Names** - Test names should explain what they test
@@ -1054,6 +1173,7 @@ Dynamic configuration generated in CI for PR environments.
 6. **Use Page Object Model** - For E2E tests (maintainability)
 
 ### Test Maintenance
+
 1. **Regular Review** - Remove obsolete tests
 2. **Flaky Test Management** - Fix or quarantine flaky tests
 3. **Keep Tests Fast** - Optimize slow tests
@@ -1061,6 +1181,7 @@ Dynamic configuration generated in CI for PR environments.
 5. **Version Control** - Test data and fixtures in git
 
 ### Debugging Failed Tests
+
 1. **Check Test Logs** - Review error messages
 2. **Screenshots/Videos** - Visual debugging for E2E
 3. **Run Locally** - Reproduce issues on local environment
@@ -1070,6 +1191,7 @@ Dynamic configuration generated in CI for PR environments.
 ## Continuous Improvement
 
 ### Metrics Tracked
+
 - Test execution time
 - Test flakiness rate
 - Code coverage trends
@@ -1077,6 +1199,7 @@ Dynamic configuration generated in CI for PR environments.
 - Time to detect issues
 
 ### Regular Activities
+
 - **Weekly:** Review flaky tests
 - **Biweekly:** Test suite performance optimization
 - **Monthly:** Coverage gap analysis
@@ -1085,17 +1208,20 @@ Dynamic configuration generated in CI for PR environments.
 ## Tools and Technologies
 
 ### Test Frameworks
+
 - **Jest** - Unit, Component, Integration tests
 - **Playwright** - E2E and visual tests
 - **Cucumber** - BDD scenarios (if needed)
 
 ### Supporting Tools
+
 - **Docker** - Test environment consistency
 - **GitHub Actions** - CI/CD automation
 - **Allure** - Test reporting
 - **ESLint** - Test code quality
 
 ### Monitoring
+
 - Test execution metrics
 - Coverage trends
 - Failure analysis
@@ -1110,4 +1236,4 @@ Dynamic configuration generated in CI for PR environments.
 
 ---
 
-*For implementation details and examples, see the test files in the `tests/` directory.*
+_For implementation details and examples, see the test files in the `tests/` directory._

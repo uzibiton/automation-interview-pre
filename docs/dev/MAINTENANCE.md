@@ -108,8 +108,7 @@ This document tracks recurring maintenance tasks to keep the project healthy, or
 
 - [ ] Technical debt assessment
   - **Last completed**: YYYY-MM-DD
-  - **High priority items**:
-    -
+  - ## **High priority items**:
 
 ### Infrastructure
 

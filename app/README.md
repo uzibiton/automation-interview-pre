@@ -7,6 +7,7 @@ This is a full-stack expense tracking application built with a microservices arc
 ## Architecture Diagram
 
 ### Infrastructure Layout
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                         Nginx Gateway                        │
@@ -33,6 +34,7 @@ This is a full-stack expense tracking application built with a microservices arc
 ### Request Flow
 
 #### 1. Login Flow
+
 ```
 ┌─────────┐                                        ┌────────────┐
 │ User    │                                        │Google OAuth│
@@ -62,6 +64,7 @@ This is a full-stack expense tracking application built with a microservices arc
 ```
 
 #### 2. Create Expense Flow
+
 ```
 ┌─────────┐
 │ User    │
@@ -97,6 +100,7 @@ This is a full-stack expense tracking application built with a microservices arc
 ```
 
 #### 3. View Expenses Flow
+
 ```
 ┌─────────┐
 │ User    │
@@ -132,6 +136,7 @@ This is a full-stack expense tracking application built with a microservices arc
 ```
 
 #### 4. Edit/Delete Flow
+
 ```
 ┌─────────┐
 │ User    │
@@ -209,6 +214,7 @@ app/
 ## Technology Stack
 
 ### Frontend
+
 - **React 18** - UI library
 - **TypeScript** - Type safety
 - **Vite** - Build tool & dev server
@@ -218,6 +224,7 @@ app/
 - **Chart.js** - Data visualization
 
 ### Backend Services
+
 - **NestJS** - Node.js framework
 - **TypeScript** - Type safety
 - **TypeORM** - ORM for PostgreSQL
@@ -225,10 +232,12 @@ app/
 - **JWT** - Token-based auth
 
 ### Databases
+
 - **PostgreSQL** - Primary relational database
 - **Firestore** - Alternative NoSQL database (optional)
 
 ### Infrastructure
+
 - **Docker** - Containerization
 - **Docker Compose** - Local orchestration
 - **Nginx** - Reverse proxy & API gateway
@@ -241,6 +250,7 @@ app/
 **Purpose:** User interface for expense tracking
 
 **Key Features:**
+
 - Multi-language support (English/Hebrew with RTL)
 - Responsive design
 - Real-time expense visualization
@@ -248,6 +258,7 @@ app/
 - OAuth login integration
 
 **Key Components:**
+
 - `Dashboard` - Main overview with stats
 - `ExpensesPage` - Expense list and management
 - `AnalyticsPage` - Charts and graphs
@@ -255,6 +266,7 @@ app/
 - `ConfirmationDialog` - Delete confirmation
 
 **Environment Variables:**
+
 - `VITE_API_SERVICE_URL` - API service endpoint
 - `VITE_AUTH_SERVICE_URL` - Auth service endpoint
 
@@ -263,17 +275,20 @@ app/
 **Purpose:** Handle authentication and user management
 
 **Endpoints:**
+
 - `POST /auth/google` - Google OAuth login
 - `POST /auth/refresh` - Refresh JWT tokens
 - `GET /users/me` - Get current user info
 
 **Features:**
+
 - Google OAuth 2.0 integration
 - JWT token generation and validation
 - User profile management
 - Token refresh mechanism
 
 **Environment Variables:**
+
 - `GOOGLE_CLIENT_ID` - OAuth client ID
 - `GOOGLE_CLIENT_SECRET` - OAuth secret
 - `JWT_SECRET` - Token signing key
@@ -284,6 +299,7 @@ app/
 **Purpose:** Core business logic and data operations
 
 **Endpoints:**
+
 - `GET /expenses` - List expenses (with filters)
 - `POST /expenses` - Create expense
 - `PUT /expenses/:id` - Update expense
@@ -292,6 +308,7 @@ app/
 - `GET /expenses/categories` - List categories
 
 **Features:**
+
 - Multi-database support (Postgres/Firestore)
 - Date range filtering
 - Category/subcategory management
@@ -299,6 +316,7 @@ app/
 - JWT authentication guard
 
 **Environment Variables:**
+
 - `DATABASE_TYPE` - postgres or firestore
 - `DATABASE_HOST` - Postgres host
 - `GOOGLE_APPLICATION_CREDENTIALS` - Firestore credentials
@@ -309,11 +327,13 @@ app/
 **Purpose:** Reverse proxy and request routing
 
 **Routing:**
+
 - `/` → Frontend (React SPA)
 - `/api/*` → API Service
 - `/auth/*` → Auth Service
 
 **Features:**
+
 - Request routing
 - CORS handling
 - Static file serving
@@ -324,23 +344,27 @@ app/
 **Purpose:** Primary data storage
 
 **Schema:**
+
 - `users` - User accounts
 - `expenses` - Expense records
 - `categories` - Expense categories
 - `sub_categories` - Subcategories
 
 **Initialization:**
+
 - `init.sql` - Schema creation
 - `seed-categories.sql` - Default categories
 
 ## Data Flow
 
 ### 1. User Login Flow
+
 ```
 User → Frontend → Auth Service → Google OAuth → JWT Token → Frontend
 ```
 
 ### 2. Create Expense Flow
+
 ```
 User → Frontend (ExpenseDialog)
     → API Service (/expenses POST)
@@ -349,6 +373,7 @@ User → Frontend (ExpenseDialog)
 ```
 
 ### 3. View Expenses Flow
+
 ```
 User → Frontend (ExpensesPage)
     → API Service (/expenses GET + filters)
@@ -357,6 +382,7 @@ User → Frontend (ExpensesPage)
 ```
 
 ### 4. Edit/Delete Flow
+
 ```
 User → Frontend (ExpenseDialog/ConfirmationDialog)
     → API Service (PUT/DELETE /expenses/:id)
@@ -369,12 +395,14 @@ User → Frontend (ExpenseDialog/ConfirmationDialog)
 The application supports two database backends through an abstraction layer:
 
 ### PostgreSQL (Default)
+
 - Relational database
 - Strong consistency
 - ACID transactions
 - TypeORM for data access
 
 ### Firestore (Optional)
+
 - NoSQL document database
 - Horizontal scaling
 - Real-time updates
@@ -386,6 +414,7 @@ Set `DATABASE_TYPE=firestore` or `DATABASE_TYPE=postgres` in environment variabl
 ## Authentication & Authorization
 
 ### JWT Flow
+
 1. User logs in with Google OAuth
 2. Auth service validates OAuth token
 3. Auth service generates JWT token (expires in 1h)
@@ -395,6 +424,7 @@ Set `DATABASE_TYPE=firestore` or `DATABASE_TYPE=postgres` in environment variabl
 7. Refresh token used to get new JWT when expired
 
 ### Security Features
+
 - JWT token expiration (1 hour)
 - Refresh token rotation
 - CORS protection
@@ -406,10 +436,12 @@ Set `DATABASE_TYPE=firestore` or `DATABASE_TYPE=postgres` in environment variabl
 Supports English and Hebrew with RTL layout:
 
 **Translation Files:**
+
 - `app/frontend/src/i18n/translations/en.json`
 - `app/frontend/src/i18n/translations/he.json`
 
 **Features:**
+
 - Dynamic language switching
 - RTL layout for Hebrew
 - Localized date/number formats
@@ -418,6 +450,7 @@ Supports English and Hebrew with RTL layout:
 ## Development vs Production
 
 ### Development (Docker Compose)
+
 - Hot reload enabled
 - Source code mounted as volumes
 - Debug logging
@@ -425,6 +458,7 @@ Supports English and Hebrew with RTL layout:
 - Direct port access to all services
 
 ### Production (Cloud Run)
+
 - Optimized builds
 - Health checks
 - Auto-scaling
@@ -435,16 +469,19 @@ Supports English and Hebrew with RTL layout:
 ## API Design Patterns
 
 ### RESTful Endpoints
+
 - Standard HTTP methods (GET, POST, PUT, DELETE)
 - Resource-based URLs
 - Status codes (200, 201, 400, 401, 404, 500)
 
 ### Error Handling
+
 - Consistent error response format
 - Proper HTTP status codes
 - Error messages in user's language
 
 ### Request/Response
+
 - JSON format
 - DTOs for validation
 - Type-safe interfaces
@@ -452,18 +489,21 @@ Supports English and Hebrew with RTL layout:
 ## Performance Considerations
 
 ### Frontend
+
 - Code splitting
 - Lazy loading
 - Image optimization
 - Bundle size optimization
 
 ### Backend
+
 - Database connection pooling
 - Query optimization
 - Caching strategies
 - Efficient data pagination
 
 ### Infrastructure
+
 - Nginx caching
 - CDN for static assets
 - Database indexes

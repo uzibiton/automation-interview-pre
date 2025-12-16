@@ -7,11 +7,13 @@ Complete guide for managing your Cloud Run services via UI and CLI.
 ## 🌐 Access Cloud Run Console
 
 **Web UI:**
+
 ```
 https://console.cloud.google.com/run?project=automation-interview-pre
 ```
 
 **Your Services:**
+
 - **Auth Service**: https://auth-service-881467160213.us-central1.run.app
 - **API Service**: https://api-service-hjcsve3jia-uc.a.run.app
 - **Frontend**: https://frontend-881467160213.us-central1.run.app
@@ -21,6 +23,7 @@ https://console.cloud.google.com/run?project=automation-interview-pre
 ## 📊 Viewing Service Status
 
 ### Via UI:
+
 1. Go to Cloud Run console
 2. Click on any service name
 3. You'll see:
@@ -46,6 +49,7 @@ gcloud run services describe api-service \
 ```
 
 **Output:**
+
 - `True` = Service is healthy ✅
 - `False` = Service has issues ❌
 - `Unknown` = Starting up ⏳
@@ -55,6 +59,7 @@ gcloud run services describe api-service \
 ## 📝 Viewing Logs
 
 ### Via UI:
+
 1. Click on service name
 2. Go to **LOGS** tab
 3. Real-time logs with filtering
@@ -87,6 +92,7 @@ gcloud run services logs read api-service \
 ### ⚠️ Important: Cloud Run doesn't have "stop" - only "delete"
 
 **Cloud Run scales to ZERO automatically:**
+
 - When no requests come in → instances shut down
 - You pay $0 when scaled to zero
 - Service wakes up on next request
@@ -111,6 +117,7 @@ gcloud run services delete api-service --region us-central1 --quiet
 ```
 
 **Via UI:**
+
 1. Click on service
 2. Click **DELETE** button at top
 3. Confirm deletion
@@ -120,11 +127,13 @@ gcloud run services delete api-service --region us-central1 --quiet
 ## 🗑️ Removing Services
 
 ### Delete Single Service:
+
 ```bash
 gcloud run services delete api-service --region us-central1
 ```
 
 ### Delete All Services:
+
 ```bash
 # List and delete all services
 gcloud run services list --region us-central1 --format="value(metadata.name)" | \
@@ -132,6 +141,7 @@ gcloud run services list --region us-central1 --format="value(metadata.name)" | 
 ```
 
 ### Clean Up Images from Container Registry:
+
 ```bash
 # List images
 gcloud container images list --repository=gcr.io/automation-interview-pre
@@ -154,11 +164,13 @@ Cloud Run supports multiple environments through different strategies:
 ### Strategy 1: Separate Services (Recommended)
 
 **Naming convention:**
+
 ```
 service-name-environment
 ```
 
 **Example:**
+
 ```bash
 # Production
 gcloud run deploy api-service-prod \
@@ -177,6 +189,7 @@ gcloud run deploy api-service-dev \
 ```
 
 **URLs:**
+
 - `https://api-service-prod-xxx.run.app`
 - `https://api-service-staging-xxx.run.app`
 - `https://api-service-dev-xxx.run.app`
@@ -184,6 +197,7 @@ gcloud run deploy api-service-dev \
 ### Strategy 2: Traffic Splitting (Revisions)
 
 **Deploy new version without switching traffic:**
+
 ```bash
 # Deploy new revision without traffic
 gcloud run deploy api-service \
@@ -228,6 +242,7 @@ automation-interview-pre-dev     (Project 3)
 ## 📊 Monitoring & Metrics
 
 ### Via UI:
+
 1. Go to service → **METRICS** tab
 2. See:
    - Request count
@@ -260,6 +275,7 @@ gcloud run revisions describe api-service-00007-wrj \
 ## 🔧 Updating Service Configuration
 
 ### Update Environment Variables:
+
 ```bash
 gcloud run services update api-service \
   --region us-central1 \
@@ -267,6 +283,7 @@ gcloud run services update api-service \
 ```
 
 ### Update Memory/CPU:
+
 ```bash
 gcloud run services update api-service \
   --region us-central1 \
@@ -275,6 +292,7 @@ gcloud run services update api-service \
 ```
 
 ### Update Scaling:
+
 ```bash
 # Set min and max instances
 gcloud run services update api-service \
@@ -289,6 +307,7 @@ gcloud run services update api-service \
 ```
 
 ### Update Timeout:
+
 ```bash
 gcloud run services update api-service \
   --region us-central1 \
@@ -329,12 +348,14 @@ gcloud run services describe api-service --region us-central1 --format="value(st
 ### How Cloud Run Pricing Works:
 
 **You pay for:**
+
 1. **CPU time**: When processing requests
 2. **Memory usage**: During request processing
 3. **Requests**: $0.40 per million requests
 4. **Container startup time**: Brief CPU/memory usage
 
 **Free tier (per month):**
+
 - 2 million requests
 - 360,000 GB-seconds
 - 180,000 vCPU-seconds
@@ -342,21 +363,25 @@ gcloud run services describe api-service --region us-central1 --format="value(st
 ### Tips to Save Money:
 
 1. **Scale to zero** when not in use:
+
    ```bash
    --min-instances 0
    ```
 
 2. **Use appropriate memory**:
+
    ```bash
    --memory 256Mi  # Instead of 1Gi if you don't need it
    ```
 
 3. **Set request timeout**:
+
    ```bash
    --timeout 60  # Don't wait forever for responses
    ```
 
 4. **Delete unused services**:
+
    ```bash
    gcloud run services delete old-service --region us-central1
    ```
@@ -370,6 +395,7 @@ gcloud run services describe api-service --region us-central1 --format="value(st
 ## 🔐 Security Best Practices
 
 ### 1. Use IAM for Authentication:
+
 ```bash
 # Remove public access
 gcloud run services update api-service \
@@ -384,6 +410,7 @@ gcloud run services add-iam-policy-binding api-service \
 ```
 
 ### 2. Use Secret Manager:
+
 ```bash
 # Create secret
 echo -n "my-secret-value" | gcloud secrets create MY_SECRET --data-file=-
@@ -395,6 +422,7 @@ gcloud run services update api-service \
 ```
 
 ### 3. Use VPC Connector (for database access):
+
 ```bash
 gcloud run services update api-service \
   --region us-central1 \
@@ -406,6 +434,7 @@ gcloud run services update api-service \
 ## 🚨 Troubleshooting
 
 ### Service Won't Start:
+
 ```bash
 # Check logs for errors
 gcloud run services logs read api-service --region us-central1 --limit 100
@@ -420,18 +449,22 @@ gcloud run revisions describe <revision-name> --region us-central1
 ### Common Issues:
 
 **1. Port mismatch:**
+
 - Cloud Run expects port `8080` or `$PORT` env var
 - Fix: `await app.listen(port, '0.0.0.0')`
 
 **2. Container timeout:**
+
 - Default: 300s max
 - Fix: `--timeout 3600` for longer requests
 
 **3. Memory limit:**
+
 - Default: 512Mi
 - Fix: `--memory 1Gi` or higher
 
 **4. Cold start slow:**
+
 - Fix: `--min-instances 1` to keep one warm
 
 ---
@@ -447,6 +480,7 @@ gcloud run revisions describe <revision-name> --region us-central1
 ## 🎓 Your Current Setup
 
 **Services Running:**
+
 - ✅ `auth-service` - 512Mi, scales 1-10
 - ✅ `api-service` - 512Mi, scales 0-10
 - ✅ `frontend` - 256Mi, scales 0-10
@@ -455,6 +489,7 @@ gcloud run revisions describe <revision-name> --region us-central1
 **Region:** `us-central1`
 
 **To view your services now:**
+
 ```bash
 gcloud run services list --region us-central1
 ```

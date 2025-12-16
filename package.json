@@ -34,14 +34,21 @@
     "report:open": "npm run report:open --workspace=tests",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "format:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
-    "lint": "npm run lint --workspaces --if-present",
+    "lint": "eslint \"app/**/*.{js,ts,tsx}\" \"tests/**/*.{js,ts,tsx}\" \"tools/**/*.js\" --ignore-pattern \"tests/reports/**\"",
+    "lint:fix": "eslint \"app/**/*.{js,ts,tsx}\" \"tests/**/*.{js,ts,tsx}\" \"tools/**/*.js\" --ignore-pattern \"tests/reports/**\" --fix",
     "type-check": "npm run type-check --workspaces --if-present"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
+    "@typescript-eslint/eslint-plugin": "^8.50.0",
+    "@typescript-eslint/parser": "^8.50.0",
     "concurrently": "^8.2.2",
     "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
     "prettier": "^3.6.2"
   },
   "engines": {

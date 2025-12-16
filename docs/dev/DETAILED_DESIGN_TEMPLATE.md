@@ -4,26 +4,29 @@
 
 ## Document Information
 
-| Field | Value |
-|-------|-------|
-| **Component/Feature Name** | [Component/Feature Name] |
-| **Document Type** | Detailed Design |
-| **Author** | [Your Name] |
-| **Date Created** | [YYYY-MM-DD] |
-| **Last Updated** | [YYYY-MM-DD] |
-| **Status** | [Draft/In Review/Approved/Implemented] |
-| **Version** | [1.0] |
-| **Related Docs** | [Requirements](../qa/REQUIREMENTS_TEMPLATE.md), [HLD](HLD_TEMPLATE.md) |
+| Field                      | Value                                                                  |
+| -------------------------- | ---------------------------------------------------------------------- |
+| **Component/Feature Name** | [Component/Feature Name]                                               |
+| **Document Type**          | Detailed Design                                                        |
+| **Author**                 | [Your Name]                                                            |
+| **Date Created**           | [YYYY-MM-DD]                                                           |
+| **Last Updated**           | [YYYY-MM-DD]                                                           |
+| **Status**                 | [Draft/In Review/Approved/Implemented]                                 |
+| **Version**                | [1.0]                                                                  |
+| **Related Docs**           | [Requirements](../qa/REQUIREMENTS_TEMPLATE.md), [HLD](HLD_TEMPLATE.md) |
 
 ## 1. Component Overview
 
 ### Purpose
+
 Detailed explanation of what this component does and its role in the overall system.
 
 ### Scope
+
 What specific functionality is covered in this design document.
 
 ### Context
+
 Where this component fits in the system architecture (reference HLD diagrams).
 
 ## 2. Requirements Summary
@@ -31,6 +34,7 @@ Where this component fits in the system architecture (reference HLD diagrams).
 Brief summary of relevant functional and non-functional requirements from the requirements document.
 
 **Key Requirements:**
+
 - REQ-001: [Requirement summary]
 - REQ-002: [Requirement summary]
 - REQ-003: [Requirement summary]
@@ -62,9 +66,10 @@ Brief summary of relevant functional and non-functional requirements from the re
 ```
 
 ### Technology Stack
+
 - **Language:** TypeScript/JavaScript/Python
 - **Framework:** NestJS/React/Express
-- **Libraries:** 
+- **Libraries:**
   - Library 1: [Purpose]
   - Library 2: [Purpose]
 - **Database:** PostgreSQL/Firestore/Redis
@@ -97,6 +102,7 @@ ALTER TABLE table_name ADD CONSTRAINT chk_field2_positive CHECK (field2 > 0);
 ### 4.2 Data Transfer Objects (DTOs)
 
 #### CreateDTO
+
 ```typescript
 export class CreateExpenseDto {
   @IsNumber()
@@ -118,6 +124,7 @@ export class CreateExpenseDto {
 ```
 
 #### ResponseDTO
+
 ```typescript
 export interface ExpenseResponseDto {
   id: string;
@@ -167,17 +174,20 @@ export class Expense {
 ### 5.1 Endpoint Specifications
 
 #### Endpoint: Create Resource
+
 ```
 POST /api/v1/expenses
 ```
 
 **Headers:**
+
 ```
 Authorization: Bearer <jwt_token>
 Content-Type: application/json
 ```
 
 **Request Body:**
+
 ```json
 {
   "amount": 50.99,
@@ -188,6 +198,7 @@ Content-Type: application/json
 ```
 
 **Success Response (201 Created):**
+
 ```json
 {
   "id": "uuid-here",
@@ -204,6 +215,7 @@ Content-Type: application/json
 **Error Responses:**
 
 400 Bad Request:
+
 ```json
 {
   "error": {
@@ -220,6 +232,7 @@ Content-Type: application/json
 ```
 
 401 Unauthorized:
+
 ```json
 {
   "error": {
@@ -257,10 +270,7 @@ export class ExpenseService {
     private readonly userService: UserService,
   ) {}
 
-  async create(
-    userId: string,
-    dto: CreateExpenseDto,
-  ): Promise<ExpenseResponseDto> {
+  async create(userId: string, dto: CreateExpenseDto): Promise<ExpenseResponseDto> {
     // 1. Validate user exists
     const user = await this.userService.findById(userId);
     if (!user) {
@@ -280,10 +290,7 @@ export class ExpenseService {
     return this.toResponseDto(saved);
   }
 
-  async findByUser(
-    userId: string,
-    filters: ExpenseFilters,
-  ): Promise<ExpenseResponseDto[]> {
+  async findByUser(userId: string, filters: ExpenseFilters): Promise<ExpenseResponseDto[]> {
     // Implementation
   }
 
@@ -309,15 +316,12 @@ export class ExpenseRepository {
     return this.toDomain(saved);
   }
 
-  async findByUserId(
-    userId: string,
-    options?: FindOptions,
-  ): Promise<Expense[]> {
+  async findByUserId(userId: string, options?: FindOptions): Promise<Expense[]> {
     const entities = await this.repository.find({
       where: { userId },
       ...options,
     });
-    return entities.map(e => this.toDomain(e));
+    return entities.map((e) => this.toDomain(e));
   }
 
   private toEntity(expense: Expense): ExpenseEntity {
@@ -345,6 +349,7 @@ For any complex algorithms or calculations:
 **Output:** [What it returns]
 
 **Pseudocode:**
+
 ```
 FUNCTION algorithmName(input1, input2):
   1. Initialize variables
@@ -358,10 +363,12 @@ END FUNCTION
 ```
 
 **Complexity:**
+
 - Time Complexity: O(n)
 - Space Complexity: O(1)
 
 **Implementation:**
+
 ```typescript
 function algorithmName(input1: Type1, input2: Type2): ReturnType {
   // Implementation
@@ -389,12 +396,12 @@ const useExpenses = () => {
   });
 
   const fetchExpenses = async () => {
-    setState(prev => ({ ...prev, loading: true }));
+    setState((prev) => ({ ...prev, loading: true }));
     try {
       const data = await expenseApi.getAll();
-      setState(prev => ({ ...prev, expenses: data, loading: false }));
+      setState((prev) => ({ ...prev, expenses: data, loading: false }));
     } catch (error) {
-      setState(prev => ({ ...prev, error: error.message, loading: false }));
+      setState((prev) => ({ ...prev, error: error.message, loading: false }));
     }
   };
 
@@ -418,7 +425,10 @@ export class AppException extends Error {
 }
 
 export class ValidationException extends AppException {
-  constructor(message: string, public readonly errors: ValidationError[]) {
+  constructor(
+    message: string,
+    public readonly errors: ValidationError[],
+  ) {
     super('VALIDATION_ERROR', message, 400);
   }
 }
@@ -580,9 +590,7 @@ describe('ExpenseService', () => {
 
       // Assert
       expect(result).toEqual(expected);
-      expect(repository.save).toHaveBeenCalledWith(
-        expect.objectContaining(dto),
-      );
+      expect(repository.save).toHaveBeenCalledWith(expect.objectContaining(dto));
     });
 
     it('should throw error for invalid amount', async () => {
@@ -590,9 +598,7 @@ describe('ExpenseService', () => {
       const dto = { amount: -50, category: 'food', date: '2025-12-08' };
 
       // Act & Assert
-      await expect(service.create('user-id', dto)).rejects.toThrow(
-        ValidationException,
-      );
+      await expect(service.create('user-id', dto)).rejects.toThrow(ValidationException);
     });
   });
 });
@@ -620,7 +626,7 @@ describe('Expense API (e2e)', () => {
         date: '2025-12-08',
       })
       .expect(201)
-      .expect(res => {
+      .expect((res) => {
         expect(res.body).toHaveProperty('id');
         expect(res.body.amount).toBe(50);
       });
@@ -646,16 +652,13 @@ export class ExpenseService {
 
   async create(userId: string, dto: CreateExpenseDto) {
     this.logger.log(`Creating expense for user: ${userId}`);
-    
+
     try {
       const result = await this.repository.save(dto);
       this.logger.log(`Expense created: ${result.id}`);
       return result;
     } catch (error) {
-      this.logger.error(
-        `Failed to create expense for user ${userId}`,
-        error.stack,
-      );
+      this.logger.error(`Failed to create expense for user ${userId}`, error.stack);
       throw error;
     }
   }
@@ -667,11 +670,7 @@ export class ExpenseService {
 ```typescript
 // Track execution time
 export function TrackDuration() {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
@@ -716,6 +715,7 @@ export const config = {
 ## 15. Deployment Considerations
 
 ### 15.1 Build Process
+
 ```bash
 # Install dependencies
 npm ci
@@ -770,17 +770,17 @@ export class HealthController {
 
 ## 18. Approval
 
-| Role | Name | Signature | Date |
-|------|------|-----------|------|
-| Developer | [Name] | | |
-| Tech Lead | [Name] | | |
-| QA Engineer | [Name] | | |
+| Role        | Name   | Signature | Date |
+| ----------- | ------ | --------- | ---- |
+| Developer   | [Name] |           |      |
+| Tech Lead   | [Name] |           |      |
+| QA Engineer | [Name] |           |      |
 
 ## 19. Change Log
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | [Date] | [Name] | Initial version |
+| Version | Date   | Author | Changes         |
+| ------- | ------ | ------ | --------------- |
+| 1.0     | [Date] | [Name] | Initial version |
 
 ## 20. References
 
