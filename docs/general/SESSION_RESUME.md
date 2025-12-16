@@ -13,7 +13,7 @@
 2. **Click "Run workflow"**
 3. **Select:** Branch `main`, Environment `staging`
 4. **Click "Run workflow"** and wait ~5-10 minutes
-5. **Test:** https://frontend-staging-773292472093.us-central1.run.app
+5. **Test:** https://expense-tracker-staging-881467160213.us-central1.run.app
 
 **What this fixes:** Expenses will now show up (currently they're saved but not displayed)
 
@@ -63,9 +63,9 @@ Check with: `cd scripts && node check-expenses.js`
 
 ## 🔑 Quick Reference
 
-- **Project:** skillful-eon-477917-b7 (773292472093)
-- **Staging URL:** https://frontend-staging-773292472093.us-central1.run.app
-- **OAuth Client:** 773292472093-2k7ikkmj4f3tl8r885s0pkkun3dr7bra
+- **Project:** automation-interview-pre (881467160213)
+- **Staging URL:** https://expense-tracker-staging-881467160213.us-central1.run.app
+- **Production URL:** https://expense-tracker-881467160213.us-central1.run.app
 - **Firestore Console:** https://console.firebase.google.com/project/skillful-eon-477917-b7/firestore
 
 ---

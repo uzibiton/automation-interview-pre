@@ -401,10 +401,10 @@ jobs:
       - name: Build and push Frontend
         run: |
           cd app/frontend
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }} .
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest .
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }}
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:latest
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:${{ github.sha }} .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:latest .
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:latest
 
   # ============================================================================
   # Deploy to Cloud Run
@@ -435,8 +435,8 @@ jobs:
 
       - name: Deploy Frontend (initial)
         run: |
-          gcloud run deploy frontend${{ steps.config.outputs.suffix }} \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }} \
+          gcloud run deploy expense-tracker${{ steps.config.outputs.suffix }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:${{ github.sha }} \
             --region ${{ steps.config.outputs.region }} \
             --platform managed \
             --allow-unauthenticated \
@@ -445,7 +445,7 @@ jobs:
       - name: Get Frontend URL
         id: frontend_url
         run: |
-          FRONTEND_URL=$(gcloud run services describe frontend${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          FRONTEND_URL=$(gcloud run services describe expense-tracker${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
           echo "url=$FRONTEND_URL" >> $GITHUB_OUTPUT
 
       - name: Deploy Auth Service
@@ -481,8 +481,8 @@ jobs:
         run: |
           AUTH_SERVICE_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
           API_SERVICE_URL=$(gcloud run services describe api-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
-          gcloud run deploy frontend${{ steps.config.outputs.suffix }} \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/frontend:${{ github.sha }} \
+          gcloud run deploy expense-tracker${{ steps.config.outputs.suffix }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:${{ github.sha }} \
             --region ${{ steps.config.outputs.region }} \
             --platform managed \
             --allow-unauthenticated \
@@ -493,7 +493,7 @@ jobs:
         run: |
           AUTH_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
           API_URL=$(gcloud run services describe api-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
-          FRONTEND_URL=$(gcloud run services describe frontend${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          FRONTEND_URL=$(gcloud run services describe expense-tracker${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
 
           echo "auth_url=$AUTH_URL" >> $GITHUB_OUTPUT
           echo "api_url=$API_URL" >> $GITHUB_OUTPUT

@@ -465,7 +465,7 @@ gcloud iam service-accounts keys create key.json \
 
 #### `GOOGLE_CLIENT_ID`
 
-**Example:** `773292472093-xxx.apps.googleusercontent.com`
+**Example:** `{project-number}-xxx.apps.googleusercontent.com`
 
 #### `GOOGLE_CLIENT_SECRET`
 

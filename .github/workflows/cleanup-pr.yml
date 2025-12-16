@@ -31,7 +31,7 @@ jobs:
           echo "🧹 Cleaning up PR environment: pr-${PR_NUMBER}"
 
           # Delete services if they exist
-          for service in frontend api-service auth-service; do
+          for service in expense-tracker api-service auth-service; do
             if gcloud run services describe ${service}${SUFFIX} --region ${REGION} 2>/dev/null; then
               echo "Deleting ${service}${SUFFIX}..."
               gcloud run services delete ${service}${SUFFIX} --region ${REGION} --quiet

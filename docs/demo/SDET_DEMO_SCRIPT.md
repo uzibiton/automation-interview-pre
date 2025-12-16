@@ -557,7 +557,6 @@ This project demonstrates a **production-grade SDET approach** to building quali
 ## 📧 Contact & Repository
 
 - **GitHub**: https://github.com/uzibiton/automation-interview-pre
-- **Live Staging**: https://frontend-staging-773292472093.us-central1.run.app
-- **Live Production**: https://frontend-773292472093.us-central1.run.app
+- **Live Environments**: Check Cloud Run console for deployed service URLs
 
 _This project showcases practical SDET skills for production environments, not just theoretical knowledge._

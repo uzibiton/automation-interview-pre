@@ -29,8 +29,8 @@ cd /c/data/code/automation-interview-pre
 7. Add **Authorized redirect URIs**:
    - `http://localhost:3001/auth/google/callback`
    - For deployed environments, add:
-     - `https://auth-service-staging-773292472093.us-central1.run.app/auth/google/callback`
-     - `https://auth-service-773292472093.us-central1.run.app/auth/google/callback`
+     - `https://auth-service-staging-{project-id}.{region}.run.app/auth/google/callback`
+     - `https://auth-service-{project-id}.{region}.run.app/auth/google/callback`
 8. Copy Client ID and Client Secret
 
 #### Update .env file:

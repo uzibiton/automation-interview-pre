@@ -42,22 +42,28 @@ Comprehensive guide to all project documentation organized by category and use c
 | **[Testing Strategy (Workflow)](qa/TESTING_STRATEGY.md)**         | **QA workflows, issue classification, PR review** | **→ [Test Strategy](qa/TEST_STRATEGY.md)**                                                    |
 | **[Test Strategy (Technical)](qa/TEST_STRATEGY.md)**              | **Testing architecture, tools, implementation**   | **→ All test suites**                                                                         |
 | [Manual Testing Guide](qa/TESTING.md)                             | Step-by-step manual test scenarios                | → Manual test execution                                                                       |
-| [E2E Test Guide](../tests/E2E-QUICK-START.md)                     | End-to-end testing with Playwright                | → [E2E Tests](../tests/e2e/)                                                                  |
-| [Multi-Environment Testing](../tests/README-MULTI-ENV-E2E.md)     | Test across local, staging, production            | → [E2E Config](../tests/config/playwright.config.ts)                                          |
-| [Test Implementation Summary](../tests/IMPLEMENTATION_SUMMARY.md) | What's tested and coverage overview               | → [Test Results](../tests/reports/)                                                           |
+| [E2E Test Guide](qa/E2E-QUICK-START.md)                           | End-to-end testing with Playwright                | → [E2E Tests](../tests/e2e/)                                                                  |
+| [Multi-Environment Testing](qa/README-MULTI-ENV-E2E.md)           | Test across local, staging, production            | → [E2E Config](../tests/config/playwright.config.ts)                                          |
+| [E2E Implementation Complete](qa/E2E-IMPLEMENTATION-COMPLETE.md)  | Complete E2E testing implementation details       | → [E2E Tests](../tests/e2e/)                                                                  |
+| [E2E Quick Reference](qa/QUICK-REFERENCE-E2E.md)                  | E2E testing commands cheat sheet                  | → [E2E Tests](../tests/e2e/)                                                                  |
+| [Implementation Checklist](qa/IMPLEMENTATION_CHECKLIST.md)        | Testing infrastructure setup checklist            | → [Test Strategy](qa/TESTING_STRATEGY.md)                                                     |
+| [Test Implementation Summary](qa/IMPLEMENTATION_SUMMARY.md)       | What's tested and coverage overview               | → [Test Results](../tests/reports/)                                                           |
+| [Non-Functional Testing Guide](qa/NON_FUNCTIONAL_SIMPLE_GUIDE.md) | Performance, security, accessibility testing      | → [Non-Functional Tests](../tests/non-functional/)                                            |
 
 ### 🚀 Development & Workflows
 
-| Document                                                 | Description                                       | Related Docs                                             |
-| -------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------- |
-| **[Task & Bug Management](qa/TASK_BUG_MANAGEMENT.md)**   | **Issue tracking, workflows, and best practices** | **→ [Issue Templates](../.github/ISSUE_TEMPLATE/)**      |
-| **[Maintenance Schedule](dev/MAINTENANCE.md)**           | **Recurring maintenance tasks and tracking**      | **→ Weekly, Monthly, Quarterly checklists**              |
-| **[Working with AI Agents](dev/WORKING_WITH_AGENTS.md)** | **Best practices for AI-assisted development**    | **→ [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)**             |
-| **[Database Tools](../tools/README.md)**                 | **Test data seeding and database management**     | **→ [Run Locally](dev/RUN_LOCALLY.md)**                  |
-| [PR Workflow Guide](qa/PR_WORKFLOW_GUIDE.md)             | Complete PR process from task to merge            | → [Testing Strategy](qa/TESTING_STRATEGY.md)             |
-| [Development Insights](dev/DEVELOPMENT_INSIGHTS.md)      | Lessons learned and best practices                | → [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)                 |
-| [GitHub Actions Setup](devops/GITHUB_ACTIONS_SETUP.md)   | CI/CD configuration details                       | → [Workflows](../.github/workflows/)                     |
-| [Cloud Run Deployment](devops/DEPLOYMENT.md)             | Deploy to staging and production                  | → [Cloud Run Management](devops/CLOUD_RUN_MANAGEMENT.md) |
+| Document                                                  | Description                                       | Related Docs                                                |
+| --------------------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------- |
+| **[Task & Bug Management](qa/TASK_BUG_MANAGEMENT.md)**    | **Issue tracking, workflows, and best practices** | **→ [Issue Templates](../.github/ISSUE_TEMPLATE/)**         |
+| **[Maintenance Schedule](dev/MAINTENANCE.md)**            | **Recurring maintenance tasks and tracking**      | **→ Weekly, Monthly, Quarterly checklists**                 |
+| **[Working with AI Agents](dev/WORKING_WITH_AGENTS.md)**  | **Best practices for AI-assisted development**    | **→ [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)**                |
+| **[Database Tools](../tools/README.md)**                  | **Test data seeding and database management**     | **→ [Run Locally](dev/RUN_LOCALLY.md)**                     |
+| [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md) | Database category management implementation       | → [Database Schema](../app/database/README.md)              |
+| [Database Quick Fix](dev/QUICK_FIX.md)                    | Quick fixes for database issues                   | → [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md) |
+| [PR Workflow Guide](qa/PR_WORKFLOW_GUIDE.md)              | Complete PR process from task to merge            | → [Testing Strategy](qa/TESTING_STRATEGY.md)                |
+| [Development Insights](dev/DEVELOPMENT_INSIGHTS.md)       | Lessons learned and best practices                | → [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)                    |
+| [GitHub Actions Setup](devops/GITHUB_ACTIONS_SETUP.md)    | CI/CD configuration details                       | → [Workflows](../.github/workflows/)                        |
+| [Cloud Run Deployment](devops/DEPLOYMENT.md)              | Deploy to staging and production                  | → [Cloud Run Management](devops/CLOUD_RUN_MANAGEMENT.md)    |
 
 ### 📊 Demo & Presentation
 
@@ -114,7 +120,7 @@ Deployment              Quality Metrics
 - **Add a feature** → [qa/PR_WORKFLOW_GUIDE.md](qa/PR_WORKFLOW_GUIDE.md) + [Issue Templates](../.github/ISSUE_TEMPLATE/)
 - **Track issues** → [qa/TASK_BUG_MANAGEMENT.md](qa/TASK_BUG_MANAGEMENT.md)
 - **Do maintenance** → [dev/MAINTENANCE.md](dev/MAINTENANCE.md)
-- **Write tests** → [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md) + [E2E Guide](../tests/E2E-QUICK-START.md)
+- **Write tests** → [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md) + [E2E Guide](qa/E2E-QUICK-START.md)
 - **Deploy** → [devops/DEPLOYMENT.md](devops/DEPLOYMENT.md)
 - **Debug CI/CD** → [devops/CI_CD_PIPELINE.md](devops/CI_CD_PIPELINE.md)
 - **Demo for interview** → [demo/SDET_DEMO_SCRIPT.md](demo/SDET_DEMO_SCRIPT.md)
