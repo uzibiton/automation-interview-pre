@@ -53,8 +53,9 @@ npm run test:e2e:docker             # Docker environment
 ## 🌐 Environments
 
 - **Local**: http://localhost:3000
-- **Staging**: https://expense-tracker-staging-881467160213.us-central1.run.app
-- **Production**: https://expense-tracker-881467160213.us-central1.run.app
+- **Staging**: [https://expense-tracker-staging-buuath6a3q-uc.a.run.app](https://expense-tracker-staging-buuath6a3q-uc.a.run.app)
+- **Production**: [https://expense-tracker-buuath6a3q-uc.a.run.app](https://expense-tracker-buuath6a3q-uc.a.run.app)
+- **PR #65**: [https://expense-tracker-pr-65-buuath6a3q-uc.a.run.app](https://expense-tracker-pr-65-buuath6a3q-uc.a.run.app)
 
 📝 **Quick Links**: [New Idea Issue](https://github.com/uzibiton/automation-interview-pre/issues/new?template=template-idea.md) | [View All Ideas](https://github.com/uzibiton/automation-interview-pre/labels/type%3Aidea)
 

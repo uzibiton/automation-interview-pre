@@ -16,12 +16,12 @@
    - Wait ~5-10 minutes
 
 2. **Update OAuth Redirect URIs**
-   - Console: https://console.cloud.google.com/apis/credentials?project=773292472093
-   - OAuth Client ID: `773292472093-2k7ikkmj4f3tl8r885s0pkkun3dr7bra`
+   - Go to GCP Console → APIs & Services → Credentials
+   - Update OAuth Client redirect URIs
    - Add the URLs listed in "OAuth Configuration" section below
 
 3. **Test Staging**
-   - URL: `https://frontend-staging-773292472093.us-central1.run.app`
+   - URL: Check Cloud Run console for staging URL
    - Test login, categories, basic functionality
 
 4. **Deploy Production & PR** (After staging works)
@@ -34,17 +34,17 @@
 
 ### Google Cloud Project
 
-- **Project ID:** `skillful-eon-477917-b7`
-- **Project Number:** `773292472093`
+- **Project ID:** `automation-interview-pre`
+- **Project Number:** `[REDACTED]`
 - **Region:** `us-central1`
-- **Console:** https://console.cloud.google.com/?project=773292472093
+- **Console:** GCP Console → Project Dashboard
 
 ### OAuth 2.0 Client (Web Application)
 
-- **Client ID:** `773292472093-2k7ikkmj4f3tl8r885s0pkkun3dr7bra.apps.googleusercontent.com`
-- **Client Secret:** `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`
+- **Client ID:** `[STORED IN GITHUB SECRETS]`
+- **Client Secret:** `[STORED IN GITHUB SECRETS]`
 - **Type:** Web Application
-- **Console:** https://console.cloud.google.com/apis/credentials/oauthclient/773292472093-2k7ikkmj4f3tl8r885s0pkkun3dr7bra?project=773292472093
+- **Console:** GCP Console → APIs & Services → Credentials
 
 ### Service Account
 
@@ -70,13 +70,15 @@
 ### GitHub Secrets (Already Configured)
 
 ```
-GCP_PROJECT_ID=skillful-eon-477917-b7
-FIREBASE_PROJECT_ID=skillful-eon-477917-b7
-GCP_SA_KEY=<Service account key JSON>
-JWT_SECRET=your-jwt-secret-change-in-production
-GOOGLE_CLIENT_ID=773292472093-2k7ikkmj4f3tl8r885s0pkkun3dr7bra.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=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
+GCP_PROJECT_ID=[REDACTED]
+FIREBASE_PROJECT_ID=[REDACTED]
+GCP_SA_KEY=[REDACTED - Service account key JSON]
+JWT_SECRET=[REDACTED]
+GOOGLE_CLIENT_ID=[REDACTED]
+GOOGLE_CLIENT_SECRET=[REDACTED]
 ```
+
+**Note:** All secrets are stored in GitHub repository secrets and environment variables.
 
 ---
 
@@ -116,28 +118,28 @@ GOOGLE_CLIENT_SECRET=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
 
 ### Required Setup in Google Console
 
-**Console URL:** https://console.cloud.google.com/apis/credentials/oauthclient/773292472093-2k7ikkmj4f3tl8r885s0pkkun3dr7bra?project=773292472093
+**Location:** GCP Console → APIs & Services → Credentials → OAuth 2.0 Client IDs
 
 #### Authorized JavaScript Origins
 
 ```
 http://localhost:3000
-https://frontend-staging-773292472093.us-central1.run.app
-https://frontend-773292472093.us-central1.run.app
+https://expense-tracker-staging-{project-id}.{region}.run.app
+https://expense-tracker-{project-id}.{region}.run.app
 ```
 
 #### Authorized Redirect URIs
 
 ```
 http://localhost:3001/auth/google/callback
-https://auth-service-staging-773292472093.us-central1.run.app/auth/google/callback
-https://auth-service-773292472093.us-central1.run.app/auth/google/callback
+https://auth-service-staging-{project-id}.{region}.run.app/auth/google/callback
+https://auth-service-{project-id}.{region}.run.app/auth/google/callback
 ```
 
 **Note for PR Environments:**
 
-- Add URLs manually when testing PR: `https://frontend-pr-{N}-773292472093.us-central1.run.app`
-- And: `https://auth-service-pr-{N}-773292472093.us-central1.run.app/auth/google/callback`
+- Add URLs manually when testing PR: `https://expense-tracker-pr-{N}-{hash}-{region}.a.run.app`
+- And: `https://auth-service-pr-{N}-{hash}-{region}.a.run.app/auth/google/callback`
 
 ---
 
@@ -545,8 +547,8 @@ gcloud run services describe frontend --region=us-central1 --project=skillful-eo
 diff staging-config.yaml prod-config.yaml
 
 # Test service connectivity between environments
-curl https://auth-service-staging-773292472093.us-central1.run.app/health
-curl https://api-service-staging-773292472093.us-central1.run.app/categories
+curl https://auth-service-staging-{project-id}.{region}.run.app/health
+curl https://api-service-staging-{project-id}.{region}.run.app/categories
 ```
 
 ### CORS Errors
@@ -573,11 +575,11 @@ curl https://api-service-staging-773292472093.us-central1.run.app/categories
 
 ### Key Documentation
 
-- **GCP Console:** https://console.cloud.google.com/?project=773292472093
-- **Firebase Console:** https://console.firebase.google.com/project/skillful-eon-477917-b7
+- **GCP Console:** Check Cloud Run console for project details
+- **Firebase Console:** Check Firebase console for project details
 - **GitHub Repo:** https://github.com/uzibiton/automation-interview-pre
 - **GitHub Actions:** https://github.com/uzibiton/automation-interview-pre/actions
-- **Cloud Run Services:** https://console.cloud.google.com/run?project=773292472093
+- **Cloud Run Services:** Check Cloud Run console for deployed services
 
 ### Commands Reference
 
@@ -679,12 +681,12 @@ cd frontend && npm run build
 
 **Step 3:** Update OAuth (5 minutes):
 
-- https://console.cloud.google.com/apis/credentials/oauthclient/773292472093-2k7ikkmj4f3tl8r885s0pkkun3dr7bra?project=773292472093
+- Go to GCP Console → APIs & Services → Credentials → OAuth 2.0 Client IDs
 - Add staging URLs from "OAuth Configuration" section
 
 **Step 4:** Test staging (10 minutes):
 
-- Open: https://frontend-staging-773292472093.us-central1.run.app
+- Open staging URL from Cloud Run console
 - Go through testing checklist
 
 **Step 5:** Deploy production (20 minutes):
