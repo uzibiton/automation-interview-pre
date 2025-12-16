@@ -31,6 +31,8 @@
     "test:e2e:staging": "npm run test:e2e:staging --workspace=tests",
     "test:e2e:production": "npm run test:e2e:production --workspace=tests",
     "test:smoke": "npm run test:smoke --workspace=tests",
+    "test:unit": "npm run test:unit --workspace=tests",
+    "test:coverage": "npm run test:coverage --workspace=tests",
     "report:open": "npm run report:open --workspace=tests",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "format:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
