@@ -116,10 +116,10 @@ export VITE_AUTH_SERVICE_URL=$AUTH_SERVICE_URL
 export VITE_API_SERVICE_URL=$API_SERVICE_URL
 export VITE_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
 
-gcloud builds submit --tag gcr.io/$PROJECT_ID/frontend
+gcloud builds submit --tag gcr.io/$PROJECT_ID/expense-tracker
 
-gcloud run deploy frontend \
-  --image gcr.io/$PROJECT_ID/frontend \
+gcloud run deploy expense-tracker \
+  --image gcr.io/$PROJECT_ID/expense-tracker \
   --platform managed \
   --region $REGION \
   --allow-unauthenticated \
@@ -132,7 +132,7 @@ VITE_API_SERVICE_URL=$API_SERVICE_URL,
 VITE_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
 "
 
-FRONTEND_URL=$(gcloud run services describe frontend --platform managed --region $REGION --format 'value(status.url)')
+FRONTEND_URL=$(gcloud run services describe expense-tracker --platform managed --region $REGION --format 'value(status.url)')
 echo -e "${GREEN}Frontend deployed at: ${FRONTEND_URL}${NC}"
 
 cd ..

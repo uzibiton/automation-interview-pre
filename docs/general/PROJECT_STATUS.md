@@ -84,15 +84,15 @@ GOOGLE_CLIENT_SECRET=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
 
 ### Staging
 
-- **Frontend:** `https://frontend-staging-773292472093.us-central1.run.app`
-- **Auth Service:** `https://auth-service-staging-773292472093.us-central1.run.app`
-- **API Service:** `https://api-service-staging-773292472093.us-central1.run.app`
+- **Frontend:** `https://expense-tracker-staging-881467160213.us-central1.run.app`
+- **Auth Service:** `https://auth-service-staging-881467160213.us-central1.run.app`
+- **API Service:** `https://api-service-staging-881467160213.us-central1.run.app`
 
 ### Production
 
-- **Frontend:** `https://frontend-773292472093.us-central1.run.app`
-- **Auth Service:** `https://auth-service-773292472093.us-central1.run.app`
-- **API Service:** `https://api-service-773292472093.us-central1.run.app`
+- **Frontend:** `https://expense-tracker-881467160213.us-central1.run.app`
+- **Auth Service:** `https://auth-service-881467160213.us-central1.run.app`
+- **API Service:** `https://api-service-881467160213.us-central1.run.app`
 
 ### PR Environments (Dynamic)
 

@@ -13,9 +13,90 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 **The Application**: A web-based expense tracker with microservices architecture (Auth, API, Frontend), deployed on Google Cloud Run with PostgreSQL/Firestore databases and CI/CD via GitHub Actions.
 
-👤 **[About the Author](docs/general/ABOUTME.md)** | 📋 **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** | 🐛 **[GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues)** | 📊 **[Project Board](https://github.com/users/uzibiton/projects/2/views/2)**
+📑 **[Table of Contents](docs/TABLE_OF_CONTENTS.md)** | 📋 **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** | 👤 **[About the Author](docs/general/ABOUTME.md)** | 🐛 **[GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues)** | 📊 **[Project Board](https://github.com/users/uzibiton/projects/2/views/2)**
 
 > **Note:** All issues, bugs, and feature requests are now tracked in GitHub Issues with structured templates for consistent tracking and workflow management.
+
+## 🚀 Quick Start
+
+### Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Build and start all services with Docker Compose
+docker-compose build
+docker-compose up -d
+
+# Or use npm script
+npm run docker:up
+
+# Start services individually
+npm run dev:auth      # Auth service on :3001
+npm run dev:api       # API service on :3002
+npm run dev:frontend  # Frontend on :3000
+```
+
+### Running Tests
+
+```bash
+# E2E tests
+npm run test:e2e:local              # Local environment
+npm run test:e2e:staging            # Staging environment
+npm run test:e2e:production:smoke   # Production smoke tests
+
+# Multi-environment tests
+npm run test:e2e:docker             # Docker environment
+```
+
+## 🌐 Environments
+
+- **Local**: http://localhost:3000
+- **Staging**: https://expense-tracker-staging-881467160213.us-central1.run.app
+- **Production**: https://expense-tracker-881467160213.us-central1.run.app
+
+📝 **Quick Links**: [New Idea Issue](https://github.com/uzibiton/automation-interview-pre/issues/new?template=template-idea.md) | [View All Ideas](https://github.com/uzibiton/automation-interview-pre/labels/type%3Aidea)
+
+## 📚 Documentation
+
+📖 **[Complete Table of Contents](docs/TABLE_OF_CONTENTS.md)** - Full documentation index with all guides and resources
+
+### Quick Links
+
+- **[Run Locally](docs/dev/RUN_LOCALLY.md)** - Get started with local development
+- **[Application Architecture](app/README.md)** - System design and data flow
+- **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** - Comprehensive QA approach
+- **[PR Workflow Guide](docs/qa/PR_WORKFLOW_GUIDE.md)** - Contribute to the project
+- **[Deployment Guide](docs/devops/DEPLOYMENT.md)** - Deploy to staging/production
+- **[SDET Demo Script](docs/demo/SDET_DEMO_SCRIPT.md)** - Interview presentation
+
+### Documentation Structure
+
+- **[docs/general/](docs/general/)** - Project overview and status
+- **[docs/dev/](docs/dev/)** - Development setup and API docs
+- **[docs/qa/](docs/qa/)** - Testing and quality assurance
+- **[docs/devops/](docs/devops/)** - CI/CD and deployment
+- **[docs/demo/](docs/demo/)** - Presentation materials
+
+## 🧪 Testing Infrastructure
+
+- **E2E**: Playwright with multi-environment support
+- **Contract**: API contract testing
+- **Performance**: k6 & Locust load testing
+- **Security**: OWASP ZAP, Bandit, dependency scanning
+- **Reliability**: Soak, stress, spike, recovery tests
+- **Visual**: Visual regression testing
+- **Accessibility**: WCAG compliance testing
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React + TypeScript + Vite
+- **Backend**: NestJS (Auth & API services)
+- **Database**: Firestore (production) / PostgreSQL (local)
+- **Infrastructure**: Google Cloud Run
+- **CI/CD**: GitHub Actions
+- **Testing**: Playwright, k6, Locust, OWASP ZAP
 
 ## 📁 Project Structure
 
@@ -80,98 +161,6 @@ automation-interview-pre/
 ├── package.json                  # Root package.json (workspaces)
 └── README.md                     # This file
 ```
-
-## 🚀 Quick Start
-
-### Local Development
-
-```bash
-# Install dependencies
-npm install
-
-# Build and start all services with Docker Compose
-docker-compose build
-docker-compose up -d
-
-# Or use npm script
-npm run docker:up
-
-# Start services individually
-npm run dev:auth      # Auth service on :3001
-npm run dev:api       # API service on :3002
-npm run dev:frontend  # Frontend on :3000
-```
-
-### Running Tests
-
-```bash
-# E2E tests
-npm run test:e2e:local              # Local environment
-npm run test:e2e:staging            # Staging environment
-npm run test:e2e:production:smoke   # Production smoke tests
-
-# Multi-environment tests
-npm run test:e2e:docker             # Docker environment
-```
-
-## 🌐 Environments
-
-- **Local**: http://localhost:3000
-- **Staging**: https://frontend-staging-773292472093.us-central1.run.app
-- **Production**: https://frontend-773292472093.us-central1.run.app
-
-## 💡 Idea Management
-
-Have an idea for a future feature? We track ideas separately from active tasks:
-
-1. **Capture it**: Add to [docs/general/IDEAS.md](docs/general/IDEAS.md) using the template provided
-2. **Research**: Investigate feasibility and document findings
-3. **Mature**: When ready, create a GitHub issue using the [Idea/Investigation template](.github/ISSUE_TEMPLATE/template-idea.md)
-4. **Implement**: Convert to feature request and follow normal workflow
-
-**Current Ideas**: Offline-first architecture, native mobile apps
-
-📝 **Quick Links**: [New Idea Issue](https://github.com/uzibiton/automation-interview-pre/issues/new?template=template-idea.md) | [View All Ideas](https://github.com/uzibiton/automation-interview-pre/labels/type%3Aidea)
-
-## 📚 Documentation
-
-📖 **[Complete Table of Contents](docs/TABLE_OF_CONTENTS.md)** - Full documentation index with all guides and resources
-
-### Quick Links
-
-- **[Run Locally](docs/dev/RUN_LOCALLY.md)** - Get started with local development
-- **[Application Architecture](app/README.md)** - System design and data flow
-- **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** - Comprehensive QA approach
-- **[PR Workflow Guide](docs/qa/PR_WORKFLOW_GUIDE.md)** - Contribute to the project
-- **[Deployment Guide](docs/devops/DEPLOYMENT.md)** - Deploy to staging/production
-- **[SDET Demo Script](docs/demo/SDET_DEMO_SCRIPT.md)** - Interview presentation
-
-### Documentation Structure
-
-- **[docs/general/](docs/general/)** - Project overview and status
-- **[docs/dev/](docs/dev/)** - Development setup and API docs
-- **[docs/qa/](docs/qa/)** - Testing and quality assurance
-- **[docs/devops/](docs/devops/)** - CI/CD and deployment
-- **[docs/demo/](docs/demo/)** - Presentation materials
-
-## 🧪 Testing Infrastructure
-
-- **E2E**: Playwright with multi-environment support
-- **Contract**: API contract testing
-- **Performance**: k6 & Locust load testing
-- **Security**: OWASP ZAP, Bandit, dependency scanning
-- **Reliability**: Soak, stress, spike, recovery tests
-- **Visual**: Visual regression testing
-- **Accessibility**: WCAG compliance testing
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React + TypeScript + Vite
-- **Backend**: NestJS (Auth & API services)
-- **Database**: Firestore (production) / PostgreSQL (local)
-- **Infrastructure**: Google Cloud Run
-- **CI/CD**: GitHub Actions
-- **Testing**: Playwright, k6, Locust, OWASP ZAP
 
 ## 📦 Workspaces
 
