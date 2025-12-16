@@ -13,9 +13,9 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 **The Application**: A web-based expense tracker with microservices architecture (Auth, API, Frontend), deployed on Google Cloud Run with PostgreSQL/Firestore databases and CI/CD via GitHub Actions.
 
-👤 **[About the Author](docs/general/ABOUTME.md)** | 📋 **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** | 📝 **[Issue Template Tracking](.github/ISSUE_TEMPLATE/TRACKING.md)**
+👤 **[About the Author](docs/general/ABOUTME.md)** | 📋 **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** | 🐛 **[GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues)** | 📊 **[Project Board](https://github.com/users/uzibiton/projects/2/views/2)**
 
-> **Note:** Issue Template Tracking helps you see which feature requests and tasks have been created as GitHub issues vs. which are still available as templates.
+> **Note:** All issues, bugs, and feature requests are now tracked in GitHub Issues with structured templates for consistent tracking and workflow management.
 
 ## 📁 Project Structure
 
@@ -89,7 +89,11 @@ automation-interview-pre/
 # Install dependencies
 npm install
 
-# Start all services (Docker)
+# Build and start all services with Docker Compose
+docker-compose build
+docker-compose up -d
+
+# Or use npm script
 npm run docker:up
 
 # Start services individually
