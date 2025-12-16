@@ -96,11 +96,11 @@ GOOGLE_CLIENT_SECRET=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
 
 ### PR Environments (Dynamic)
 
-- **Pattern:** `https://{service}-pr-{number}-773292472093.us-central1.run.app`
+- **Pattern:** `https://{service}-pr-{number}-881467160213.us-central1.run.app`
 - **Example (PR #15):**
-  - Frontend: `https://frontend-pr-15-773292472093.us-central1.run.app`
-  - Auth: `https://auth-service-pr-15-773292472093.us-central1.run.app`
-  - API: `https://api-service-pr-15-773292472093.us-central1.run.app`
+  - Frontend: `https://expense-tracker-pr-15-881467160213.us-central1.run.app`
+  - Auth: `https://auth-service-pr-15-881467160213.us-central1.run.app`
+  - API: `https://api-service-pr-15-881467160213.us-central1.run.app`
 
 ### Local Development
 
