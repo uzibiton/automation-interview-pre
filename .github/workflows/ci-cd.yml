@@ -210,6 +210,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
+      - name: Generate timestamp
+        id: timestamp
+        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
+
       - name: Install dependencies
         run: npm ci
 
@@ -222,19 +226,25 @@ jobs:
         with:
           args: --severity-threshold=high --all-projects --sarif-file-output=snyk.sarif
 
-      - name: Upload SARIF as artifact
+      - name: Organize security results
         if: always() && hashFiles('snyk.sarif') != ''
+        run: |
+          mkdir -p reports/${{ steps.timestamp.outputs.value }}/security-scan
+          mv snyk.sarif reports/${{ steps.timestamp.outputs.value }}/security-scan/
+
+      - name: Upload SARIF as artifact
+        if: always() && hashFiles('reports/${{ steps.timestamp.outputs.value }}/security-scan/snyk.sarif') != ''
         uses: actions/upload-artifact@v4
         with:
-          name: snyk-sarif
-          path: snyk.sarif
+          name: security-scan-${{ steps.timestamp.outputs.value }}
+          path: reports/${{ steps.timestamp.outputs.value }}/security-scan/
           retention-days: 30
 
       - name: Upload results to GitHub Security
-        if: always() && hashFiles('snyk.sarif') != ''
+        if: always() && hashFiles('reports/${{ steps.timestamp.outputs.value }}/security-scan/snyk.sarif') != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: snyk.sarif
+          sarif_file: reports/${{ steps.timestamp.outputs.value }}/security-scan/snyk.sarif
 
       - name: Fail on vulnerabilities (non-blocking)
         if: steps.snyk.outcome == 'failure'
@@ -263,21 +273,35 @@ jobs:
           cache: 'npm'
           cache-dependency-path: tests/package-lock.json
 
+      - name: Generate timestamp
+        id: timestamp
+        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
+
       - name: Install test dependencies
         run: npm ci
         working-directory: tests
 
       - name: Run unit tests
-        run: npm run test:unit -- --maxWorkers=2 --forceExit
+        run: |
+          mkdir -p reports/${{ steps.timestamp.outputs.value }}/unit-tests
+          npm run test:unit -- --maxWorkers=2 --forceExit
         working-directory: tests
         timeout-minutes: 5
+
+      - name: Organize test results
+        if: always()
+        run: |
+          if [ -d "reports" ]; then
+            mv reports/* reports/${{ steps.timestamp.outputs.value }}/unit-tests/ 2>/dev/null || true
+          fi
+        working-directory: tests
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: unit-test-results
-          path: tests/reports/
+          name: unit-tests-${{ steps.timestamp.outputs.value }}
+          path: tests/reports/${{ steps.timestamp.outputs.value }}/unit-tests/
 
   # ============================================================================
   # STAGE 2.5: Code Coverage (runs after unit tests)
@@ -300,6 +324,10 @@ jobs:
           cache: 'npm'
           cache-dependency-path: tests/package-lock.json
 
+      - name: Generate timestamp
+        id: timestamp
+        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
+
       - name: Install test dependencies
         run: npm ci
         working-directory: tests
@@ -309,14 +337,21 @@ jobs:
         working-directory: tests
         timeout-minutes: 10
 
+      - name: Organize coverage results
+        if: always()
+        run: |
+          mkdir -p reports/${{ steps.timestamp.outputs.value }}/coverage
+          if [ -d "coverage" ]; then
+            mv coverage reports/${{ steps.timestamp.outputs.value }}/coverage/
+          fi
+        working-directory: tests
+
       - name: Upload coverage reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
-          path: |
-            tests/coverage/
-            tests/reports/coverage/
+          name: coverage-${{ steps.timestamp.outputs.value }}
+          path: tests/reports/${{ steps.timestamp.outputs.value }}/coverage/
 
       - name: Comment coverage on PR
         if: github.event_name == 'pull_request' && always()
@@ -628,12 +663,29 @@ jobs:
           API_URL: ${{ needs.deploy.outputs.api_url }}
           AUTH_URL: ${{ needs.deploy.outputs.auth_url }}
 
+      - name: Generate timestamp
+        if: always()
+        id: timestamp
+        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
+
+      - name: Organize test results
+        if: always()
+        run: |
+          mkdir -p reports/${{ steps.timestamp.outputs.value }}/integration-tests
+          if [ -d "reports" ]; then
+            find reports -maxdepth 1 -type f -exec mv {} reports/${{ steps.timestamp.outputs.value }}/integration-tests/ \; 2>/dev/null || true
+          fi
+          if [ -d "test-results" ]; then
+            mv test-results reports/${{ steps.timestamp.outputs.value }}/integration-tests/ 2>/dev/null || true
+          fi
+        working-directory: tests
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: integration-test-results
-          path: tests/reports/
+          name: integration-tests-${{ steps.timestamp.outputs.value }}
+          path: tests/reports/${{ steps.timestamp.outputs.value }}/integration-tests/
 
   # ============================================================================
   # STAGE 5: Smoke Tests
@@ -681,12 +733,27 @@ jobs:
         env:
           CI: true
 
+      - name: Generate timestamp
+        if: always()
+        id: timestamp
+        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
+
+      - name: Organize test results
+        if: always()
+        run: |
+          mkdir -p reports/${{ steps.timestamp.outputs.value }}/smoke-tests
+          if [ -d "reports" ]; then
+            find reports -maxdepth 1 -type f -exec mv {} reports/${{ steps.timestamp.outputs.value }}/smoke-tests/ \; 2>/dev/null || true
+          fi
+          if [ -d "test-results" ]; then
+            mv test-results reports/${{ steps.timestamp.outputs.value }}/smoke-tests/ 2>/dev/null || true
+          fi
+        working-directory: tests
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smoke-test-results-${{ needs.setup.outputs.env_name }}
-          path: |
-            tests/reports/
-            tests/test-results/
+          name: smoke-tests-${{ needs.setup.outputs.env_name }}-${{ steps.timestamp.outputs.value }}
+          path: tests/reports/${{ steps.timestamp.outputs.value }}/smoke-tests/
           retention-days: 7
