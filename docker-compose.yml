@@ -74,6 +74,30 @@ services:
     networks:
       - app-network
 
+  # FastAPI Microservice (Python)
+  fastapi-service:
+    build:
+      context: ./app/services/fastapi-service
+      dockerfile: Dockerfile
+    container_name: fastapi-service
+    ports:
+      - '3003:3003'
+    environment:
+      - PORT=3003
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testpass
+      - POSTGRES_DB=testdb
+      - JWT_SECRET=your-jwt-secret-change-in-production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    networks:
+      - app-network
+
   # React Frontend
   frontend:
     build:
