@@ -734,6 +734,10 @@ jobs:
         run: npm ci
         working-directory: tests
 
+      - name: Install Playwright browsers
+        run: npm run install:browsers
+        working-directory: tests
+
       - name: Run integration tests
         run: npm run test:integration
         working-directory: tests
@@ -802,7 +806,7 @@ jobs:
         working-directory: tests
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: npm run install:browsers
         working-directory: tests
 
       - name: Create dynamic environment file

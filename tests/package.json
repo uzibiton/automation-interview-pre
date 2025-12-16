@@ -21,7 +21,8 @@
     "test:smoke": "playwright test --config=config/playwright.config.ts --grep @smoke",
     "test:e2e:smoke": "playwright test --config=config/playwright.config.ts --grep @smoke",
     "report:open": "playwright show-report",
-    "install": "npx playwright install --with-deps"
+    "postinstall": "echo 'Skipping Playwright install. Run npm run install:browsers when needed.'",
+    "install:browsers": "npx playwright install --with-deps"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
