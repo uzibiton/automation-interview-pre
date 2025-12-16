@@ -80,4 +80,11 @@ export default [
       '**/*.config.mjs',
     ],
   },
+  // NestJS services need CommonJS require() for dotenv initialization
+  {
+    files: ['app/services/*/src/main.ts'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
 ];

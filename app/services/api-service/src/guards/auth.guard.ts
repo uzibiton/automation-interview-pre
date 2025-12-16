@@ -16,11 +16,10 @@ export class AuthGuard implements CanActivate {
 
     try {
       const authServiceUrl = process.env.AUTH_SERVICE_URL || 'http://auth-service:3001';
-      const response = await firstValueFrom(
-        this.httpService.get(`${authServiceUrl}/auth/verify`, {
-          headers: { Authorization: authHeader },
-        }),
-      );
+      const observable = this.httpService.get(`${authServiceUrl}/auth/verify`, {
+        headers: { Authorization: authHeader },
+      });
+      const response: any = await firstValueFrom(observable as any);
 
       request.user = response.data.user;
       return true;
