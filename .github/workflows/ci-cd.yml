@@ -242,9 +242,19 @@ jobs:
 
       - name: Upload results to GitHub Security
         if: always() && hashFiles('reports/${{ steps.timestamp.outputs.value }}/security-scan/snyk.sarif') != ''
+        continue-on-error: true
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: reports/${{ steps.timestamp.outputs.value }}/security-scan/snyk.sarif
+
+      - name: Note about Code Scanning
+        if: always()
+        run: |
+          echo "ℹ️  To enable GitHub Code Scanning:"
+          echo "   1. Go to repository Settings → Security → Code security and analysis"
+          echo "   2. Enable 'Code scanning' feature"
+          echo "   3. This allows automatic security alert integration"
+          echo "   📦 Security reports are always available as artifacts regardless"
 
       - name: Fail on vulnerabilities (non-blocking)
         if: steps.snyk.outcome == 'failure'
@@ -277,7 +287,17 @@ jobs:
         id: timestamp
         run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
 
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: tests/node_modules
+          key: ${{ runner.os }}-test-modules-${{ hashFiles('tests/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-test-modules-
+
       - name: Install test dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
         working-directory: tests
 
@@ -328,7 +348,17 @@ jobs:
         id: timestamp
         run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
 
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: tests/node_modules
+          key: ${{ runner.os }}-test-modules-${{ hashFiles('tests/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-test-modules-
+
       - name: Install test dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
         working-directory: tests
 
@@ -394,12 +424,50 @@ jobs:
             }
 
   # ============================================================================
+  # Static Analysis Gate - Check if all static stages passed
+  # ============================================================================
+  static-analysis-gate:
+    name: Static Analysis Gate
+    needs: [prettier, eslint, typecheck, npm-audit, snyk, unit-tests, coverage]
+    if: always()
+    runs-on: ubuntu-latest
+    outputs:
+      all_passed: ${{ steps.check.outputs.all_passed }}
+
+    steps:
+      - name: Check static analysis results
+        id: check
+        run: |
+          echo "Prettier: ${{ needs.prettier.result }}"
+          echo "ESLint: ${{ needs.eslint.result }}"
+          echo "TypeCheck: ${{ needs.typecheck.result }}"
+          echo "npm audit: ${{ needs.npm-audit.result }}"
+          echo "Snyk: ${{ needs.snyk.result }}"
+          echo "Unit Tests: ${{ needs.unit-tests.result }}"
+          echo "Coverage: ${{ needs.coverage.result }}"
+
+          if [ "${{ needs.prettier.result }}" = "success" ] && \
+             [ "${{ needs.eslint.result }}" = "success" ] && \
+             [ "${{ needs.typecheck.result }}" = "success" ] && \
+             [ "${{ needs.npm-audit.result }}" = "success" ] && \
+             [ "${{ needs.snyk.result }}" = "success" ] && \
+             [ "${{ needs.unit-tests.result }}" = "success" ] && \
+             [ "${{ needs.coverage.result }}" = "success" ]; then
+            echo "✅ All static analysis stages passed"
+            echo "all_passed=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Some static analysis stages failed. Skipping deployment and E2E tests."
+            echo "all_passed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+  # ============================================================================
   # Setup Environment
   # ============================================================================
   setup:
     name: Setup Environment
-    needs: [prettier, eslint, typecheck, npm-audit, snyk, unit-tests, coverage]
-    if: always()
+    needs: [static-analysis-gate]
+    if: needs.static-analysis-gate.outputs.all_passed == 'true'
     runs-on: ubuntu-latest
     outputs:
       env_name: ${{ steps.set_env.outputs.env_name }}
@@ -652,7 +720,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: tests/package-lock.json
 
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: tests/node_modules
+          key: ${{ runner.os }}-test-modules-${{ hashFiles('tests/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-test-modules-
+
       - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
         working-directory: tests
 
@@ -709,7 +787,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: tests/package-lock.json
 
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: tests/node_modules
+          key: ${{ runner.os }}-test-modules-${{ hashFiles('tests/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-test-modules-
+
       - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
         working-directory: tests
 
