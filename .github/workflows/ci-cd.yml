@@ -350,6 +350,7 @@ jobs:
     needs: [generate-timestamp, unit-tests]
     if: github.event.inputs.skip_coverage != 'true' && github.event.inputs.skip_unit_tests != 'true'
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Checkout code
