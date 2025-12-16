@@ -4,8 +4,6 @@
  * Standard test user used across all tests and seeding scripts
  */
 
-const bcrypt = require('bcrypt');
-
 const TEST_USER = {
   email: 'test@expenses.local',
   password: 'Test123!',
@@ -40,8 +38,4 @@ async function ensureTestUser(client) {
   return insertResult.rows[0].id;
 }
 
-module.exports = {
-  TEST_USER,
-  TEST_USER_PASSWORD_HASH,
-  ensureTestUser,
-};
+export { TEST_USER, TEST_USER_PASSWORD_HASH, ensureTestUser };

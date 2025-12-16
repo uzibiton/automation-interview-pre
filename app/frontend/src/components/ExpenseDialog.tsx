@@ -45,7 +45,9 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
           amount: typeof expense.amount === 'string' ? expense.amount : expense.amount.toString(),
           currency: expense.currency || 'USD',
           description: expense.description || '',
-          date: expense.date ? new Date(expense.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+          date: expense.date
+            ? new Date(expense.date).toISOString().split('T')[0]
+            : new Date().toISOString().split('T')[0],
           paymentMethod: expense.paymentMethod || 'credit_card',
         });
       } else {
@@ -65,9 +67,12 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
 
   useEffect(() => {
     if (formData.categoryId) {
+       
       fetchSubCategories(parseInt(formData.categoryId));
     } else {
+       
       setSubCategories([]);
+       
       setFormData((prev) => ({ ...prev, subCategoryId: '' }));
     }
   }, [formData.categoryId]);
@@ -130,7 +135,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
           headers: { Authorization: `Bearer ${token}` },
         });
       }
-      
+
       onSuccess();
       onClose();
     } catch (error) {
@@ -252,11 +257,20 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
           </div>
 
           <div className="modal-actions">
-            <button type="button" className="btn btn-secondary" onClick={handleClose} disabled={loading}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleClose}
+              disabled={loading}
+            >
               {translation('expenses.cancel')}
             </button>
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? translation('expenses.saving') : (isEditMode ? translation('expenses.save') : translation('expenses.addNew'))}
+              {loading
+                ? translation('expenses.saving')
+                : isEditMode
+                  ? translation('expenses.save')
+                  : translation('expenses.addNew')}
             </button>
           </div>
         </form>
@@ -265,7 +279,9 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
       <ConfirmationDialog
         isOpen={showConfirmation}
         title={translation(isEditMode ? 'expenses.editConfirmTitle' : 'expenses.addConfirmTitle')}
-        message={translation(isEditMode ? 'expenses.editConfirmMessage' : 'expenses.addConfirmMessage')}
+        message={translation(
+          isEditMode ? 'expenses.editConfirmMessage' : 'expenses.addConfirmMessage',
+        )}
         onConfirm={handleConfirmSave}
         onCancel={handleCancelConfirmation}
         type="info"

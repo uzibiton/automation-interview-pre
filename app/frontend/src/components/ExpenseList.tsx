@@ -28,11 +28,6 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   const [sortField, setSortField] = useState<SortField>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
-  useEffect(() => {
-    fetchExpenses();
-    fetchCategories();
-  }, [refreshKey]);
-
   const fetchExpenses = async () => {
     try {
       const response = await axios.get(`${API_SERVICE_URL}/expenses`, {
@@ -59,6 +54,13 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
       setCategories([]);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchExpenses();
+     
+    fetchCategories();
+  }, [refreshKey]);
 
   const getCategoryName = (categoryId: number) => {
     const category = categories.find((c) => c.id === categoryId);
@@ -137,20 +139,22 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
       let compareResult = 0;
 
       switch (sortField) {
-        case 'date':
+        case 'date': {
           const dateA = new Date(a.date).getTime();
           const dateB = new Date(b.date).getTime();
           compareResult = dateA - dateB;
           break;
+        }
         case 'description':
           compareResult = a.description.localeCompare(b.description);
           break;
-        case 'category':
+        case 'category': {
           const categoryA = getCategoryName(a.categoryId) || 'Unknown';
           const categoryB = getCategoryName(b.categoryId) || 'Unknown';
           compareResult = categoryA.localeCompare(categoryB);
           break;
-        case 'amount':
+        }
+        case 'amount': {
           const amountA = typeof a.amount === 'string' ? parseFloat(a.amount) : a.amount;
           const amountB = typeof b.amount === 'string' ? parseFloat(b.amount) : b.amount;
           // Handle NaN cases by treating them as 0
@@ -158,11 +162,13 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
           const validAmountB = isNaN(amountB) ? 0 : amountB;
           compareResult = validAmountA - validAmountB;
           break;
-        case 'paymentMethod':
+        }
+        case 'paymentMethod': {
           const paymentA = a.paymentMethod || '';
           const paymentB = b.paymentMethod || '';
           compareResult = paymentA.localeCompare(paymentB);
           break;
+        }
       }
 
       return sortDirection === 'asc' ? compareResult : -compareResult;

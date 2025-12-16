@@ -36,11 +36,6 @@ function Dashboard({ token, onLogout }: DashboardProps) {
   const [stats, setStats] = useState<Stats>({ total: 0, totalAmount: 0, count: 0, byCategory: [] });
   const [refreshKey, setRefreshKey] = useState(0);
 
-  useEffect(() => {
-    fetchUserProfile();
-    fetchStats();
-  }, [refreshKey]);
-
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(`${AUTH_SERVICE_URL}/auth/profile`, {
@@ -75,13 +70,16 @@ function Dashboard({ token, onLogout }: DashboardProps) {
     setRefreshKey((prev) => prev + 1);
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchUserProfile();
+     
+    fetchStats();
+  }, [refreshKey]);
+
   return (
     <div>
-      <Navigation
-        userName={user?.name}
-        userAvatar={user?.avatarUrl}
-        onLogout={onLogout}
-      />
+      <Navigation userName={user?.name} userAvatar={user?.avatarUrl} onLogout={onLogout} />
 
       <Routes>
         <Route
@@ -94,9 +92,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
         />
         <Route
           path="/expenses"
-          element={
-            <ExpensesPage token={token} refreshKey={refreshKey} onUpdate={handleUpdate} />
-          }
+          element={<ExpensesPage token={token} refreshKey={refreshKey} onUpdate={handleUpdate} />}
         />
       </Routes>
     </div>

@@ -1,4 +1,4 @@
-const { Firestore } = require('@google-cloud/firestore');
+import { Firestore } from '@google-cloud/firestore';
 
 const db = new Firestore({
   projectId: 'skillful-eon-477917-b7',

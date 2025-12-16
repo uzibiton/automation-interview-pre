@@ -13,16 +13,16 @@ interface ExpensesPageProps {
 function ExpensesPage({ token, refreshKey, onUpdate }: ExpensesPageProps) {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [showDialog, setShowDialog] = useState(searchParams.get('add') === 'true');
+  const shouldShowDialog = searchParams.get('add') === 'true';
+  const [showDialog, setShowDialog] = useState(shouldShowDialog);
 
   useEffect(() => {
-    if (searchParams.get('add') === 'true') {
-      setShowDialog(true);
+    if (shouldShowDialog) {
       // Remove the query param after opening dialog
       searchParams.delete('add');
       setSearchParams(searchParams, { replace: true });
     }
-  }, [searchParams, setSearchParams]);
+  }, [shouldShowDialog, searchParams, setSearchParams]);
 
   const handleExpenseCreated = () => {
     onUpdate();

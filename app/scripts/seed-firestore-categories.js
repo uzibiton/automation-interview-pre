@@ -3,7 +3,7 @@
  * Run with: node scripts/seed-firestore-categories.js
  */
 
-const { Firestore } = require('@google-cloud/firestore');
+import { Firestore } from '@google-cloud/firestore';
 
 const DEFAULT_CATEGORIES = [
   {

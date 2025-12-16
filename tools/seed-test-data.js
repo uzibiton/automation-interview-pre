@@ -7,8 +7,8 @@
  * Run: node tools/seed-test-data.js
  */
 
-const { Client } = require('pg');
-const { TEST_USER, ensureTestUser } = require('./test-user');
+import { Client } from 'pg';
+import { TEST_USER, ensureTestUser } from './test-user.js';
 
 // Database connection from environment or defaults
 const config = {
@@ -100,7 +100,8 @@ async function seedTestData() {
 
     if (existingExpenses > 0) {
       console.log(`⚠️  User already has ${existingExpenses} expenses`);
-      const readline = require('readline').createInterface({
+      const { createInterface } = await import('readline');
+      const readline = createInterface({
         input: process.stdin,
         output: process.stdout,
       });
