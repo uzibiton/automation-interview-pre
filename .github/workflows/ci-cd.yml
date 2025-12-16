@@ -52,24 +52,29 @@ on:
         description: 'Skip Prettier check'
         required: false
         type: boolean
-        default: true
+        default: false
       skip_eslint:
         description: 'Skip ESLint'
         required: false
         type: boolean
-        default: true
+        default: false
       skip_typecheck:
         description: 'Skip TypeScript check'
         required: false
         type: boolean
-        default: true
+        default: false
       skip_audit:
         description: 'Skip npm audit'
         required: false
         type: boolean
-        default: true
+        default: false
       skip_snyk:
         description: 'Skip Snyk scan'
+        required: false
+        type: boolean
+        default: false
+      skip_deployment:
+        description: 'Skip environment setup and deployment'
         required: false
         type: boolean
         default: false
@@ -82,12 +87,27 @@ concurrency:
 # Define jobs that run in parallel
 jobs:
   # ============================================================================
+  # Generate CI Run Timestamp (shared across all jobs)
+  # ============================================================================
+
+  generate-timestamp:
+    name: Generate CI Run ID
+    runs-on: ubuntu-latest
+    outputs:
+      timestamp: ${{ steps.timestamp.outputs.value }}
+    steps:
+      - name: Generate timestamp for this CI run
+        id: timestamp
+        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
+
+  # ============================================================================
   # STAGE 1: Static Analysis (parallel execution)
   # ============================================================================
 
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
+    needs: [generate-timestamp]
     steps:
       - name: Start Code Quality Checks
         run: echo "Starting code quality checks"
@@ -95,6 +115,7 @@ jobs:
   security-checks:
     name: Security Checks
     runs-on: ubuntu-latest
+    needs: [generate-timestamp]
     steps:
       - name: Start Security Checks
         run: echo "Starting security checks"
@@ -210,10 +231,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
-      - name: Generate timestamp
-        id: timestamp
-        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
-
       - name: Install dependencies
         run: npm ci
 
@@ -229,32 +246,37 @@ jobs:
       - name: Organize security results
         if: always() && hashFiles('snyk.sarif') != ''
         run: |
-          mkdir -p reports/${{ steps.timestamp.outputs.value }}/security-scan
-          mv snyk.sarif reports/${{ steps.timestamp.outputs.value }}/security-scan/
+          mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan
+          mv snyk.sarif reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan/
 
       - name: Upload SARIF as artifact
-        if: always() && hashFiles('reports/${{ steps.timestamp.outputs.value }}/security-scan/snyk.sarif') != ''
+        if: always() && hashFiles('reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan/snyk.sarif') != ''
         uses: actions/upload-artifact@v4
         with:
-          name: security-scan-${{ steps.timestamp.outputs.value }}
-          path: reports/${{ steps.timestamp.outputs.value }}/security-scan/
+          name: security-scan-${{ needs.generate-timestamp.outputs.timestamp }}
+          path: reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan/
           retention-days: 30
 
       - name: Upload results to GitHub Security
-        if: always() && hashFiles('reports/${{ steps.timestamp.outputs.value }}/security-scan/snyk.sarif') != ''
+        if: always() && hashFiles('reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan/snyk.sarif') != ''
         continue-on-error: true
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: reports/${{ steps.timestamp.outputs.value }}/security-scan/snyk.sarif
+          sarif_file: reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan/snyk.sarif
+          category: snyk-security-scan
 
       - name: Note about Code Scanning
         if: always()
         run: |
-          echo "ℹ️  To enable GitHub Code Scanning:"
-          echo "   1. Go to repository Settings → Security → Code security and analysis"
-          echo "   2. Enable 'Code scanning' feature"
-          echo "   3. This allows automatic security alert integration"
-          echo "   📦 Security reports are always available as artifacts regardless"
+          echo "ℹ️  GitHub Code Scanning Status:"
+          echo "   📋 Security reports uploaded as workflow artifacts"
+          echo ""
+          echo "   To enable automatic GitHub Security alerts:"
+          echo "   1. Go to: Repository Settings → Security → Code security and analysis"
+          echo "   2. Enable 'Code scanning' under Advanced Security"
+          echo "   3. Security findings will appear in the Security tab"
+          echo ""
+          echo "   📦 Note: SARIF reports are always saved as artifacts for manual review"
 
       - name: Fail on vulnerabilities (non-blocking)
         if: steps.snyk.outcome == 'failure'
@@ -269,6 +291,7 @@ jobs:
 
   unit-tests:
     name: Unit Tests
+    needs: [generate-timestamp]
     if: github.event.inputs.skip_unit_tests != 'true'
     runs-on: ubuntu-latest
 
@@ -282,10 +305,6 @@ jobs:
           node-version: '18'
           cache: 'npm'
           cache-dependency-path: tests/package-lock.json
-
-      - name: Generate timestamp
-        id: timestamp
-        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
 
       - name: Cache node_modules
         id: cache-node-modules
@@ -302,17 +321,16 @@ jobs:
         working-directory: tests
 
       - name: Run unit tests
-        run: |
-          mkdir -p reports/${{ steps.timestamp.outputs.value }}/unit-tests
-          npm run test:unit -- --maxWorkers=2 --forceExit
+        run: npm run test:unit -- --maxWorkers=2 --forceExit
         working-directory: tests
         timeout-minutes: 5
 
       - name: Organize test results
         if: always()
         run: |
+          mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/unit-tests
           if [ -d "reports" ]; then
-            mv reports/* reports/${{ steps.timestamp.outputs.value }}/unit-tests/ 2>/dev/null || true
+            find reports -maxdepth 1 -type f -exec mv {} reports/${{ needs.generate-timestamp.outputs.timestamp }}/unit-tests/ \; 2>/dev/null || true
           fi
         working-directory: tests
 
@@ -320,8 +338,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: unit-tests-${{ steps.timestamp.outputs.value }}
-          path: tests/reports/${{ steps.timestamp.outputs.value }}/unit-tests/
+          name: unit-tests-${{ needs.generate-timestamp.outputs.timestamp }}
+          path: tests/reports/${{ needs.generate-timestamp.outputs.timestamp }}/unit-tests/
 
   # ============================================================================
   # STAGE 2.5: Code Coverage (runs after unit tests)
@@ -329,7 +347,7 @@ jobs:
 
   coverage:
     name: Code Coverage
-    needs: unit-tests
+    needs: [generate-timestamp, unit-tests]
     if: github.event.inputs.skip_coverage != 'true' && github.event.inputs.skip_unit_tests != 'true'
     runs-on: ubuntu-latest
 
@@ -343,10 +361,6 @@ jobs:
           node-version: '18'
           cache: 'npm'
           cache-dependency-path: tests/package-lock.json
-
-      - name: Generate timestamp
-        id: timestamp
-        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
 
       - name: Cache node_modules
         id: cache-node-modules
@@ -370,9 +384,9 @@ jobs:
       - name: Organize coverage results
         if: always()
         run: |
-          mkdir -p reports/${{ steps.timestamp.outputs.value }}/coverage
+          mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/coverage
           if [ -d "coverage" ]; then
-            mv coverage reports/${{ steps.timestamp.outputs.value }}/coverage/
+            mv coverage reports/${{ needs.generate-timestamp.outputs.timestamp }}/coverage/
           fi
         working-directory: tests
 
@@ -380,8 +394,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-${{ steps.timestamp.outputs.value }}
-          path: tests/reports/${{ steps.timestamp.outputs.value }}/coverage/
+          name: coverage-${{ needs.generate-timestamp.outputs.timestamp }}
+          path: tests/reports/${{ needs.generate-timestamp.outputs.timestamp }}/coverage/
 
       - name: Comment coverage on PR
         if: github.event_name == 'pull_request' && always()
@@ -467,7 +481,7 @@ jobs:
   setup:
     name: Setup Environment
     needs: [static-analysis-gate]
-    if: needs.static-analysis-gate.outputs.all_passed == 'true'
+    if: needs.static-analysis-gate.outputs.all_passed == 'true' && github.event.inputs.skip_deployment != 'true'
     runs-on: ubuntu-latest
     outputs:
       env_name: ${{ steps.set_env.outputs.env_name }}
@@ -510,7 +524,7 @@ jobs:
   build-auth:
     name: Auth Service
     needs: setup
-    if: always()
+    if: always() && needs.setup.result != 'skipped'
     runs-on: ubuntu-latest
 
     steps:
@@ -539,7 +553,7 @@ jobs:
   build-api:
     name: API Service
     needs: setup
-    if: always()
+    if: always() && needs.setup.result != 'skipped'
     runs-on: ubuntu-latest
 
     steps:
@@ -568,7 +582,7 @@ jobs:
   build-frontend:
     name: Frontend
     needs: setup
-    if: always()
+    if: always() && needs.setup.result != 'skipped'
     runs-on: ubuntu-latest
 
     steps:
@@ -600,7 +614,7 @@ jobs:
   deploy:
     name: Deploy to ${{ needs.setup.outputs.env_name }}
     needs: [setup, build-auth, build-api, build-frontend]
-    if: always()
+    if: always() && needs.setup.result != 'skipped'
     runs-on: ubuntu-latest
 
     steps:
@@ -704,7 +718,7 @@ jobs:
 
   integration-tests:
     name: Integration Tests
-    needs: [setup, deploy]
+    needs: [generate-timestamp, setup, deploy]
     runs-on: ubuntu-latest
     if: ${{ needs.setup.outputs.should_run_e2e == 'true' && always() }}
     continue-on-error: true
@@ -745,20 +759,15 @@ jobs:
           API_URL: ${{ needs.deploy.outputs.api_url }}
           AUTH_URL: ${{ needs.deploy.outputs.auth_url }}
 
-      - name: Generate timestamp
-        if: always()
-        id: timestamp
-        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
-
       - name: Organize test results
         if: always()
         run: |
-          mkdir -p reports/${{ steps.timestamp.outputs.value }}/integration-tests
+          mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/integration-tests
           if [ -d "reports" ]; then
-            find reports -maxdepth 1 -type f -exec mv {} reports/${{ steps.timestamp.outputs.value }}/integration-tests/ \; 2>/dev/null || true
+            find reports -maxdepth 1 -type f -exec mv {} reports/${{ needs.generate-timestamp.outputs.timestamp }}/integration-tests/ \; 2>/dev/null || true
           fi
           if [ -d "test-results" ]; then
-            mv test-results reports/${{ steps.timestamp.outputs.value }}/integration-tests/ 2>/dev/null || true
+            mv test-results reports/${{ needs.generate-timestamp.outputs.timestamp }}/integration-tests/ 2>/dev/null || true
           fi
         working-directory: tests
 
@@ -766,8 +775,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: integration-tests-${{ steps.timestamp.outputs.value }}
-          path: tests/reports/${{ steps.timestamp.outputs.value }}/integration-tests/
+          name: integration-tests-${{ needs.generate-timestamp.outputs.timestamp }}
+          path: tests/reports/${{ needs.generate-timestamp.outputs.timestamp }}/integration-tests/
 
   # ============================================================================
   # STAGE 5: Smoke Tests
@@ -775,7 +784,7 @@ jobs:
 
   smoke-tests:
     name: Smoke Tests
-    needs: [setup, deploy, integration-tests]
+    needs: [generate-timestamp, setup, deploy, integration-tests]
     runs-on: ubuntu-latest
     if: ${{ needs.setup.outputs.should_run_e2e == 'true' && always() }}
     continue-on-error: true
@@ -825,20 +834,15 @@ jobs:
         env:
           CI: true
 
-      - name: Generate timestamp
-        if: always()
-        id: timestamp
-        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
-
       - name: Organize test results
         if: always()
         run: |
-          mkdir -p reports/${{ steps.timestamp.outputs.value }}/smoke-tests
+          mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/smoke-tests
           if [ -d "reports" ]; then
-            find reports -maxdepth 1 -type f -exec mv {} reports/${{ steps.timestamp.outputs.value }}/smoke-tests/ \; 2>/dev/null || true
+            find reports -maxdepth 1 -type f -exec mv {} reports/${{ needs.generate-timestamp.outputs.timestamp }}/smoke-tests/ \; 2>/dev/null || true
           fi
           if [ -d "test-results" ]; then
-            mv test-results reports/${{ steps.timestamp.outputs.value }}/smoke-tests/ 2>/dev/null || true
+            mv test-results reports/${{ needs.generate-timestamp.outputs.timestamp }}/smoke-tests/ 2>/dev/null || true
           fi
         working-directory: tests
 
@@ -846,6 +850,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smoke-tests-${{ needs.setup.outputs.env_name }}-${{ steps.timestamp.outputs.value }}
-          path: tests/reports/${{ steps.timestamp.outputs.value }}/smoke-tests/
+          name: smoke-tests-${{ needs.setup.outputs.env_name }}-${{ needs.generate-timestamp.outputs.timestamp }}
+          path: tests/reports/${{ needs.generate-timestamp.outputs.timestamp }}/smoke-tests/
           retention-days: 7
