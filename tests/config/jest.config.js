@@ -146,7 +146,7 @@ module.exports = {
   verbose: true,
 
   // Ignore patterns
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/', '/e2e/', '/cucumber/'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/', '/e2e/', '/bdd/'],
 
   // Reporters for test results
   reporters: ['default'],

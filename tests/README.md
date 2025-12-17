@@ -73,7 +73,7 @@ tests/
 ├── integration/       # API + DB tests
 ├── contract/          # API contract tests
 ├── e2e/              # Browser automation
-├── cucumber/         # BDD feature files
+├── bdd/              # BDD feature files
 ├── visual/           # Screenshot comparison
 ├── non-functional/   # Performance, security, accessibility
 ├── mcp/              # AI-driven test generation
@@ -94,7 +94,7 @@ tests/
 | **Integration**   | Jest                   | API + Database     | 🔶 Medium    |
 | **Contract**      | Pact                   | API agreements     | 🔶 Medium    |
 | **E2E**           | Playwright             | Full workflows     | 🐌 Slow      |
-| **Cucumber**      | Cucumber.js            | BDD scenarios      | 🔶 Medium    |
+| **BDD**           | Cucumber.js            | BDD scenarios      | 🔶 Medium    |
 | **Visual**        | Playwright             | UI regression      | 🐌 Slow      |
 | **Performance**   | K6 / Locust            | Load testing       | 🐌 Slow      |
 | **Security**      | OWASP ZAP              | Vulnerability scan | 🐌 Slow      |
@@ -277,7 +277,7 @@ npm run test:e2e:debug
 
 - `jest.config.js` - Unit/Component/Integration tests
 - `playwright.config.ts` - E2E and visual tests
-- `cucumber.config.js` - BDD feature tests
+- `bdd.config.js` - BDD feature tests
 - `pytest.ini` - Python tests
 - `requirements.txt` - Python dependencies
 - `package.json` - Node dependencies and scripts
@@ -355,7 +355,7 @@ For questions about this testing infrastructure:
 
 ---
 
-**Built with**: Jest, Playwright, Cucumber, Docker, K6, OWASP ZAP, and more
+**Built with**: Jest, Playwright, BDD/Cucumber, Docker, K6, OWASP ZAP, and more
 
 **Purpose**: Production-ready testing infrastructure demonstrating enterprise-level QA practices
 

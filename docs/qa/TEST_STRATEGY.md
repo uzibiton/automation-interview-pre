@@ -201,7 +201,7 @@ test.describe('Expenses @smoke @critical', () => {
 
 - **Jest**: Unit, Component, Integration tests
 - **Playwright**: E2E, Visual regression
-- **Cucumber**: BDD feature files
+- **BDD**: BDD feature files using Cucumber.js
 - **Pact**: Contract testing
 - **Testing Library**: React component testing
 - **Storybook**: Component showcase
@@ -515,7 +515,7 @@ test.describe('Create Expense Workflow @e2e @smoke @critical', () => {
 
 ---
 
-### 6. Cucumber/BDD Tests
+### 6. BDD Tests
 
 **Purpose**: Business-readable test scenarios using Gherkin syntax
 
@@ -548,7 +548,7 @@ tests/cucumber/
 **Sample Feature**:
 
 ```gherkin
-# tests/cucumber/features/e2e/expense-management.feature
+# tests/bdd/features/e2e/expense-management.feature
 Feature: Expense Management
   As a user
   I want to manage my expenses
