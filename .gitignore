@@ -94,6 +94,8 @@ postgres_data/
 !tsconfig*.json
 !*config.json
 !manifest.json
+# Allow BDD test data files
+!tests/bdd/**/*.json
 
 # Yarn (using npm)
 yarn.lock
