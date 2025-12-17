@@ -19,6 +19,7 @@
 | --------------------- | -------- | ------------------------------------------------------------------------------ |
 | **Requirements**      | REQ-001  | [Requirements Document](../../product/requirements/REQ-001-expense-sorting.md) |
 | **Test Plan**         | TEST-001 | [Test Plan](../../qa/test-plans/TEST-001-expense-sorting.md)                   |
+| **Test Execution**    | EXEC-001 | [Test Execution Report](../../qa/test-plans/EXEC-001-expense-sorting.md)       |
 | **Implementation**    | -        | [ExpenseList.tsx](../../../app/frontend/src/components/ExpenseList.tsx)        |
 | **Related Issue**     | #55      | [GitHub Issue](https://github.com/uzibiton/automation-interview-pre/issues/55) |
 | **Implementation PR** | #56      | [Pull Request](https://github.com/uzibiton/automation-interview-pre/pull/56)   |

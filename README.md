@@ -32,7 +32,7 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 **Traceability Flow**: Requirements → Design → Test Plan → Implementation → E2E Tests ✅
 
-**Test Results**: 8/8 E2E automated tests passing | [View E2E Tests](tests/e2e/expenses/sort-expenses.spec.ts)
+**Test Results**: 8/8 E2E automated tests passing | [View E2E Tests](tests/e2e/expenses/sort-expenses.spec.ts) | [📊 View Execution Report](docs/qa/test-plans/EXEC-001-expense-sorting.md)
 
 ## 🌐 Environments
 

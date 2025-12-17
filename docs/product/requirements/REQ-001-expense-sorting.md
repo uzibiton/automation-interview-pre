@@ -21,6 +21,7 @@
 | ------------------ | -------- | --------------------------------------------------------------------------------- |
 | **Design**         | HLD-001  | [High-Level Design](../../dev/designs/HLD-001-expense-sorting.md) (To be created) |
 | **Test Plan**      | TEST-001 | [Test Plan](../../qa/test-plans/TEST-001-expense-sorting.md)                      |
+| **Test Execution** | EXEC-001 | [Test Execution Report](../../qa/test-plans/EXEC-001-expense-sorting.md)          |
 | **Implementation** | -        | [ExpenseList.tsx](../../../app/frontend/src/components/ExpenseList.tsx)           |
 
 ---
