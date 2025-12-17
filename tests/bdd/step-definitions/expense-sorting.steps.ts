@@ -22,7 +22,7 @@ import { ExpenseWorld } from '../support/world';
 
 /**
  * User authentication step
- * For now, this is a simplified login flow
+ * Logs in the user with the provided email
  */
 Given('the user is logged in as {string}', async function (this: ExpenseWorld, email: string) {
   if (!this.page) {
@@ -31,14 +31,18 @@ Given('the user is logged in as {string}', async function (this: ExpenseWorld, e
 
   console.log(`🔐 Logging in as: ${email}`);
 
-  // Navigate to the application
-  await this.page.goto(this.baseURL);
+  // Navigate to login page
+  await this.page.goto(`${this.baseURL}/login`);
   await this.page.waitForLoadState('networkidle');
 
-  // Wait for the page to load - the app should show expenses or login form
-  // For this demo, we assume the user is already logged in or there's no auth
-  // In a real scenario, this would interact with login forms
-  await this.page.waitForTimeout(1000);
+  // Fill in login credentials
+  await this.page.fill('[data-testid="email-input"]', email);
+  await this.page.fill('[data-testid="password-input"]', 'TestPassword123');
+  await this.page.click('[data-testid="login-button"]');
+
+  // Wait for successful login - should redirect to dashboard
+  await this.page.waitForURL('**/dashboard', { timeout: 10000 });
+  await expect(this.page.locator('[data-testid="user-menu"]')).toBeVisible();
 });
 
 /**
