@@ -42,6 +42,8 @@ export class ExpenseWorld extends World {
   public testData?: ExpenseTestData;
   public baseURL: string;
   public createdExpenses: any[] = [];
+  public createdExpenseIds: number[] = [];
+  public authToken?: string;
 
   constructor(options: IWorldOptions) {
     super(options);
@@ -53,9 +55,12 @@ export class ExpenseWorld extends World {
    * Initialize browser and page
    */
   async init() {
-    const slowMo = process.env.SLOWMO ? parseInt(process.env.SLOWMO, 10) : 0;
+    const slowMo = process.env.SLOWMO ? parseInt(process.env.SLOWMO, 10) : 1000;
+    const headless = false; // Temporarily force visible mode for debugging
+    console.log(`🌐 Browser mode: VISIBLE with ${slowMo}ms slowMo for debugging`);
+
     this.browser = await chromium.launch({
-      headless: process.env.HEADLESS !== 'false',
+      headless: headless,
       slowMo: slowMo, // Delay between actions in milliseconds
     });
     this.context = await this.browser.newContext({

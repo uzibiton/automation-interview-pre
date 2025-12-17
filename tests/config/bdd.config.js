@@ -23,9 +23,9 @@ module.exports = {
     // Test format and reporting
     format: [
       'progress-bar', // Console progress
-      'html:test-results/cucumber-report.html', // HTML report
-      'json:test-results/cucumber-report.json', // JSON report for CI
-      'junit:test-results/cucumber-junit.xml', // JUnit XML for CI
+      'html:reports/bdd/cucumber-report.html', // HTML report
+      'json:reports/bdd/cucumber-report.json', // JSON report for CI
+      'junit:reports/bdd/cucumber-junit.xml', // JUnit XML for CI
     ],
 
     // Feature file paths

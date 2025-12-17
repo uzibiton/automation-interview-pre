@@ -70,11 +70,23 @@ After(async function (this: ExpenseWorld, { pickle, result }: ITestCaseHookParam
     await this.attach(screenshot, 'image/png');
   }
 
+  // Cleanup created expenses via API
+  if (this.createdExpenseIds && this.createdExpenseIds.length > 0 && this.page) {
+    console.log(`🧹 Cleaning up ${this.createdExpenseIds.length} test expenses`);
+
+    for (const id of this.createdExpenseIds) {
+      try {
+        await this.page.request.delete(`${this.baseURL}/api/expenses/${id}`);
+      } catch (error) {
+        console.error(`Failed to delete expense ${id}:`, error);
+      }
+    }
+
+    console.log('✅ Cleanup complete');
+  }
+
   // Cleanup browser
   await this.cleanup();
-
-  // TODO: Cleanup test data from database if needed
-  // This would require database access to remove created test expenses
 });
 
 /**

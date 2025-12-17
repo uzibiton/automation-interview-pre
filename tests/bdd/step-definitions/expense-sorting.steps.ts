@@ -37,7 +37,7 @@ Given('the user is logged in as {string}', async function (this: ExpenseWorld, e
 
   // Fill in login credentials using generic selectors
   await this.page.fill('input[type="email"], input[name="email"]', email);
-  await this.page.fill('input[type="password"], input[name="password"]', 'TestPassword123');
+  await this.page.fill('input[type="password"], input[name="password"]', 'Test123!');
   await this.page.click(
     'button[type="submit"], button:has-text("Login"), button:has-text("Sign In")',
   );
@@ -45,6 +45,16 @@ Given('the user is logged in as {string}', async function (this: ExpenseWorld, e
   // Wait for successful login - should redirect to dashboard or home page
   await this.page.waitForLoadState('networkidle');
   await this.page.waitForTimeout(1000);
+
+  // Extract auth token from localStorage for API calls
+  const token = await this.page.evaluate(() => {
+    // @ts-expect-error - window exists in browser context
+    return window.localStorage.getItem('token');
+  });
+  if (token) {
+    this.authToken = token;
+    console.log('✅ Auth token extracted for API calls');
+  }
 });
 
 /**
@@ -84,16 +94,78 @@ Given(
       throw new Error(`Data at path "${jsonPath}" is not an array`);
     }
 
-    // Create expenses using the browser API
-    // Since we don't have direct API access in this context, we'll use the UI
-    // In a real scenario, you would make API calls to create the expenses
+    // Fetch categories using browser context (which has the auth cookies/token)
+    const apiURL = 'http://localhost:3002'; // Direct API service URL
+    const categories = (await this.page.evaluate(async (apiURL: string) => {
+      // @ts-expect-error - window exists in browser context
+      const token = window.localStorage.getItem('token');
+      const response = await fetch(`${apiURL}/expenses/categories`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      return response.json();
+    }, apiURL)) as Array<{ id: number; name_en: string }>;
 
-    // For this demo, we'll create expenses via the UI if there's a create form
-    // Or we assume they already exist in the database
-    // This is a simplified approach - in production you'd use API calls
+    console.log(`📊 Fetched ${categories.length} categories`);
 
-    console.log(`✅ Would create ${expenses.length} expenses (skipping for demo)`);
-    this.createdExpenses = expenses;
+    const categoryMap: Record<string, number> = {};
+    categories.forEach((cat) => {
+      categoryMap[cat.name_en] = cat.id;
+      // Handle variations in category names
+      if (cat.name_en === 'Transportation') {
+        categoryMap['Transport'] = cat.id;
+      }
+      if (cat.name_en === 'Bills') {
+        categoryMap['Utilities'] = cat.id;
+      }
+    });
+
+    // Create expenses via browser context (which has auth)
+    const createdIds: number[] = [];
+
+    for (const expense of expenses) {
+      try {
+        // Transform test data to match API schema
+        const categoryId = categoryMap[expense.category] || 1; // Default to first category
+
+        const expenseData = {
+          categoryId: categoryId,
+          amount: expense.amount,
+          currency: 'ILS', // Default currency
+          description: expense.description,
+          date: expense.date,
+          paymentMethod: expense.paymentMethod || 'cash',
+        };
+
+        const created = (await this.page.evaluate(
+          async ({ apiURL, data }: { apiURL: string; data: Record<string, unknown> }) => {
+            // @ts-expect-error - window exists in browser context
+            const token = window.localStorage.getItem('token');
+            const response = await fetch(`${apiURL}/expenses`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+              body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+            }
+
+            return response.json();
+          },
+          { apiURL, data: expenseData },
+        )) as { id: number };
+
+        createdIds.push(created.id);
+      } catch (error) {
+        console.error('Failed to create expense:', error);
+      }
+    }
+
+    console.log(`✅ Created ${createdIds.length} expenses in database`);
+    this.createdExpenseIds = createdIds;
   },
 );
 
@@ -126,6 +198,9 @@ Given('the user navigates to the expenses page', async function (this: ExpenseWo
 
 /**
  * Click on a column header
+ * Note: The table starts with date descending by default
+ * Clicking cycles: current -> next state (asc -> desc -> null -> asc)
+ * If Date is already sorted desc, first click clears it, second click sets asc
  */
 When(
   'the user clicks on the {string} column header',
@@ -142,10 +217,18 @@ When(
       .filter({ hasText: new RegExp(columnName, 'i') })
       .first();
 
-    await header.click();
+    // If this is the Date column and table starts with date desc by default,
+    // we need to click twice: once to clear, once to set ascending
+    if (columnName.toLowerCase() === 'date') {
+      await header.click(); // First click: desc -> null
+      await this.page.waitForTimeout(500);
+      await header.click(); // Second click: null -> asc
+    } else {
+      await header.click(); // First click sets ascending for non-default columns
+    }
 
-    // Wait a bit for the sort to apply
-    await this.page.waitForTimeout(500);
+    // Wait for the sort to apply and table to re-render
+    await this.page.waitForTimeout(1000);
 
     console.log(`✅ Clicked on "${columnName}" header`);
   },
@@ -423,7 +506,7 @@ Then(
     const rows = await table.locator('tbody tr').all();
 
     // Extract the relevant data based on what we're comparing
-    const actualData: any[] = [];
+    const actualData: Array<string | number> = [];
 
     if (jsonPath.includes('date')) {
       // Extracting dates
