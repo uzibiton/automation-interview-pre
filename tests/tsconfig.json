@@ -9,7 +9,7 @@
     "strict": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "types": ["node", "@types/jest", "@playwright/test"]
+    "types": ["node", "@playwright/test"]
   },
   "include": [
     "**/*.ts"

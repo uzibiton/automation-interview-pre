@@ -13,9 +13,19 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 
 // Load environment configuration
+// The current working directory should be the tests directory when running cucumber
+// from the package.json scripts, but we use path resolution to be safe
 const TEST_ENV = process.env.TEST_ENV || 'local';
 const envFile = `.env.${TEST_ENV}`;
-const envPath = path.resolve(process.cwd(), 'config', envFile);
+
+// Try to find the config directory relative to the tests directory
+// If cwd is 'tests', config is at './config'
+// If cwd is project root, config is at './tests/config'
+let envPath = path.resolve(process.cwd(), 'config', envFile);
+if (!require('fs').existsSync(envPath)) {
+  envPath = path.resolve(process.cwd(), 'tests', 'config', envFile);
+}
+
 dotenv.config({ path: envPath });
 
 console.log(`🔧 Loading BDD config for environment: ${TEST_ENV}`);

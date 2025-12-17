@@ -218,7 +218,11 @@ Then('the expenses should be sorted by date in ascending order', async function 
       const dateCell = row.locator('td').first();
       const dateText = await dateCell.textContent();
       if (dateText) {
-        dates.push(new Date(dateText));
+        const date = new Date(dateText.trim());
+        // Validate the date is valid before adding to array
+        if (!isNaN(date.getTime())) {
+          dates.push(date);
+        }
       }
     }
 
@@ -250,7 +254,11 @@ Then('the expenses should be sorted by date in descending order', async function
       const dateCell = row.locator('td').first();
       const dateText = await dateCell.textContent();
       if (dateText) {
-        dates.push(new Date(dateText));
+        const date = new Date(dateText.trim());
+        // Validate the date is valid before adding to array
+        if (!isNaN(date.getTime())) {
+          dates.push(date);
+        }
       }
     }
 
