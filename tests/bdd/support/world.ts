@@ -55,6 +55,7 @@ export class ExpenseWorld extends World {
   async init() {
     this.browser = await chromium.launch({
       headless: process.env.HEADLESS !== 'false',
+      slowMo: process.env.HEADLESS === 'false' ? 500 : 0, // Slow down actions when visible
     });
     this.context = await this.browser.newContext({
       viewport: { width: 1280, height: 720 },

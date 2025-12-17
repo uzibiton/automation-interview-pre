@@ -93,27 +93,30 @@ The step definitions implement the following Gherkin steps:
 ### Commands
 
 ```bash
-# Run all BDD tests (from root)
+# Run all BDD tests (from tests directory)
+cd tests
 npm run test:bdd
 
-# Run BDD tests locally (from root)
-npm run test:bdd:local
+# Run BDD tests by environment
+npm run test:bdd:local      # Local development (default)
+npm run test:bdd:docker     # Docker containers
+npm run test:bdd:staging    # Staging environment
+npm run test:bdd:production # Production environment
 
 # Run only smoke tests
 npm run test:bdd:smoke
 
-# Run from tests directory
-cd tests
-npm run test:bdd
-npm run test:bdd:local
-npm run test:bdd:staging
-npm run test:bdd:production
+# Run specific scenario by tag
+npm run test:bdd -- --tags @TC-001-001
+
+# Run with visible browser (non-headless mode)
+npx cross-env HEADLESS=false npm run test:bdd -- --tags @TC-001-001
 
 # Dry run (validate step definitions)
 npx cucumber-js --config config/bdd.config.js --dry-run
 
-# Run specific scenario by tag
-npx cucumber-js --config config/bdd.config.js --tags @TC-001-001
+# Run with specific configuration
+npx cucumber-js --config config/bdd.config.js --tags "@smoke or @regression"
 ```
 
 ### Environment Configuration
@@ -176,14 +179,27 @@ const expectedOrder = _.get(this.testData, 'output.sorted.date_asc');
 2. **Cannot find module**: Ensure all dependencies are installed
 
    ```bash
+   cd tests
    npm install
    ```
 
-3. **Test data not found**: Check that the JSON file path is correct and file exists
+3. **TypeScript compilation errors**: The tests use `ts-node/register/transpile-only` to skip type checking during test runs. If you encounter module resolution errors, ensure `@cucumber/cucumber` is installed in `tests/node_modules`.
 
-4. **Browser not launching**: Install Playwright browsers
+4. **Test data not found**: Check that the JSON file path is correct and file exists
+
+5. **Browser not launching**: Install Playwright browsers
+
    ```bash
+   cd tests
    npx playwright install --with-deps
+   ```
+
+6. **Navigation timeout**: Ensure the application is running before executing tests
+   ```bash
+   # Start local dev server first
+   npm run dev
+   # Then run tests
+   cd tests && npm run test:bdd
    ```
 
 ## Integration with Existing Tests
