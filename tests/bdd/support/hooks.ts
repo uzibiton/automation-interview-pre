@@ -15,7 +15,7 @@ import * as path from 'path';
 // Load environment configuration
 const TEST_ENV = process.env.TEST_ENV || 'local';
 const envFile = `.env.${TEST_ENV}`;
-const envPath = path.resolve(__dirname, '../../config', envFile);
+const envPath = path.resolve(process.cwd(), 'config', envFile);
 dotenv.config({ path: envPath });
 
 console.log(`🔧 Loading BDD config for environment: ${TEST_ENV}`);
@@ -32,16 +32,16 @@ BeforeAll(async function () {
 /**
  * Before each scenario
  */
-Before(async function (this: ExpenseWorld) {
-  console.log(`📝 Starting scenario: ${this.pickle.name}`);
+Before(async function (this: ExpenseWorld, { pickle }) {
+  console.log(`📝 Starting scenario: ${pickle.name}`);
   await this.init();
 });
 
 /**
  * After each scenario
  */
-After(async function (this: ExpenseWorld, { result }) {
-  console.log(`✅ Scenario ${result?.status}: ${this.pickle.name}`);
+After(async function (this: ExpenseWorld, { pickle, result }) {
+  console.log(`✅ Scenario ${result?.status}: ${pickle.name}`);
 
   // Take screenshot on failure
   if (result?.status === Status.FAILED && this.page) {

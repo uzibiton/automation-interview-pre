@@ -47,7 +47,7 @@ Given('the user is logged in as {string}', async function (this: ExpenseWorld, e
 Given('the test data is loaded from {string}', async function (this: ExpenseWorld, filename: string) {
   console.log(`📂 Loading test data from: ${filename}`);
   
-  const dataPath = path.join(__dirname, '../features/e2e/data', filename);
+  const dataPath = path.join(process.cwd(), 'bdd/features/e2e/data', filename);
   const fileContent = await fs.readFile(dataPath, 'utf-8');
   this.testData = JSON.parse(fileContent);
   
