@@ -21,7 +21,7 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 **Expense Sorting Feature** - Complete traceability from requirements to passing tests:
 
-🎥 **[[Watch Test Execution Video](docs/demo/screenshots/Screenshot.png)](https://github.com/uzibiton/automation-interview-pre/blob/main/docs/demo/videos/TC-001-001-expense-sorting-date-asc.webm)**
+🎥 **[![Watch Test Execution Video](https://github.com/uzibiton/automation-interview-pre/blob/main/docs/demo/screenshots/Screenshot.png)](https://youtu.be/zOg7DhXGRH4)**
 
 **Complete Feature Documentation:**
 
