@@ -32,6 +32,9 @@ module.exports = {
     paths: ['bdd/features/**/*.feature'],
     parallel: 1, // Run scenarios in parallel (set to 1 for debugging)
 
+    // Default step timeout (in milliseconds) - default is 5000ms
+    timeout: 60 * 1000, // 60 seconds for each step
+
     // Retry failed scenarios
     retry: 0, // Set to 1 or 2 in CI environments
 

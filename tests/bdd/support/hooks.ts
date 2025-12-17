@@ -14,10 +14,14 @@ import {
   AfterAll,
   Status,
   ITestCaseHookParameter,
+  setDefaultTimeout,
 } from '@cucumber/cucumber';
 import { ExpenseWorld } from './world';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+
+// Set default step timeout to 60 seconds
+setDefaultTimeout(60 * 1000);
 
 // Load environment configuration
 // The current working directory should be the tests directory when running cucumber
