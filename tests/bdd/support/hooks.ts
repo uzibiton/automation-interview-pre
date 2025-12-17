@@ -7,7 +7,14 @@
  * =============================================================================
  */
 
-import { Before, After, BeforeAll, AfterAll, Status } from '@cucumber/cucumber';
+import {
+  Before,
+  After,
+  BeforeAll,
+  AfterAll,
+  Status,
+  ITestCaseHookParameter,
+} from '@cucumber/cucumber';
 import { ExpenseWorld } from './world';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
@@ -42,7 +49,7 @@ BeforeAll(async function () {
 /**
  * Before each scenario
  */
-Before(async function (this: ExpenseWorld, { pickle }) {
+Before(async function (this: ExpenseWorld, { pickle }: ITestCaseHookParameter) {
   console.log(`📝 Starting scenario: ${pickle.name}`);
   await this.init();
 });
@@ -50,7 +57,7 @@ Before(async function (this: ExpenseWorld, { pickle }) {
 /**
  * After each scenario
  */
-After(async function (this: ExpenseWorld, { pickle, result }) {
+After(async function (this: ExpenseWorld, { pickle, result }: ITestCaseHookParameter) {
   console.log(`✅ Scenario ${result?.status}: ${pickle.name}`);
 
   // Take screenshot on failure

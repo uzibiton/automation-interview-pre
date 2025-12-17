@@ -3,7 +3,7 @@
  * Cucumber BDD Configuration
  * =============================================================================
  * Configuration for running BDD tests with Cucumber and Playwright.
- * 
+ *
  * USAGE:
  *   npm run test:bdd              - Run all BDD tests
  *   npm run test:bdd:local        - Run against local environment
@@ -15,47 +15,42 @@
 module.exports = {
   default: {
     // Require step definitions and support code
-    require: [
-      'bdd/support/**/*.ts',
-      'bdd/step-definitions/**/*.ts'
-    ],
-    
-    // TypeScript loader
-    requireModule: ['ts-node/register'],
-    
+    require: ['bdd/support/**/*.ts', 'bdd/step-definitions/**/*.ts'],
+
+    // TypeScript loader (transpile-only to skip type checking during test runs)
+    requireModule: ['ts-node/register/transpile-only'],
+
     // Test format and reporting
     format: [
-      'progress-bar',                                    // Console progress
-      'html:test-results/cucumber-report.html',          // HTML report
-      'json:test-results/cucumber-report.json',          // JSON report for CI
-      'junit:test-results/cucumber-junit.xml'            // JUnit XML for CI
+      'progress-bar', // Console progress
+      'html:test-results/cucumber-report.html', // HTML report
+      'json:test-results/cucumber-report.json', // JSON report for CI
+      'junit:test-results/cucumber-junit.xml', // JUnit XML for CI
     ],
-    
+
     // Feature file paths
     paths: ['bdd/features/**/*.feature'],
-    
-    // Parallel execution
-    parallel: 1,  // Run scenarios in parallel (set to 1 for debugging)
-    
+    parallel: 1, // Run scenarios in parallel (set to 1 for debugging)
+
     // Retry failed scenarios
-    retry: 0,  // Set to 1 or 2 in CI environments
-    
+    retry: 0, // Set to 1 or 2 in CI environments
+
     // Fail fast on first failure
     failFast: false,
-    
+
     // Strict mode - fail on undefined or pending steps
     strict: true,
-    
+
     // Dry run - validate step definitions without executing
     dryRun: false,
-    
+
     // Publish results to Cucumber Reports (optional)
     publish: false,
-    
+
     // World parameters (available in World constructor)
     worldParameters: {
       baseURL: process.env.BASE_URL || 'http://localhost:5173',
-      headless: process.env.HEADLESS !== 'false'
-    }
-  }
+      headless: process.env.HEADLESS !== 'false',
+    },
+  },
 };
