@@ -53,9 +53,10 @@ export class ExpenseWorld extends World {
    * Initialize browser and page
    */
   async init() {
+    const slowMo = process.env.SLOWMO ? parseInt(process.env.SLOWMO, 10) : 0;
     this.browser = await chromium.launch({
       headless: process.env.HEADLESS !== 'false',
-      slowMo: process.env.HEADLESS === 'false' ? 500 : 0, // Slow down actions when visible
+      slowMo: slowMo, // Delay between actions in milliseconds
     });
     this.context = await this.browser.newContext({
       viewport: { width: 1280, height: 720 },

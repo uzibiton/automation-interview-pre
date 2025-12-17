@@ -112,6 +112,12 @@ npm run test:bdd -- --tags @TC-001-001
 # Run with visible browser (non-headless mode)
 npx cross-env HEADLESS=false npm run test:bdd -- --tags @TC-001-001
 
+# Run with visible browser and slow motion (delay between actions)
+npx cross-env HEADLESS=false SLOWMO=500 npm run test:bdd -- --tags @TC-001-001
+
+# Adjust slow motion delay (in milliseconds)
+npx cross-env HEADLESS=false SLOWMO=1000 npm run test:bdd -- --tags @TC-001-001
+
 # Dry run (validate step definitions)
 npx cucumber-js --config config/bdd.config.js --dry-run
 
