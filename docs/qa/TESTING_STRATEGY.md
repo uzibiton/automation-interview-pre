@@ -1211,7 +1211,7 @@ Dynamic configuration generated in CI for PR environments.
 
 - **Jest** - Unit, Component, Integration tests
 - **Playwright** - E2E and visual tests
-- **Cucumber** - BDD scenarios (if needed)
+- **BDD** - BDD scenarios using Cucumber.js
 
 ### Supporting Tools
 

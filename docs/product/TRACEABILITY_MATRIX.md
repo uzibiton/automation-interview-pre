@@ -36,15 +36,15 @@ _\* = To be created_
 
 ### REQ-001: Expense Sorting
 
-| FR ID  | Requirement                   | Test Cases               | Status  |
-| ------ | ----------------------------- | ------------------------ | ------- |
-| FR-001 | Date column sorting           | TC-SORT-001              | ✅ Pass |
-| FR-002 | Category column sorting       | TC-SORT-002              | ✅ Pass |
-| FR-003 | Description column sorting    | TC-SORT-003              | ✅ Pass |
-| FR-004 | Amount column sorting         | TC-SORT-004              | ✅ Pass |
-| FR-005 | Payment method column sorting | TC-SORT-005              | ✅ Pass |
-| FR-006 | Sort state indicators         | TC-SORT-006              | ✅ Pass |
-| FR-007 | Tri-state sorting behavior    | TC-SORT-007, TC-SORT-008 | ✅ Pass |
+| FR ID  | Requirement                   | Test Cases             | Status  |
+| ------ | ----------------------------- | ---------------------- | ------- |
+| FR-001 | Date column sorting           | TC-001-001             | ✅ Pass |
+| FR-002 | Category column sorting       | TC-001-002             | ✅ Pass |
+| FR-003 | Description column sorting    | TC-001-003             | ✅ Pass |
+| FR-004 | Amount column sorting         | TC-001-004             | ✅ Pass |
+| FR-005 | Payment method column sorting | TC-001-005             | ✅ Pass |
+| FR-006 | Sort state indicators         | TC-001-006             | ✅ Pass |
+| FR-007 | Tri-state sorting behavior    | TC-001-007, TC-001-008 | ✅ Pass |
 
 ---
 
@@ -52,13 +52,13 @@ _\* = To be created_
 
 ### REQ-001: Expense Sorting
 
-| NFR ID  | Requirement           | Test Cases  | Status      |
-| ------- | --------------------- | ----------- | ----------- |
-| NFR-001 | Performance < 100ms   | TC-SORT-011 | ✅ Pass     |
-| NFR-002 | Usability             | TC-SORT-006 | ✅ Pass     |
-| NFR-003 | Internationalization  | TC-SORT-009 | ⚠️ Partial  |
-| NFR-004 | Browser compatibility | TC-SORT-012 | ⚠️ Partial  |
-| NFR-005 | Accessibility         | None        | ⬜ Deferred |
+| NFR ID  | Requirement           | Test Cases | Status      |
+| ------- | --------------------- | ---------- | ----------- |
+| NFR-001 | Performance < 100ms   | TC-001-011 | ✅ Pass     |
+| NFR-002 | Usability             | TC-001-006 | ✅ Pass     |
+| NFR-003 | Internationalization  | TC-001-009 | ⚠️ Partial  |
+| NFR-004 | Browser compatibility | TC-001-012 | ⚠️ Partial  |
+| NFR-005 | Accessibility         | None       | ⬜ Deferred |
 
 ---
 
@@ -133,7 +133,7 @@ _\* = To be created_
 ### Test Cases
 
 - **Format**: `TC-<FEATURE>-###`
-- **Example**: `TC-SORT-001`, `TC-AUTH-001`
+- **Example**: `TC-001-001` (TEST-001, Test Case 001), `TC-002-001` (TEST-002, Test Case 001)
 - **Embedded in**: Test plan documents
 
 ---

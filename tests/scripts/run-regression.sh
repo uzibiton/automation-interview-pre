@@ -38,9 +38,9 @@ npm run test:contract || exit 1
 echo "🌐 E2E tests (all)..."
 npx playwright test || exit 1
 
-# Cucumber BDD tests
-echo "🥒 Cucumber BDD tests..."
-npm run test:cucumber || exit 1
+# BDD tests
+echo "🥒 BDD tests..."
+npm run test:bdd || exit 1
 
 echo ""
 echo "✅ Regression suite passed!"
