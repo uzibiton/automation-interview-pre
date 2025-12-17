@@ -4,7 +4,7 @@
  * =============================================================================
  * Custom World class that extends Cucumber's default World to provide
  * shared context across step definitions.
- * 
+ *
  * The World is instantiated for each scenario and provides:
  * - Playwright page object
  * - Test data storage

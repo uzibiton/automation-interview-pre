@@ -32,6 +32,7 @@ Contains 4 BDD scenarios that validate expense table sorting functionality:
 ## Test Data
 
 The `expense-sorting.data.json` file contains:
+
 - **input.expenses**: 20 test expenses with various dates, categories, descriptions, amounts, and payment methods
 - **output.sorted**: 8 pre-sorted arrays for validation:
   - `date_asc` / `date_desc`
@@ -44,18 +45,21 @@ The `expense-sorting.data.json` file contains:
 The step definitions implement the following Gherkin steps:
 
 ### Given Steps (Setup)
+
 - `Given the user is logged in as {string}`
 - `Given the test data is loaded from {string}`
 - `Given the expenses from {string} exist in the database`
 - `Given the user navigates to the expenses page`
 
 ### When Steps (Actions)
+
 - `When the user clicks on the {string} column header`
 - `When the user clicks on the {string} column header again`
 - `When the user clicks on the {string} column header a third time`
 - `When the user hovers over the {string} column header`
 
 ### Then Steps (Assertions)
+
 - `Then the expenses should be sorted by date in ascending order`
 - `Then the expenses should be sorted by date in descending order`
 - `Then the expenses should be sorted by category in ascending order`
@@ -68,17 +72,20 @@ The step definitions implement the following Gherkin steps:
 ## Running Tests
 
 ### Prerequisites
+
 1. Install dependencies:
+
    ```bash
    cd tests
    npm install
    ```
 
 2. Ensure services are running (choose one):
+
    ```bash
    # Option 1: Docker Compose
    docker-compose up
-   
+
    # Option 2: Local development
    npm run dev
    ```
@@ -121,6 +128,7 @@ BDD tests use the same environment configuration as E2E tests:
 ## Reports
 
 Test reports are generated in:
+
 - `tests/test-results/cucumber-report.html` - HTML report
 - `tests/test-results/cucumber-report.json` - JSON report for CI
 - `tests/test-results/cucumber-junit.xml` - JUnit XML for CI
@@ -128,12 +136,14 @@ Test reports are generated in:
 ## Technical Details
 
 ### Dependencies
+
 - `@cucumber/cucumber` - BDD framework
 - `@playwright/test` - Browser automation
 - `lodash` - JSON path traversal with `_.get()`
 - `ts-node` - TypeScript execution
 
 ### Key Features
+
 1. **Data-Driven Testing**: Uses JSON files for test data
 2. **Page Object Pattern**: Integrates with Playwright page objects
 3. **World Context**: Shares state between step definitions
@@ -158,11 +168,13 @@ const expectedOrder = _.get(this.testData, 'output.sorted.date_asc');
 ### Common Issues
 
 1. **Step not defined**: Run dry-run to validate all steps are connected
+
    ```bash
    npx cucumber-js --config config/bdd.config.js --dry-run
    ```
 
 2. **Cannot find module**: Ensure all dependencies are installed
+
    ```bash
    npm install
    ```
@@ -186,6 +198,7 @@ Both test suites validate the same functionality but serve different audiences a
 ## Contributing
 
 When adding new scenarios:
+
 1. Write the Gherkin scenario in the `.feature` file
 2. Run dry-run to identify missing step definitions
 3. Implement the missing steps in the step definitions file
