@@ -1,4 +1,4 @@
-# Cloud Run Management Guide
+﻿# Cloud Run Management Guide
 
 Complete guide for managing your Cloud Run services via UI and CLI.
 
@@ -93,7 +93,7 @@ gcloud run services logs read api-service \
 
 **Cloud Run scales to ZERO automatically:**
 
-- When no requests come in → instances shut down
+- When no requests come in -> instances shut down
 - You pay $0 when scaled to zero
 - Service wakes up on next request
 
@@ -243,7 +243,7 @@ automation-interview-pre-dev     (Project 3)
 
 ### Via UI:
 
-1. Go to service → **METRICS** tab
+1. Go to service -> **METRICS** tab
 2. See:
    - Request count
    - Request latency (P50, P95, P99)
@@ -387,7 +387,7 @@ gcloud run services describe api-service --region us-central1 --format="value(st
    ```
 
 5. **Monitor costs**:
-   - Cloud Console → Billing → Reports
+   - Cloud Console -> Billing -> Reports
    - Filter by Cloud Run
 
 ---

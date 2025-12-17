@@ -1,4 +1,4 @@
-# Testing Strategy & Architecture
+﻿# Testing Strategy & Architecture
 
 > **Purpose**: This document explains the complete testing infrastructure for the Expense Tracker application. It serves as both technical documentation and a demonstration of testing expertise for interviews.
 
@@ -952,17 +952,17 @@ test.describe('Accessibility @a11y', () => {
 ```dockerfile
 # Multi-stage Dockerfile
 FROM node:18 AS base
-  → Install Node dependencies
+  -> Install Node dependencies
 
 FROM base AS python
-  → Add Python and pip
-  → Install Python packages
+  -> Add Python and pip
+  -> Install Python packages
 
 FROM python AS browser
-  → Install Playwright browsers
+  -> Install Playwright browsers
 
 FROM browser AS test
-  → Ready to run all test types
+  -> Ready to run all test types
 ```
 
 **Benefits**:
@@ -1397,7 +1397,7 @@ pipeline {
 #### Requirements Coverage
 
 - **Requirement Traceability**: Each requirement has associated test cases
-- **Test Case Mapping**: Track requirement ID → test cases
+- **Test Case Mapping**: Track requirement ID -> test cases
 - **Acceptance Criteria Coverage**: All ACs have passing tests
 - **Feature Coverage**: % of features with automated tests
 

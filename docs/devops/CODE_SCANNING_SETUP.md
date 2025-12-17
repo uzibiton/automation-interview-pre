@@ -1,4 +1,4 @@
-# GitHub Code Scanning Setup
+﻿# GitHub Code Scanning Setup
 
 ## What is Code Scanning?
 
@@ -20,9 +20,9 @@ The CI/CD pipeline will:
 ### Step 1: Enable Code Scanning
 
 1. Go to your repository on GitHub
-2. Click **Settings** → **Security** → **Code security and analysis**
+2. Click **Settings** -> **Security** -> **Code security and analysis**
 3. Find **Code scanning** section
-4. Click **Set up** → **Default**
+4. Click **Set up** -> **Default**
 
 ### Step 2: Verify Setup
 
@@ -35,7 +35,7 @@ Once enabled, the workflow will automatically:
 
 ### Step 3: Configure Advanced Settings (Optional)
 
-In Settings → Security → Code scanning:
+In Settings -> Security -> Code scanning:
 
 - Set alert thresholds
 - Configure notification preferences
@@ -57,7 +57,7 @@ With Code Scanning enabled:
 If you prefer not to enable Code Scanning:
 
 - Security reports remain available as downloadable artifacts
-- Download from Actions → Workflow run → Artifacts
+- Download from Actions -> Workflow run -> Artifacts
 - Open `snyk.sarif` in SARIF viewers or text editors
 - Results are organized by timestamp in `reports/{timestamp}/security-scan/`
 

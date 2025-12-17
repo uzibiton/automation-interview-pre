@@ -1,4 +1,4 @@
-# 👨‍💻 About Me
+﻿# 👨‍💻 About Me
 
 <div align="center">
 
@@ -69,7 +69,7 @@ This repository demonstrates my capabilities in:
 
 | Area                     | Implementation                                          |
 | ------------------------ | ------------------------------------------------------- |
-| 🏗️ **Architecture**      | Multi-layered test strategy (Unit → Integration → E2E)  |
+| 🏗️ **Architecture**      | Multi-layered test strategy (Unit -> Integration -> E2E)  |
 | 🔄 **CI/CD**             | Automated testing pipeline with GitHub Actions          |
 | 🐳 **DevOps**            | Docker containerization & cloud deployment              |
 | 📊 **Multi-Environment** | Tests running across local, Docker, staging, production |

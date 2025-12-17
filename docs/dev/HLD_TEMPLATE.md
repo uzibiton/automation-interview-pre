@@ -1,19 +1,20 @@
-# High-Level Design (HLD) Template
+﻿# High-Level Design (HLD) Template
 
 > **Instructions**: Use this template to document system architecture and design decisions. Replace all placeholders with actual content.
 
 ## Document Information
 
-| Field                   | Value                                                                                          |
-| ----------------------- | ---------------------------------------------------------------------------------------------- |
-| **Feature/System Name** | [Feature/System Name]                                                                          |
-| **Document Type**       | High-Level Design                                                                              |
-| **Author**              | [Your Name]                                                                                    |
-| **Date Created**        | [YYYY-MM-DD]                                                                                   |
-| **Last Updated**        | [YYYY-MM-DD]                                                                                   |
-| **Status**              | [Draft/In Review/Approved/Implemented]                                                         |
-| **Version**             | [1.0]                                                                                          |
-| **Related Docs**        | [Requirements](../qa/REQUIREMENTS_TEMPLATE.md), [Detailed Design](DETAILED_DESIGN_TEMPLATE.md) |
+| Field                   | Value                                                                                               |
+| ----------------------- | --------------------------------------------------------------------------------------------------- |
+| **Feature/System Name** | [Feature/System Name]                                                                               |
+| **Document Type**       | High-Level Design                                                                                   |
+| **Role**                | [Your Role - e.g., Tech Lead / Architect]                                                           |
+| **Name**                | [Your Name]                                                                                         |
+| **Date Created**        | [YYYY-MM-DD]                                                                                        |
+| **Last Updated**        | [YYYY-MM-DD]                                                                                        |
+| **Status**              | [Draft/In Review/Approved/Implemented]                                                              |
+| **Version**             | [1.0]                                                                                               |
+| **Related Docs**        | [Requirements](../product/REQUIREMENTS_TEMPLATE.md), [Detailed Design](DETAILED_DESIGN_TEMPLATE.md) |
 
 ## 1. Overview
 
@@ -477,7 +478,7 @@ Features/improvements planned for future releases:
 
 ## 19. References
 
-- [Requirements Document](../qa/REQUIREMENTS_TEMPLATE.md)
+- [Requirements Document](../product/REQUIREMENTS_TEMPLATE.md)
 - [Detailed Design Document](DETAILED_DESIGN_TEMPLATE.md)
 - [API Reference](API_REFERENCE.md)
 - [Testing Strategy](../qa/TESTING_STRATEGY.md)

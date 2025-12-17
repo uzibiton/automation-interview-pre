@@ -1,19 +1,20 @@
-# Detailed Design Document (DDD) Template
+﻿# Detailed Design Document (DDD) Template
 
 > **Instructions**: Use this template to document low-level implementation details for a specific component or feature. Replace all placeholders with actual content.
 
 ## Document Information
 
-| Field                      | Value                                                                  |
-| -------------------------- | ---------------------------------------------------------------------- |
-| **Component/Feature Name** | [Component/Feature Name]                                               |
-| **Document Type**          | Detailed Design                                                        |
-| **Author**                 | [Your Name]                                                            |
-| **Date Created**           | [YYYY-MM-DD]                                                           |
-| **Last Updated**           | [YYYY-MM-DD]                                                           |
-| **Status**                 | [Draft/In Review/Approved/Implemented]                                 |
-| **Version**                | [1.0]                                                                  |
-| **Related Docs**           | [Requirements](../qa/REQUIREMENTS_TEMPLATE.md), [HLD](HLD_TEMPLATE.md) |
+| Field                      | Value                                                                       |
+| -------------------------- | --------------------------------------------------------------------------- |
+| **Component/Feature Name** | [Component/Feature Name]                                                    |
+| **Document Type**          | Detailed Design                                                             |
+| **Role**                   | [Your Role - e.g., Developer / Engineer]                                    |
+| **Name**                   | [Your Name]                                                                 |
+| **Date Created**           | [YYYY-MM-DD]                                                                |
+| **Last Updated**           | [YYYY-MM-DD]                                                                |
+| **Status**                 | [Draft/In Review/Approved/Implemented]                                      |
+| **Version**                | [1.0]                                                                       |
+| **Related Docs**           | [Requirements](../product/REQUIREMENTS_TEMPLATE.md), [HLD](HLD_TEMPLATE.md) |
 
 ## 1. Component Overview
 
@@ -39,7 +40,7 @@ Brief summary of relevant functional and non-functional requirements from the re
 - REQ-002: [Requirement summary]
 - REQ-003: [Requirement summary]
 
-**Reference:** [Full Requirements Document](../qa/REQUIREMENTS_TEMPLATE.md)
+**Reference:** [Full Requirements Document](../product/REQUIREMENTS_TEMPLATE.md)
 
 ## 3. Technical Architecture
 
@@ -784,7 +785,7 @@ export class HealthController {
 
 ## 20. References
 
-- [Requirements Document](../qa/REQUIREMENTS_TEMPLATE.md)
+- [Requirements Document](../product/REQUIREMENTS_TEMPLATE.md)
 - [High-Level Design](HLD_TEMPLATE.md)
 - [API Reference](API_REFERENCE.md)
 - [Test Plan](../qa/TEST_PLAN_TEMPLATE.md)

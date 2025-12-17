@@ -1,4 +1,4 @@
-# Deployment Support - Summary
+﻿# Deployment Support - Summary
 
 ## What Was Implemented
 
@@ -128,8 +128,8 @@ DATABASE_TYPE=postgresql
 ```
 Cloud Run
   ├── Frontend (Container)
-  ├── Auth Service (Container) → Firestore
-  ├── API Service (Container) → Firestore
+  ├── Auth Service (Container) -> Firestore
+  ├── API Service (Container) -> Firestore
   └── Firestore Database
 
 DATABASE_TYPE=firestore
@@ -306,7 +306,7 @@ gcloud iam service-accounts keys create key.json \
 
 ### Troubleshooting:
 
-- Check `DEPLOYMENT.md` → Troubleshooting section
+- Check `DEPLOYMENT.md` -> Troubleshooting section
 - View logs: `gcloud run services logs read SERVICE_NAME`
 
 ### Questions:

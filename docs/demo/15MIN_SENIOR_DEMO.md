@@ -1,4 +1,4 @@
-# 15-Minute Senior Automation Engineer Demo
+﻿# 15-Minute Senior Automation Engineer Demo
 
 > **Goal**: Showcase senior-level skills in QA automation, DevOps, workflows, and development
 > **Audience**: Technical hiring managers, senior engineers
@@ -88,7 +88,7 @@ tests/
 **Show the flow** (2 min):
 
 ```yaml
-Trigger: Push/PR → Unit Tests (2min) → Build (6min) → Deploy (3min)
+Trigger: Push/PR -> Unit Tests (2min) -> Build (6min) -> Deploy (3min)
 ```
 
 **Highlight Senior Skills**:
@@ -408,7 +408,7 @@ test('@smoke User can create an expense', async ({ page }) => {
 
 ```bash
 # Make public (when ready)
-# Settings → General → Change visibility → Public
+# Settings -> General -> Change visibility -> Public
 ```
 
 **Provide Links**:

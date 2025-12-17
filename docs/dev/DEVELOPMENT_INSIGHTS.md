@@ -1,4 +1,4 @@
-# Development Insights & Best Practices
+﻿# Development Insights & Best Practices
 
 This document captures learnings, patterns, and best practices discovered during development of this project.
 
@@ -60,7 +60,7 @@ This document captures learnings, patterns, and best practices discovered during
 
 **Process:**
 
-1. Review submitted → bug found
+1. Review submitted -> bug found
 2. Comment acknowledging the bug
 3. Push fix quickly
 4. Comment "Fixed in commit abc123"
@@ -116,9 +116,9 @@ This document captures learnings, patterns, and best practices discovered during
 **Process Flow:**
 
 ```
-Developer → Stable Branch → QA Testing → Bug Fixes → QA Approval
+Developer -> Stable Branch -> QA Testing -> Bug Fixes -> QA Approval
                                                           ↓
-                                              Code Review → Merge
+                                              Code Review -> Merge
 ```
 
 **Communication Pattern:**
@@ -279,7 +279,7 @@ When remote deploy fails:
 ### CI Testing Flow
 
 ```
-Push → Unit Tests → Integration Tests → E2E Tests → Deploy
+Push -> Unit Tests -> Integration Tests -> E2E Tests -> Deploy
        (2 min)      (5 min)            (10 min)     (if green)
 ```
 
@@ -300,10 +300,10 @@ Push → Unit Tests → Integration Tests → E2E Tests → Deploy
 
 **Lifecycle:**
 
-1. PR opened → Deploy to `service-pr-{number}`
-2. PR updated → Redeploy
-3. PR closed → Auto-cleanup (via workflow)
-4. Timeout → Cleanup after 30 days (proposed)
+1. PR opened -> Deploy to `service-pr-{number}`
+2. PR updated -> Redeploy
+3. PR closed -> Auto-cleanup (via workflow)
+4. Timeout -> Cleanup after 30 days (proposed)
 
 **Benefits:**
 

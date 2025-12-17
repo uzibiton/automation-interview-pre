@@ -1,4 +1,4 @@
-# Where We Left Off - Session Resume Point
+﻿# Where We Left Off - Session Resume Point
 
 **Date**: November 23, 2025  
 **Status**: Firestore Integration Complete - DEPLOYMENT NEEDED ⚠️
@@ -226,7 +226,7 @@ npm install --save-dev cross-env dotenv
    ```
 
 2. **Deploy & Update URLs**:
-   - Push to main → GitHub Actions deploys to Cloud Run
+   - Push to main -> GitHub Actions deploys to Cloud Run
    - Get production URLs
    - Update `.env.production` with real URLs
    - Test: `npm run test:e2e:production:smoke`

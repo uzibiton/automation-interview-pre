@@ -1,4 +1,4 @@
-# Expense Tracker Testing Guide
+﻿# Expense Tracker Testing Guide
 
 ## Overview
 
@@ -43,7 +43,7 @@ This document provides step-by-step testing instructions for the bilingual Expen
 
 ### 2. Language Switching Test
 
-#### 2.1 English → Hebrew
+#### 2.1 English -> Hebrew
 
 1. Login to Dashboard
 2. Click "עברית" button in header
@@ -53,7 +53,7 @@ This document provides step-by-step testing instructions for the bilingual Expen
    - Title shows "מעקב הוצאות"
    - Button texts are in Hebrew
 
-#### 2.2 Hebrew → English
+#### 2.2 Hebrew -> English
 
 1. While in Hebrew mode
 2. Click "English" button
@@ -284,7 +284,7 @@ curl -X POST http://localhost:3002/expenses \
 
 #### 8.2 Check Network Requests
 
-1. Open Developer Tools → Network tab
+1. Open Developer Tools -> Network tab
 2. Perform actions (login, add expense, delete expense)
 3. Verify:
    - All requests return 200 status

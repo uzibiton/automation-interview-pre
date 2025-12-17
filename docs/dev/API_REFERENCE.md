@@ -1,4 +1,4 @@
-# API Reference - Expense Tracker
+﻿# API Reference - Expense Tracker
 
 ## Base URLs
 

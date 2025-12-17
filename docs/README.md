@@ -1,10 +1,34 @@
-# Documentation Hub
+﻿# Documentation Hub
 
 Welcome to the documentation for the Automation Interview Pre project - an expense tracking application with comprehensive testing infrastructure.
 
 ## 📂 Documentation Structure
 
-### 📖 [general/](general/) - Project Overview & Status
+### � Document Traceability
+
+**All feature documents follow a naming convention for traceability:**
+
+- **Requirements**: `REQ-###-short-description.md` -> [product/requirements/](product/requirements/)
+- **Design**: `HLD-###-short-description.md` -> [dev/designs/](dev/designs/)
+- **Test Plans**: `TEST-###-short-description.md` -> [qa/test-plans/](qa/test-plans/)
+
+**Each document includes:**
+
+- **Role & Name**: Who created/owns the document
+- **Traceability Section**: Links to related requirements, design, tests, and implementation
+- **Status Tracking**: Current state (Draft/Approved/Implemented)
+
+**Example**: Expense Sorting feature
+
+```
+REQ-001 (Requirements) ↔ HLD-001 (Design) ↔ TEST-001 (Test Plan)
+```
+
+👉 See [TRACEABILITY_MATRIX.md](product/TRACEABILITY_MATRIX.md) for complete mapping
+
+---
+
+### �📖 [general/](general/) - Project Overview & Status
 
 General project information and tracking:
 
@@ -13,26 +37,38 @@ General project information and tracking:
 - **[SESSION_RESUME.md](general/SESSION_RESUME.md)** - Resume work after interruption
 - **[temp.md](general/temp.md)** - Temporary notes and scratchpad
 
+### � [product/](product/) - Product Requirements
+
+Product requirements and traceability:
+
+- **[requirements/](product/requirements/)** - Feature requirements (REQ-###)
+- **[TRACEABILITY_MATRIX.md](product/TRACEABILITY_MATRIX.md)** - Requirements -> Design -> Tests mapping
+- **[REQUIREMENTS_TEMPLATE.md](product/REQUIREMENTS_TEMPLATE.md)** - Template for new requirements
+
 ### 💻 [dev/](dev/) - Development Documentation
 
 Setup, configuration, and development guides:
 
+- **[designs/](dev/designs/)** - High-level designs (HLD-###)
 - **[RUN_LOCALLY.md](dev/RUN_LOCALLY.md)** - Run the app locally with Docker
 - **[SETUP.md](dev/SETUP.md)** - Initial setup instructions
-- **[INSTRUCTIONS.md](dev/INSTRUCTIONS.md)** - Feature requirements and user stories
 - **[API_REFERENCE.md](dev/API_REFERENCE.md)** - API endpoints and specifications
 - **[DEVELOPMENT_INSIGHTS.md](dev/DEVELOPMENT_INSIGHTS.md)** - Lessons learned and best practices
-- **[CONVERSION_SUMMARY.md](dev/CONVERSION_SUMMARY.md)** - Firestore to PostgreSQL migration
+- **[HLD_TEMPLATE.md](dev/HLD_TEMPLATE.md)** - Template for high-level designs
+- **[DETAILED_DESIGN_TEMPLATE.md](dev/DETAILED_DESIGN_TEMPLATE.md)** - Template for detailed designs
 
 ### 🧪 [qa/](qa/) - QA & Testing
 
 Testing strategy and quality assurance processes:
 
+- **[test-plans/](qa/test-plans/)** - Feature test plans (TEST-###) and execution reports
+  - **[TEST_PLAN_TEMPLATE.md](qa/test-plans/TEST_PLAN_TEMPLATE.md)** - Template for test plans
+  - **[TEST_EXECUTION_TEMPLATE.md](qa/test-plans/TEST_EXECUTION_TEMPLATE.md)** - Template for test execution reports
+  - **[TEST-001-expense-sorting.md](qa/test-plans/TEST-001-expense-sorting.md)** - Example: Expense sorting test plan
 - **[TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)** - Comprehensive QA approach
 - **[TESTING.md](qa/TESTING.md)** - Testing implementation details
 - **[PWA_TESTING.md](qa/PWA_TESTING.md)** - Progressive Web App testing guide
 - **[PR_WORKFLOW_GUIDE.md](qa/PR_WORKFLOW_GUIDE.md)** - Pull request workflow
-- **[PR_TEST.md](qa/PR_TEST.md)** - PR testing guidelines
 - **[TASK_BUG_MANAGEMENT.md](qa/TASK_BUG_MANAGEMENT.md)** - Issue tracking and workflows
 
 ### 🚀 [devops/](devops/) - CI/CD & Deployment
@@ -71,18 +107,18 @@ Presentation materials and demo scripts:
 
 **By Role:**
 
-- **Developers** → Start with [dev/RUN_LOCALLY.md](dev/RUN_LOCALLY.md)
-- **QA Engineers** → Check [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)
-- **DevOps** → See [devops/CI_CD_PIPELINE.md](devops/CI_CD_PIPELINE.md)
-- **Interviewers** → View [demo/SDET_DEMO_SCRIPT.md](demo/SDET_DEMO_SCRIPT.md)
+- **Developers** -> Start with [dev/RUN_LOCALLY.md](dev/RUN_LOCALLY.md)
+- **QA Engineers** -> Check [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)
+- **DevOps** -> See [devops/CI_CD_PIPELINE.md](devops/CI_CD_PIPELINE.md)
+- **Interviewers** -> View [demo/SDET_DEMO_SCRIPT.md](demo/SDET_DEMO_SCRIPT.md)
 
 **By Task:**
 
-- **Run the app** → [dev/RUN_LOCALLY.md](dev/RUN_LOCALLY.md)
-- **Write tests** → [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)
-- **Deploy** → [devops/DEPLOYMENT.md](devops/DEPLOYMENT.md)
-- **Report bug** → [qa/TASK_BUG_MANAGEMENT.md](qa/TASK_BUG_MANAGEMENT.md)
-- **Submit PR** → [qa/PR_WORKFLOW_GUIDE.md](qa/PR_WORKFLOW_GUIDE.md)
+- **Run the app** -> [dev/RUN_LOCALLY.md](dev/RUN_LOCALLY.md)
+- **Write tests** -> [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)
+- **Deploy** -> [devops/DEPLOYMENT.md](devops/DEPLOYMENT.md)
+- **Report bug** -> [qa/TASK_BUG_MANAGEMENT.md](qa/TASK_BUG_MANAGEMENT.md)
+- **Submit PR** -> [qa/PR_WORKFLOW_GUIDE.md](qa/PR_WORKFLOW_GUIDE.md)
 
 ## 📋 Documentation Standards
 

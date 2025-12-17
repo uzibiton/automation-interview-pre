@@ -1,4 +1,4 @@
-# Cloud Run Deployment Setup
+﻿# Cloud Run Deployment Setup
 
 This directory contains everything needed to deploy the Expense Tracker to Google Cloud Run with Firebase Firestore.
 
@@ -88,7 +88,7 @@ DATABASE_TYPE=postgresql
 
 ### Setup:
 
-1. Go to GitHub repository → Settings → Secrets
+1. Go to GitHub repository -> Settings -> Secrets
 2. Add secrets:
    - `GCP_PROJECT_ID`: Your GCP project ID
    - `GCP_SA_KEY`: Service account JSON key

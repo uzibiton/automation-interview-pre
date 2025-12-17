@@ -1,4 +1,4 @@
-# CI/CD Pipeline Documentation
+﻿# CI/CD Pipeline Documentation
 
 Complete guide for the GitHub Actions CI/CD pipeline that automates testing, building, and deployment.
 
@@ -101,7 +101,7 @@ on:
       - '.github/ISSUE_TEMPLATE/**'
 ```
 
-**What happens:** Full pipeline (Test → Build → Deploy)
+**What happens:** Full pipeline (Test -> Build -> Deploy)
 
 **Use case:** After merging a PR, automatically deploy to production
 
@@ -144,7 +144,7 @@ on:
 
 **How to trigger:**
 
-1. Go to GitHub → Actions tab
+1. Go to GitHub -> Actions tab
 2. Click "CI/CD Pipeline"
 3. Click "Run workflow"
 4. Select branch
@@ -227,9 +227,9 @@ Independent test execution:
 
 **Logic:**
 
-- PR → temporary PR environment
-- Push to main → staging
-- Manual trigger → user-selected environment
+- PR -> temporary PR environment
+- Push to main -> staging
+- Manual trigger -> user-selected environment
 
 **Outputs:**
 
@@ -417,7 +417,7 @@ If deployment fails, previous version stays running
 
 ## 🔒 Required Secrets
 
-Set these in: **GitHub repo → Settings → Secrets and variables → Actions**
+Set these in: **GitHub repo -> Settings -> Secrets and variables -> Actions**
 
 ### GCP Authentication:
 
@@ -675,7 +675,7 @@ https://github.com/uzibiton/automation-interview-pre/actions
 
 ### Trigger Manually:
 
-1. Actions tab → CI/CD Pipeline → Run workflow
+1. Actions tab -> CI/CD Pipeline -> Run workflow
 
 ### Check Deployment:
 

@@ -1,4 +1,4 @@
-# Non-Functional Testing - Simple Explanation
+﻿# Non-Functional Testing - Simple Explanation
 
 > **Goal**: Help you understand what each test type does and when to use it
 
@@ -152,7 +152,7 @@ Your expense app gets graded on:
 ```
 Soak Test (24 hours):
 - 50 users continuously using the app
-- After 12 hours: response time goes from 200ms → 2000ms
+- After 12 hours: response time goes from 200ms -> 2000ms
 - Found: Database connections not closing properly
 
 Stress Test:

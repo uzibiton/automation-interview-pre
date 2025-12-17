@@ -1,4 +1,4 @@
-# Category Management - Implementation Summary
+﻿# Category Management - Implementation Summary
 
 ## 🎯 Problem Solved
 
@@ -32,7 +32,7 @@
 **Runs automatically on application startup**:
 
 - Checks if categories exist in database
-- If none found → creates all default categories
+- If none found -> creates all default categories
 - Logs the process for monitoring
 - Never fails - app starts even if seeding has issues
 
@@ -166,9 +166,9 @@ SeedService.onModuleInit()
        ↓
 Check: Categories exist?
        ↓
-   NO → Seed from categories.constant.ts
+   NO -> Seed from categories.constant.ts
        ↓
-   YES → Skip seeding
+   YES -> Skip seeding
        ↓
 Application ready
 ```

@@ -1,4 +1,4 @@
-# Demo Script for Interview Presentation
+﻿# Demo Script for Interview Presentation
 
 > **Duration**: 15-20 minutes
 > **Purpose**: Demonstrate comprehensive testing infrastructure
@@ -140,7 +140,7 @@ npm run test:e2e:headed -- create-expense.spec.ts
 **Explain Architecture**:
 
 ```
-Test DB → Auth Service → API Service → Frontend → Test Runner
+Test DB -> Auth Service -> API Service -> Frontend -> Test Runner
 ```
 
 **Highlight**:

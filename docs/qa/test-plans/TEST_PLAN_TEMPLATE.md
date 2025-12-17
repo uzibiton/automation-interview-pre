@@ -1,4 +1,4 @@
-# Test Plan Template
+﻿# Test Plan Template
 
 > **Instructions**: Copy this template for each major feature or release. Replace all placeholders with actual content.
 
@@ -7,7 +7,8 @@
 | Field               | Value                                            |
 | ------------------- | ------------------------------------------------ |
 | **Feature/Release** | [Feature Name/Release Version]                   |
-| **Author**          | [Your Name]                                      |
+| **Role**            | [Your Role - e.g., SDET / QA Lead]               |
+| **Name**            | [Your Name]                                      |
 | **Date Created**    | [YYYY-MM-DD]                                     |
 | **Last Updated**    | [YYYY-MM-DD]                                     |
 | **Status**          | [Draft/In Review/Approved/In Progress/Completed] |
@@ -39,20 +40,128 @@
 
 ## 3. Test Strategy
 
-### Test Levels
+### Test Coverage Checklist
 
-- [ ] **Unit Tests** - Component-level validation
-- [ ] **Integration Tests** - Service interaction validation
-- [ ] **E2E Tests** - End-to-end user flow validation
-- [ ] **API Tests** - Contract and endpoint validation
-- [ ] **Performance Tests** - Load, stress, and scalability
-- [ ] **Security Tests** - Vulnerability and penetration testing
-- [ ] **Visual Tests** - UI regression testing
-- [ ] **Accessibility Tests** - WCAG compliance
+**Instructions**: For each test type, mark as ✅ Covered, ⬜ Not Needed, or ⚠️ Needed but Not Covered. Include what should be done for each applicable test type.
+
+#### Functional Testing
+
+- [ ] **Unit Tests** - Component-level validation (functions, classes, modules)
+  - **What to do**: Test individual functions/methods in isolation
+  - **Coverage target**: ≥80% code coverage
+  - **Tag test cases**: Use `@testcase TC-XXX-###` in test descriptions
+  - **Tools**: Jest, Vitest, pytest
+  - **Example**: Test sorting algorithm with various input types
+- [ ] **Integration Tests** - Service/API interaction validation
+  - **What to do**: Test interactions between services/modules
+  - **Coverage target**: All API endpoints, database operations
+  - **Tag test cases**: Link to API spec and test case IDs
+  - **Tools**: Supertest, Pact, REST Assured
+  - **Example**: Test API service → Database integration
+- [ ] **E2E Tests** - End-to-end user flow validation (Playwright/Cypress)
+  - **What to do**: Test complete user journeys from UI to backend
+  - **Coverage target**: All critical user flows, happy paths + error paths
+  - **Tag test cases**: Use `@testcase TC-XXX-###` in test.describe()
+  - **Tools**: Playwright, Cypress
+  - **Example**: Test user login → create expense → verify in list
+- [ ] **Component Tests** - UI component testing (React Testing Library, Storybook)
+  - **What to do**: Test React components in isolation
+  - **Coverage target**: All components with business logic
+  - **Tools**: React Testing Library, Storybook
+  - **Example**: Test ExpenseList component with mock data
+- [ ] **API/Contract Tests** - Endpoint validation, request/response contracts
+  - **What to do**: Validate API contracts between consumer/provider
+  - **Tools**: Pact, Postman, Swagger
+  - **Example**: Ensure frontend expectations match API responses
+- [ ] **Manual Exploratory Tests** - Ad-hoc testing for edge cases
+  - **What to do**: Explore feature without scripts, find unexpected issues
+  - **Document findings**: Create test cases for bugs found
+  - **Example**: Try unusual input combinations, UI interactions
+
+#### Non-Functional Testing
+
+- [ ] **Performance Tests** - Load, stress, spike, soak, scalability (k6, Locust)
+  - **What to do**: Test system under load, measure response times
+  - **Metrics**: Response time, throughput, error rate, resource usage
+  - **Tools**: k6, Locust, JMeter, Lighthouse
+  - **Example**: 100 concurrent users, response time < 500ms
+- [ ] **Security Tests** - Vulnerability scanning, penetration testing (OWASP ZAP, Snyk)
+  - **What to do**: Scan for vulnerabilities, test authentication/authorization
+  - **Checks**: OWASP Top 10, dependency vulnerabilities, XSS, SQL injection
+  - **Tools**: OWASP ZAP, Snyk, Bandit, npm audit
+  - **Example**: Run OWASP ZAP scan, ensure no high/critical vulnerabilities
+- [ ] **Accessibility Tests** - WCAG compliance, screen reader support (axe, Lighthouse)
+  - **What to do**: Test with screen readers, keyboard navigation, color contrast
+  - **Standards**: WCAG 2.1 Level AA compliance
+  - **Tools**: axe DevTools, Lighthouse, NVDA, JAWS
+  - **Example**: Navigate entire app using only keyboard, test with screen reader
+- [ ] **Visual Regression Tests** - UI consistency across changes (Percy, Applitools)
+  - **What to do**: Compare screenshots before/after changes
+  - **Tools**: Percy, Applitools, Playwright screenshots
+  - **Example**: Capture baseline screenshots, compare after UI changes
+- [ ] **Reliability Tests** - Chaos engineering, failover, recovery scenarios
+  - **What to do**: Test system behavior under failures
+  - **Example**: Kill database connection, verify graceful error handling
+- [ ] **Compatibility Tests** - Browser/device/OS matrix testing
+  - **What to do**: Test on multiple browsers, devices, OS versions
+  - **Coverage**: Chrome, Firefox, Safari, Edge (latest 2 versions)
+  - **Example**: Test on Chrome/Windows, Firefox/Mac, Safari/iOS
+- [ ] **Usability Tests** - User experience validation, A/B testing
+  - **What to do**: Observe real users completing tasks
+  - **Metrics**: Task completion rate, time on task, user satisfaction
+  - **Example**: Watch 5 users try sorting expenses, note confusion points
+- [ ] **Localization Tests** - Multi-language/locale validation (EN/HE)
+  - **What to do**: Test all languages, date/number formats, RTL layouts
+  - **Coverage**: All supported locales (EN, HE)
+  - **Example**: Switch to Hebrew, verify all text translated, RTL layout correct
+
+#### Specialized Testing
+
+- [ ] **Mobile Tests** - Mobile responsive, PWA functionality, touch interactions
+  - **What to do**: Test on real devices or emulators, verify responsive design
+  - **Devices**: iOS (iPhone 12+), Android (Pixel 5+)
+  - **Example**: Test expense sorting on iPhone, verify touch interactions
+- [ ] **Database Tests** - Data integrity, migration validation, query performance
+  - **What to do**: Test data constraints, migrations, query performance
+  - **Example**: Run migration scripts, verify data integrity after migration
+- [ ] **Smoke Tests** - Critical path validation (production deployment verification)
+  - **What to do**: Run after each deployment, test critical features only
+  - **Duration**: Should complete in < 5 minutes
+  - **Example**: Login, create expense, view expense list (sorted)
+- [ ] **Regression Tests** - Verify existing functionality still works
+  - **What to do**: Re-run previous test suites after changes
+  - **Automation**: Should be automated in CI/CD pipeline
+  - **Example**: Run full E2E suite after adding sorting feature
+- [ ] **Boundary Tests** - Edge cases, min/max values, empty states
+  - **What to do**: Test limits, empty inputs, special characters
+  - **Example**: Sort 0 expenses, sort 1 expense, sort 10,000 expenses
+- [ ] **Negative Tests** - Invalid inputs, error handling, authentication bypass
+  - **What to do**: Try to break the system, test error messages
+  - **Example**: Try sorting with invalid sort field, verify graceful error
+
+#### Static Analysis Testing
+
+- [ ] **Code Quality Checks** - Linting, formatting, complexity analysis
+  - **What to do**: Run ESLint, Prettier, SonarQube, code complexity metrics
+  - **Tools**: ESLint, Prettier, SonarQube, CodeClimate
+  - **Pass criteria**: 0 linting errors, complexity score < 10
+  - **Example**: `npm run lint` - no errors
+- [ ] **Type Safety** - TypeScript type checking, strict mode
+  - **What to do**: Run TypeScript compiler in strict mode
+  - **Tools**: TypeScript, Flow
+  - **Pass criteria**: 0 type errors
+  - **Example**: `npm run type-check` - no errors
+- [ ] **Dependency Security** - Check for vulnerable dependencies
+  - **What to do**: Run npm audit, Snyk, Dependabot
+  - **Tools**: npm audit, Snyk, Dependabot
+  - **Pass criteria**: 0 high/critical vulnerabilities
+  - **Example**: `npm audit` - no high/critical issues
 
 ### Test Approach
 
 Describe the overall testing approach and methodology.
+
+**Test Case Tagging**: All automated tests should be tagged with their corresponding test case ID using `@testcase TC-XXX-###` in test descriptions for traceability.
 
 ## 4. Entry Criteria
 

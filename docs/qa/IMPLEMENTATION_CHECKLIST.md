@@ -1,4 +1,4 @@
-# Multi-Environment E2E Testing - Setup Checklist
+﻿# Multi-Environment E2E Testing - Setup Checklist
 
 ## ✅ Implementation Status
 

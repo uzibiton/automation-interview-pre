@@ -1,4 +1,4 @@
-# Project Maintenance Schedule
+﻿# Project Maintenance Schedule
 
 This document tracks recurring maintenance tasks to keep the project healthy, organized, and up-to-date.
 

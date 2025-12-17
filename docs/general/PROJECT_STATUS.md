@@ -1,4 +1,4 @@
-# Project Status & Continuation Guide
+﻿# Project Status & Continuation Guide
 
 **Last Updated:** November 23, 2025  
 **Current State:** Ready for multi-environment deployment  
@@ -12,11 +12,11 @@
 
 1. **Deploy Staging** (In Progress)
    - Go to: https://github.com/uzibiton/automation-interview-pre/actions/workflows/ci-cd.yml
-   - Click "Run workflow" → Select `main` branch → Environment: `staging` → Run
+   - Click "Run workflow" -> Select `main` branch -> Environment: `staging` -> Run
    - Wait ~5-10 minutes
 
 2. **Update OAuth Redirect URIs**
-   - Go to GCP Console → APIs & Services → Credentials
+   - Go to GCP Console -> APIs & Services -> Credentials
    - Update OAuth Client redirect URIs
    - Add the URLs listed in "OAuth Configuration" section below
 
@@ -37,14 +37,14 @@
 - **Project ID:** `automation-interview-pre`
 - **Project Number:** `[REDACTED]`
 - **Region:** `us-central1`
-- **Console:** GCP Console → Project Dashboard
+- **Console:** GCP Console -> Project Dashboard
 
 ### OAuth 2.0 Client (Web Application)
 
 - **Client ID:** `[STORED IN GITHUB SECRETS]`
 - **Client Secret:** `[STORED IN GITHUB SECRETS]`
 - **Type:** Web Application
-- **Console:** GCP Console → APIs & Services → Credentials
+- **Console:** GCP Console -> APIs & Services -> Credentials
 
 ### Service Account
 
@@ -118,7 +118,7 @@ GOOGLE_CLIENT_SECRET=[REDACTED]
 
 ### Required Setup in Google Console
 
-**Location:** GCP Console → APIs & Services → Credentials → OAuth 2.0 Client IDs
+**Location:** GCP Console -> APIs & Services -> Credentials -> OAuth 2.0 Client IDs
 
 #### Authorized JavaScript Origins
 
@@ -681,7 +681,7 @@ cd frontend && npm run build
 
 **Step 3:** Update OAuth (5 minutes):
 
-- Go to GCP Console → APIs & Services → Credentials → OAuth 2.0 Client IDs
+- Go to GCP Console -> APIs & Services -> Credentials -> OAuth 2.0 Client IDs
 - Add staging URLs from "OAuth Configuration" section
 
 **Step 4:** Test staging (10 minutes):

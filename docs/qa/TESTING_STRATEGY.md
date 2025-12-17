@@ -1,4 +1,4 @@
-# Testing Strategy
+﻿# Testing Strategy
 
 ## Overview
 
@@ -566,7 +566,7 @@ When joining a new team as an SDET, you're expected to review code but don't kno
    - You can spot deviations from standards
 
 2. **Use the 3-Level Review Approach**
-   - Understand change → Understand context → Plan tests
+   - Understand change -> Understand context -> Plan tests
    - Check dependencies (you now know what depends on what)
    - Assess risk (you understand critical paths)
 
@@ -642,7 +642,7 @@ Also, I'm still learning this part of the codebase - could you help me understan
 1. **Trace User Flows**
    - Pick a critical user journey (e.g., "user logs in")
    - Set breakpoints and step through the code
-   - Document the flow: Frontend → API → Service → Database
+   - Document the flow: Frontend -> API -> Service -> Database
 
 2. **Read Tests First**
    - Tests show how code is intended to be used

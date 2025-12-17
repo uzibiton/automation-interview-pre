@@ -17,6 +17,57 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 > **Note:** All issues, bugs, and feature requests are now tracked in GitHub Issues with structured templates for consistent tracking and workflow management.
 
+## 🎬 Demo: Feature in Action
+
+**Expense Sorting Feature** - Complete traceability from requirements to passing tests:
+
+🎥 **[Watch Test Execution Video](docs/demo/videos/)** _(Coming soon - Playwright test run)_
+
+**Complete Feature Documentation:**
+
+- 📋 [REQ-001: Requirements](docs/product/requirements/REQ-001-expense-sorting.md) - 7 FRs, 5 NFRs
+- 🏗️ [HLD-001: Design](docs/dev/designs/HLD-001-expense-sorting.md) - Architecture & algorithms
+- ✅ [TEST-001: Test Plan](docs/qa/test-plans/TEST-001-expense-sorting.md) - 12 test cases, 10/12 passed
+- 🔗 [Traceability Matrix](docs/product/TRACEABILITY_MATRIX.md) - End-to-end mapping
+
+**Traceability Flow**: Requirements → Design → Test Plan → Implementation → E2E Tests ✅
+
+**Test Results**: 8/8 E2E automated tests passing | [View E2E Tests](tests/e2e/expenses/sort-expenses.spec.ts)
+
+## 🌐 Environments
+
+- **Local**: http://localhost:3000
+- **Staging**: [https://expense-tracker-staging-buuath6a3q-uc.a.run.app](https://expense-tracker-staging-buuath6a3q-uc.a.run.app)
+- **Production**: [https://expense-tracker-buuath6a3q-uc.a.run.app](https://expense-tracker-buuath6a3q-uc.a.run.app)
+- **PR #65**: [https://expense-tracker-pr-65-buuath6a3q-uc.a.run.app](https://expense-tracker-pr-65-buuath6a3q-uc.a.run.app)
+
+## 💡 Ideas & Innovation
+
+**Exploring New Features:**
+
+- 💬 [#68 - AI-Powered Conversational Expense Input & Comparative Analytics](https://github.com/uzibiton/automation-interview-pre/issues/68)
+- 👥 [#69 - Household/Group Management with Role-Based Permissions](https://github.com/uzibiton/automation-interview-pre/issues/69)
+
+📝 **[View All Ideas](https://github.com/uzibiton/automation-interview-pre/labels/type%3Aidea)** | **[Suggest New Idea](https://github.com/uzibiton/automation-interview-pre/issues/new?template=template-idea.md)**
+
+## 📚 Documentation
+
+📖 **[Complete Table of Contents](docs/TABLE_OF_CONTENTS.md)** - Full documentation index with all guides and resources
+
+### 📋 Document Traceability
+
+Professional documentation with **bidirectional traceability** between requirements, design, tests, and implementation:
+
+| Type             | Format                     | Example                                                                            |
+| ---------------- | -------------------------- | ---------------------------------------------------------------------------------- |
+| **Requirements** | `REQ-###-feature-name.md`  | [REQ-001-expense-sorting.md](docs/product/requirements/REQ-001-expense-sorting.md) |
+| **Design (HLD)** | `HLD-###-feature-name.md`  | [HLD-001-expense-sorting.md](docs/dev/designs/HLD-001-expense-sorting.md)          |
+| **Test Plans**   | `TEST-###-feature-name.md` | [TEST-001-expense-sorting.md](docs/qa/test-plans/TEST-001-expense-sorting.md)      |
+
+**Traceability Flow**: `REQ-001 <-> HLD-001 <-> TEST-001 <-> Implementation <-> E2E Tests`
+
+📊 **[View Traceability Matrix](docs/product/TRACEABILITY_MATRIX.md)** - Complete requirements mapping
+
 ## 🚀 Quick Start
 
 ### Local Development
@@ -50,32 +101,21 @@ npm run test:e2e:production:smoke   # Production smoke tests
 npm run test:e2e:docker             # Docker environment
 ```
 
-## 🌐 Environments
-
-- **Local**: http://localhost:3000
-- **Staging**: [https://expense-tracker-staging-buuath6a3q-uc.a.run.app](https://expense-tracker-staging-buuath6a3q-uc.a.run.app)
-- **Production**: [https://expense-tracker-buuath6a3q-uc.a.run.app](https://expense-tracker-buuath6a3q-uc.a.run.app)
-- **PR #65**: [https://expense-tracker-pr-65-buuath6a3q-uc.a.run.app](https://expense-tracker-pr-65-buuath6a3q-uc.a.run.app)
-
-📝 **Quick Links**: [New Idea Issue](https://github.com/uzibiton/automation-interview-pre/issues/new?template=template-idea.md) | [View All Ideas](https://github.com/uzibiton/automation-interview-pre/labels/type%3Aidea)
-
-## 📚 Documentation
-
-📖 **[Complete Table of Contents](docs/TABLE_OF_CONTENTS.md)** - Full documentation index with all guides and resources
-
 ### Quick Links
 
 - **[Run Locally](docs/dev/RUN_LOCALLY.md)** - Get started with local development
 - **[Application Architecture](app/README.md)** - System design and data flow
 - **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** - Comprehensive QA approach
+- **[Portfolio Roadmap](docs/demo/PORTFOLIO_IMPROVEMENT_PLAN.md)** - 5-phase improvement plan
 - **[PR Workflow Guide](docs/qa/PR_WORKFLOW_GUIDE.md)** - Contribute to the project
 - **[Deployment Guide](docs/devops/DEPLOYMENT.md)** - Deploy to staging/production
 - **[SDET Demo Script](docs/demo/SDET_DEMO_SCRIPT.md)** - Interview presentation
 
 ### Documentation Structure
 
+- **[docs/product/](docs/product/)** - Requirements and traceability
 - **[docs/general/](docs/general/)** - Project overview and status
-- **[docs/dev/](docs/dev/)** - Development setup and API docs
+- **[docs/dev/](docs/dev/)** - Development setup, API docs, and designs
 - **[docs/qa/](docs/qa/)** - Testing and quality assurance
 - **[docs/devops/](docs/devops/)** - CI/CD and deployment
 - **[docs/demo/](docs/demo/)** - Presentation materials
@@ -142,9 +182,14 @@ automation-interview-pre/
 │   └── README.md                 # Testing documentation
 │
 ├── docs/                         # Documentation
-│   ├── general/                  # General project info
+│   ├── product/                  # Requirements & traceability
+│   │   ├── requirements/         # Feature requirements (REQ-###)
+│   │   └── TRACEABILITY_MATRIX.md # Requirements mapping
 │   ├── dev/                      # Development docs
+│   │   └── designs/              # High-level designs (HLD-###)
 │   ├── qa/                       # QA & testing docs
+│   │   └── test-plans/           # Test plans (TEST-###)
+│   ├── general/                  # General project info
 │   ├── devops/                   # CI/CD & deployment
 │   ├── ui/                       # UI/UX guides
 │   ├── demo/                     # Demo materials

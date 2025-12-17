@@ -1,4 +1,4 @@
-# 🚀 Quick Fix Guide - Missing Categories
+﻿# 🚀 Quick Fix Guide - Missing Categories
 
 ## Problem
 

@@ -1,4 +1,4 @@
-# Task & Bug Management Guide
+﻿# Task & Bug Management Guide
 
 **Purpose**: Comprehensive guide for managing issues, tasks, bugs, and feature requests throughout the project lifecycle.
 
@@ -132,7 +132,7 @@ Suggested labels
 ### States and Transitions
 
 ```
-[Backlog] → [To Do] → [In Progress] → [In Review] → [Testing] → [Done]
+[Backlog] -> [To Do] -> [In Progress] -> [In Review] -> [Testing] -> [Done]
      ↓         ↓            ↓              ↓            ↓         ↓
 [Blocked] ← [Needs Info] ← [Needs Rework] ← [Failed Tests]
 ```
@@ -154,16 +154,16 @@ Suggested labels
 
 ### Typical Flow
 
-1. **Issue Created** → Add to backlog
-2. **Triage** → Assign priority/severity, add labels
-3. **Estimation** → Add effort estimate (S/M/L or hours)
-4. **Assignment** → Assign to developer/QA
-5. **Development** → Move to "In Progress", create branch
-6. **PR Creation** → Link issue in PR (`Fixes #123`)
-7. **Review** → Move to "In Review"
-8. **Testing** → Deploy to test env, QA validates
-9. **Merge** → PR merged, deployed to staging/production
-10. **Verification** → Verify in production, close issue
+1. **Issue Created** -> Add to backlog
+2. **Triage** -> Assign priority/severity, add labels
+3. **Estimation** -> Add effort estimate (S/M/L or hours)
+4. **Assignment** -> Assign to developer/QA
+5. **Development** -> Move to "In Progress", create branch
+6. **PR Creation** -> Link issue in PR (`Fixes #123`)
+7. **Review** -> Move to "In Review"
+8. **Testing** -> Deploy to test env, QA validates
+9. **Merge** -> PR merged, deployed to staging/production
+10. **Verification** -> Verify in production, close issue
 
 ---
 
@@ -189,7 +189,7 @@ Suggested labels
 
 ### Priority vs Severity Matrix
 
-| Severity ↓ / Priority → | High | Medium | Low |
+| Severity ↓ / Priority -> | High | Medium | Low |
 | ----------------------- | ---- | ------ | --- |
 | **Critical**            | P0   | P1     | P2  |
 | **High**                | P1   | P2     | P3  |
@@ -459,7 +459,7 @@ Track story points/issues completed per sprint
 ### Templates Location
 
 - **Browse all**: `.github/ISSUE_TEMPLATE/`
-- **Create issue**: Click "New Issue" → Choose template
+- **Create issue**: Click "New Issue" -> Choose template
 - **Track usage**: [TRACKING.md](.github/ISSUE_TEMPLATE/TRACKING.md)
 
 ---

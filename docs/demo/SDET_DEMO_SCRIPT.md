@@ -1,4 +1,4 @@
-# SDET Demo Script - Expense Tracking Application
+﻿# SDET Demo Script - Expense Tracking Application
 
 ## Overview
 
@@ -45,17 +45,17 @@ Testing:   Playwright (E2E) + Jest (Unit) + Allure (Reporting)
 │                    GitHub Repository                     │
 └─────────────┬───────────────────────────────────────────┘
               │
-              ├─► Push to main → Staging Environment
+              ├─► Push to main -> Staging Environment
               │   ├─ frontend-staging-*.run.app
               │   ├─ api-service-staging-*.run.app
               │   └─ auth-service-staging-*.run.app
               │
-              ├─► Manual Trigger → Production Environment
+              ├─► Manual Trigger -> Production Environment
               │   ├─ frontend-*.run.app
               │   ├─ api-service-*.run.app
               │   └─ auth-service-*.run.app
               │
-              └─► Pull Request → PR Environment (Ephemeral)
+              └─► Pull Request -> PR Environment (Ephemeral)
                   ├─ frontend-pr-{PR_NUM}-*.run.app
                   ├─ Auto-created on PR open
                   └─ Auto-destroyed on PR merge/close
@@ -148,9 +148,9 @@ Trigger: Push to main
   │   └─ Build auth-service image
   │
   ├─► Deploy to Staging (Sequential)
-  │   ├─ Deploy auth-service → wait for ready
-  │   ├─ Deploy api-service → wait for ready
-  │   └─ Deploy frontend → wait for ready
+  │   ├─ Deploy auth-service -> wait for ready
+  │   ├─ Deploy api-service -> wait for ready
+  │   └─ Deploy frontend -> wait for ready
   │
   └─► Post-Deployment Validation
   ├─ Health checks (all services)
@@ -168,7 +168,7 @@ Trigger: Push to main
 
 #### 2. **Deployment Safety**
 
-- Services deploy sequentially (auth → api → frontend)
+- Services deploy sequentially (auth -> api -> frontend)
 - Each service waits for "ready" state before proceeding
 - Rollback mechanism via Cloud Run revisions
 
@@ -196,11 +196,11 @@ Trigger: Push to main
 
 **Investigation Process**:
 
-1. ✅ Check deployment status → All services running
-2. ✅ Check API logs → All 200 responses, no errors
-3. ✅ Compare local vs staging → Works locally, fails remotely
-4. ✅ Identify pattern → Frontend expects arrays, API returns undefined/null
-5. ✅ Root cause → Missing defensive programming in API response handling
+1. ✅ Check deployment status -> All services running
+2. ✅ Check API logs -> All 200 responses, no errors
+3. ✅ Compare local vs staging -> Works locally, fails remotely
+4. ✅ Identify pattern -> Frontend expects arrays, API returns undefined/null
+5. ✅ Root cause -> Missing defensive programming in API response handling
 
 **Solution Applied**:
 
@@ -227,10 +227,10 @@ expenses.map(...)
 
 **Investigation Process**:
 
-1. ✅ Check API response structure → Returns `by_category` (snake_case)
-2. ✅ Check frontend expectations → Expects `byCategory` (camelCase)
-3. ✅ Check date filtering → Date objects compared to string dates in Firestore
-4. ✅ Root cause → Dual issue: naming mismatch + date format mismatch
+1. ✅ Check API response structure -> Returns `by_category` (snake_case)
+2. ✅ Check frontend expectations -> Expects `byCategory` (camelCase)
+3. ✅ Check date filtering -> Date objects compared to string dates in Firestore
+4. ✅ Root cause -> Dual issue: naming mismatch + date format mismatch
 
 **Solutions Applied**:
 
@@ -375,14 +375,14 @@ curl https://api-service-staging-*.run.app/health
    - Benefits: True isolation, safer testing
 
 2. **Automated Rollback Strategy** (1 week)
-   - Health check failure → auto-rollback to previous revision
+   - Health check failure -> auto-rollback to previous revision
    - Post-deployment smoke tests in CI/CD
    - Notification on rollback events
 
 3. **Blue-Green Deployment** (2 weeks)
    - Zero-downtime deployments with traffic shifting
    - A/B testing capability
-   - Gradual rollout (10% → 50% → 100%)
+   - Gradual rollout (10% -> 50% -> 100%)
 
 4. **Security Hardening** (2-3 weeks)
    - OWASP ZAP security scanning in CI/CD

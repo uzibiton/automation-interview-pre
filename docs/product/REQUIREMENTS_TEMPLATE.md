@@ -1,4 +1,4 @@
-# Requirements Document Template
+﻿# Requirements Document Template
 
 > **Instructions**: Use this template to document feature requirements. Replace all placeholders with actual content.
 
@@ -8,7 +8,8 @@
 | ------------------ | -------------------------------------- |
 | **Feature Name**   | [Feature Name]                         |
 | **Document Type**  | Requirements                           |
-| **Author**         | [Your Name]                            |
+| **Role**           | [Your Role - e.g., Product Manager]    |
+| **Name**           | [Your Name]                            |
 | **Date Created**   | [YYYY-MM-DD]                           |
 | **Last Updated**   | [YYYY-MM-DD]                           |
 | **Status**         | [Draft/In Review/Approved/Implemented] |
@@ -315,7 +316,7 @@ High-level test scenarios that must be covered:
 4. Performance: [System meets performance targets]
 5. Security: [No vulnerabilities found]
 
-**Detailed Test Plan:** [Link to TEST_PLAN_TEMPLATE.md](TEST_PLAN_TEMPLATE.md)
+**Detailed Test Plan:** [Link to TEST_PLAN_TEMPLATE.md](test-plans/TEST_PLAN_TEMPLATE.md)
 
 ## 13. Documentation Requirements
 

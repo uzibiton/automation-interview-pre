@@ -1,4 +1,4 @@
-# Complete PR Workflow: From Task to Merge
+﻿# Complete PR Workflow: From Task to Merge
 
 ## Table of Contents
 
@@ -69,7 +69,7 @@ git push origin feature/descriptive-name
 
 **Start Review:**
 
-1. Go to PR → "Files changed" tab
+1. Go to PR -> "Files changed" tab
 2. Review code changes
 3. Click line numbers to add comments
 4. Click "Start a review" (first comment)
@@ -121,7 +121,7 @@ git push origin feature/descriptive-name
 
 **Reply to comments:**
 
-- Go back to PR → "Conversation" tab
+- Go back to PR -> "Conversation" tab
 - Click "Reply" on each comment thread
 - Explain changes made
 - Mark conversations as "Resolved" when fixed
@@ -157,7 +157,7 @@ If PR is marked as Draft:
 - Good when: Many small "fix typo" commits
 
 ```
-Before: Fix bug → Fix typo → Address review → Fix another typo
+Before: Fix bug -> Fix typo -> Address review -> Fix another typo
 After:  Add feature X with all fixes
 ```
 
@@ -168,7 +168,7 @@ After:  Add feature X with all fixes
 - Good when: Each commit is meaningful and tested
 
 ```
-Preserves: Commit 1 → Commit 2 → Commit 3
+Preserves: Commit 1 -> Commit 2 -> Commit 3
 Adds: "Merge branch feature/x into main"
 ```
 
@@ -218,14 +218,14 @@ git log --oneline -5
 
 ❌ **Merge button disabled?**
 
-- Check: Is it a Draft PR? → Click "Ready for review"
-- Check: Are CI checks passing? → Wait for green
-- Check: Is approval required? → Get reviewer approval
-- Check: Branch protection rules? → Check repo settings
+- Check: Is it a Draft PR? -> Click "Ready for review"
+- Check: Are CI checks passing? -> Wait for green
+- Check: Is approval required? -> Get reviewer approval
+- Check: Branch protection rules? -> Check repo settings
 
 ❌ **Review comments not visible?**
 
-- Did you click "Submit review"? → Pending comments are hidden
+- Did you click "Submit review"? -> Pending comments are hidden
 
 ❌ **Merge conflicts?**
 
@@ -294,7 +294,7 @@ git push origin feature/your-branch
 - **Why:** Didn't click "Submit review" button
 - **Fix:** Always complete the review flow
 - **Rule:** Draft comments are invisible to everyone else
-- **Flow:** Add comments → Review changes → Choose action → Submit
+- **Flow:** Add comments -> Review changes -> Choose action -> Submit
 
 ### 5. Data Consistency Across Pages
 

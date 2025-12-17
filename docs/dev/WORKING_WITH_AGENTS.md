@@ -1,4 +1,4 @@
-# Working with AI Coding Agents
+﻿# Working with AI Coding Agents
 
 ## Workflow
 

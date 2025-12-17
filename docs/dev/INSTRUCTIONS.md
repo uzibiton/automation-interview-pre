@@ -1,4 +1,4 @@
-# 🚀 Quick Start Instructions
+﻿# 🚀 Quick Start Instructions
 
 ## Prerequisites Check ✅
 
@@ -185,17 +185,17 @@ curl http://localhost:3002
    - Visit: https://console.cloud.google.com/
 
 2. **Create/Select Project**
-   - Click "Select a project" → "New Project"
+   - Click "Select a project" -> "New Project"
    - Name it: "Task Manager Interview"
 
 3. **Enable Google+ API**
-   - Navigate to "APIs & Services" → "Library"
+   - Navigate to "APIs & Services" -> "Library"
    - Search "Google+ API"
    - Click "Enable"
 
 4. **Create OAuth Credentials**
-   - Go to "APIs & Services" → "Credentials"
-   - Click "Create Credentials" → "OAuth client ID"
+   - Go to "APIs & Services" -> "Credentials"
+   - Click "Create Credentials" -> "OAuth client ID"
    - Configure consent screen if prompted
    - Application type: "Web application"
    - Name: "Task Manager"
@@ -342,7 +342,7 @@ If you encounter issues:
 4. **Check Docker Desktop:**
    - Make sure it's running
    - Check available disk space
-   - Check memory limits (Settings → Resources)
+   - Check memory limits (Settings -> Resources)
 
 ## 🎉 Success Indicators
 

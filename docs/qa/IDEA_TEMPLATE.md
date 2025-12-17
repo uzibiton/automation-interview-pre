@@ -1,4 +1,4 @@
-# Idea Template
+﻿# Idea Template
 
 Use this template when documenting a new idea in `docs/general/IDEAS.md`.
 
@@ -101,6 +101,6 @@ When an idea is mature enough to become an issue:
 When ready to implement:
 
 1. Change label from `type:idea` to `type:feature`
-2. Create detailed requirements using REQUIREMENTS_TEMPLATE.md
+2. Create detailed requirements using ../product/REQUIREMENTS_TEMPLATE.md
 3. Update status in IDEAS.md to ⚪ Implemented
 4. Link to implementation PR/issues

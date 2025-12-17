@@ -1,4 +1,4 @@
-# Multi-Environment E2E Testing - Quick Reference
+﻿# Multi-Environment E2E Testing - Quick Reference
 
 ## Commands Cheat Sheet
 

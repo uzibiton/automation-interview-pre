@@ -1,4 +1,4 @@
-# PWA Testing Guide - Expense Tracker
+﻿# PWA Testing Guide - Expense Tracker
 
 ## ✅ PWA Features Added:
 
@@ -28,9 +28,9 @@
 1. Open **Chrome** browser on phone
 2. Go to: `http://your-server-ip` (replace with your server IP)
 3. Tap **"Add to Home Screen"** banner at bottom
-4. Or tap **⋮ menu → Add to Home screen**
+4. Or tap **⋮ menu -> Add to Home screen**
 5. Icon appears on home screen
-6. Tap icon → Opens fullscreen!
+6. Tap icon -> Opens fullscreen!
 
 ### **On iOS (iPhone/iPad):**
 
@@ -40,7 +40,7 @@
 4. Scroll and tap **"Add to Home Screen"**
 5. Tap **"Add"**
 6. Icon appears on home screen
-7. Tap icon → Opens in standalone mode!
+7. Tap icon -> Opens in standalone mode!
 
 ---
 
@@ -153,7 +153,7 @@ PWA requires **HTTPS** for service workers (except localhost).
 ### **Service worker not registering:**
 
 - Check `/sw.js` file exists
-- Open DevTools → Application → Service Workers
+- Open DevTools -> Application -> Service Workers
 - Click "Update" or "Unregister" and refresh
 
 ### **Icons not displaying:**
@@ -166,7 +166,7 @@ PWA requires **HTTPS** for service workers (except localhost).
 
 - Service worker needs time to cache on first visit
 - Visit app once, then try offline
-- Check Network tab → Service Worker shows "activated"
+- Check Network tab -> Service Worker shows "activated"
 
 ---
 
@@ -208,9 +208,9 @@ You'll know PWA is working when:
 ## 🔗 Test Now:
 
 1. **Open:** http://localhost
-2. **Press F12** → Open DevTools
-3. **Check Console** → Look for service worker messages
-4. **Try Install** → Look for install button in address bar
-5. **Test Offline** → Network tab → Check offline → Refresh
+2. **Press F12** -> Open DevTools
+3. **Check Console** -> Look for service worker messages
+4. **Try Install** -> Look for install button in address bar
+5. **Test Offline** -> Network tab -> Check offline -> Refresh
 
 **Your expense tracker is now a Progressive Web App!** 🚀📱💻

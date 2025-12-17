@@ -1,4 +1,4 @@
-# Future Ideas & Investigations
+﻿# Future Ideas & Investigations
 
 This document captures ideas that are currently out of scope but worth investigating. These are not tasks or features yet - they're concepts to explore and validate before committing to implementation.
 
@@ -171,7 +171,7 @@ When adding a new idea, copy and fill out this template:
 
 ---
 
-## 📋 Workflow: Idea → Feature
+## 📋 Workflow: Idea -> Feature
 
 1. **Capture Idea**: Add to this file using template above
 2. **Research**: Update with findings, mark status as 🟡 Researching

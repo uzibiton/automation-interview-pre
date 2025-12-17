@@ -1,4 +1,4 @@
-# GitHub UI Guide - Actions & Secrets Setup
+﻿# GitHub UI Guide - Actions & Secrets Setup
 
 Visual walkthrough of GitHub's interface for setting up CI/CD.
 
@@ -53,7 +53,7 @@ Settings Sidebar:
 │       └── Dependabot
 ```
 
-### Step 3: Secrets and Variables → Actions
+### Step 3: Secrets and Variables -> Actions
 
 You'll see this screen:
 
@@ -165,7 +165,7 @@ If you haven't pushed the workflow file yet:
 │                                                             │
 │   Automate your workflow from idea to production          │
 │                                                             │
-│   [Browse workflow templates →]                            │
+│   [Browse workflow templates ->]                            │
 │                                                             │
 └────────────────────────────────────────────────────────────┘
 ```
@@ -381,7 +381,7 @@ The workflow status appears directly in the PR:
 ┌────────────────────────────────────────────────────────────┐
 │ Test CI/CD Pipeline #3                                     │
 ├────────────────────────────────────────────────────────────┤
-│ test-ci-pipeline → main                                    │
+│ test-ci-pipeline -> main                                    │
 │                                                             │
 │ Some checks haven't completed yet                          │
 │ ┌──────────────────────────────────────────────────────┐  │
@@ -454,7 +454,7 @@ uzibiton/automation-interview-pre
 
 Now that you've seen the UI layout, you can:
 
-1. **Add secrets** in Settings → Secrets and variables → Actions
+1. **Add secrets** in Settings -> Secrets and variables -> Actions
 2. **Push your workflow** file to the repository
 3. **Watch it run** in the Actions tab
 4. **Create a PR** to see the integration

@@ -1,4 +1,4 @@
-# CI/CD Workflow Guide
+﻿# CI/CD Workflow Guide
 
 ## Overview
 
@@ -12,17 +12,17 @@ This document describes the complete CI/CD pipeline for the Expense Tracker appl
 └─────────────────────────────────────────────────────────────────┘
 
 Pull Request Branch:
-  Unit Tests → Build → Deploy to PR-{number} → E2E Smoke Tests
+  Unit Tests -> Build -> Deploy to PR-{number} -> E2E Smoke Tests
                                   ↓
                          [Auto-cleanup on PR close]
 
 Main Branch (after merge):
-  Unit Tests → Build → Deploy to Staging → E2E Smoke Tests
+  Unit Tests -> Build -> Deploy to Staging -> E2E Smoke Tests
                                   ↓
                          [Blocks if tests fail]
 
 Production (Manual Only):
-  Manual Trigger → Build → Deploy to Production
+  Manual Trigger -> Build -> Deploy to Production
 ```
 
 ## Environments
@@ -82,9 +82,9 @@ Production (Manual Only):
 
 ```yaml
 - Determine target environment:
-    - PR → pr-{number}
-    - Main → staging
-    - Manual → production
+    - PR -> pr-{number}
+    - Main -> staging
+    - Manual -> production
 - Set environment variables
 - Configure E2E test execution flag
 ```
@@ -186,7 +186,7 @@ When you merge a PR to `main`:
 
 ### 3. Manual: Production Deployment
 
-Go to GitHub Actions → CI/CD Pipeline → Run workflow:
+Go to GitHub Actions -> CI/CD Pipeline -> Run workflow:
 
 ```yaml
 Inputs:
@@ -326,7 +326,7 @@ git push origin feature/add-category-filter
 ### View Workflow Status
 
 ```
-GitHub → Actions → CI/CD Pipeline
+GitHub -> Actions -> CI/CD Pipeline
 ```
 
 ### Check Deployment URLs

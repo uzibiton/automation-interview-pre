@@ -1,4 +1,4 @@
-# GitHub Actions Setup Guide
+﻿# GitHub Actions Setup Guide
 
 Step-by-step instructions to configure GitHub Actions for automated CI/CD.
 
@@ -70,7 +70,7 @@ cat github-actions-key.json
 
 1. Go to your GitHub repository
 2. Click **Settings** (top right)
-3. In left sidebar: **Secrets and variables** → **Actions**
+3. In left sidebar: **Secrets and variables** -> **Actions**
 4. Click **New repository secret**
 
 ### 2.2 Add Each Secret:
@@ -140,7 +140,7 @@ git push origin test-ci-pipeline
 ### 3.2 Create a Pull Request:
 
 1. Go to GitHub repository
-2. Click **Pull requests** → **New pull request**
+2. Click **Pull requests** -> **New pull request**
 3. Base: `main` ← Compare: `test-ci-pipeline`
 4. Create pull request
 

@@ -1,4 +1,4 @@
-# Running Locally Without Docker
+﻿# Running Locally Without Docker
 
 ## 🚀 Quick Start (3 Steps)
 
@@ -187,8 +187,8 @@ Each terminal shows colored output:
 
 ### Hot Reload is Instant!
 
-- Save any TypeScript file → service restarts automatically
-- Save any React file → Vite updates in <200ms
+- Save any TypeScript file -> service restarts automatically
+- Save any React file -> Vite updates in <200ms
 
 ### Use VSCode Debugger
 

@@ -1,4 +1,4 @@
-# Deployment Guide: Google Cloud Run + Firebase
+﻿# Deployment Guide: Google Cloud Run + Firebase
 
 This guide walks you through deploying the Expense Tracker application to Google Cloud Run with Firebase Firestore.
 
@@ -62,9 +62,9 @@ Users
   ↓
 Frontend (Cloud Run)
   ↓
-Auth Service (Cloud Run) ──→ Firestore (Users)
+Auth Service (Cloud Run) ──-> Firestore (Users)
   ↓
-API Service (Cloud Run) ──→ Firestore (Expenses)
+API Service (Cloud Run) ──-> Firestore (Expenses)
 ```
 
 ### Services:
@@ -112,14 +112,14 @@ gcloud firestore databases create --region=us-central1
 
 # Or use the console:
 # https://console.firebase.google.com/
-# Select your project → Build → Firestore Database → Create Database
+# Select your project -> Build -> Firestore Database -> Create Database
 # Choose Production mode and select region (us-central1)
 ```
 
 ### Step 4: Setup Google OAuth
 
 1. Go to: https://console.cloud.google.com/apis/credentials?project=skillful-eon-477917-b7
-2. Click "Create Credentials" → "OAuth 2.0 Client ID"
+2. Click "Create Credentials" -> "OAuth 2.0 Client ID"
 3. Application type: **Web application**
 4. Name: "Expense Tracker Web Client"
 5. **Authorized JavaScript origins**:
@@ -304,7 +304,7 @@ echo "Frontend: $FRONTEND_URL"
 
 ### 1. Update Google OAuth Redirect URI
 
-Go back to Google Cloud Console → APIs & Services → Credentials:
+Go back to Google Cloud Console -> APIs & Services -> Credentials:
 
 1. Edit your OAuth 2.0 Client ID
 2. Add authorized redirect URI: `https://auth-service-xxx.run.app/auth/google/callback`
@@ -314,7 +314,7 @@ Go back to Google Cloud Console → APIs & Services → Credentials:
 
 ```bash
 # Option A: Use the Firebase Console
-# https://console.firebase.google.com/ → Firestore → Start collection
+# https://console.firebase.google.com/ -> Firestore -> Start collection
 
 # Create 'categories' collection with sample data:
 # Document ID: 1
@@ -387,7 +387,7 @@ Each service shows:
 
 ### Firestore Console
 
-View database: https://console.firebase.google.com/ → Firestore Database
+View database: https://console.firebase.google.com/ -> Firestore Database
 
 ---
 

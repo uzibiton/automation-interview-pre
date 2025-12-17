@@ -1,4 +1,4 @@
-# Setup Instructions
+﻿# Setup Instructions
 
 ## System Requirements
 
@@ -21,7 +21,7 @@ cd /c/data/code/automation-interview-pre
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Select project: `skillful-eon-477917-b7` (or create new)
 3. Enable Firebase and Firestore if using database features
-4. Go to "Credentials" → "Create Credentials" → "OAuth client ID"
+4. Go to "Credentials" -> "Create Credentials" -> "OAuth client ID"
 5. Application type: **Web application**
 6. Add **Authorized JavaScript origins**:
    - `http://localhost:3000`
