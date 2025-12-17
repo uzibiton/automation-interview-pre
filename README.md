@@ -21,7 +21,7 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 **Expense Sorting Feature** - Complete traceability from requirements to passing tests:
 
-🎥 **[Watch Test Execution Video](docs/demo/videos/)** _(Coming soon - Playwright test run)_
+🎥 **[Watch Test Execution Video](docs\demo\videos\TC-001-001-expense-sorting-date-asc.webm)**
 
 **Complete Feature Documentation:**
 

@@ -82,7 +82,7 @@
 
 ### Manual Test Case Execution
 
-#### TC-SORT-001: Default Sort - Date Descending
+#### TC-001-001: Default Sort - Date Descending
 
 - **Status**: ✅ Pass
 - **Priority**: High
@@ -99,7 +99,7 @@
 
 ---
 
-#### TC-SORT-002: Sort by Date - Ascending
+#### TC-001-002: Sort by Date - Ascending
 
 - **Status**: ✅ Pass
 - **Priority**: High
@@ -114,7 +114,7 @@
 
 ---
 
-#### TC-SORT-003: Sort by Category - Alphabetical
+#### TC-001-003: Sort by Category - Alphabetical
 
 - **Status**: ✅ Pass
 - **Priority**: High
@@ -130,7 +130,7 @@
 
 ---
 
-#### TC-SORT-004: Sort by Amount - Ascending/Descending
+#### TC-001-004: Sort by Amount - Ascending/Descending
 
 - **Status**: ✅ Pass
 - **Priority**: Critical
@@ -146,7 +146,7 @@
 
 ---
 
-#### TC-SORT-005: Sort by Payment Method - Alphabetical
+#### TC-001-005: Sort by Payment Method - Alphabetical
 
 - **Status**: ✅ Pass (after fix)
 - **Priority**: Medium
@@ -164,7 +164,7 @@
 
 ---
 
-#### TC-SORT-006: Visual Indicators
+#### TC-001-006: Visual Indicators
 
 - **Status**: ✅ Pass
 - **Priority**: High
@@ -179,7 +179,7 @@
 
 ---
 
-#### TC-SORT-007: Tri-State Behavior
+#### TC-001-007: Tri-State Behavior
 
 - **Status**: ✅ Pass
 - **Priority**: Critical
@@ -194,7 +194,7 @@
 
 ---
 
-#### TC-SORT-008: Sort State Reset
+#### TC-001-008: Sort State Reset
 
 - **Status**: ✅ Pass
 - **Priority**: Medium
@@ -209,7 +209,7 @@
 
 ---
 
-#### TC-SORT-009: Localization - Hebrew/English
+#### TC-001-009: Localization - Hebrew/English
 
 - **Status**: ⚠️ Blocked (Partial)
 - **Priority**: Medium
@@ -225,7 +225,7 @@
 
 ---
 
-#### TC-SORT-010: Edge Cases
+#### TC-001-010: Edge Cases
 
 - **Status**: ✅ Pass
 - **Priority**: High
@@ -244,7 +244,7 @@
 
 ---
 
-#### TC-SORT-011: Performance
+#### TC-001-011: Performance
 
 - **Status**: ✅ Pass
 - **Priority**: Medium
@@ -260,7 +260,7 @@
 
 ---
 
-#### TC-SORT-012: Browser Compatibility
+#### TC-001-012: Browser Compatibility
 
 - **Status**: ⚠️ Blocked (Partial)
 - **Priority**: Low
@@ -325,7 +325,7 @@ None
 - **Priority**: Medium
 - **Status**: ✅ Fixed (PR #56)
 - **Environment**: Staging
-- **Test Case**: TC-SORT-005
+- **Test Case**: TC-001-005
 - **Description**: Payment method values stored as "Credit Card" (Title Case) but translation keys expect "credit_card" (snake_case)
 - **Steps to Reproduce**:
   1. Create expenses with "Credit Card" payment method
@@ -365,19 +365,19 @@ None
 
 ### Coverage by Requirement
 
-| Requirement ID | Description             | Test Cases              | Status     | Coverage |
-| -------------- | ----------------------- | ----------------------- | ---------- | -------- |
-| FR-001         | Date column sorting     | TC-SORT-001, 002, E2E-1 | ✅ Pass    | 100%     |
-| FR-002         | Category column sorting | TC-SORT-003, E2E-4      | ✅ Pass    | 100%     |
-| FR-003         | Description sorting     | Manual verification     | ✅ Pass    | 100%     |
-| FR-004         | Amount column sorting   | TC-SORT-004, E2E-5      | ✅ Pass    | 100%     |
-| FR-005         | Payment method sorting  | TC-SORT-005, E2E-6      | ✅ Pass    | 100%     |
-| FR-006         | Sort state indicators   | TC-SORT-006, E2E-7      | ✅ Pass    | 100%     |
-| FR-007         | Tri-state behavior      | TC-SORT-007, 008, E2E-8 | ✅ Pass    | 100%     |
-| NFR-001        | Performance < 100ms     | TC-SORT-011             | ✅ Pass    | 100%     |
-| NFR-002        | Usability               | TC-SORT-006             | ✅ Pass    | 100%     |
-| NFR-003        | Internationalization    | TC-SORT-009             | ⚠️ Partial | 50%      |
-| NFR-004        | Browser compatibility   | TC-SORT-012             | ⚠️ Partial | 75%      |
+| Requirement ID | Description             | Test Cases             | Status     | Coverage |
+| -------------- | ----------------------- | ---------------------- | ---------- | -------- |
+| FR-001         | Date column sorting     | TC-001-001, 002, E2E-1 | ✅ Pass    | 100%     |
+| FR-002         | Category column sorting | TC-001-003, E2E-4      | ✅ Pass    | 100%     |
+| FR-003         | Description sorting     | Manual verification    | ✅ Pass    | 100%     |
+| FR-004         | Amount column sorting   | TC-001-004, E2E-5      | ✅ Pass    | 100%     |
+| FR-005         | Payment method sorting  | TC-001-005, E2E-6      | ✅ Pass    | 100%     |
+| FR-006         | Sort state indicators   | TC-001-006, E2E-7      | ✅ Pass    | 100%     |
+| FR-007         | Tri-state behavior      | TC-001-007, 008, E2E-8 | ✅ Pass    | 100%     |
+| NFR-001        | Performance < 100ms     | TC-001-011             | ✅ Pass    | 100%     |
+| NFR-002        | Usability               | TC-001-006             | ✅ Pass    | 100%     |
+| NFR-003        | Internationalization    | TC-001-009             | ⚠️ Partial | 50%      |
+| NFR-004        | Browser compatibility   | TC-SORT-012            | ⚠️ Partial | 75%      |
 
 ### Coverage Gaps
 

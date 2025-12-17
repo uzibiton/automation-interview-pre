@@ -16,7 +16,7 @@
 # Stage 1: Base Node.js Environment
 # -----------------------------------------------------------------------------
 # PURPOSE: Install Node.js dependencies needed for TypeScript tests
-# INCLUDES: Jest, Playwright, Cucumber, Testing Library, etc.
+# INCLUDES: Jest, Playwright, BDD/Cucumber, Testing Library, etc.
 FROM node:18-alpine AS node-base
 
 WORKDIR /app

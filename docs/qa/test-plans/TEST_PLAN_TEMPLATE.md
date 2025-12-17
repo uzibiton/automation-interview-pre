@@ -200,11 +200,38 @@ Conditions that must be met to complete testing:
 - **Database**: PostgreSQL 14+ / Firestore
 - **Test Data**: [Describe test data setup]
 
-## 7. Test Cases
+## 7. Test Cases Summary
 
-### 7.1 Functional Test Cases
+**Test Case Naming Convention**:
 
-#### TC-001: [Test Case Title]
+- **Format**: `TC-{TestPlanID}-{TestCaseID}`
+- **Structure**:
+  - TestPlanID: 3-digit test plan number (e.g., 001 for TEST-001)
+  - TestCaseID: 3-digit sequential test case number (001, 002, 003, ...)
+- **Example**: `TC-001-001` = TEST-001 (Expense Sorting), Test Case 001 (Date Column Sorting)
+- **Guidelines**:
+  - All test cases within a test plan share the same TestPlanID prefix
+  - Test case IDs are unique and sequential within each test plan
+  - Use consistent format across all documentation and automated tests
+  - Tag automated tests with corresponding TC-XXX-XXX for traceability
+
+| Test Case ID | Priority | Title             | Description         | Requirements Covered | Automated | Manual |
+| ------------ | -------- | ----------------- | ------------------- | -------------------- | --------- | ------ |
+| TC-XXX-001   | High     | [Test case title] | [Brief description] | FR-001               | ✅/⬜     | ✅/⬜  |
+| TC-XXX-002   | Medium   | [Test case title] | [Brief description] | FR-002, FR-003       | ✅/⬜     | ✅/⬜  |
+| TC-XXX-003   | Low      | [Test case title] | [Brief description] | NFR-001              | ✅/⬜     | ✅/⬜  |
+
+**Legend**:
+
+- **Test Case ID**: Format TC-{TestPlanID}-{TestCaseID} (e.g., TC-001-001 for TEST-001)
+- **Automated**: ✅ Has automated tests (E2E/Unit/Integration), ⬜ No automation
+- **Manual**: ✅ Requires manual testing, ⬜ Not needed
+
+## 8. Detailed Test Cases
+
+### 8.1 Functional Test Cases
+
+#### TC-XXX-001: [Test Case Title]
 
 - **Priority**: High/Medium/Low
 - **Type**: Functional

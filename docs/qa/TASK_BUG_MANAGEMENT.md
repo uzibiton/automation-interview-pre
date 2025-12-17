@@ -190,11 +190,11 @@ Suggested labels
 ### Priority vs Severity Matrix
 
 | Severity ↓ / Priority -> | High | Medium | Low |
-| ----------------------- | ---- | ------ | --- |
-| **Critical**            | P0   | P1     | P2  |
-| **High**                | P1   | P2     | P3  |
-| **Medium**              | P2   | P3     | P3  |
-| **Low**                 | P3   | P3     | P3  |
+| ------------------------ | ---- | ------ | --- |
+| **Critical**             | P0   | P1     | P2  |
+| **High**                 | P1   | P2     | P3  |
+| **Medium**               | P2   | P3     | P3  |
+| **Low**                  | P3   | P3     | P3  |
 
 ---
 

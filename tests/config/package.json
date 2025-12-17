@@ -26,7 +26,7 @@
     "test:e2e:production:headed": "cross-env TEST_ENV=production playwright test --config=playwright.config.ts --headed",
     "test:e2e:production:debug": "cross-env TEST_ENV=production playwright test --config=playwright.config.ts --debug",
     "test:e2e:production:smoke": "cross-env TEST_ENV=production playwright test --config=playwright.config.ts --grep @smoke",
-    "test:cucumber": "cucumber-js --config=cucumber.config.js",
+    "test:bdd": "cucumber-js --config=bdd.config.js",
     "test:visual": "playwright test --config=playwright.config.ts --grep @visual",
     "test:accessibility": "playwright test --config=playwright.config.ts --grep @a11y",
     "test:smoke": "jest --testPathPattern='.*\\.(test|spec)\\.(ts|tsx)$' --grep='@smoke'",

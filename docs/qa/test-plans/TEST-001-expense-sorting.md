@@ -88,7 +88,7 @@
 - ⬜ **Database Tests** - Not applicable (client-side sorting)
 - ⬜ **Smoke Tests** - Covered by E2E tests in CI/CD pipeline
 - ✅ **Regression Tests** - Verify existing expense list functionality - **No regressions found**
-- ✅ **Boundary Tests** - Empty state, single item, null values, special characters - **Covered in TC-SORT-010**
+- ✅ **Boundary Tests** - Empty state, single item, null values, special characters - **Covered in TC-001-010**
 - ✅ **Negative Tests** - Invalid sort fields, concurrent state changes - **Covered in E2E tests**
 
 **Coverage Summary**:
@@ -119,9 +119,26 @@
 - ✅ Test user (test@expenses.local) configured
 - ✅ E2E test infrastructure ready
 
-## 5. Test Cases
+## 5. Test Cases Summary
 
-### TC-SORT-001: Date Column Sorting
+| Test Case ID | Priority | Title                          | Description                                             | Requirements Covered                   | Automated | Manual |
+| ------------ | -------- | ------------------------------ | ------------------------------------------------------- | -------------------------------------- | --------- | ------ |
+| TC-001-001   | High     | Date Column Sorting            | Verify tri-state sorting by date (asc → desc → default) | FR-001                                 | ✅        | ✅     |
+| TC-001-002   | High     | Category Column Sorting        | Verify alphabetical sorting by category                 | FR-002                                 | ✅        | ✅     |
+| TC-001-003   | Medium   | Description Column Sorting     | Verify case-insensitive alphabetical sorting            | FR-003                                 | ✅        | ✅     |
+| TC-001-004   | High     | Amount Column Sorting          | Verify numerical sorting (not string sorting)           | FR-004                                 | ✅        | ✅     |
+| TC-001-005   | High     | Payment Method Column Sorting  | Verify sorting with translation normalization           | FR-005                                 | ✅        | ✅     |
+| TC-001-006   | High     | Sort State Indicators          | Verify visual indicators (↑ ↓) appear correctly         | FR-006                                 | ✅        | ✅     |
+| TC-001-007   | Medium   | Multi-Column Behavior          | Verify only one column sorted at a time                 | FR-007                                 | ✅        | ✅     |
+| TC-001-008   | Medium   | Default Sort Restoration       | Verify return to default after triple-click             | FR-007                                 | ✅        | ✅     |
+| TC-001-009   | Low      | Column Header Hover Effects    | Verify cursor and background changes on hover           | FR-006                                 | ⬜        | ✅     |
+| TC-001-010   | High     | Edge Cases and Boundary Values | Test empty state, nulls, special chars, large datasets  | FR-001, FR-002, FR-003, FR-004, FR-005 | ⬜        | ✅     |
+| TC-001-011   | Medium   | Cross-Browser Compatibility    | Verify sorting works on Chrome, Firefox, Safari, Edge   | NFR-003                                | ⬜        | ✅     |
+| TC-001-012   | High     | Localization Support           | Verify Hebrew/English locale handling                   | NFR-004                                | ⬜        | ✅     |
+
+## 6. Detailed Test Cases
+
+### TC-001-001: Date Column Sorting
 
 **Priority**: High | **Type**: Functional  
 **Precondition**: User logged in, viewing expenses list with 10+ expenses
@@ -137,7 +154,7 @@
 
 ---
 
-### TC-SORT-002: Category Column Sorting
+### TC-001-002: Category Column Sorting
 
 **Priority**: High | **Type**: Functional  
 **Precondition**: Expenses with different categories exist
@@ -153,7 +170,7 @@
 
 ---
 
-### TC-SORT-003: Description Column Sorting
+### TC-001-003: Description Column Sorting
 
 **Priority**: Medium | **Type**: Functional  
 **Precondition**: Expenses with various descriptions
@@ -169,7 +186,7 @@
 
 ---
 
-### TC-SORT-004: Amount Column Sorting
+### TC-001-004: Amount Column Sorting
 
 **Priority**: High | **Type**: Functional  
 **Precondition**: Expenses with different amounts
@@ -186,7 +203,7 @@
 
 ---
 
-### TC-SORT-005: Payment Method Column Sorting
+### TC-001-005: Payment Method Column Sorting
 
 **Priority**: High | **Type**: Functional  
 **Precondition**: Expenses with different payment methods
@@ -203,7 +220,7 @@
 
 ---
 
-### TC-SORT-006: Sort State Indicators
+### TC-001-006: Sort State Indicators
 
 **Priority**: High | **Type**: UI/UX  
 **Precondition**: Default state (date descending)
@@ -220,7 +237,7 @@
 
 ---
 
-### TC-SORT-007: Multi-Column Behavior
+### TC-001-007: Multi-Column Behavior
 
 **Priority**: Medium | **Type**: Functional  
 **Precondition**: User has sorted by one column
@@ -236,7 +253,7 @@
 
 ---
 
-### TC-SORT-008: Default Sort Restoration
+### TC-001-008: Default Sort Restoration
 
 **Priority**: Medium | **Type**: Functional  
 **Precondition**: User has sorted by non-default column
@@ -252,7 +269,7 @@
 
 ---
 
-### TC-SORT-009: Internationalization (Hebrew)
+### TC-001-009: Internationalization (Hebrew)
 
 **Priority**: Medium | **Type**: I18n  
 **Precondition**: Switch to Hebrew locale
@@ -269,7 +286,7 @@
 
 ---
 
-### TC-SORT-010: Empty State Sorting
+### TC-001-010: Empty State Sorting
 
 **Priority**: Low | **Type**: Edge Case  
 **Precondition**: User has no expenses
@@ -285,7 +302,7 @@
 
 ---
 
-### TC-SORT-011: Performance with Large Dataset
+### TC-001-011: Performance with Large Dataset
 
 **Priority**: Medium | **Type**: Performance  
 **Precondition**: 50+ expenses in database
@@ -302,7 +319,7 @@
 
 ---
 
-### TC-SORT-012: Browser Compatibility
+### TC-001-012: Browser Compatibility
 
 **Priority**: High | **Type**: Compatibility  
 **Precondition**: Test across major browsers
