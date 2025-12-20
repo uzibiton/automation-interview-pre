@@ -101,6 +101,15 @@
     "welcomeMessage": "Hi! I'm your expense assistant. You can tell me about your expenses, and I'll help you log them. Try saying something like \"I spent $50 on groceries today\"",
     "errorMessage": "Sorry, something went wrong. Please try again.",
     "mockRecording": "Recording for 3 seconds...",
-    "mockFileSelected": "File selected: receipt.jpg"
+    "mockFileSelected": "File selected: receipt.jpg",
+    "mockResponses": {
+      "response1": "Got it! I've recorded your expense of $50 on groceries. Would you like to add any more details?",
+      "response2": "Thanks for sharing! I've added a $25 lunch expense to your records. Anything else?",
+      "response3": "Perfect! Your coffee expense of $5 has been logged. Need to add more?",
+      "response4": "I've recorded your transportation cost of $15. Would you like to categorize it further?",
+      "response5": "Great! Your entertainment expense of $40 has been added. What else can I help you with?"
+    },
+    "voiceResponse": "I've recorded your dinner expense of $30. Would you like to specify which restaurant?",
+    "fileResponse": "I can see your receipt! It looks like a $45 expense at a restaurant. Should I add this to your records?"
   }
 }

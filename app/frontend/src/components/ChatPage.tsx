@@ -31,11 +31,11 @@ function ChatPage() {
 
   // Mock AI responses
   const mockAIResponses = [
-    "Got it! I've recorded your expense of $50 on groceries. Would you like to add any more details?",
-    "Thanks for sharing! I've added a $25 lunch expense to your records. Anything else?",
-    "Perfect! Your coffee expense of $5 has been logged. Need to add more?",
-    "I've recorded your transportation cost of $15. Would you like to categorize it further?",
-    "Great! Your entertainment expense of $40 has been added. What else can I help you with?",
+    t('chat.mockResponses.response1'),
+    t('chat.mockResponses.response2'),
+    t('chat.mockResponses.response3'),
+    t('chat.mockResponses.response4'),
+    t('chat.mockResponses.response5'),
   ];
 
   // Scroll to bottom when messages change
@@ -108,7 +108,7 @@ function ChatPage() {
             setTimeout(() => {
               const aiMessage: Message = {
                 id: (Date.now() + 1).toString(),
-                text: "I've recorded your dinner expense of $30. Would you like to specify which restaurant?",
+                text: t('chat.voiceResponse'),
                 sender: 'ai',
                 timestamp: new Date(),
                 status: 'sent',
@@ -144,7 +144,7 @@ function ChatPage() {
     setTimeout(() => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: "I can see your receipt! It looks like a $45 expense at a restaurant. Should I add this to your records?",
+        text: t('chat.fileResponse'),
         sender: 'ai',
         timestamp: new Date(),
         status: 'sent',
