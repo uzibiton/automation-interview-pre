@@ -8,6 +8,7 @@
     "dashboard": "לוח בקרה",
     "expenses": "הוצאות",
     "analytics": "אנליטיקס",
+    "chat": "צ'אט",
     "addExpense": "הוסף הוצאה",
     "categories": "קטגוריות"
   },
@@ -87,5 +88,19 @@
     "year": "שנה",
     "total": "סה״כ",
     "count": "כמות"
+  },
+  "chat": {
+    "title": "הוספה מהירה",
+    "description": "הוסף הוצאות במהירות באמצעות AI שיחתי",
+    "inputPlaceholder": "הקלד הודעה או תאר הוצאה...",
+    "send": "שלח",
+    "recording": "מקליט...",
+    "attachFile": "צרף קובץ",
+    "stopRecording": "עצור הקלטה",
+    "aiTyping": "AI מקליד...",
+    "welcomeMessage": "היי! אני עוזר ההוצאות שלך. אתה יכול לספר לי על ההוצאות שלך, ואני אעזור לך לרשום אותן. נסה לומר משהו כמו \"הוצאתי 200 שקל על קניות היום\"",
+    "errorMessage": "מצטער, משהו השתבש. אנא נסה שוב.",
+    "mockRecording": "מקליט למשך 3 שניות...",
+    "mockFileSelected": "קובץ נבחר: receipt.jpg"
   }
 }
