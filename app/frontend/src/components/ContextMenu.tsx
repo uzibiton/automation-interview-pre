@@ -32,11 +32,9 @@ function ContextMenu({ items, position, onClose, isOpen }: ContextMenuProps) {
       }
     };
 
-    // Add event listeners with a slight delay to avoid closing immediately
-    setTimeout(() => {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscape);
-    }, 0);
+    // Add event listeners immediately
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);

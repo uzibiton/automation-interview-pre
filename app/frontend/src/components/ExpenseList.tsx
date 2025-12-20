@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { getApiServiceUrl } from '../utils/config';
 import { getLocalizedName } from '../utils/i18n.utils';
+import { parseExpenseAmount } from '../utils/expense.utils';
 import { Expense, Category } from '../types/expense.types';
 import ExpenseDialog from './ExpenseDialog';
 import ExpenseDetailsDialog from './ExpenseDetailsDialog';
@@ -123,7 +124,8 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
 
   const handleRowClick = (expense: Expense, event: React.MouseEvent<HTMLTableRowElement>) => {
     // Don't open context menu if clicking on action buttons
-    if ((event.target as HTMLElement).closest('button')) {
+    const target = event.target as HTMLElement | null;
+    if (target && target.closest('button')) {
       return;
     }
 
@@ -328,11 +330,7 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
               </td>
               <td>{expense.description}</td>
               <td style={{ fontWeight: 'bold' }}>
-                {expense.currency}{' '}
-                {(typeof expense.amount === 'string'
-                  ? parseFloat(expense.amount)
-                  : expense.amount
-                ).toFixed(2)}
+                {expense.currency} {parseExpenseAmount(expense.amount).toFixed(2)}
               </td>
               <td>
                 {expense.paymentMethod

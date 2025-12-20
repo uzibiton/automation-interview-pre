@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { getApiServiceUrl } from '../utils/config';
 import { getLocalizedName } from '../utils/i18n.utils';
+import { parseExpenseAmount } from '../utils/expense.utils';
 import { Category, SubCategory, Expense } from '../types/expense.types';
 
 const API_SERVICE_URL = getApiServiceUrl();
@@ -48,8 +49,11 @@ function ExpenseDetailsDialog({ token, isOpen, onClose, expense }: ExpenseDetail
 
   useEffect(() => {
     if (isOpen && expense) {
+      // Fetch categories when dialog opens - this is an acceptable use of setState in effect
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchCategories();
       if (expense.categoryId) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchSubCategories(expense.categoryId);
       }
     }
@@ -104,11 +108,7 @@ function ExpenseDetailsDialog({ token, isOpen, onClose, expense }: ExpenseDetail
           <div className="detail-row">
             <label className="detail-label">{translation('expenses.amount')}</label>
             <div className="detail-value" style={{ fontWeight: 'bold', fontSize: '1.2em' }}>
-              {expense.currency}{' '}
-              {(typeof expense.amount === 'string'
-                ? parseFloat(expense.amount)
-                : expense.amount
-              ).toFixed(2)}
+              {expense.currency} {parseExpenseAmount(expense.amount).toFixed(2)}
             </div>
           </div>
 
