@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
+import { getApiServiceUrl } from '../utils/config';
+import ExpensePreview from './ExpensePreview';
+import ExpenseDialog from './ExpenseDialog';
+import { Category } from '../types/expense.types';
+
+const API_SERVICE_URL = getApiServiceUrl();
 
 interface Message {
   id: string;
@@ -9,7 +16,21 @@ interface Message {
   status?: 'sending' | 'sent' | 'error';
 }
 
-function ChatPage() {
+interface ParsedExpense {
+  amount: number | null;
+  currency: string;
+  categoryId: number | null;
+  description: string;
+  date: string;
+  paymentMethod: string;
+  confidence: number;
+}
+
+interface ChatPageProps {
+  token: string;
+}
+
+function ChatPage({ token }: ChatPageProps) {
   const { t, i18n } = useTranslation();
   
   // Create initial welcome message
@@ -26,9 +47,31 @@ function ChatPage() {
   const [isTyping, setIsTyping] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [showPreview, setShowPreview] = useState(false);
+  const [parsedExpense, setParsedExpense] = useState<ParsedExpense | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [isCreatingExpense, setIsCreatingExpense] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const lastLanguageRef = useRef(i18n.language);
+
+  // Fetch categories on mount
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(`${API_SERVICE_URL}/expenses/categories`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCategories(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error('Failed to fetch categories', error);
+      setCategories([]);
+    }
+  };
 
   // Mock AI responses
   const mockAIResponses = [
@@ -59,7 +102,7 @@ function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputText.trim()) return;
 
     const userMessage: Message = {
@@ -71,23 +114,37 @@ function ChatPage() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const messageText = inputText;
     setInputText('');
 
-    // Simulate AI typing and response
+    // Call parse API
     setIsTyping(true);
-    setTimeout(() => {
-      const randomResponse =
-        mockAIResponses[Math.floor(Math.random() * mockAIResponses.length)];
-      const aiMessage: Message = {
+    try {
+      const response = await axios.post(
+        `${API_SERVICE_URL}/expenses/parse`,
+        { text: messageText },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setParsedExpense(response.data);
+      setShowPreview(true);
+      setIsTyping(false);
+    } catch (error) {
+      console.error('Failed to parse expense', error);
+      setIsTyping(false);
+      
+      // Show error message
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: randomResponse,
+        text: t('chat.errorMessage'),
         sender: 'ai',
         timestamp: new Date(),
         status: 'sent',
       };
-      setMessages((prev) => [...prev, aiMessage]);
-      setIsTyping(false);
-    }, 1500);
+      setMessages((prev) => [...prev, errorMessage]);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -174,6 +231,91 @@ function ChatPage() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  const handleApproveExpense = async () => {
+    if (!parsedExpense) return;
+
+    setIsCreatingExpense(true);
+    try {
+      const payload = {
+        categoryId: parsedExpense.categoryId,
+        subCategoryId: null,
+        amount: parsedExpense.amount,
+        currency: parsedExpense.currency,
+        description: parsedExpense.description,
+        date: parsedExpense.date,
+        paymentMethod: parsedExpense.paymentMethod,
+      };
+
+      await axios.post(`${API_SERVICE_URL}/expenses`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Success - close preview and show success message
+      setShowPreview(false);
+      setParsedExpense(null);
+      
+      const successMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: `✓ Expense created successfully! Amount: ${parsedExpense.currency} ${parsedExpense.amount}`,
+        sender: 'ai',
+        timestamp: new Date(),
+        status: 'sent',
+      };
+      setMessages((prev) => [...prev, successMessage]);
+    } catch (error) {
+      console.error('Failed to create expense', error);
+      
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: t('chat.errorMessage'),
+        sender: 'ai',
+        timestamp: new Date(),
+        status: 'sent',
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsCreatingExpense(false);
+    }
+  };
+
+  const handleEditExpense = () => {
+    setShowPreview(false);
+    setShowEditDialog(true);
+  };
+
+  const handleCancelPreview = () => {
+    setShowPreview(false);
+    setParsedExpense(null);
+    
+    const cancelMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      text: 'No problem! Feel free to describe another expense.',
+      sender: 'ai',
+      timestamp: new Date(),
+      status: 'sent',
+    };
+    setMessages((prev) => [...prev, cancelMessage]);
+  };
+
+  const handleExpenseDialogClose = () => {
+    setShowEditDialog(false);
+    setParsedExpense(null);
+  };
+
+  const handleExpenseDialogSuccess = () => {
+    setShowEditDialog(false);
+    setParsedExpense(null);
+    
+    const successMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      text: '✓ Expense created successfully!',
+      sender: 'ai',
+      timestamp: new Date(),
+      status: 'sent',
+    };
+    setMessages((prev) => [...prev, successMessage]);
+  };
+
   return (
     <div className="chat-page">
       <div className="page-header">
@@ -205,6 +347,19 @@ function ChatPage() {
                 </div>
                 <span className="chat-message-time">{t('chat.aiTyping')}</span>
               </div>
+            </div>
+          )}
+
+          {showPreview && parsedExpense && (
+            <div className="chat-message chat-message-ai">
+              <ExpensePreview
+                parsedExpense={parsedExpense}
+                categories={categories}
+                onApprove={handleApproveExpense}
+                onEdit={handleEditExpense}
+                onCancel={handleCancelPreview}
+                loading={isCreatingExpense}
+              />
             </div>
           )}
 
@@ -253,6 +408,25 @@ function ChatPage() {
           </button>
         </div>
       </div>
+
+      {showEditDialog && parsedExpense && (
+        <ExpenseDialog
+          token={token}
+          isOpen={showEditDialog}
+          onClose={handleExpenseDialogClose}
+          onSuccess={handleExpenseDialogSuccess}
+          expense={{
+            id: 0,
+            categoryId: parsedExpense.categoryId || 1,
+            subCategoryId: undefined,
+            amount: parsedExpense.amount || 0,
+            currency: parsedExpense.currency,
+            description: parsedExpense.description,
+            date: parsedExpense.date,
+            paymentMethod: parsedExpense.paymentMethod,
+          }}
+        />
+      )}
     </div>
   );
 }

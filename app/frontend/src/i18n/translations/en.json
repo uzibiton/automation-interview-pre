@@ -110,6 +110,16 @@
       "response5": "Great! Your entertainment expense of $40 has been added. What else can I help you with?"
     },
     "voiceResponse": "I've recorded your dinner expense of $30. Would you like to specify which restaurant?",
-    "fileResponse": "I can see your receipt! It looks like a $45 expense at a restaurant. Should I add this to your records?"
+    "fileResponse": "I can see your receipt! It looks like a $45 expense at a restaurant. Should I add this to your records?",
+    "preview": {
+      "title": "Expense Preview",
+      "approve": "Approve & Create",
+      "notDetected": "Not detected",
+      "confidence": {
+        "high": "High Confidence",
+        "medium": "Medium Confidence",
+        "low": "Low Confidence"
+      }
+    }
   }
 }

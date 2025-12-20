@@ -87,7 +87,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
           path="/"
           element={<DashboardHome stats={stats} token={token} onUpdate={handleUpdate} />}
         />
-        <Route path="/chat" element={<ChatPage />} />
+        <Route path="/chat" element={<ChatPage token={token} />} />
         <Route
           path="/analytics"
           element={<AnalyticsPage token={token} refreshKey={refreshKey} />}
