@@ -4,6 +4,13 @@
 
 This document contains a reusable prompt template for generating context reset summaries. Use it to capture the current state of your work so you can restore AI agent context in future sessions.
 
+**Why this matters:** AI agents lose context between sessions. These summaries let you resume work instantly by sharing a single file that captures your project state, decisions, and next steps.
+
+**What gets created:**
+
+1. **Current Context** (`docs/ai-context.md`) - Living document of your current work state (always updated)
+2. **Snapshot** (`docs/context-resets/YYYY-MM-DD/###_topic.md`) - Immutable historical record (never modified)
+
 ## How to Use
 
 ### Step 1: Copy the Prompt
@@ -15,11 +22,14 @@ When you're ready to capture context, copy the **Prompt Template** below and pas
 The AI will output a markdown summary with two sections:
 
 - **Current AI Context**: Working state for `docs/ai-context.md`
-- **Context Reset Snapshot**: Immutable snapshot for `docs/ai/context-resets/<date>_<topic>_<index>.md`
+- **Context Reset Snapshot**: Immutable snapshot for `docs/context-resets/<YYYY-MM-DD>/<index>_<topic>.md`
 
-### Step 3: Save Manually
+### Step 3: Files Created
 
-Copy the output and save it to the appropriate file(s). The AI will not save files automatically.
+The AI will automatically create both files:
+
+- `docs/ai-context.md` (overwrite)
+- `docs/context-resets/<YYYY-MM-DD>/<index>_<topic>.md` (new snapshot)
 
 ### Step 4: Resume Later
 
@@ -52,7 +62,7 @@ SECTION 1: Current AI Context
 
 SECTION 2: Context Reset Snapshot
 - Suitable for saving as:
-  docs/ai/context-resets/<YYYY-MM-DD>_<topic>_<index>.md
+  docs/context-resets/<YYYY-MM-DD>/<index>_<topic>.md
 - This is an immutable snapshot (do NOT overwrite previous ones)
 
 Use this structure for BOTH sections:
@@ -70,8 +80,7 @@ Rules:
 - No code snippets
 - Strategic context only
 - Include requirement/design IDs when relevant
-- Do NOT assume you can save files
-- I will copy and save the output manually
+- Create both files automatically
 ```
 
 ---
@@ -154,12 +163,31 @@ Rules:
 
 ## Best Practices
 
-**File Organization**:
+**File Organization Explained**:
 
-- `docs/ai-context.md` - Always overwrite with latest state
-- `docs/ai/context-resets/<YYYY-MM-DD>_<topic>_<index>.md` - Never overwrite; create new snapshots
-- Topic naming: Use descriptive slugs (e.g., "expense-filtering-implementation", "auth-refactor")
-- Index format: 001, 002, 003 (increment for same topic on same day)
+The new structure uses **date-based folders** for better organization:
+
+```
+docs/context-resets/2025-12-20/
+├── 001_prompt-engineering-guide.md   ← First topic of the day
+├── 002_file-structure-update.md      ← Second topic of the day
+└── 003_bug-fix-authentication.md     ← Third topic of the day
+```
+
+**Why this structure?**
+
+- **Date folders** (`2025-12-20/`) - Easily find all work from a specific day
+- **Index prefix** (`001`, `002`) - Chronological ordering within each day
+- **Descriptive topic** (`prompt-engineering-guide`) - Instantly understand what was worked on
+- **Separation** - Each work session/topic gets its own file for clarity
+
+**Naming Guidelines**:
+
+- `docs/ai-context.md` - Always overwrite with latest state (living document)
+- `docs/context-resets/<YYYY-MM-DD>/<index>_<topic>.md` - Never overwrite (historical archive)
+- Date format: YYYY-MM-DD (ISO 8601 for proper sorting)
+- Topic naming: kebab-case slugs (e.g., "expense-filtering", "auth-refactor", "bug-fix-payment")
+- Index format: 001, 002, 003 (zero-padded, increment within same date folder)
 
 **Workflow Tips**:
 
@@ -171,18 +199,36 @@ Rules:
 
 **Context Restoration**:
 
-- Start new AI session by sharing the saved context file
-- AI will understand the project state instantly
+When starting a new AI session:
+
+1. **Share the context file**: Attach `docs/ai-context.md` or a specific snapshot
+2. **AI reads and understands**: Agent immediately knows your project state, decisions, and next steps
+3. **Continue seamlessly**: No need to re-explain - just start working
+
+**Pro tips:**
+
+- Use `ai-context.md` for continuing today's work
+- Use specific snapshots to jump back to previous work states
 - Combine with [SESSION_RESUME.md](../../general/SESSION_RESUME.md) for complete workflow
+- Share snapshots with team members to align on project decisions
+
+**Why snapshots matter:**
+
+- **Audit trail** - Track how decisions evolved over time
+- **Rollback capability** - Reference previous states if needed
+- **Team communication** - Share specific work context with others
+- **Documentation** - Historical record of project evolution
 
 **Example Folder Structure**:
 
 ```
 docs/
   ai-context.md (current state - overwrite)
-  ai/
-    context-resets/
-      2025-12-20_expense-filtering_001.md
-      2025-12-20_auth-refactor_001.md
-      2025-12-21_expense-filtering_002.md
+  context-resets/
+    2025-12-20/
+      001_expense-filtering.md
+      002_auth-refactor.md
+    2025-12-21/
+      001_expense-filtering.md
+      002_performance-testing.md
 ```

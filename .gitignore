@@ -100,3 +100,8 @@ yarn.lock
 
 # Reference folder (not part of the project)
 reference-expenses/
+
+# AI Context (personal session context, not for version control)
+docs/ai-context.md
+docs/context-resets/
+docs/ai/context-resets/
