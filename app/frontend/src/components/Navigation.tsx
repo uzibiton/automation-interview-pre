@@ -35,6 +35,12 @@ function Navigation({ userName, userAvatar, onLogout }: NavigationProps) {
           {t('nav.dashboard')}
         </NavLink>
         <NavLink
+          to="/chat"
+          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+        >
+          {t('nav.chat')}
+        </NavLink>
+        <NavLink
           to="/analytics"
           className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
         >

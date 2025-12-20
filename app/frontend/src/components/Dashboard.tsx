@@ -6,6 +6,7 @@ import Navigation from './Navigation';
 import DashboardHome from './DashboardHome';
 import AnalyticsPage from './AnalyticsPage';
 import ExpensesPage from './ExpensesPage';
+import ChatPage from './ChatPage';
 import { getApiServiceUrl, getAuthServiceUrl } from '../utils/config';
 
 const API_SERVICE_URL = getApiServiceUrl();
@@ -86,6 +87,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
           path="/"
           element={<DashboardHome stats={stats} token={token} onUpdate={handleUpdate} />}
         />
+        <Route path="/chat" element={<ChatPage />} />
         <Route
           path="/analytics"
           element={<AnalyticsPage token={token} refreshKey={refreshKey} />}
