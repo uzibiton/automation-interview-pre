@@ -4,6 +4,28 @@
 
 This document describes the complete CI/CD pipeline for the Expense Tracker application, including automated testing, deployment strategies, and environment management.
 
+**Quick Links:**
+
+- 🔗 [GitHub Actions Workflow File](../../.github/workflows/ci-cd.yml)
+- 🚀 [Run Workflow Manually](https://github.com/uzibiton/automation-interview-pre/actions/workflows/ci-cd.yml)
+- 📊 [View Workflow Runs](https://github.com/uzibiton/automation-interview-pre/actions)
+
+## Deployment Strategy Summary
+
+| Environment     | Trigger                       | Integration Tests | Smoke Tests | Purpose                       |
+| --------------- | ----------------------------- | ----------------- | ----------- | ----------------------------- |
+| **PR-{number}** | Automatic (PR opened/updated) | ⏭️ Skipped        | ⏭️ Skipped  | Isolated testing before merge |
+| **Develop**     | Automatic (push to main)      | ⏭️ Skipped        | ⏭️ Skipped  | Continuous development        |
+| **Staging**     | Manual only                   | ⚙️ Optional       | ⚙️ Optional | Release candidate testing     |
+| **Production**  | Manual only                   | ⚙️ Optional       | ⚙️ Optional | Live environment              |
+
+**Key Changes:**
+
+- ✅ Push to main now deploys to **develop** (not staging)
+- ✅ Staging and production require **manual deployment**
+- ✅ Integration and smoke tests are **skipped by default** for faster deployments
+- ✅ Tests can be **enabled on-demand** via workflow_dispatch inputs
+
 ## Workflow Architecture
 
 ```
@@ -12,17 +34,26 @@ This document describes the complete CI/CD pipeline for the Expense Tracker appl
 └─────────────────────────────────────────────────────────────────┘
 
 Pull Request Branch:
-  Unit Tests -> Build -> Deploy to PR-{number} -> E2E Smoke Tests
+  Unit Tests -> Build -> Deploy to PR-{number}
                                   ↓
                          [Auto-cleanup on PR close]
+                                  ↓
+             [Integration & Smoke Tests: SKIPPED by default]
 
 Main Branch (after merge):
-  Unit Tests -> Build -> Deploy to Staging -> E2E Smoke Tests
+  Unit Tests -> Build -> Deploy to Develop
                                   ↓
-                         [Blocks if tests fail]
+             [Integration & Smoke Tests: SKIPPED by default]
+
+Staging (Manual Only):
+  Manual Trigger -> Build -> Deploy to Staging
+                                  ↓
+             [Integration & Smoke Tests: Can be enabled]
 
 Production (Manual Only):
   Manual Trigger -> Build -> Deploy to Production
+                                  ↓
+             [Integration & Smoke Tests: Can be enabled]
 ```
 
 ## Environments
@@ -37,19 +68,31 @@ Production (Manual Only):
   - `auth-service-pr-{number}`
 - **Lifecycle**: Automatically deleted when PR is closed/merged
 - **Purpose**: Test changes in isolation before merging
+- **E2E Tests**: SKIPPED by default (can be enabled manually)
 
-### 2. Staging Environment (Persistent)
+### 2. Develop Environment (Persistent)
 
-- **Trigger**: Push to `main` branch
+- **Trigger**: Push to `main` branch (automatic)
+- **Naming**: `develop`
+- **Services**:
+  - `frontend-develop`
+  - `api-service-develop`
+  - `auth-service-develop`
+- **Purpose**: Continuous development environment, latest merged changes
+- **E2E Tests**: SKIPPED by default (can be enabled manually)
+
+### 3. Staging Environment (Persistent)
+
+- **Trigger**: Manual workflow dispatch only
 - **Naming**: `staging`
 - **Services**:
   - `frontend-staging`
   - `api-service-staging`
   - `auth-service-staging`
-- **Purpose**: Pre-production validation, smoke testing
-- **E2E Tests**: Runs full smoke test suite after deployment
+- **Purpose**: Pre-production validation, release candidate testing
+- **E2E Tests**: SKIPPED by default (can be enabled manually)
 
-### 3. Production Environment (Manual)
+### 4. Production Environment (Manual)
 
 - **Trigger**: Manual workflow dispatch only
 - **Naming**: No suffix (production services)
@@ -83,8 +126,8 @@ Production (Manual Only):
 ```yaml
 - Determine target environment:
     - PR -> pr-{number}
-    - Main -> staging
-    - Manual -> production
+    - Main -> develop
+    - Manual -> develop, staging, or production
 - Set environment variables
 - Configure E2E test execution flag
 ```
@@ -119,20 +162,23 @@ Production (Manual Only):
 
 **Deploy Time**: ~3-5 minutes
 
-### Job 5: E2E Smoke Tests
+### Job 5: Integration & Smoke Tests
 
-**Runs on**: PR and Staging deployments only
+**Runs on**: SKIPPED by default (can be enabled via workflow_dispatch)
+
+**Note**: Integration tests and smoke tests are disabled by default to speed up the pipeline.
+You can enable them when manually triggering the workflow.
 
 ```yaml
 - Install Playwright + Chromium
 - Create dynamic .env file with deployment URLs
-- Run smoke tests (@smoke tag)
+- Run integration tests (if enabled)
+- Run smoke tests (@smoke tag, if enabled)
 - Upload test results as artifacts
-- Comment on PR with results (PR only)
 ```
 
-**Test Time**: ~30 seconds - 2 minutes
-**Failure Impact**: Blocks PR merge (tests must pass)
+**Test Time**: ~5-7 minutes (when enabled)
+**Failure Impact**: Non-blocking (continue-on-error: true)
 
 ### Job 6: Cleanup PR Environment
 
@@ -177,27 +223,48 @@ When you merge a PR to `main`:
 
 **Result**:
 
-- Deploys to `staging` environment
-- Runs E2E smoke tests
-- If tests fail, staging deployment is marked as failed
-- Production deployment remains unchanged
+- Deploys to `develop` environment
+- Integration and smoke tests are SKIPPED by default
+- Fast deployment for continuous development
+- Staging and production remain unchanged
 
 **Note:** If your commit only contains documentation changes (files in `doc/`, root-level `*.md` files, or `.github/ISSUE_TEMPLATE/`), the CI pipeline will be skipped automatically to save resources.
 
-### 3. Manual: Production Deployment
+### 3. Manual: Staging Deployment
 
 Go to GitHub Actions -> CI/CD Pipeline -> Run workflow:
 
 ```yaml
 Inputs:
-  - environment: production (only option)
+  - environment: staging
+  - skip_integration_tests: true (default, can be unchecked)
+  - skip_smoke_tests: true (default, can be unchecked)
+```
+
+**Result**:
+
+- Deploys to staging environment
+- Integration and smoke tests SKIPPED by default (can be enabled)
+- Use for release candidate testing
+- Updates staging services with latest `main` branch code
+
+### 4. Manual: Production Deployment
+
+Go to GitHub Actions -> CI/CD Pipeline -> Run workflow:
+
+```yaml
+Inputs:
+  - environment: production
+  - skip_integration_tests: true (default, can be unchecked)
+  - skip_smoke_tests: true (default, can be unchecked)
 ```
 
 **Result**:
 
 - Deploys to production environment
-- NO automatic E2E tests (manual validation recommended)
+- Integration and smoke tests SKIPPED by default (can be enabled)
 - Updates production services with latest `main` branch code
+- Manual validation recommended before deployment
 
 **Note:** Manual workflow runs bypass the paths-ignore rules, so you can force CI to run even for documentation-only changes if needed.
 
@@ -267,38 +334,52 @@ git push origin feature/add-category-filter
 
 # 2. Open PR on GitHub
 # ✅ CI automatically deploys to pr-123
-# ✅ E2E tests run against pr-123 environment
-# ✅ PR comment shows: "All smoke tests passed!"
+# ⚠️ E2E tests SKIPPED by default (fast feedback)
 # ✅ Environment URL: https://frontend-pr-123...
+# ✅ Manual testing on PR environment
 
 # 3. Review and merge PR
-# ✅ PR environment auto-deploys to staging
-# ✅ Smoke tests validate staging
+# ✅ PR environment auto-deploys to develop
 # ✅ PR-123 environment deleted automatically
 ```
 
-### Example 2: Staging Deployment
+### Example 2: Develop Deployment
 
 ```bash
 # After PR merge to main
 # ✅ Unit tests pass
 # ✅ Build succeeds
-# ✅ Deploys to staging automatically
-# ✅ E2E smoke tests run
-# ✅ Staging is ready for manual validation
+# ✅ Deploys to develop automatically
+# ⚠️ Integration & smoke tests SKIPPED (fast deployment)
+# ✅ Develop is ready for continuous testing
 ```
 
-### Example 3: Production Deployment
+### Example 3: Staging Deployment
 
 ```bash
-# 1. Validate staging environment
+# 1. Go to GitHub Actions
+# 2. Select "CI/CD Pipeline"
+# 3. Click "Run workflow"
+# 4. Select: environment = staging
+# 5. Optional: Enable skip_integration_tests = false
+# 6. Optional: Enable skip_smoke_tests = false
+# 7. Click "Run workflow"
+# ✅ Deploys latest main to staging
+# ✅ Run E2E tests if enabled
+# ✅ Staging ready for release validation
+```
+
+### Example 4: Production Deployment
+
+```bash
+# 1. Validate staging environment thoroughly
 # 2. Go to GitHub Actions
 # 3. Select "CI/CD Pipeline"
 # 4. Click "Run workflow"
 # 5. Select: environment = production
 # 6. Click "Run workflow"
 # ✅ Deploys latest main to production
-# ⚠️ No automatic tests - manual validation recommended
+# ⚠️ Manual validation recommended
 ```
 
 ## Cost Management
@@ -309,11 +390,17 @@ git push origin feature/add-category-filter
 - **Typical lifetime**: 1-3 days
 - **Resources**: 3 Cloud Run services (scales to zero)
 
+### Develop Environment
+
+- **Persistent**: Always available
+- **Resources**: 3 Cloud Run services (scales to zero)
+- **Cost**: ~$0-5/month (continuous deployment, scales to zero)
+
 ### Staging Environment
 
 - **Persistent**: Always available
 - **Resources**: 3 Cloud Run services (scales to zero)
-- **Cost**: ~$0-10/month (depending on usage)
+- **Cost**: ~$0-10/month (manual deployments only)
 
 ### Production Environment
 
@@ -349,10 +436,13 @@ Auth: https://auth-service-pr-42-881467160213.us-central1.run.app
 ### Common Issues
 
 **Issue**: E2E tests fail with "Service Unavailable"
-**Solution**: Cloud Run service may need 30-60s to start. Tests include retry logic.
+**Solution**: Cloud Run service may need 30-60s to start. Tests include retry logic. Note: Tests are SKIPPED by default - enable them manually if needed.
 
 **Issue**: PR environment not deploying
 **Solution**: Check if GCP quotas exceeded or service naming conflicts
+
+**Issue**: Need to run integration/smoke tests
+**Solution**: Manually trigger workflow with skip_integration_tests and skip_smoke_tests set to false
 
 **Issue**: Staging tests passing but production different
 **Solution**: Validate environment variables match between staging and production
@@ -376,6 +466,12 @@ EOF
 TEST_ENV=pr-42 npm run test:e2e:smoke
 ```
 
+### Test Against Develop
+
+```bash
+npm run test:e2e:develop:smoke
+```
+
 ### Test Against Staging
 
 ```bash
@@ -395,8 +491,10 @@ npm run test:e2e:production:smoke
 1. ✅ Always run unit tests locally before pushing
 2. ✅ Wait for PR environment to deploy before requesting review
 3. ✅ Share PR environment URL with reviewers for testing
-4. ✅ Fix E2E test failures before requesting merge
-5. ✅ Verify staging after merge before deploying to production
+4. ✅ Test manually on PR environment (E2E tests are skipped by default)
+5. ✅ Verify develop environment after merge
+6. ✅ Deploy to staging for release candidate testing
+7. ✅ Enable E2E tests on staging before production deployment
 
 ### For Reviewers
 
@@ -415,7 +513,7 @@ npm run test:e2e:production:smoke
 
 ## Rollback Strategy
 
-### Rollback Staging
+### Rollback Develop
 
 ```bash
 # Find previous working commit
@@ -425,7 +523,16 @@ git log --oneline
 git revert <commit-sha>
 git push origin main
 
-# Staging automatically redeploys
+# Develop automatically redeploys
+```
+
+### Rollback Staging
+
+```bash
+# Manually trigger workflow with older commit
+# 1. Checkout the working commit
+# 2. Go to GitHub Actions
+# 3. Run workflow -> environment: staging
 ```
 
 ### Rollback Production

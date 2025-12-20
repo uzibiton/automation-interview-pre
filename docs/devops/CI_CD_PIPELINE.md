@@ -2,6 +2,30 @@
 
 Complete guide for the GitHub Actions CI/CD pipeline that automates testing, building, and deployment.
 
+**Quick Links:**
+
+- 🔗 [GitHub Actions Workflow File](../../.github/workflows/ci-cd.yml)
+- 🚀 [Run Workflow Manually](https://github.com/uzibiton/automation-interview-pre/actions/workflows/ci-cd.yml)
+- 📊 [View Workflow Runs](https://github.com/uzibiton/automation-interview-pre/actions)
+
+---
+
+## 📋 Deployment Environments
+
+| Environment     | Trigger           | Auto-Deploy | Tests       | Use Case               |
+| --------------- | ----------------- | ----------- | ----------- | ---------------------- |
+| **Develop**     | Push to main      | ✅ Yes      | ⏭️ Skipped  | Continuous development |
+| **Staging**     | Manual            | ❌ No       | ⚙️ Optional | Release candidates     |
+| **Production**  | Manual            | ❌ No       | ⚙️ Optional | Live environment       |
+| **PR-{number}** | PR opened/updated | ✅ Yes      | ⏭️ Skipped  | Feature testing        |
+
+**Workflow Dispatch Options:**
+
+- `environment`: Choose develop, staging, or production
+- `skip_integration_tests`: Default true (can enable for thorough testing)
+- `skip_smoke_tests`: Default true (can enable for E2E validation)
+- Plus standard quality gate skip options (prettier, eslint, etc.)
+
 ---
 
 ## 🎯 Overview
@@ -101,9 +125,9 @@ on:
       - '.github/ISSUE_TEMPLATE/**'
 ```
 
-**What happens:** Full pipeline (Test -> Build -> Deploy)
+**What happens:** Full pipeline (Test -> Build -> Deploy to Develop)
 
-**Use case:** After merging a PR, automatically deploy to production
+**Use case:** After merging a PR, automatically deploy to develop environment
 
 **Documentation-only changes:** CI is skipped to save resources when only documentation files are modified
 
@@ -131,24 +155,32 @@ on:
 ```yaml
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        - develop
+        - staging
+        - production
 ```
 
-**What happens:** Full pipeline (if on main) or tests (if on other branch)
+**What happens:** Full pipeline with selected environment
 
 **Use case:**
 
-- Emergency hotfix deployment
+- Deploy to staging for release candidate testing
+- Deploy to production for releases
 - Re-deploy after fixing secrets
 - Testing the pipeline
 - Force CI run for documentation changes (bypasses paths-ignore)
+- Optionally enable/disable integration and smoke tests
 
 **How to trigger:**
 
 1. Go to GitHub -> Actions tab
 2. Click "CI/CD Pipeline"
 3. Click "Run workflow"
-4. Select branch
-5. Click "Run workflow" button
+4. Select environment (develop/staging/production)
+5. Optional: Toggle skip options for tests
+6. Click "Run workflow" button
 
 ---
 
@@ -227,15 +259,15 @@ Independent test execution:
 
 **Logic:**
 
-- PR -> temporary PR environment
-- Push to main -> staging
-- Manual trigger -> user-selected environment
+- PR -> temporary PR environment (pr-{number})
+- Push to main -> develop
+- Manual trigger -> user-selected environment (develop/staging/production)
 
 **Outputs:**
 
-- `env_name` - Environment name
-- `env_suffix` - Suffix for service names
-- `should_run_e2e` - Whether to run E2E tests
+- `env_name` - Environment name (pr-{number}, develop, staging, or production)
+- `env_suffix` - Suffix for service names (-pr-{number}, -develop, -staging, or empty)
+- `should_run_e2e` - Whether to run E2E tests (false for production, true for others)
 
 ---
 
@@ -300,39 +332,45 @@ Gateway job spawns 4 parallel builds:
 
 ### Stage 5: Integration Tests
 
-Gateway waits for deploy + test runner, then runs:
+**Purpose:** Test service-to-service communication and API integration
+
+**Duration:** ~3-5 minutes  
+**Skipped:** **YES by default** (skip_integration_tests = true)  
+**Blocks Pipeline:** No (continue-on-error: true)  
+**Skip Option:** Can be enabled via workflow_dispatch input
+
+**Tests:**
 
 - API integration tests
 - Service-to-service communication tests
 - Database integration tests
 
-**Duration:** ~3-5 minutes  
-**Skipped:** No (runs if should_run_e2e=true)  
-**Blocks Pipeline:** No (E2E runs even if integration fails, if: always())  
-**Skip Option:** Conditional on `should_run_e2e` output
+**Note:** Integration tests are disabled by default to speed up deployment. Enable them manually when needed for thorough validation.
 
 ---
 
-### Stage 6: E2E Sanity
+### Stage 6: Smoke Tests
 
-Gateway spawns:
+**Purpose:** Fast validation of critical user flows
+
+**Duration:** ~2-4 minutes  
+**Skipped:** **YES by default** (skip_smoke_tests = true)  
+**Blocks Pipeline:** No (continue-on-error: true)  
+**Skip Option:** Can be enabled via workflow_dispatch input
+
+**Tests:**
 
 - Smoke tests for critical user flows
 - Basic UI validation
 - Authentication flow tests
 
-**Duration:** ~2-4 minutes  
-**Skipped:** No (runs if should_run_e2e=true)  
-**Blocks Pipeline:** No (final stage, failure doesn't block deployment)  
-**Skip Option:** Conditional on `should_run_e2e` output
-
 **Output:**
 
 - Test results in GitHub UI
-- Coverage report as artifact
-- ✅/❌ status visible in PR
+- Test reports as artifacts
+- ✅/❌ status visible in workflow
 
-**Note:** Currently failing - tests configured for localhost instead of deployed URLs. See Issue #53.
+**Note:** Smoke tests are disabled by default to enable faster deployments. Enable them manually when you need E2E validation before production deployment.
 
 ---
 

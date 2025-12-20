@@ -125,10 +125,12 @@ gcloud firestore databases create --region=us-central1
 5. **Authorized JavaScript origins**:
    - `http://localhost:3000`
    - `http://localhost:5173`
+   - `https://expense-tracker-develop-{project-id}.{region}.run.app`
    - `https://expense-tracker-staging-{project-id}.{region}.run.app`
    - `https://expense-tracker-{project-id}.{region}.run.app`
 6. **Authorized redirect URIs**:
    - `http://localhost:3001/auth/google/callback` (development)
+   - `https://auth-service-develop-{project-id}.{region}.run.app/auth/google/callback` (develop)
    - `https://auth-service-staging-{project-id}.{region}.run.app/auth/google/callback` (staging)
    - `https://auth-service-{project-id}.{region}.run.app/auth/google/callback` (production)
 7. Save Client ID and Client Secret
@@ -534,7 +536,15 @@ gcloud run services update-traffic api-service \
 
 ## CI/CD with GitHub Actions
 
-See `.github/workflows/deploy-cloudrun.yml` for automated deployment on push to main branch.
+The application uses an automated CI/CD pipeline with multiple environments:
+
+- **Push to main** → Automatic deployment to **develop** environment
+- **Manual workflow** → Deploy to **staging** for release candidates
+- **Manual workflow** → Deploy to **production** for releases
+
+See [CI/CD Workflow Guide](CI_CD_WORKFLOW.md) for complete documentation.
+
+Workflow file: `.github/workflows/ci-cd.yml`
 
 ---
 
