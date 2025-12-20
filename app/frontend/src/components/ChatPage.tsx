@@ -10,7 +10,7 @@ interface Message {
 }
 
 function ChatPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   // Create initial welcome message
   const initialMessage: Message = useMemo(() => ({
@@ -28,6 +28,7 @@ function ChatPage() {
   const [recordingTime, setRecordingTime] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastLanguageRef = useRef(i18n.language);
 
   // Mock AI responses
   const mockAIResponses = [
@@ -37,6 +38,21 @@ function ChatPage() {
     t('chat.mockResponses.response4'),
     t('chat.mockResponses.response5'),
   ];
+
+  // Update welcome message when language changes
+  useEffect(() => {
+    if (lastLanguageRef.current !== i18n.language) {
+      lastLanguageRef.current = i18n.language;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMessages((prev) => {
+        // Only update if we have just the initial welcome message
+        if (prev.length === 1 && prev[0].id === '0') {
+          return [initialMessage];
+        }
+        return prev;
+      });
+    }
+  }, [i18n.language, initialMessage]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
