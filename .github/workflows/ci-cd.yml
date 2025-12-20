@@ -124,7 +124,7 @@ jobs:
     name: Code Formatting
     needs: code-quality
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.skip_prettier != 'false' }}
+    if: ${{ github.event.inputs.skip_prettier != 'true' }}
     continue-on-error: true
 
     steps:
@@ -146,7 +146,7 @@ jobs:
     name: Linting
     needs: code-quality
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.skip_eslint != 'false' }}
+    if: ${{ github.event.inputs.skip_eslint != 'true' }}
     continue-on-error: true
 
     steps:
@@ -168,7 +168,7 @@ jobs:
     name: Type Check
     needs: code-quality
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.skip_typecheck != 'false' }}
+    if: ${{ github.event.inputs.skip_typecheck != 'true' }}
     continue-on-error: true
 
     steps:
