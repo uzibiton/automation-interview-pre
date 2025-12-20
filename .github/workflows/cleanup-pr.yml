@@ -6,12 +6,20 @@ on:
     branches:
       - main
 
+  # Manual trigger to cleanup any PR environment
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to cleanup'
+        required: true
+        type: string
+
 jobs:
   cleanup:
-    name: Cleanup PR-${{ github.event.pull_request.number }} Environment
+    name: Cleanup PR-${{ github.event.pull_request.number || github.event.inputs.pr_number }} Environment
     runs-on: ubuntu-latest
-    # Only run cleanup if services were likely deployed
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    # Only run cleanup if services were likely deployed (skip for manual trigger)
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - name: Authenticate to Google Cloud
@@ -24,14 +32,14 @@ jobs:
 
       - name: Delete PR services
         run: |
-          PR_NUMBER="${{ github.event.pull_request.number }}"
+          PR_NUMBER="${{ github.event.pull_request.number || github.event.inputs.pr_number }}"
           SUFFIX="-pr-${PR_NUMBER}"
           REGION="us-central1"
 
           echo "🧹 Cleaning up PR environment: pr-${PR_NUMBER}"
 
           # Delete services if they exist
-          for service in expense-tracker api-service auth-service; do
+          for service in expense-tracker api-service auth-service frontend; do
             if gcloud run services describe ${service}${SUFFIX} --region ${REGION} 2>/dev/null; then
               echo "Deleting ${service}${SUFFIX}..."
               gcloud run services delete ${service}${SUFFIX} --region ${REGION} --quiet
@@ -43,6 +51,7 @@ jobs:
           echo "✅ Cleanup complete!"
 
       - name: Comment on PR
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         continue-on-error: true
         with:
