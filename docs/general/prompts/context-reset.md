@@ -19,10 +19,10 @@ When you're ready to capture context, copy the **Prompt Template** below and pas
 
 ### Step 2: AI Generates Summary
 
-The AI will output a markdown summary with two sections:
+The AI will create two files with different levels of detail:
 
-- **Current AI Context**: Working state for `docs/ai-context.md`
-- **Context Reset Snapshot**: Immutable snapshot for `docs/context-resets/<YYYY-MM-DD>/<index>_<topic>.md`
+- **File 1 (Strategic)**: Brief current state for quick reference (`docs/ai-context.md`)
+- **File 2 (Detailed)**: Comprehensive conversation analysis for full context restoration (`docs/context-resets/<YYYY-MM-DD>/<index>_<topic>.md`)
 
 ### Step 3: Files Created
 
@@ -52,20 +52,12 @@ In a new session, share the saved context file with the AI to restore working st
 **Copy and paste this into your AI chat:**
 
 ```
-Create a Context Reset Summary for this project.
+Create a Context Reset Summary for this project based on the current conversation.
 
-Output TWO Markdown sections only.
+Output TWO files automatically:
 
-SECTION 1: Current AI Context
-- Suitable for saving as: docs/ai-context.md
-- Represents the current working state only
-
-SECTION 2: Context Reset Snapshot
-- Suitable for saving as:
-  docs/context-resets/<YYYY-MM-DD>/<index>_<topic>.md
-- This is an immutable snapshot (do NOT overwrite previous ones)
-
-Use this structure for BOTH sections:
+FILE 1: docs/ai-context.md (Strategic Context - Always Overwrite)
+Use this structure:
 - Goal
 - Current State
 - Constraints
@@ -75,88 +67,253 @@ Use this structure for BOTH sections:
 - Out of Scope
 
 Rules:
-- Raw Markdown only
-- Max 10 bullet points total per section
-- No code snippets
+- Max 10 bullet points total
 - Strategic context only
 - Include requirement/design IDs when relevant
-- Create both files automatically
+
+FILE 2: docs/context-resets/<YYYY-MM-DD>/<index>_<topic>.md (Detailed Snapshot - Never Overwrite)
+Create a comprehensive conversation summary with these sections:
+
+1. **Conversation Overview**
+   - Primary objectives and goals
+   - Session context and user intent evolution
+
+2. **Technical Foundation**
+   - Technologies, tools, and frameworks used
+   - Project structure and architecture decisions
+
+3. **Codebase Status**
+   - Files created/modified with purpose and key changes
+   - Current state of each component
+   - Dependencies between components
+
+4. **Problem Resolution**
+   - Issues encountered and solutions implemented
+   - Debugging context and lessons learned
+
+5. **Progress Tracking**
+   - Completed tasks ✅
+   - Partially complete work 🟡
+   - Validated outcomes
+
+6. **Active Work State**
+   - Current focus and recent context
+   - Working code/configurations
+   - Immediate next steps
+
+7. **Recent Operations**
+   - Last agent commands executed
+   - Tool results summary
+   - Pre-summary state
+
+8. **Continuation Plan**
+   - Remaining work and dependencies
+   - Next immediate steps
+   - Known blockers
+
+Rules:
+- Comprehensive analysis for full context restoration
+- Include file paths, commit hashes, issue numbers
+- Capture decisions, constraints, and technical details
+- Use chronological order where relevant
+- Format for easy scanning (bullets, checkboxes, sections)
+
+After generating both summaries, create the files automatically.
 ```
 
 ---
 
 **Example Output**:
 
+**File 1: docs/ai-context.md** (Strategic Summary)
+
 ```markdown
 # Current AI Context
 
-**Goal**: Implement expense filtering with multiple criteria (REQ-005)
+**Goal**: Break down issue #68 into actionable GitHub subtasks
 
 **Current State**:
 
-- Backend API complete and tested
-- Frontend components scaffolded
-- Integration pending
+- Task planning prompt created and documented
+- Applied breakdown methodology to issue #68
+- Created 25 GitHub issues (#84-108) across 6 phases
+- Updated parent issue with complete task list
 
 **Constraints**:
 
-- Must maintain sub-200ms response time
-- No breaking changes to existing API
-- Deploy only after all tests pass
+- Each task must be 2-10 days max
+- Clear dependencies required
+- Proper GitHub labels mandatory
 
 **Decisions Made**:
 
-- Using query params instead of request body for filters
-- Client-side filtering for < 100 items, server-side for more
+- Phase 0 for UI prototypes (parallel work)
+- Critical path: Research → Architecture → Implementation
+- Testing tasks separate from development phases
 
 **High-Level Plan**:
 
-1. Complete frontend integration with React Query
-2. Fix failing E2E tests (4 remaining)
-3. Performance test with 10K records
-4. Deploy to staging
+1. ✅ Create task-planning.md prompt template
+2. ✅ Apply to issue #68 and create all subtasks
+3. Update task-planning.md to reflect actual workflow
+4. Commit and document methodology
 
-**Current Focus**: Frontend integration (step 1)
+**Current Focus**: Documenting context reset workflow
 
-**Out of Scope**: Advanced filters (date ranges, custom categories)
+**Out of Scope**: Implementing any of the #68 tasks (future work)
+```
 
----
+**File 2: docs/context-resets/2025-12-20/004_task-planning-workflow.md** (Detailed Analysis)
 
-# Context Reset Snapshot
+```markdown
+# Context Reset: Task Planning Workflow
 
-**Date**: 2025-12-15  
-**Topic**: Expense Filtering Implementation  
-**Snapshot**: 001
+**Date**: 2025-12-20  
+**Topic**: Task Planning & Issue #68 Breakdown  
+**Session**: 004
 
-**Goal**: Implement expense filtering with multiple criteria (REQ-005)
+## 1. Conversation Overview
 
-**Current State**:
+**Primary Objectives**:
 
-- Backend API complete and tested
-- Frontend components scaffolded
-- Integration pending
+- Break down issue #68 (AI-powered conversational expense input) into actionable subtasks
+- Create comprehensive task planning prompt template
+- Establish GitHub issue tracking workflow
 
-**Constraints**:
+**Session Context**:
 
-- Must maintain sub-200ms response time
-- No breaking changes to existing API
-- Deploy only after all tests pass
+- User had existing idea in issue #68
+- Needed systematic breakdown into trackable tasks with dependencies
+- Wanted proper GitHub integration with parent/child relationships
 
-**Decisions Made**:
+**User Intent Evolution**:
 
-- Using query params instead of request body for filters
-- Client-side filtering for < 100 items, server-side for more
+- Started: "Break down issue #68 into subtasks"
+- Evolved: "Create reusable prompt template for task planning"
+- Final: "Document complete workflow including GitHub integration"
 
-**High-Level Plan**:
+## 2. Technical Foundation
 
-1. Complete frontend integration with React Query
-2. Fix failing E2E tests (4 remaining)
-3. Performance test with 10K records
-4. Deploy to staging
+**Git/GitHub**:
 
-**Current Focus**: Frontend integration (step 1)
+- Version control with gh CLI v2.x
+- Issue creation, editing, parent/child linking
+- Labels: enhancement, component:{frontend|backend|database}, team:{dev|qa|product}, priority:{critical|high|medium|low}, size:{small|medium|large}
 
-**Out of Scope**: Advanced filters (date ranges, custom categories)
+**Documentation**:
+
+- Markdown format
+- Structured prompts in docs/general/prompts/
+- Context resets in docs/context-resets/YYYY-MM-DD/
+
+**Workflow Tools**:
+
+- `gh issue create` - Create subtask issues
+- `gh issue edit` - Update parent with task list
+- `gh label list` - Get available labels
+
+## 3. Codebase Status
+
+**docs/general/prompts/task-planning.md**:
+
+- Purpose: Template for breaking down ideas/epics into phases and tasks
+- Current State: Complete with GitHub workflow integration
+- Key Sections:
+  - Prompt template with phase structure (0-5 phases + testing)
+  - GitHub issue creation workflow with gh CLI examples
+  - Label guidelines and issue body template
+  - Real example from issue #68 (25 subtasks)
+  - Best practices for estimation, dependencies, risk mitigation
+- Dependencies: Integrates with requirements-gathering, design-patterns, test-generation prompts
+
+**GitHub Issues Created**:
+
+- #84-86: Phase 0 (UI Prototype, 3 tasks)
+- #87-90: Phase 1 (Research & Design, 4 tasks)
+- #91-94: Phase 2 (MVP Implementation, 4 tasks)
+- #95-97: Phase 3 (Consultation Features, 3 tasks)
+- #98-100: Phase 4 (Analytics, 3 tasks)
+- #101-103: Phase 5 (Benchmarking, 3 tasks)
+- #104-108: Testing (5 tasks)
+
+**Issue #68**:
+
+- Updated with complete task breakdown
+- Checkboxes for progress tracking
+- Links to all 25 subtasks
+- Total estimates: 125-175 days
+
+## 4. Problem Resolution
+
+**Issues Encountered**:
+
+- First issue creation failed with "label 'type:task' not found"
+- User unsure how to apply task planning to specific issue
+- Wanted comprehensive conversation summaries in context-resets folder
+
+**Solutions Implemented**:
+
+- Retrieved available labels with `gh label list`, used correct labels
+- Demonstrated filling template placeholders with issue #68 details
+- Updated context-reset prompt to include detailed conversation analysis
+
+**Lessons Learned**:
+
+- Always check available labels before creating issues
+- Phase 0 (prototype) enables parallel work while research happens
+- Context resets need both strategic summary AND detailed conversation analysis
+
+## 5. Progress Tracking
+
+**Completed Tasks**:
+
+- ✅ Created task-planning.md prompt template
+- ✅ Applied planning prompt to issue #68
+- ✅ Analyzed dependencies and critical path
+- ✅ Created 25 GitHub subtask issues (#84-108)
+- ✅ Updated parent issue #68 with complete task list
+- ✅ Updated task-planning.md with real workflow
+- ✅ Committed and pushed all changes
+
+**Validated Outcomes**:
+
+- All 25 issues created with proper parent references
+- Dependencies tracked with "Blocked by" markers
+- Critical path identified (Research → Architecture → Implementation)
+- User can now refine each task individually
+
+## 6. Active Work State
+
+**Current Focus**: Updating context-reset prompt to include conversation summaries
+
+**Recent Context**: User noticed context-resets folder exists but expected conversation summaries to be automatically added there when triggering context reset
+
+**Immediate Next Steps**:
+
+1. Update context-reset.md prompt template
+2. Commit and push changes
+3. Test updated workflow
+
+## 7. Recent Operations
+
+**Last Commands**:
+
+- `gh label list` - Retrieved 27 available labels
+- `gh issue create` (x25) - Created all subtask issues
+- `gh issue edit 68` - Updated parent with task breakdown
+- `git add/commit/push` - Committed task-planning.md updates
+
+**Tool Results**: Successfully created complete task tracking system for issue #68
+
+## 8. Continuation Plan
+
+**Remaining Work**:
+
+- Update context-reset.md with conversation summary structure
+- Commit and push context-reset changes
+- User will refine individual tasks before implementation
+
+**Next Immediate Step**: Update context-reset prompt template (in progress)
 ```
 
 ---
