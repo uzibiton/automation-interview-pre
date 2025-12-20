@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Message {
@@ -11,7 +11,17 @@ interface Message {
 
 function ChatPage() {
   const { t } = useTranslation();
-  const [messages, setMessages] = useState<Message[]>([]);
+  
+  // Create initial welcome message
+  const initialMessage: Message = useMemo(() => ({
+    id: '0',
+    text: t('chat.welcomeMessage'),
+    sender: 'ai' as const,
+    timestamp: new Date(),
+    status: 'sent' as const,
+  }), [t]);
+  
+  const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -32,18 +42,6 @@ function ChatPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
-
-  // Show welcome message on first load
-  useEffect(() => {
-    const welcomeMessage: Message = {
-      id: '0',
-      text: t('chat.welcomeMessage'),
-      sender: 'ai',
-      timestamp: new Date(),
-      status: 'sent',
-    };
-    setMessages([welcomeMessage]);
-  }, [t]);
 
   const handleSendMessage = () => {
     if (!inputText.trim()) return;
