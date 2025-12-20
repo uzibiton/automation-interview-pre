@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ExpensesService } from './expenses.service';
-import { CreateExpenseDto, UpdateExpenseDto } from './dto/expense.dto';
+import { CreateExpenseDto, UpdateExpenseDto, ParseExpenseDto } from './dto/expense.dto';
 import { AuthGuard } from '../guards/auth.guard';
 
 @Controller('expenses')
@@ -53,6 +53,11 @@ export class ExpensesController {
   @Get(':id')
   async getExpense(@Req() req, @Param('id') id: string) {
     return this.expensesService.findOne(req.user.id, id);
+  }
+
+  @Post('parse')
+  async parseExpense(@Req() req, @Body() parseExpenseDto: ParseExpenseDto) {
+    return this.expensesService.parseExpense(parseExpenseDto.text);
   }
 
   @Post()

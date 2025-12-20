@@ -797,3 +797,161 @@ textarea.form-control {
     opacity: 0.7;
   }
 }
+
+/* Expense Preview Styles */
+.expense-preview-container {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.expense-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.expense-preview-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+}
+
+.confidence-badge {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.confidence-high {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.confidence-medium {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.confidence-low {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.expense-preview-content {
+  margin-bottom: 20px;
+}
+
+.expense-preview-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.expense-preview-field:last-child {
+  border-bottom: none;
+}
+
+.field-label {
+  font-weight: 600;
+  color: #666;
+  min-width: 120px;
+  font-size: 14px;
+}
+
+.field-value {
+  color: #333;
+  text-align: right;
+  flex: 1;
+  font-size: 14px;
+}
+
+.amount-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #4285f4;
+}
+
+.description-value {
+  font-style: italic;
+  color: #666;
+}
+
+.expense-preview-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.expense-preview-actions .btn {
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.expense-preview-actions .btn-primary {
+  background-color: #34a853;
+}
+
+.expense-preview-actions .btn-primary:hover:not(:disabled) {
+  background-color: #2d8e47;
+}
+
+.expense-preview-actions .btn-primary:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.expense-preview-actions .btn-secondary:hover:not(:disabled) {
+  background-color: #e8e8e8;
+  border-color: #ccc;
+}
+
+/* Mobile responsive styles for expense preview */
+@media (max-width: 768px) {
+  .expense-preview-container {
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .expense-preview-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .expense-preview-field {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .field-label {
+    min-width: auto;
+  }
+
+  .field-value {
+    text-align: left;
+  }
+
+  .expense-preview-actions {
+    flex-direction: column;
+  }
+
+  .expense-preview-actions .btn {
+    width: 100%;
+  }
+}

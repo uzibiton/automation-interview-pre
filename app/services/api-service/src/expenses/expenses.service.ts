@@ -176,4 +176,95 @@ export class ExpensesService {
       order: { nameEn: 'ASC' },
     });
   }
+
+  async parseExpense(text: string): Promise<any> {
+    // Rule-based parsing for natural language expense input
+    const result: any = {
+      amount: null,
+      currency: 'USD',
+      categoryId: null,
+      description: text,
+      date: new Date().toISOString().split('T')[0],
+      paymentMethod: 'credit_card',
+      confidence: 0.7,
+    };
+
+    // Extract amount
+    const amountPatterns = [
+      /\$(\d+\.?\d*)/i, // $30, $30.50
+      /(\d+\.?\d*)\s*(?:dollars?|usd)/i, // 30 dollars, 30.50 USD
+      /(\d+\.?\d*)\s*(?:₪|nis|ils|shekel)/i, // 30 NIS, 30₪
+      /(\d+\.?\d*)\s*(?:€|eur|euro)/i, // 30 EUR, 30€
+    ];
+
+    for (const pattern of amountPatterns) {
+      const match = text.match(pattern);
+      if (match) {
+        result.amount = parseFloat(match[1]);
+        break;
+      }
+    }
+
+    // Extract currency
+    if (/₪|nis|ils|shekel/i.test(text)) {
+      result.currency = 'ILS';
+    } else if (/€|eur|euro/i.test(text)) {
+      result.currency = 'EUR';
+    } else if (/\$|dollars?|usd/i.test(text)) {
+      result.currency = 'USD';
+    }
+
+    // Extract category based on keywords
+    const categoryKeywords: { [key: string]: number } = {
+      'food|groceries|supermarket|restaurant|lunch|dinner|breakfast|coffee|meal': 1, // Food & Dining
+      'transport|taxi|uber|bus|train|gas|fuel|parking': 2, // Transportation
+      'shopping|clothes|clothing|shoes|fashion': 3, // Shopping
+      'entertainment|movie|cinema|concert|game|netflix|spotify': 4, // Entertainment
+      'health|medical|doctor|pharmacy|medicine|hospital': 5, // Healthcare
+      'education|school|course|book|tuition': 6, // Education
+      'travel|hotel|flight|vacation|holiday': 7, // Travel
+      'utility|utilities|electric|water|gas|internet|phone': 8, // Utilities
+      'insurance': 9, // Insurance
+      'other': 10, // Other
+    };
+
+    for (const [keywords, categoryId] of Object.entries(categoryKeywords)) {
+      const regex = new RegExp(keywords, 'i');
+      if (regex.test(text)) {
+        result.categoryId = categoryId;
+        break;
+      }
+    }
+
+    // Default to "Other" category if no match found
+    const DEFAULT_CATEGORY_ID = 1; // Food & Dining - most common
+    if (!result.categoryId) {
+      result.categoryId = DEFAULT_CATEGORY_ID;
+    }
+
+    // Extract date - currently only handles 'yesterday', more patterns can be added
+    if (/yesterday/i.test(text)) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      result.date = yesterday.toISOString().split('T')[0];
+    }
+
+    // Extract payment method
+    if (/cash/i.test(text)) {
+      result.paymentMethod = 'cash';
+    } else if (/debit/i.test(text)) {
+      result.paymentMethod = 'debit_card';
+    } else if (/bank transfer|transfer/i.test(text)) {
+      result.paymentMethod = 'bank_transfer';
+    } else if (/credit|card/i.test(text)) {
+      result.paymentMethod = 'credit_card';
+    }
+
+    // Adjust confidence based on what we found
+    if (result.amount) result.confidence += 0.2;
+    if (result.categoryId) result.confidence += 0.1;
+    result.confidence = Math.min(result.confidence, 1.0);
+
+    return result;
+  }
 }

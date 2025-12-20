@@ -1,5 +1,10 @@
 import { IsNumber, IsString, IsOptional, IsArray, IsDateString } from 'class-validator';
 
+export class ParseExpenseDto {
+  @IsString()
+  text: string;
+}
+
 export class CreateExpenseDto {
   @IsNumber()
   categoryId: number;
