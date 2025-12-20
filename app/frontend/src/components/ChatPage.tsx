@@ -59,6 +59,7 @@ function ChatPage({ token }: ChatPageProps) {
   // Fetch categories on mount
   useEffect(() => {
     fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchCategories = async () => {
@@ -73,7 +74,8 @@ function ChatPage({ token }: ChatPageProps) {
     }
   };
 
-  // Mock AI responses
+  // Mock AI responses (kept for backward compatibility but not used when parse API is available)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const mockAIResponses = [
     t('chat.mockResponses.response1'),
     t('chat.mockResponses.response2'),
@@ -86,7 +88,6 @@ function ChatPage({ token }: ChatPageProps) {
   useEffect(() => {
     if (lastLanguageRef.current !== i18n.language) {
       lastLanguageRef.current = i18n.language;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMessages((prev) => {
         // Only update if we have just the initial welcome message
         if (prev.length === 1 && prev[0].id === '0') {

@@ -241,14 +241,7 @@ export class ExpensesService {
       result.categoryId = 1; // Default to Food & Dining as it's most common
     }
 
-    // Extract date
-    const datePatterns = [
-      /today/i,
-      /yesterday/i,
-      /(\d{4}-\d{2}-\d{2})/,
-      /(\d{1,2})\/(\d{1,2})\/(\d{4})/,
-    ];
-
+    // Extract date - currently only handles 'yesterday', more patterns can be added
     if (/yesterday/i.test(text)) {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
