@@ -71,7 +71,9 @@
     "addConfirmTitle": "הוסף הוצאה",
     "addConfirmMessage": "האם אתה בטוח שברצונך להוסיף הוצאה זו?",
     "editConfirmTitle": "עדכן הוצאה",
-    "editConfirmMessage": "האם אתה בטוח שברצונך לשמור שינויים אלה?"
+    "editConfirmMessage": "האם אתה בטוח שברצונך לשמור שינויים אלה?",
+    "viewDetails": "פרטי הוצאה",
+    "show": "הצג פרטים"
   },
   "paymentMethods": {
     "credit_card": "כרטיס אשראי",

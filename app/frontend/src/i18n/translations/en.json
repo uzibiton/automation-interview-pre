@@ -71,7 +71,9 @@
     "addConfirmTitle": "Add Expense",
     "addConfirmMessage": "Are you sure you want to add this expense?",
     "editConfirmTitle": "Update Expense",
-    "editConfirmMessage": "Are you sure you want to save these changes?"
+    "editConfirmMessage": "Are you sure you want to save these changes?",
+    "viewDetails": "Expense Details",
+    "show": "Show Details"
   },
   "paymentMethods": {
     "credit_card": "Credit Card",
