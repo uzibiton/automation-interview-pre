@@ -22,12 +22,13 @@ Comprehensive guide to all project documentation organized by category and use c
 
 ### 🎯 Getting Started
 
-| Document                                    | Description                                   | Audience               |
-| ------------------------------------------- | --------------------------------------------- | ---------------------- |
-| [Quick Start Guide](dev/RUN_LOCALLY.md)     | Run the app locally with Docker               | Developers, QA         |
-| [About the Project](general/ABOUTME.md)     | Project overview and author info              | Everyone               |
-| [Project Status](general/PROJECT_STATUS.md) | Current state, roadmap, and priorities        | Team, Stakeholders     |
-| **[Future Ideas](general/IDEAS.md)**        | **Investigation backlog for future features** | **Team, Contributors** |
+| Document                                            | Description                                     | Audience               |
+| --------------------------------------------------- | ----------------------------------------------- | ---------------------- |
+| [Quick Start Guide](dev/RUN_LOCALLY.md)             | Run the app locally with Docker                 | Developers, QA         |
+| [About the Project](general/ABOUTME.md)             | Project overview and author info                | Everyone               |
+| [Project Status](general/PROJECT_STATUS.md)         | Current state, roadmap, and priorities          | Team, Stakeholders     |
+| **[Future Ideas](general/IDEAS.md)**                | **Investigation backlog for future features**   | **Team, Contributors** |
+| **[AI Prompts Library](general/prompts/README.md)** | **Reusable prompt templates for AI assistance** | **Everyone**           |
 
 ### 📋 Requirements & Planning
 
