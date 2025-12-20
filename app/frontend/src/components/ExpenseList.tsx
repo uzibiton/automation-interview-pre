@@ -5,7 +5,9 @@ import { getApiServiceUrl } from '../utils/config';
 import { getLocalizedName } from '../utils/i18n.utils';
 import { Expense, Category } from '../types/expense.types';
 import ExpenseDialog from './ExpenseDialog';
+import ExpenseDetailsDialog from './ExpenseDetailsDialog';
 import ConfirmationDialog from './ConfirmationDialog';
+import ContextMenu, { ContextMenuItem } from './ContextMenu';
 
 const API_SERVICE_URL = getApiServiceUrl();
 
@@ -24,9 +26,19 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [viewingExpense, setViewingExpense] = useState<Expense | null>(null);
   const [deletingExpenseId, setDeletingExpenseId] = useState<number | null>(null);
   const [sortField, setSortField] = useState<SortField>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [contextMenu, setContextMenu] = useState<{
+    isOpen: boolean;
+    position: { x: number; y: number };
+    expense: Expense | null;
+  }>({
+    isOpen: false,
+    position: { x: 0, y: 0 },
+    expense: null,
+  });
 
   const fetchExpenses = async () => {
     try {
@@ -108,6 +120,79 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   const handleExpenseUpdated = () => {
     onUpdate();
   };
+
+  const handleRowClick = (expense: Expense, event: React.MouseEvent<HTMLTableRowElement>) => {
+    // Don't open context menu if clicking on action buttons
+    if ((event.target as HTMLElement).closest('button')) {
+      return;
+    }
+
+    event.preventDefault();
+    setContextMenu({
+      isOpen: true,
+      position: { x: event.clientX, y: event.clientY },
+      expense,
+    });
+  };
+
+  const handleRowKeyDown = (expense: Expense, event: React.KeyboardEvent<HTMLTableRowElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      const rect = (event.target as HTMLElement).getBoundingClientRect();
+      setContextMenu({
+        isOpen: true,
+        position: { x: rect.left + 20, y: rect.top + 20 },
+        expense,
+      });
+    }
+  };
+
+  const handleCloseContextMenu = () => {
+    setContextMenu({
+      isOpen: false,
+      position: { x: 0, y: 0 },
+      expense: null,
+    });
+  };
+
+  const handleShowDetails = () => {
+    if (contextMenu.expense) {
+      setViewingExpense(contextMenu.expense);
+    }
+  };
+
+  const handleEditFromMenu = () => {
+    if (contextMenu.expense) {
+      setEditingExpense(contextMenu.expense);
+    }
+  };
+
+  const handleDeleteFromMenu = () => {
+    if (contextMenu.expense) {
+      setDeletingExpenseId(contextMenu.expense.id);
+    }
+  };
+
+  const contextMenuItems: ContextMenuItem[] = [
+    {
+      label: translation('expenses.show'),
+      onClick: handleShowDetails,
+      icon: '👁️',
+      testId: 'context-menu-show',
+    },
+    {
+      label: translation('expenses.edit'),
+      onClick: handleEditFromMenu,
+      icon: '✏️',
+      testId: 'context-menu-edit',
+    },
+    {
+      label: translation('expenses.delete'),
+      onClick: handleDeleteFromMenu,
+      icon: '🗑️',
+      testId: 'context-menu-delete',
+    },
+  ];
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -227,7 +312,13 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
         </thead>
         <tbody>
           {sortedExpenses.map((expense) => (
-            <tr key={expense.id}>
+            <tr
+              key={expense.id}
+              onClick={(e) => handleRowClick(expense, e)}
+              onKeyDown={(e) => handleRowKeyDown(expense, e)}
+              tabIndex={0}
+              data-testid={`expense-row-${expense.id}`}
+            >
               <td>{new Date(expense.date).toLocaleDateString()}</td>
               <td>
                 <span style={{ fontSize: '1.5em', marginRight: '8px' }}>
@@ -255,12 +346,14 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
                   onClick={() => handleEdit(expense)}
                   className="btn btn-secondary btn-sm"
                   style={{ marginRight: '8px' }}
+                  data-testid={`edit-button-${expense.id}`}
                 >
                   {translation('expenses.edit')}
                 </button>
                 <button
                   onClick={() => handleDeleteClick(expense.id)}
                   className="btn btn-danger btn-sm"
+                  data-testid={`delete-button-${expense.id}`}
                 >
                   {translation('expenses.delete')}
                 </button>
@@ -278,6 +371,13 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
         expense={editingExpense}
       />
 
+      <ExpenseDetailsDialog
+        token={token}
+        isOpen={!!viewingExpense}
+        onClose={() => setViewingExpense(null)}
+        expense={viewingExpense}
+      />
+
       <ConfirmationDialog
         isOpen={!!deletingExpenseId}
         title={translation('expenses.deleteConfirmTitle')}
@@ -285,6 +385,13 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
         type="danger"
+      />
+
+      <ContextMenu
+        isOpen={contextMenu.isOpen}
+        position={contextMenu.position}
+        items={contextMenuItems}
+        onClose={handleCloseContextMenu}
       />
     </div>
   );
