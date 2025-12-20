@@ -37,9 +37,16 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 ## 🌐 Environments
 
 - **Local**: http://localhost:3000
-- **Staging**: [https://expense-tracker-staging-buuath6a3q-uc.a.run.app](https://expense-tracker-staging-buuath6a3q-uc.a.run.app)
-- **Production**: [https://expense-tracker-buuath6a3q-uc.a.run.app](https://expense-tracker-buuath6a3q-uc.a.run.app)
-- **PR #65**: [https://expense-tracker-pr-65-buuath6a3q-uc.a.run.app](https://expense-tracker-pr-65-buuath6a3q-uc.a.run.app)
+- **Develop**: Automatic deployment on push to main (URL updates after each deploy)
+- **Staging**: [https://expense-tracker-staging-buuath6a3q-uc.a.run.app](https://expense-tracker-staging-buuath6a3q-uc.a.run.app) (Manual deployment)
+- **Production**: [https://expense-tracker-buuath6a3q-uc.a.run.app](https://expense-tracker-buuath6a3q-uc.a.run.app) (Manual deployment)
+- **PR Environments**: Temporary environments for each pull request
+
+**Deployment Strategy:**
+- Push to `main` → Auto-deploys to **Develop**
+- Staging & Production → [Manual workflow dispatch](https://github.com/uzibiton/automation-interview-pre/actions/workflows/ci-cd.yml)
+
+📖 See [CI/CD Workflow Guide](docs/devops/CI_CD_WORKFLOW.md) for complete deployment documentation.
 
 ## 💡 Ideas & Innovation
 
