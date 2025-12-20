@@ -237,8 +237,9 @@ export class ExpensesService {
     }
 
     // Default to "Other" category if no match found
+    const DEFAULT_CATEGORY_ID = 1; // Food & Dining - most common
     if (!result.categoryId) {
-      result.categoryId = 1; // Default to Food & Dining as it's most common
+      result.categoryId = DEFAULT_CATEGORY_ID;
     }
 
     // Extract date - currently only handles 'yesterday', more patterns can be added

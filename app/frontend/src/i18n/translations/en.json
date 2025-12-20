@@ -111,6 +111,8 @@
     },
     "voiceResponse": "I've recorded your dinner expense of $30. Would you like to specify which restaurant?",
     "fileResponse": "I can see your receipt! It looks like a $45 expense at a restaurant. Should I add this to your records?",
+    "expenseCreatedSuccess": "✓ Expense created successfully! Amount: {currency} {amount}",
+    "cancelMessage": "No problem! Feel free to describe another expense.",
     "preview": {
       "title": "Expense Preview",
       "approve": "Approve & Create",

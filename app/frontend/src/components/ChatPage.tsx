@@ -257,7 +257,10 @@ function ChatPage({ token }: ChatPageProps) {
       
       const successMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: `✓ Expense created successfully! Amount: ${parsedExpense.currency} ${parsedExpense.amount}`,
+        text: t('chat.expenseCreatedSuccess', {
+          currency: parsedExpense.currency,
+          amount: parsedExpense.amount
+        }),
         sender: 'ai',
         timestamp: new Date(),
         status: 'sent',
@@ -290,7 +293,7 @@ function ChatPage({ token }: ChatPageProps) {
     
     const cancelMessage: Message = {
       id: (Date.now() + 1).toString(),
-      text: 'No problem! Feel free to describe another expense.',
+      text: t('chat.cancelMessage'),
       sender: 'ai',
       timestamp: new Date(),
       status: 'sent',
@@ -309,7 +312,10 @@ function ChatPage({ token }: ChatPageProps) {
     
     const successMessage: Message = {
       id: (Date.now() + 1).toString(),
-      text: '✓ Expense created successfully!',
+      text: t('chat.expenseCreatedSuccess', {
+        currency: 'N/A',
+        amount: 'N/A'
+      }),
       sender: 'ai',
       timestamp: new Date(),
       status: 'sent',
