@@ -28,7 +28,17 @@ Convert ideas into structured requirements following the REQ-### template format
 - Requirements refinement
 - Traceability matrix updates
 
-### 2. [Test Generation](test-generation.md)
+### 2. [Task Planning & Breakdown](task-planning.md)
+
+Break down ideas and epics into actionable tasks and phases. Includes prompts for:
+
+- Idea → task decomposition
+- Phase planning with estimates
+- Risk assessment and mitigation
+- Sprint planning and prioritization
+- Research task structuring
+
+### 3. [Test Generation](test-generation.md)
 
 Create comprehensive test cases and automation scripts. Includes prompts for:
 
@@ -38,7 +48,7 @@ Create comprehensive test cases and automation scripts. Includes prompts for:
 - Playwright test implementation
 - API contract testing
 
-### 3. [Code Review](code-review.md)
+### 4. [Code Review](code-review.md)
 
 Systematic code quality analysis following PR workflow guidelines. Includes prompts for:
 
@@ -47,7 +57,7 @@ Systematic code quality analysis following PR workflow guidelines. Includes prom
 - Best practices validation
 - Refactoring suggestions
 
-### 4. [Documentation](documentation.md)
+### 5. [Documentation](documentation.md)
 
 Generate consistent, high-quality documentation. Includes prompts for:
 
@@ -56,7 +66,7 @@ Generate consistent, high-quality documentation. Includes prompts for:
 - Inline code comments
 - Architecture decision records
 
-### 5. [Design Patterns](design-patterns.md)
+### 6. [Design Patterns](design-patterns.md)
 
 Create high-level and detailed designs following HLD-### template format. Includes prompts for:
 
@@ -65,7 +75,7 @@ Create high-level and detailed designs following HLD-### template format. Includ
 - Database schema design
 - Component interaction diagrams
 
-### 6. [Context Reset](context-reset.md)
+### 7. [Context Reset](context-reset.md)
 
 Generate concise AI context summaries for session continuity. Includes prompts for:
 
@@ -74,7 +84,7 @@ Generate concise AI context summaries for session continuity. Includes prompts f
 - Work resumption
 - AI agent context restoration
 
-### 7. [Prompt Engineering Guide](prompt-engineering-guide.md) ⭐
+### 8. [Prompt Engineering Guide](prompt-engineering-guide.md) ⭐
 
 **Start here if you're new to prompts!** Comprehensive guide covering:
 
