@@ -37,12 +37,13 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 ## 🌐 Environments
 
 - **Local**: http://localhost:3000
-- **Develop**: Automatic deployment on push to main (URL updates after each deploy)
+- **Develop**: [https://expense-tracker-develop-buuath6a3q-uc.a.run.app](https://expense-tracker-develop-buuath6a3q-uc.a.run.app) (Auto-deploy on push to main)
 - **Staging**: [https://expense-tracker-staging-buuath6a3q-uc.a.run.app](https://expense-tracker-staging-buuath6a3q-uc.a.run.app) (Manual deployment)
 - **Production**: [https://expense-tracker-buuath6a3q-uc.a.run.app](https://expense-tracker-buuath6a3q-uc.a.run.app) (Manual deployment)
-- **PR Environments**: Temporary environments for each pull request
+- **PR Environments**: `pr-{number}` format, temporary (auto-cleanup on PR close)
 
 **Deployment Strategy:**
+
 - Push to `main` → Auto-deploys to **Develop**
 - Staging & Production → [Manual workflow dispatch](https://github.com/uzibiton/automation-interview-pre/actions/workflows/ci-cd.yml)
 
