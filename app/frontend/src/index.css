@@ -1433,3 +1433,102 @@ textarea.form-control {
     font-size: 14px;
   }
 }
+
+/* Role Change Dialog */
+.role-change-dialog .dialog-content {
+  max-width: 500px;
+}
+
+.role-change-dialog .current-role-display {
+  background-color: #f0f0f0;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.role-change-dialog .current-role-badge {
+  background-color: #4285f4;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.role-change-dialog .role-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.role-change-dialog .role-option {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.role-change-dialog .role-option:hover {
+  border-color: #4285f4;
+  background-color: #f8f9fa;
+}
+
+.role-change-dialog .role-option.selected {
+  border-color: #4285f4;
+  background-color: #e8f0fe;
+}
+
+.role-change-dialog .role-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+}
+
+.role-change-dialog .role-option.disabled:hover {
+  border-color: #e0e0e0;
+  background-color: #f5f5f5;
+}
+
+.role-change-dialog .role-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.role-change-dialog .role-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: #202124;
+}
+
+.role-change-dialog .role-description {
+  font-size: 14px;
+  color: #5f6368;
+  line-height: 1.5;
+}
+
+.role-change-dialog .confirmation-note {
+  background-color: #e8f0fe;
+  border-left: 4px solid #4285f4;
+  padding: 12px;
+  border-radius: 4px;
+  margin: 16px 0;
+  font-size: 14px;
+  color: #202124;
+}
+
+.role-change-dialog .owner-note {
+  background-color: #fef7e0;
+  border-left: 4px solid #f9ab00;
+  padding: 12px;
+  border-radius: 4px;
+  margin: 16px 0;
+  font-size: 14px;
+  color: #202124;
+}

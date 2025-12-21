@@ -162,6 +162,26 @@
       "roleChangeSuccess": "Role changed successfully",
       "resetPasswordSuccess": "Password reset email sent"
     },
+    "changeRoleTitle": "Change Member Role",
+    "changeRole": "Change Role",
+    "changingRole": "Changing...",
+    "roleChangeSuccess": "Role changed successfully!",
+    "currentRole": "Current Role",
+    "selectNewRole": "Select New Role",
+    "roleChangeConfirmation": "The member's permissions will be updated immediately after changing their role.",
+    "cannotChangeOwnerRole": "The Owner role cannot be changed. To transfer ownership, please contact support.",
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "member": "Member",
+      "viewer": "Viewer"
+    },
+    "roleDescriptions": {
+      "owner": "Full control over the group, including deleting the group and managing all members",
+      "admin": "Can manage members, invite new members, and edit group settings",
+      "member": "Can add, edit, and delete own expenses, and view group expenses",
+      "viewer": "Can only view group expenses, cannot make changes"
+    },
     "errors": {
       "nameRequired": "Group name is required",
       "nameTooShort": "Group name must be at least 3 characters",
