@@ -6,6 +6,11 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import AuthCallback from './components/AuthCallback';
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 function App() {
   const { i18n } = useTranslation();
 
@@ -36,10 +41,10 @@ function App() {
     }
 
     // Handle install prompt
-    let deferredPrompt: any;
+    let _deferredPrompt: BeforeInstallPromptEvent | null = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
-      deferredPrompt = e;
+      _deferredPrompt = e as BeforeInstallPromptEvent;
       console.log('💾 PWA install prompt ready');
 
       // Optionally show custom install button

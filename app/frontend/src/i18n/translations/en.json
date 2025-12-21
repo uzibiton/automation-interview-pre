@@ -125,5 +125,23 @@
         "low": "Low Confidence"
       }
     }
+  },
+  "groups": {
+    "createGroupTitle": "Create New Group",
+    "createGroup": "Create Group",
+    "creating": "Creating...",
+    "createSuccess": "Group created successfully!",
+    "nameLabel": "Group Name",
+    "namePlaceholder": "Enter group name",
+    "nameHelp": "3-100 characters",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Enter group description (optional)",
+    "descriptionHelp": "Maximum 500 characters",
+    "errors": {
+      "nameRequired": "Group name is required",
+      "nameTooShort": "Group name must be at least 3 characters",
+      "nameTooLong": "Group name must not exceed 100 characters",
+      "descriptionTooLong": "Description must not exceed 500 characters"
+    }
   }
 }

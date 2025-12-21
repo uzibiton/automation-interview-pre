@@ -32,7 +32,7 @@ interface Stats {
 }
 
 function Dashboard({ token, onLogout }: DashboardProps) {
-  const { t } = useTranslation();
+  const { t: translation } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [stats, setStats] = useState<Stats>({ total: 0, totalAmount: 0, count: 0, byCategory: [] });
   const [refreshKey, setRefreshKey] = useState(0);

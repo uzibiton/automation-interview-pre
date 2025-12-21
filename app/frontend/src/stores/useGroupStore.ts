@@ -53,17 +53,21 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002
 const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true';
 
 /**
- * Helper function to make API requests
+ * Helper function to make API requests with authentication
  */
 async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = USE_MOCK_API
     ? `/api${endpoint}` // MSW intercepts requests to /api/*
     : `${API_BASE_URL}${endpoint}`;
 
+  // Get authentication token from localStorage
+  const token = localStorage.getItem('token');
+
   const response = await fetch(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options?.headers,
     },
   });

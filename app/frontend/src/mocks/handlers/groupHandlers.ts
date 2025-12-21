@@ -3,7 +3,10 @@
  */
 
 import { http, HttpResponse, delay } from 'msw';
-import { mockGroups, getCurrentUserGroup } from '../fixtures/groups.fixture';
+import {
+  mockGroups,
+  getCurrentUserGroup as _getCurrentUserGroup,
+} from '../fixtures/groups.fixture';
 import { mockMembers } from '../fixtures/members.fixture';
 import { Group, CreateGroupDto, UpdateGroupDto } from '../../types/Group';
 import { GroupMember, GroupRole } from '../../types/GroupMember';

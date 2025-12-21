@@ -125,5 +125,23 @@
         "low": "ביטחון נמוך"
       }
     }
+  },
+  "groups": {
+    "createGroupTitle": "צור קבוצה חדשה",
+    "createGroup": "צור קבוצה",
+    "creating": "יוצר...",
+    "createSuccess": "הקבוצה נוצרה בהצלחה!",
+    "nameLabel": "שם הקבוצה",
+    "namePlaceholder": "הזן שם קבוצה",
+    "nameHelp": "3-100 תווים",
+    "descriptionLabel": "תיאור",
+    "descriptionPlaceholder": "הזן תיאור קבוצה (אופציונלי)",
+    "descriptionHelp": "עד 500 תווים",
+    "errors": {
+      "nameRequired": "שם הקבוצה הוא שדה חובה",
+      "nameTooShort": "שם הקבוצה חייב להיות לפחות 3 תווים",
+      "nameTooLong": "שם הקבוצה לא יכול לעבור 100 תווים",
+      "descriptionTooLong": "התיאור לא יכול לעבור 500 תווים"
+    }
   }
 }
