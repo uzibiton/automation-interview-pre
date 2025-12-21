@@ -60,8 +60,8 @@ async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T
     ? `/api${endpoint}` // MSW intercepts requests to /api/*
     : `${API_BASE_URL}${endpoint}`;
 
-  // Get authentication token from localStorage
-  const token = localStorage.getItem('token');
+  // Get authentication token from localStorage (guarded for Node/Jest environments)
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
 
   const response = await fetch(url, {
     ...options,

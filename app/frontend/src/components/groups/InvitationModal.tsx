@@ -7,6 +7,7 @@ interface InvitationModalProps {
   isOpen: boolean;
   onClose: () => void;
   groupId: string;
+  onSuccess?: () => void;
 }
 
 type ActiveTab = 'email' | 'link';
@@ -17,17 +18,23 @@ interface FormErrors {
   maxUses?: string;
 }
 
-function InvitationModal({ isOpen, onClose, groupId }: InvitationModalProps) {
+function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModalProps) {
   const { t: translation } = useTranslation();
-  const { sendEmailInvitation, generateInviteLink, loading, error: storeError, clearError } = useInvitationStore();
+  const {
+    sendEmailInvitation,
+    generateInviteLink,
+    loading,
+    error: storeError,
+    clearError,
+  } = useInvitationStore();
 
   const [activeTab, setActiveTab] = useState<ActiveTab>('email');
-  
+
   // Email tab form data
   const [email, setEmail] = useState('');
   const [emailRole, setEmailRole] = useState<GroupRole | ''>('');
   const [message, setMessage] = useState('');
-  
+
   // Link tab form data
   const [linkRole, setLinkRole] = useState<GroupRole | ''>('');
   const [maxUses, setMaxUses] = useState('');
@@ -130,7 +137,7 @@ function InvitationModal({ isOpen, onClose, groupId }: InvitationModalProps) {
 
   const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>, tab: ActiveTab) => {
     const value = e.target.value as GroupRole;
-    
+
     if (tab === 'email') {
       setEmailRole(value);
     } else {
@@ -226,7 +233,12 @@ function InvitationModal({ isOpen, onClose, groupId }: InvitationModalProps) {
       );
 
       setSuccessMessage(translation('groups.invitation.invitationSent'));
-      
+
+      // Trigger success callback to refresh data
+      if (onSuccess) {
+        onSuccess();
+      }
+
       // Reset email form
       setEmail('');
       setEmailRole('');
@@ -271,6 +283,11 @@ function InvitationModal({ isOpen, onClose, groupId }: InvitationModalProps) {
       setGeneratedLink(linkUrl);
 
       setSuccessMessage(translation('groups.invitation.linkGeneratedSuccess'));
+
+      // Trigger success callback to refresh data
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       console.error('Failed to generate invite link:', error);
     }
@@ -398,9 +415,15 @@ function InvitationModal({ isOpen, onClose, groupId }: InvitationModalProps) {
                   aria-describedby={errors.role && touched.role ? 'roleError' : undefined}
                 >
                   <option value="">{translation('groups.invitation.rolePlaceholder')}</option>
-                  <option value={GroupRole.ADMIN}>{translation('groups.invitation.roles.admin')}</option>
-                  <option value={GroupRole.MEMBER}>{translation('groups.invitation.roles.member')}</option>
-                  <option value={GroupRole.VIEWER}>{translation('groups.invitation.roles.viewer')}</option>
+                  <option value={GroupRole.ADMIN}>
+                    {translation('groups.invitation.roles.admin')}
+                  </option>
+                  <option value={GroupRole.MEMBER}>
+                    {translation('groups.invitation.roles.member')}
+                  </option>
+                  <option value={GroupRole.VIEWER}>
+                    {translation('groups.invitation.roles.viewer')}
+                  </option>
                 </select>
                 {errors.role && touched.role && (
                   <span id="roleError" className="error-message" role="alert">
@@ -411,7 +434,9 @@ function InvitationModal({ isOpen, onClose, groupId }: InvitationModalProps) {
 
               {/* Optional message */}
               <div className="form-group">
-                <label htmlFor="inviteMessage">{translation('groups.invitation.messageLabel')}</label>
+                <label htmlFor="inviteMessage">
+                  {translation('groups.invitation.messageLabel')}
+                </label>
                 <textarea
                   id="inviteMessage"
                   name="message"
@@ -470,9 +495,15 @@ function InvitationModal({ isOpen, onClose, groupId }: InvitationModalProps) {
                   aria-describedby={errors.role && touched.role ? 'linkRoleError' : undefined}
                 >
                   <option value="">{translation('groups.invitation.rolePlaceholder')}</option>
-                  <option value={GroupRole.ADMIN}>{translation('groups.invitation.roles.admin')}</option>
-                  <option value={GroupRole.MEMBER}>{translation('groups.invitation.roles.member')}</option>
-                  <option value={GroupRole.VIEWER}>{translation('groups.invitation.roles.viewer')}</option>
+                  <option value={GroupRole.ADMIN}>
+                    {translation('groups.invitation.roles.admin')}
+                  </option>
+                  <option value={GroupRole.MEMBER}>
+                    {translation('groups.invitation.roles.member')}
+                  </option>
+                  <option value={GroupRole.VIEWER}>
+                    {translation('groups.invitation.roles.viewer')}
+                  </option>
                 </select>
                 {errors.role && touched.role && (
                   <span id="linkRoleError" className="error-message" role="alert">
@@ -518,11 +549,7 @@ function InvitationModal({ isOpen, onClose, groupId }: InvitationModalProps) {
                       readOnly
                       onClick={(e) => (e.target as HTMLInputElement).select()}
                     />
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={handleCopyLink}
-                    >
+                    <button type="button" className="btn btn-secondary" onClick={handleCopyLink}>
                       {translation('groups.invitation.copyLink')}
                     </button>
                   </div>
