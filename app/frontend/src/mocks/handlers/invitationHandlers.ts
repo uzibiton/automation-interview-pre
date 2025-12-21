@@ -7,10 +7,7 @@ import { mockGroups } from '../fixtures/groups.fixture';
 import { mockMembers } from '../fixtures/members.fixture';
 import { mockInvitations } from '../fixtures/invitations.fixture';
 import { mockInviteLinks } from '../fixtures/inviteLinks.fixture';
-import {
-  CreateInvitationDto,
-  InvitationStatus,
-} from '../../types/Invitation';
+import { CreateInvitationDto, InvitationStatus } from '../../types/Invitation';
 import { CreateInviteLinkDto } from '../../types/InviteLink';
 import { GroupRole } from '../../types/GroupMember';
 
@@ -34,8 +31,7 @@ const getPendingInvitations = (groupId: string) =>
 const getActiveInviteLinks = (groupId: string) =>
   inviteLinks.filter((link) => link.groupId === groupId && link.isActive);
 
-const getInviteLinkByToken = (token: string) =>
-  inviteLinks.find((link) => link.token === token);
+const getInviteLinkByToken = (token: string) => inviteLinks.find((link) => link.token === token);
 
 // Helper to generate random delay
 const randomDelay = () => delay(200 + Math.random() * 300);
@@ -63,18 +59,12 @@ export const invitationHandlers = [
 
     // Validation: Email
     if (!body.email || !isValidEmail(body.email)) {
-      return HttpResponse.json(
-        { error: 'Valid email is required' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'Valid email is required' }, { status: 400 });
     }
 
     // Validation: Role
     if (!Object.values(GroupRole).includes(body.role)) {
-      return HttpResponse.json(
-        { error: 'Invalid role' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'Invalid role' }, { status: 400 });
     }
 
     // Check if email already invited (pending)
@@ -86,10 +76,7 @@ export const invitationHandlers = [
     );
 
     if (existingInvitation) {
-      return HttpResponse.json(
-        { error: 'This email has already been invited' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'This email has already been invited' }, { status: 400 });
     }
 
     // Get group and inviter details from fixtures
@@ -122,21 +109,15 @@ export const invitationHandlers = [
     await randomDelay();
 
     const { token } = params;
-    const invitation = getInvitationByToken(token as string);
+    const invitation = findInvitationByToken(token as string);
 
     if (!invitation) {
-      return HttpResponse.json(
-        { error: 'Invitation not found' },
-        { status: 404 },
-      );
+      return HttpResponse.json({ error: 'Invitation not found' }, { status: 404 });
     }
 
     // Check if expired
     if (new Date(invitation.expiresAt) < new Date()) {
-      return HttpResponse.json(
-        { error: 'This invitation has expired' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'This invitation has expired' }, { status: 400 });
     }
 
     // Check if already accepted
@@ -149,10 +130,7 @@ export const invitationHandlers = [
 
     // Check if declined
     if (invitation.status === InvitationStatus.DECLINED) {
-      return HttpResponse.json(
-        { error: 'This invitation has been declined' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'This invitation has been declined' }, { status: 400 });
     }
 
     // Update invitation status
@@ -179,20 +157,14 @@ export const invitationHandlers = [
     await randomDelay();
 
     const { token } = params;
-    const invitation = getInvitationByToken(token as string);
+    const invitation = findInvitationByToken(token as string);
 
     if (!invitation) {
-      return HttpResponse.json(
-        { error: 'Invitation not found' },
-        { status: 404 },
-      );
+      return HttpResponse.json({ error: 'Invitation not found' }, { status: 404 });
     }
 
     if (invitation.status !== InvitationStatus.PENDING) {
-      return HttpResponse.json(
-        { error: 'This invitation cannot be declined' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'This invitation cannot be declined' }, { status: 400 });
     }
 
     // Update invitation status
@@ -204,10 +176,7 @@ export const invitationHandlers = [
       };
     }
 
-    return HttpResponse.json(
-      { message: 'Invitation declined' },
-      { status: 200 },
-    );
+    return HttpResponse.json({ message: 'Invitation declined' }, { status: 200 });
   }),
 
   // GET /api/invitations?groupId=xxx - Get pending invitations for a group
@@ -218,10 +187,7 @@ export const invitationHandlers = [
     const groupId = url.searchParams.get('groupId');
 
     if (!groupId) {
-      return HttpResponse.json(
-        { error: 'groupId is required' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'groupId is required' }, { status: 400 });
     }
 
     const pendingInvitations = getPendingInvitations(groupId);
@@ -236,10 +202,7 @@ export const invitationHandlers = [
 
     // Validation: Role
     if (!Object.values(GroupRole).includes(body.role)) {
-      return HttpResponse.json(
-        { error: 'Invalid role' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'Invalid role' }, { status: 400 });
     }
 
     // Validation: Max uses
@@ -281,26 +244,17 @@ export const invitationHandlers = [
     const link = getInviteLinkByToken(token as string);
 
     if (!link) {
-      return HttpResponse.json(
-        { error: 'Invite link not found' },
-        { status: 404 },
-      );
+      return HttpResponse.json({ error: 'Invite link not found' }, { status: 404 });
     }
 
     // Check if active
     if (!link.isActive) {
-      return HttpResponse.json(
-        { error: 'This invite link has been revoked' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'This invite link has been revoked' }, { status: 400 });
     }
 
     // Check if expired
     if (new Date(link.expiresAt) < new Date()) {
-      return HttpResponse.json(
-        { error: 'This invite link has expired' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'This invite link has expired' }, { status: 400 });
     }
 
     // Check max uses
@@ -338,10 +292,7 @@ export const invitationHandlers = [
     const linkIndex = inviteLinks.findIndex((link) => link.id === id);
 
     if (linkIndex === -1) {
-      return HttpResponse.json(
-        { error: 'Invite link not found' },
-        { status: 404 },
-      );
+      return HttpResponse.json({ error: 'Invite link not found' }, { status: 404 });
     }
 
     // Deactivate the link
@@ -350,10 +301,7 @@ export const invitationHandlers = [
       isActive: false,
     };
 
-    return HttpResponse.json(
-      { message: 'Invite link revoked successfully' },
-      { status: 200 },
-    );
+    return HttpResponse.json({ message: 'Invite link revoked successfully' }, { status: 200 });
   }),
 
   // GET /api/invite-links?groupId=xxx - Get active invite links
@@ -364,10 +312,7 @@ export const invitationHandlers = [
     const groupId = url.searchParams.get('groupId');
 
     if (!groupId) {
-      return HttpResponse.json(
-        { error: 'groupId is required' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'groupId is required' }, { status: 400 });
     }
 
     const activeLinks = getActiveInviteLinks(groupId);
