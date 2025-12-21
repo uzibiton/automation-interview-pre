@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ExpenseDialog from './ExpenseDialog';
+import GroupCreationDialog from './groups/GroupCreationDialog';
 
 interface Stats {
   total: number;
@@ -21,6 +22,7 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const shouldShowDialog = searchParams.get('add') === 'true';
   const [showDialog, setShowDialog] = useState(shouldShowDialog);
+  const [showGroupDialog, setShowGroupDialog] = useState(false);
 
   useEffect(() => {
     if (shouldShowDialog) {
@@ -36,6 +38,11 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
 
   const handleCloseDialog = () => {
     setShowDialog(false);
+  };
+
+  const handleGroupSuccess = (groupId: string) => {
+    console.log('Group created successfully with ID:', groupId);
+    // Optionally navigate to the group page or refresh data
   };
 
   return (
@@ -83,6 +90,13 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
               <p>{translation('dashboard.manageExpenses')}</p>
             </div>
           </Link>
+          <button className="quick-link-card" onClick={() => setShowGroupDialog(true)}>
+            <div className="quick-link-icon">👥</div>
+            <div className="quick-link-content">
+              <h4>Groups</h4>
+              <p>Create and manage groups</p>
+            </div>
+          </button>
         </div>
       </div>
 
@@ -91,6 +105,12 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
         isOpen={showDialog}
         onClose={handleCloseDialog}
         onSuccess={handleExpenseCreated}
+      />
+      
+      <GroupCreationDialog
+        isOpen={showGroupDialog}
+        onClose={() => setShowGroupDialog(false)}
+        onSuccess={handleGroupSuccess}
       />
     </div>
   );
