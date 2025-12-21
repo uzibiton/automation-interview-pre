@@ -29,19 +29,17 @@ function GroupCreationDialog({ isOpen, onClose, onSuccess }: GroupCreationDialog
     description: false,
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [prevIsOpen, setPrevIsOpen] = useState(false);
 
-  // Reset form when dialog opens (using derived state pattern)
-  if (isOpen && !prevIsOpen) {
-    setFormData({ name: '', description: '' });
-    setErrors({});
-    setTouched({ name: false, description: false });
-    setSuccessMessage(null);
-    clearError();
-    setPrevIsOpen(true);
-  } else if (!isOpen && prevIsOpen) {
-    setPrevIsOpen(false);
-  }
+  // Reset form when dialog opens (using useEffect to avoid render-time state updates)
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({ name: '', description: '' });
+      setErrors({});
+      setTouched({ name: false, description: false });
+      setSuccessMessage(null);
+      clearError();
+    }
+  }, [isOpen, clearError]);
 
   // Validate name field
   const validateName = useCallback(
