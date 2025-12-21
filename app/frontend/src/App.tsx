@@ -54,7 +54,7 @@ function App() {
     // Track installation
     window.addEventListener('appinstalled', () => {
       console.log('🎉 PWA installed successfully');
-      deferredPrompt = null;
+      _deferredPrompt = null;
     });
   }, []);
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));

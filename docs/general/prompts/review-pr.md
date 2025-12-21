@@ -121,11 +121,13 @@ I need you to prepare a PR review workflow with the following steps:
    git diff <base-branch> --stat
    ```
 
-## Step 4: Output Codex Prompt
+## Step 4: Create Review Prompt File
 
-Provide a message with:
+1. Create review prompt file:
+   - Filename: `temp/review-prompt-<identifier>.md`
+   - Content: Complete Codex prompt (see template below)
 
-1. **Status summary**:
+2. Provide status message:
 
    ```
    ✅ PR Review Preparation Complete
@@ -134,20 +136,20 @@ Provide a message with:
    PR: #<number> (if available)
    Base: <base-branch>
    Diff: temp/diff-<identifier>.txt
+   Prompt: temp/review-prompt-<identifier>.md
    Changes: <X> files changed, <+Y> insertions, <-Z> deletions
+
+   📋 Review prompt saved to: temp/review-prompt-<identifier>.md
+
+   Next steps:
+   1. Open temp/review-prompt-<identifier>.md
+   2. Copy entire contents
+   3. Paste into Copilot Chat for review
    ```
 
-2. **Instruction**:
+3. **The Complete Codex Prompt Template** (save to file):
 
-   ```
-   📋 Copy the entire block below and paste into Copilot Chat:
-   ```
-
-3. **The Complete Codex Prompt** (standalone, ready to paste):
-
-````
----COPY FROM HERE---
-
+````markdown
 # PR Review (Current Branch vs <BASE_BRANCH>)
 
 You are a senior engineer performing a PR review.
@@ -252,6 +254,7 @@ if (!userId) {
   throw new BadRequestException('userId is required');
 }
 ```
+````
 
 ---
 
@@ -311,11 +314,16 @@ Verify before merging:
 
 1. Read the diff file: `temp/diff-<IDENTIFIER>.txt`
 2. Analyze changes systematically
-3. Output review in the format above
-4. If diff file is missing or unreadable, tell me exactly what you need
+3. **Save your review output to**: `temp/review-output-<IDENTIFIER>.md`
+4. Use the exact format specified above
+5. After saving the file, provide a brief summary stating:
+   - File saved location
+   - Risk level
+   - Number of blocking issues
+   - Recommendation (approve/request changes)
+6. If diff file is missing or unreadable, tell me exactly what you need
 
----COPY TO HERE---
-````
+```
 
 ## Key Guidelines for Agent
 
@@ -330,6 +338,7 @@ Verify before merging:
 ## Example Agent Output
 
 ```
+
 ✅ PR Review Preparation Complete
 
 Branch: feature/expense-filtering
@@ -338,23 +347,24 @@ Base: main
 Diff: temp/diff-145.txt
 Changes: 8 files changed, 287 insertions(+), 143 deletions(-)
 
-📋 Copy the entire block below and paste into Copilot Chat:
+Prompt: temp/review-prompt-145.md
+Changes: 8 files changed, 287 insertions(+), 143 deletions(-)
 
----COPY FROM HERE---
+📋 Review prompt saved to: temp/review-prompt-145.md
 
-# PR Review (Current Branch vs main)
+Next steps:
 
-[... complete Codex prompt as shown above with placeholders filled ...]
-
----COPY TO HERE---
-```
+1. Open temp/review-prompt-145.md
+2. Copy entire contents
+3. Paste into Copilot Chat for review
 
 ## Tips
 
 - Agent handles all git operations automatically
 - You just copy/paste the output block into Copilot Chat
 - Codex reads the diff file from workspace and performs review
-- Final output from Codex pastes directly into GitHub PR
+- Review prompt saved to `temp/review-prompt-<id>.md` for easy copying
+- Just open the file and copy all contents into GitHub PR
 - Works with or without GitHub CLI (`gh`)
 - Supports any base branch (not just `main`)
 
@@ -367,6 +377,8 @@ Changes: 8 files changed, 287 insertions(+), 143 deletions(-)
 ## Output Files
 
 - `temp/diff-<identifier>.txt` - Git diff file (auto-cleaned on next run)
+- `temp/review-prompt-<identifier>.md` - Review prompt ready to copy
+- `temp/review-output-<identifier>.md` - Review output from Codex (GitHub-pasteable)
 - `temp/` directory created if needed (should be in `.gitignore`)
 
 ---

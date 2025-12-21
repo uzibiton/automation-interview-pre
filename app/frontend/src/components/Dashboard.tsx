@@ -7,6 +7,7 @@ import DashboardHome from './DashboardHome';
 import AnalyticsPage from './AnalyticsPage';
 import ExpensesPage from './ExpensesPage';
 import ChatPage from './ChatPage';
+import MembersTestPage from './MembersTestPage';
 import { getApiServiceUrl, getAuthServiceUrl } from '../utils/config';
 
 const API_SERVICE_URL = getApiServiceUrl();
@@ -96,6 +97,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
           path="/expenses"
           element={<ExpensesPage token={token} refreshKey={refreshKey} onUpdate={handleUpdate} />}
         />
+        <Route path="/members" element={<MembersTestPage token={token} />} />
       </Routes>
     </div>
   );
