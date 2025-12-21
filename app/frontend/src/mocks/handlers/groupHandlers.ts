@@ -14,6 +14,11 @@ import {
 import { Group, CreateGroupDto, UpdateGroupDto } from '../../types/Group';
 import { GroupMember, GroupRole } from '../../types/GroupMember';
 
+// Constants for mock authentication
+const MOCK_USER_ID = 'user-1';
+const MOCK_USER_NAME = 'John Doe';
+const MOCK_USER_EMAIL = 'john.doe@example.com';
+
 // In-memory store for state persistence during testing
 let groups = [...mockGroups];
 let members = [...mockMembers];
@@ -60,7 +65,7 @@ export const groupHandlers = [
     }
 
     // Check if user already has a group (business rule)
-    const userHasGroup = members.some((m) => m.userId === 'user-1');
+    const userHasGroup = members.some((m) => m.userId === MOCK_USER_ID);
     if (userHasGroup) {
       return HttpResponse.json(
         { error: 'User can only be in one group' },
@@ -72,7 +77,7 @@ export const groupHandlers = [
       id: `group-${Date.now()}`,
       name: body.name,
       description: body.description || '',
-      createdBy: 'user-1',
+      createdBy: MOCK_USER_ID,
       memberCount: 1,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -84,9 +89,9 @@ export const groupHandlers = [
     const ownerMember: GroupMember = {
       id: `member-${Date.now()}`,
       groupId: newGroup.id,
-      userId: 'user-1',
-      name: 'John Doe',
-      email: 'john.doe@example.com',
+      userId: MOCK_USER_ID,
+      name: MOCK_USER_NAME,
+      email: MOCK_USER_EMAIL,
       role: GroupRole.OWNER,
       avatar: 'https://i.pravatar.cc/150?u=john',
       joinedAt: new Date().toISOString(),

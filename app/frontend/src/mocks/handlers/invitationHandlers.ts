@@ -3,6 +3,8 @@
  */
 
 import { http, HttpResponse, delay } from 'msw';
+import { mockGroups } from '../fixtures/groups.fixture';
+import { mockMembers } from '../fixtures/members.fixture';
 import {
   mockInvitations,
   getPendingInvitations,
@@ -20,6 +22,9 @@ import {
 import { CreateInviteLinkDto } from '../../types/InviteLink';
 import { GroupRole } from '../../types/GroupMember';
 
+// Constants for mock authentication
+const MOCK_USER_ID = 'user-1';
+
 // In-memory store
 let invitations = [...mockInvitations];
 let inviteLinks = [...mockInviteLinks];
@@ -35,12 +40,10 @@ const isValidEmail = (email: string): boolean => {
 
 // Helper to generate random token
 const generateToken = (length: number = 32): string => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let token = '';
-  for (let i = 0; i < length; i++) {
-    token += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return token;
+  // Use crypto.getRandomValues() for better security
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
 };
 
 export const invitationHandlers = [
@@ -81,12 +84,17 @@ export const invitationHandlers = [
       );
     }
 
+    // Get group and inviter details from fixtures
+    const groupId = body.groupId || 'group-1';
+    const group = mockGroups.find((g) => g.id === groupId);
+    const inviter = mockMembers.find((m) => m.userId === MOCK_USER_ID);
+
     const newInvitation = {
       id: `invitation-${Date.now()}`,
-      groupId: body.groupId || 'group-1',
-      groupName: 'Family Expenses',
-      inviterId: 'user-1',
-      inviterName: 'John Doe',
+      groupId,
+      groupName: group?.name || 'Unknown Group',
+      inviterId: MOCK_USER_ID,
+      inviterName: inviter?.name || 'Unknown User',
       email: body.email,
       role: body.role,
       token: `inv-token-${generateToken(16)}`,
@@ -234,11 +242,16 @@ export const invitationHandlers = [
       );
     }
 
+    // Get group and creator details from fixtures
+    const groupId = body.groupId || 'group-1';
+    const group = mockGroups.find((g) => g.id === groupId);
+    const creator = mockMembers.find((m) => m.userId === MOCK_USER_ID);
+
     const newLink = {
       id: `link-${Date.now()}`,
-      groupId: body.groupId || 'group-1',
-      createdBy: 'user-1',
-      createdByName: 'John Doe',
+      groupId,
+      createdBy: MOCK_USER_ID,
+      createdByName: creator?.name || 'Unknown User',
       token: generateToken(8).toUpperCase(),
       defaultRole: body.role,
       maxUses: body.maxUses || null,
