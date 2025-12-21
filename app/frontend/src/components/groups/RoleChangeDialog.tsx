@@ -17,6 +17,7 @@ function RoleChangeDialog({ isOpen, member, onClose, onSuccess }: RoleChangeDial
   const [selectedRole, setSelectedRole] = useState<GroupRole | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const prevIsOpenRef = useRef(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Track dialog open/close transitions
   if (isOpen && !prevIsOpenRef.current) {
@@ -33,7 +34,16 @@ function RoleChangeDialog({ isOpen, member, onClose, onSuccess }: RoleChangeDial
       clearError();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen ? 'opened' : 'closed', member?.id]);
+  }, [isOpen, member?.id]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +64,7 @@ function RoleChangeDialog({ isOpen, member, onClose, onSuccess }: RoleChangeDial
       }
 
       // Close dialog after a brief delay to show success message
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         onClose();
       }, 1500);
     } catch (error) {
