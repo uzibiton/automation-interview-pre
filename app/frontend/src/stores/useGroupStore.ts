@@ -1,6 +1,6 @@
 /**
  * Group Management Store using Zustand
- * 
+ *
  * Global state management for groups, members, invitations, and invite links.
  * Uses Mock Service Worker (MSW) API handlers from TASK-002-015.
  */
@@ -55,11 +55,8 @@ const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true';
 /**
  * Helper function to make API requests
  */
-async function apiRequest<T>(
-  endpoint: string,
-  options?: RequestInit
-): Promise<T> {
-  const url = USE_MOCK_API 
+async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const url = USE_MOCK_API
     ? `/api${endpoint}` // MSW intercepts requests to /api/*
     : `${API_BASE_URL}${endpoint}`;
 
@@ -106,6 +103,7 @@ export const useGroupStore = create<GroupState>((set, get) => ({
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to fetch current group';
       set({ error: errorMessage, loading: false, currentGroup: null });
+      throw error;
     }
   },
 
@@ -185,17 +183,15 @@ export const useGroupStore = create<GroupState>((set, get) => ({
         {
           method: 'PATCH',
           body: JSON.stringify({ role }),
-        }
+        },
       );
-      
+
       // Update the member in the local state
-      set(state => ({
-        members: state.members.map(m => 
-          m.id === memberId ? updatedMember : m
-        ),
+      set((state) => ({
+        members: state.members.map((m) => (m.id === memberId ? updatedMember : m)),
         loading: false,
       }));
-      
+
       return updatedMember;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to change role';
@@ -211,10 +207,13 @@ export const useGroupStore = create<GroupState>((set, get) => ({
       await apiRequest<{ message: string }>(`/groups/${groupId}/members/${memberId}`, {
         method: 'DELETE',
       });
-      
-      // Remove the member from local state
-      set(state => ({
-        members: state.members.filter(m => m.id !== memberId),
+
+      // Remove the member from local state and update memberCount
+      set((state) => ({
+        members: state.members.filter((m) => m.id !== memberId),
+        currentGroup: state.currentGroup
+          ? { ...state.currentGroup, memberCount: state.currentGroup.memberCount - 1 }
+          : null,
         loading: false,
       }));
     } catch (error) {
@@ -244,13 +243,13 @@ export const useGroupStore = create<GroupState>((set, get) => ({
         method: 'POST',
         body: JSON.stringify({ ...dto, groupId }),
       });
-      
+
       // Add to local state
-      set(state => ({
+      set((state) => ({
         invitations: [...state.invitations, invitation],
         loading: false,
       }));
-      
+
       return invitation;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to send invitation';
@@ -279,16 +278,17 @@ export const useGroupStore = create<GroupState>((set, get) => ({
         method: 'POST',
         body: JSON.stringify({ ...dto, groupId }),
       });
-      
+
       // Add to local state
-      set(state => ({
+      set((state) => ({
         inviteLinks: [...state.inviteLinks, inviteLink],
         loading: false,
       }));
-      
+
       return inviteLink;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to generate invite link';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to generate invite link';
       set({ error: errorMessage, loading: false });
       throw error;
     }
@@ -301,11 +301,11 @@ export const useGroupStore = create<GroupState>((set, get) => ({
       await apiRequest<{ message: string }>(`/invite-links/${linkId}`, {
         method: 'DELETE',
       });
-      
+
       // Update local state to mark as inactive
-      set(state => ({
-        inviteLinks: state.inviteLinks.map(link =>
-          link.id === linkId ? { ...link, isActive: false } : link
+      set((state) => ({
+        inviteLinks: state.inviteLinks.map((link) =>
+          link.id === linkId ? { ...link, isActive: false } : link,
         ),
         loading: false,
       }));
