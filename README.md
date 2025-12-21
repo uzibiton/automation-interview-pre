@@ -13,7 +13,7 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 **The Application**: A web-based expense tracker with microservices architecture (Auth, API, Frontend), deployed on Google Cloud Run with PostgreSQL/Firestore databases and CI/CD via GitHub Actions.
 
-📑 **[Table of Contents](docs/TABLE_OF_CONTENTS.md)** | 📋 **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** | 👤 **[About the Author](docs/general/ABOUTME.md)** | 🐛 **[GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues)** | 📊 **[Project Board](https://github.com/users/uzibiton/projects/2/views/2)**
+📑 **[Table of Contents](docs/TABLE_OF_CONTENTS.md)** | 📋 **[Test Strategy](docs/qa/TEST_STRATEGY.md)** | 🧪 **[E2E Testing Guide](docs/qa/E2E_TESTING_GUIDE.md)** | 🚀 **[CI/CD Guide](docs/devops/CI_CD_GUIDE.md)** | 👤 **[About the Author](docs/general/ABOUTME.md)** | 🐛 **[GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues)** | 📊 **[Project Board](https://github.com/users/uzibiton/projects/2/views/2)**
 
 > **Note:** All issues, bugs, and feature requests are now tracked in GitHub Issues with structured templates for consistent tracking and workflow management.
 
@@ -47,7 +47,7 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 - Push to `main` → Auto-deploys to **Develop**
 - Staging & Production → [Manual workflow dispatch](https://github.com/uzibiton/automation-interview-pre/actions/workflows/ci-cd.yml)
 
-📖 See [CI/CD Workflow Guide](docs/devops/CI_CD_WORKFLOW.md) for complete deployment documentation.
+📖 See [CI/CD Guide](docs/devops/CI_CD_GUIDE.md) for complete deployment documentation.
 
 ## 💡 Ideas & Innovation
 
@@ -111,14 +111,18 @@ npm run test:e2e:production:smoke   # Production smoke tests
 npm run test:e2e:docker             # Docker environment
 ```
 
+📖 **[E2E Testing Guide](docs/qa/E2E_TESTING_GUIDE.md)** - Complete multi-environment testing guide
+
 ### Quick Links
 
 - **[Run Locally](docs/dev/RUN_LOCALLY.md)** - Get started with local development
 - **[Application Architecture](app/README.md)** - System design and data flow
-- **[Testing Strategy](docs/qa/TESTING_STRATEGY.md)** - Comprehensive QA approach
+- **[Test Strategy](docs/qa/TEST_STRATEGY.md)** - Comprehensive testing approach ⭐
+- **[E2E Testing Guide](docs/qa/E2E_TESTING_GUIDE.md)** - End-to-end testing guide ⭐
+- **[CI/CD Guide](docs/devops/CI_CD_GUIDE.md)** - Pipeline and deployment guide ⭐
 - **[Portfolio Roadmap](docs/demo/PORTFOLIO_IMPROVEMENT_PLAN.md)** - 5-phase improvement plan
 - **[PR Workflow Guide](docs/qa/PR_WORKFLOW_GUIDE.md)** - Contribute to the project
-- **[Deployment Guide](docs/devops/DEPLOYMENT.md)** - Deploy to staging/production
+- **[Cloud Run Deployment](docs/devops/CLOUD_RUN_DEPLOYMENT.md)** - Deploy to staging/production
 - **[SDET Demo Script](docs/demo/SDET_DEMO_SCRIPT.md)** - Interview presentation
 
 ### Documentation Structure

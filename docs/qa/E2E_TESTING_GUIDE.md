@@ -1,22 +1,91 @@
-﻿# Multi-Environment E2E Testing Guide
+# E2E Testing Guide
+
+> **Complete guide for running end-to-end tests across all environments**
+
+---
+
+## Quick Start (30 Seconds)
+
+```bash
+# 1. Install dependencies
+cd tests/config
+npm install
+
+# 2. Start services
+cd ../..
+docker-compose up
+
+# 3. Run tests (in new terminal)
+cd tests/config
+npm run test:e2e:local:headed
+```
+
+---
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Quick Start Commands](#quick-start-commands)
+3. [Environment Configuration](#environment-configuration)
+4. [Workflows by Environment](#workflows-by-environment)
+5. [Test Tags](#test-tags)
+6. [CI/CD Integration](#cicd-integration)
+7. [Troubleshooting](#troubleshooting)
+8. [Best Practices](#best-practices)
+
+---
 
 ## Overview
 
 This guide explains how to run E2E tests against different environments: local development, Docker containers, staging, and production Cloud Run deployments.
 
-## Quick Start
+**Key Features:**
+
+- ⚡ Same test suite runs in all environments
+- 🐳 Docker-based for consistency
+- 🌍 Multi-environment support (local, docker, staging, production)
+- 🏷️ Tag-based test filtering (@smoke, @critical, etc.)
+- 📊 Comprehensive reporting
+
+---
+
+## Quick Start Commands
+
+### Local Development
 
 ```bash
-# Install dependencies first
-cd tests/config
-npm install
-
-# Run tests against different environments
-npm run test:e2e:local         # Local dev (localhost)
-npm run test:e2e:docker        # Docker containers
-npm run test:e2e:staging       # Cloud Run staging
-npm run test:e2e:production    # Cloud Run production
+npm run test:e2e:local           # Run all tests
+npm run test:e2e:local:headed    # Run with browser visible
+npm run test:e2e:local:debug     # Debug mode
 ```
+
+### Docker
+
+```bash
+npm run test:e2e:docker          # Run all tests
+npm run test:e2e:docker:headed   # Run with browser visible
+npm run test:e2e:docker:debug    # Debug mode
+```
+
+### Staging
+
+```bash
+npm run test:e2e:staging         # Run all tests
+npm run test:e2e:staging:headed  # Run with browser visible
+npm run test:e2e:staging:smoke   # Run smoke tests only
+npm run test:e2e:staging:debug   # Debug mode
+```
+
+### Production
+
+```bash
+npm run test:e2e:production         # Run all tests
+npm run test:e2e:production:smoke   # Run smoke tests only
+npm run test:e2e:production:headed  # Run with browser visible
+npm run test:e2e:production:debug   # Debug mode
+```
+
+---
 
 ## Environment Configuration
 
@@ -41,7 +110,25 @@ TEST_USER_EMAIL=test@example.com # Test user credentials
 TEST_USER_PASSWORD=testpassword123
 ```
 
-## Workflows
+### Setting Up Cloud Run URLs
+
+After deploying to Cloud Run:
+
+```bash
+# 1. Get Cloud Run URLs
+gcloud run services list --region=us-central1
+
+# 2. Update environment file
+# Edit: tests/config/.env.production or .env.staging
+# Replace placeholders with actual service URLs
+
+# 3. Verify URLs
+curl https://your-frontend-url.run.app
+```
+
+---
+
+## Workflows by Environment
 
 ### 1. Local Development (Fast Iteration)
 
@@ -79,6 +166,8 @@ npm run test:e2e:local:debug
 - 💰 Saves CI/CD pipeline costs
 - 🚀 Test before pushing
 
+---
+
 ### 2. Docker Testing (Pre-Deploy Validation)
 
 **Use Case:** Validate containerized services match production
@@ -109,6 +198,8 @@ npm run test:e2e:docker:headed
 - 🔒 Catches container-specific issues
 - 🌐 Validates networking between services
 - 📦 Pre-deployment quality gate
+
+---
 
 ### 3. Staging (Branch Deployments)
 
@@ -149,6 +240,8 @@ npm run test:e2e:staging:debug
 - 🐛 Debugs deployment-specific issues
 - 🚢 Branch isolation
 
+---
+
 ### 4. Production (Post-Deploy Validation)
 
 **Use Case:** Smoke tests after production deployment
@@ -183,6 +276,8 @@ npm run test:e2e:production:headed
 - 📊 Real-world performance data
 - 🛡️ Confidence in releases
 
+---
+
 ## Test Tags
 
 Use tags to run specific test subsets:
@@ -200,7 +295,7 @@ test.describe('User Authentication @smoke @critical', () => {
 });
 ```
 
-**Tag Definitions:**
+### Tag Definitions
 
 - `@smoke` - Critical path tests (run on every commit)
 - `@sanity` - Basic functionality tests (run on PR)
@@ -210,7 +305,7 @@ test.describe('User Authentication @smoke @critical', () => {
 - `@a11y` - Accessibility tests
 - `@mobile` - Mobile-specific tests
 
-**Run Tagged Tests:**
+### Run Tagged Tests
 
 ```bash
 # Run only smoke tests in production
@@ -220,6 +315,8 @@ npm run test:e2e:production:smoke
 TEST_ENV=staging playwright test --grep @critical
 TEST_ENV=local playwright test --grep @sanity
 ```
+
+---
 
 ## CI/CD Integration
 
@@ -247,7 +344,6 @@ Add after Cloud Run deployment:
   run: |
     cd tests/config
     npm install
-    # Update production URLs from deployment output
     npm run test:e2e:production:smoke
 ```
 
@@ -278,6 +374,8 @@ Add after Cloud Run deployment:
 **Pros:** Fast feedback + production validation  
 **Cons:** Most complex setup
 
+---
+
 ## Troubleshooting
 
 ### Tests Fail Locally But Pass in CI
@@ -295,7 +393,7 @@ Add after Cloud Run deployment:
 
 **Problem:** Using `localhost` instead of service names
 
-**Solution:**
+**Solution:**  
 Ensure you're using the right environment:
 
 ```bash
@@ -331,6 +429,8 @@ npm run test:e2e:docker
    await page.waitForLoadState('networkidle');
    ```
 3. Check service health endpoints first
+
+---
 
 ## Advanced Usage
 
@@ -380,6 +480,8 @@ npm run report:allure
 # Available at: tests/reports/playwright-results.json
 ```
 
+---
+
 ## Best Practices
 
 ### 1. Test Locally First
@@ -410,7 +512,18 @@ If tests take > 5 minutes, consider:
 - Avoid load testing production
 - Use staging for comprehensive testing
 
-## Demo Script (15-Minute Senior Interview)
+### 6. Environment-Specific Testing Strategy
+
+| Environment | Test Level  | Frequency    | Purpose                 |
+| ----------- | ----------- | ------------ | ----------------------- |
+| Local       | Full suite  | Every change | Developer validation    |
+| Docker      | Smoke + E2E | Before push  | Pre-CI verification     |
+| Staging     | Full suite  | On PR        | Branch validation       |
+| Production  | Smoke only  | Post-deploy  | Production health check |
+
+---
+
+## Demo Tips (Interview Context)
 
 **Talking Points:**
 
@@ -424,58 +537,21 @@ If tests take > 5 minutes, consider:
 > The same Playwright test suite runs across all environments without code changes.
 > We just set TEST_ENV to target different endpoints.
 >
-> **Trade-offs:**
->
-> - **Benefit:** Single test codebase, multiple deployment targets
-> - **Cost:** Need to maintain environment config files
-> - **Decision:** Worth it - reduces test maintenance burden and enables shift-left testing
->
 > **Business Impact:**
 >
 > - 60% reduction in QA cycle time
 > - 3x faster developer feedback
-> - Zero post-deploy critical bugs in production (last 3 months)"
+> - Zero post-deploy critical bugs (last 3 months)"
 
-**Demo Flow:**
+**Demo Flow (3-4 minutes):**
 
-1. Show `.env.local`, `.env.docker`, `.env.production` files (30 sec)
-2. Run `npm run test:e2e:local` - Show fast local execution (1 min)
-3. Show `playwright.config.ts` - Explain environment loading (30 sec)
-4. Run `npm run test:e2e:production:smoke` - Show production validation (1 min)
-5. Show HTML report - Highlight failure artifacts (30 sec)
+1. Show environment files (`.env.*`) - 30 seconds
+2. Run `npm run test:e2e:local` - Show fast execution - 1 minute
+3. Show `playwright.config.ts` - Explain environment loading - 30 seconds
+4. Run `npm run test:e2e:production:smoke` - Show production validation - 1 minute
+5. Show HTML report - Highlight failure artifacts - 30 seconds
 
-**Total Time:** 3.5 minutes (leaves time for other demo sections)
-
-## Next Steps
-
-1. ✅ **Install Dependencies**
-
-   ```bash
-   cd tests/config
-   npm install
-   ```
-
-2. ✅ **Update Production URLs**
-   - Deploy to Cloud Run
-   - Get service URLs: `gcloud run services list`
-   - Update `.env.production` and `.env.staging`
-
-3. ✅ **Create Your First Test**
-
-   ```bash
-   # Copy example test
-   cp tests/e2e/expenses/example.spec.ts tests/e2e/expenses/my-test.spec.ts
-   ```
-
-4. ✅ **Run Test Locally**
-
-   ```bash
-   npm run test:e2e:local:headed
-   ```
-
-5. ✅ **Add to CI/CD**
-   - Update `.github/workflows/ci-cd.yml`
-   - Add E2E test step
+---
 
 ## Resources
 
@@ -483,9 +559,10 @@ If tests take > 5 minutes, consider:
 - [Playwright Best Practices](https://playwright.dev/docs/best-practices)
 - [Visual Testing Guide](https://playwright.dev/docs/test-snapshots)
 - [CI/CD Integration](https://playwright.dev/docs/ci)
+- [Test Strategy](./TEST_STRATEGY.md) - Overall testing approach
+- [CI/CD Guide](../devops/CI_CD_GUIDE.md) - Pipeline integration
 
 ---
 
-**Author:** Uzi Biton  
-**Last Updated:** 2024  
-**Version:** 1.0
+**Last Updated:** December 2024  
+**Maintainer:** QA Team

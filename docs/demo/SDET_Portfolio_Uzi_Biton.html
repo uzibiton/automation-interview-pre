@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uzi Biton - SDET Portfolio</title>
+    <style>
+      @page {
+        margin: 0.5in;
+        size: Letter;
+      }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.4;
+        color: #333;
+        max-width: 8.5in;
+        margin: 0 auto;
+        font-size: 10pt;
+      }
+      h1 {
+        color: #1a1a2e;
+        font-size: 24pt;
+        margin-bottom: 3px;
+        text-align: center;
+        font-weight: 700;
+      }
+      h2 {
+        color: #16213e;
+        font-size: 13pt;
+        margin-top: 12px;
+        margin-bottom: 6px;
+        border-bottom: 2px solid #0f4c75;
+        padding-bottom: 3px;
+        font-weight: 600;
+        page-break-after: avoid;
+      }
+      h2:before {
+        content: '▶ ';
+        color: #0f4c75;
+        font-size: 14pt;
+      }
+      h3 {
+        color: #16213e;
+        font-size: 11pt;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        font-weight: 600;
+        page-break-after: avoid;
+      }
+      h3:before {
+        content: '● ';
+        color: #3282b8;
+        font-size: 9pt;
+      }
+      .subtitle {
+        text-align: center;
+        font-size: 12pt;
+        color: #0f4c75;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+      .header-links {
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 9pt;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 8px;
+        border-radius: 6px;
+      }
+      .header-links a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 15px;
+        font-weight: 500;
+      }
+      .header-links a:hover {
+        text-decoration: underline;
+      }
+      .section {
+        margin-bottom: 12px;
+        page-break-inside: avoid;
+      }
+      .philosophy-box {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        padding: 10px;
+        border-left: 4px solid #0f4c75;
+        margin: 8px 0;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        page-break-inside: avoid;
+      }
+      .philosophy-box p {
+        margin: 5px 0;
+        font-size: 9.5pt;
+      }
+      .philosophy-box p:before {
+        content: '▸ ';
+        color: #0f4c75;
+        font-weight: bold;
+      }
+      .project-box {
+        background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        padding: 10px;
+        border-left: 4px solid #27ae60;
+        margin: 10px 0;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        page-break-inside: avoid;
+      }
+      .project-box.alt {
+        background: linear-gradient(135deg, #e3f2fd 0%, #e1f5fe 100%);
+        border-left-color: #2196f3;
+      }
+      ul {
+        margin: 6px 0;
+        padding-left: 20px;
+      }
+      li {
+        margin-bottom: 3px;
+        font-size: 9.5pt;
+      }
+      .tech-stack {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6px;
+        border-radius: 4px;
+        margin: 8px 0;
+        font-size: 9pt;
+        font-weight: 500;
+      }
+      .outcomes {
+        margin-top: 8px;
+      }
+      .outcomes li {
+        list-style-type: none;
+        padding-left: 0;
+        font-size: 9.5pt;
+      }
+      .outcomes li:before {
+        content: '✓ ';
+        color: #27ae60;
+        font-weight: bold;
+        font-size: 11pt;
+      }
+      strong {
+        color: #2c3e50;
+      }
+      .skills-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin: 15px 0;
+      }
+      .skill-box {
+        background: linear-gradient(135deg, #fff 0%, #f0f4f8 100%);
+        padding: 12px;
+        border-radius: 8px;
+        border: 2px solid #0f4c75;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+      }
+      .skill-box h4 {
+        margin-top: 0;
+        color: #0f4c75;
+        font-size: 11pt;
+        font-weight: 600;
+      }
+      .skill-box h4:before {
+        content: '◆ ';
+        color: #3282b8;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 20px 0;
+      }
+      .footer {
+        text-align: center;
+        font-size: 9pt;
+        color: #7f8c8d;
+        margin-top: 30px;
+        padding-top: 10px;
+        border-top: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Uzi Biton</h1>
+    <div class="subtitle">Senior QA Automation Engineer / SDET</div>
+    <div class="header-links">
+      <strong>Portfolio:</strong>
+      <a href="https://github.com/uzibiton/automation-interview-pre"
+        >github.com/uzibiton/automation-interview-pre</a
+      >
+      | <a href="https://github.com/uzibiton">GitHub</a> |
+      <a href="https://linkedin.com/in/uzibiton">LinkedIn</a>
+    </div>
+
+    <hr />
+
+    <div class="section">
+      <h2>Professional Summary</h2>
+      <p>
+        Senior QA Automation Engineer specializing in
+        <strong>scalable test infrastructure</strong> across web, API, and cloud-native
+        applications. Expert in <strong>CI/CD pipeline architecture</strong> with GitHub Actions,
+        automating deployment workflows to <strong>Google Cloud Run</strong>. Proven track record
+        building <strong>multi-layered testing strategies</strong> (Unit → Integration → Contract →
+        E2E → Non-Functional). Strong advocate for <strong>quality by design</strong>, shift-left
+        testing, and infrastructure-as-code with <strong>Docker containerization</strong>.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Core Technical Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-box">
+          <h4>Automation & Frameworks</h4>
+          <ul>
+            <li>E2E: Playwright, Cucumber (BDD)</li>
+            <li>Unit/Integration: Jest, Pact</li>
+            <li>API: Postman, Newman</li>
+            <li>Performance: Locust, k6, JMeter</li>
+          </ul>
+        </div>
+        <div class="skill-box">
+          <h4>Testing Strategy</h4>
+          <ul>
+            <li>E2E, Integration, Contract, Unit</li>
+            <li>Performance, Security (OWASP ZAP)</li>
+            <li>Accessibility (WCAG)</li>
+            <li>Visual Regression</li>
+          </ul>
+        </div>
+        <div class="skill-box">
+          <h4>DevOps & Infrastructure</h4>
+          <ul>
+            <li>CI/CD: GitHub Actions, Cloud Run</li>
+            <li>Containers: Docker, Docker Compose</li>
+            <li>Cloud: GCP, Cloud Build</li>
+          </ul>
+        </div>
+        <div class="skill-box">
+          <h4>Languages & Tools</h4>
+          <ul>
+            <li>TypeScript/JavaScript, Python</li>
+            <li>NestJS, React, Node.js</li>
+            <li>PostgreSQL, Firestore</li>
+            <li>Git, Allure Reports, OAuth 2.0</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Automation & Testing Philosophy</h2>
+      <div class="philosophy-box">
+        <p>
+          <strong>Testing Strategy:</strong> Multi-layered approach prioritizing fast unit tests,
+          strategic integration tests, and focused E2E scenarios for critical paths
+        </p>
+        <p>
+          <strong>Shift-Left:</strong> Early testing integration in development cycle with unit and
+          integration tests catching issues before deployment
+        </p>
+        <p>
+          <strong>Shift-Right:</strong> Production monitoring and synthetic testing to validate
+          real-world behavior and user experience
+        </p>
+        <p>
+          <strong>CI/CD Integration:</strong> All tests integrated into automated pipelines for
+          continuous feedback and validation on every commit
+        </p>
+        <p>
+          <strong>Traceability:</strong> Bidirectional linking between requirements, design
+          documents, test cases, and implementation for complete coverage visibility
+        </p>
+        <p>
+          <strong>Quality Metrics:</strong> Focus on defect escape rate, mean time to detection, and
+          deployment frequency over vanity metrics
+        </p>
+        <p>
+          <strong>Maintainability:</strong> Page object models, reusable components, self-healing
+          locators, clear naming conventions
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Project Showcase</h2>
+
+      <h3>Multi-Environment Test Automation Infrastructure</h3>
+      <div class="project-box">
+        <p>
+          <strong>Problem:</strong> Expense tracking microservices application needed comprehensive
+          QA strategy with testing across 4 environments (local, Docker, staging, production)
+        </p>
+
+        <p><strong>Solution:</strong></p>
+        <ul>
+          <li>
+            Architected <strong>multi-tier testing strategy</strong> with comprehensive coverage
+            across unit, integration, and E2E tests - <strong>200+ test scenarios</strong>
+          </li>
+          <li>
+            Built <strong>Playwright E2E framework</strong> with environment-agnostic configuration
+            for seamless multi-environment execution
+          </li>
+          <li>
+            Designed <strong>Docker-based test infrastructure</strong> with service profiles (unit,
+            integration, e2e, performance, security)
+          </li>
+          <li>
+            Implemented <strong>contract testing with Pact</strong> and
+            <strong>BDD with Cucumber</strong> for stakeholder-readable specifications
+          </li>
+        </ul>
+
+        <div class="tech-stack">
+          <strong>Tech Stack:</strong> Playwright • Jest • TypeScript • Docker Compose • GitHub
+          Actions • PostgreSQL • Firestore
+        </div>
+
+        <div class="outcomes">
+          <strong>Outcomes:</strong>
+          <ul>
+            <li>
+              <strong>15+ test types</strong> implemented (E2E, Integration, Contract, Performance,
+              Security, Accessibility)
+            </li>
+            <li>
+              <strong>Environment parity</strong> achieved with single test codebase running across
+              all environments
+            </li>
+            <li><strong>Complete CI/CD pipeline</strong> with automated quality gates</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Cloud-Native CI/CD Pipeline with Multi-Environment Deployment</h3>
+      <div class="project-box alt">
+        <p>
+          <strong>Problem:</strong> Microservices application (Auth, API, Frontend) required
+          automated deployment pipeline to Google Cloud Run with environment isolation and quality
+          gates
+        </p>
+
+        <p><strong>Solution:</strong></p>
+        <ul>
+          <li>
+            Designed <strong>GitHub Actions CI/CD workflow</strong> with parallel job execution:
+            quality gates → build → deploy
+          </li>
+          <li>
+            Implemented <strong>4-environment strategy</strong>: Auto-deploy to develop on main
+            push, manual staging/production, PR-based ephemeral environments
+          </li>
+          <li>
+            Built <strong>Docker multi-stage builds</strong> optimizing image size and caching for 3
+            microservices
+          </li>
+          <li>
+            Created <strong>tag-based test suites</strong> (smoke, sanity, regression, nightly) for
+            flexible execution based on deployment stage
+          </li>
+        </ul>
+
+        <div class="tech-stack">
+          <strong>Tech Stack:</strong> GitHub Actions • Docker • Google Cloud Run • Cloud Build •
+          PostgreSQL • Firestore • OAuth 2.0
+        </div>
+
+        <div class="outcomes">
+          <strong>Outcomes:</strong>
+          <ul>
+            <li>
+              <strong>Automated deployment pipeline</strong> with &lt;15 min total execution time
+            </li>
+            <li><strong>Zero manual deployments</strong> for develop environment</li>
+            <li><strong>Environment-specific secrets</strong> management via GitHub Actions</li>
+            <li><strong>PR preview environments</strong> with automatic cleanup</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>CI/CD & Quality Gates Experience</h2>
+      <ul>
+        <li>
+          <strong>Pipeline Architecture:</strong> Implemented parallel job execution (Prettier,
+          ESLint, TypeScript, Security) running simultaneously for fast feedback
+        </li>
+        <li>
+          <strong>Performance Testing:</strong> Built non-functional test suite with k6, Locust,
+          JMeter for load testing and Lighthouse for performance metrics
+        </li>
+        <li>
+          <strong>Security Scanning:</strong> Integrated OWASP ZAP for dynamic security testing and
+          Bandit/Safety for Python dependency scanning
+        </li>
+        <li>
+          <strong>Multi-Environment Deployment:</strong> Orchestrated Google Cloud Run deployments
+          across develop, staging, production with conditional triggers
+        </li>
+        <li>
+          <strong>Infrastructure as Code:</strong> Maintained Docker Compose profiles for isolated
+          test execution and environment-specific configurations
+        </li>
+        <li>
+          <strong>Documentation & Traceability:</strong> Created bidirectional traceability (REQ →
+          HLD → TEST → Implementation) with structured issue templates
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Notable Achievements</h2>
+      <ul>
+        <li>
+          <strong>Complete Testing Infrastructure:</strong> Architected from scratch with 200+ test
+          scenarios across 15+ test types
+        </li>
+        <li>
+          <strong>Organized Structure:</strong> 44 testing directories with clear separation: unit,
+          component, integration, contract, E2E, non-functional, BDD
+        </li>
+        <li>
+          <strong>Docker-Based Environment:</strong> Service profiles enabling isolated test
+          execution without full stack
+        </li>
+        <li>
+          <strong>Professional Documentation:</strong> Requirements traceability, test plans, and
+          execution reports
+        </li>
+        <li>
+          <strong>Multi-Environment Testing:</strong> Same test suite runs across local, Docker,
+          staging, and production
+        </li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      <strong>View Complete Documentation:</strong>
+      <a
+        href="https://github.com/uzibiton/automation-interview-pre/blob/main/docs/TABLE_OF_CONTENTS.md"
+        >Table of Contents</a
+      >
+      | <strong>Live Demo:</strong>
+      <a href="https://expense-tracker-buuath6a3q-uc.a.run.app">Expense Tracker</a> <br /><br />
+      <em>Portfolio generated: December 2025</em>
+    </div>
+  </body>
+</html>

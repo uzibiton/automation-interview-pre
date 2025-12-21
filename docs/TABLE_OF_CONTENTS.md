@@ -42,31 +42,27 @@ Comprehensive guide to all project documentation organized by category and use c
 
 ### 🎨 Design & Architecture
 
-| Document                                                        | Description                                           | Related Docs                                                                                                |
-| --------------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **[High-Level Design Template](dev/HLD_TEMPLATE.md)**           | **Template for system architecture documentation**    | **-> [Requirements](product/REQUIREMENTS_TEMPLATE.md), [Detailed Design](dev/DETAILED_DESIGN_TEMPLATE.md)** |
-| **[Detailed Design Template](dev/DETAILED_DESIGN_TEMPLATE.md)** | **Template for component implementation details**     | **-> [HLD](dev/HLD_TEMPLATE.md), [Test Plan](qa/TEST_PLAN_TEMPLATE.md)**                                    |
-| **[Application Architecture](../app/README.md)**                | **Microservices architecture, tech stack, data flow** | **-> [System Diagram](../app/README.md#architecture-diagram)**                                              |
-| [System Architecture](devops/DEPLOYMENT_SUMMARY.md)             | High-level architecture and components                | -> [Deployment Guide](devops/DEPLOYMENT.md)                                                                 |
-| [Database Schema](../app/database/README.md)                    | Database tables, relationships, migrations            | -> [Integration Tests](../tests/integration/)                                                               |
-| [CI/CD Pipeline](devops/CI_CD_PIPELINE.md)                      | Build, test, and deployment automation                | -> [GitHub Actions](../.github/workflows/ci-cd.yml)                                                         |
+| Document                                                        | Description                                                    | Related Docs                                                                                                |
+| --------------------------------------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **[High-Level Design Template](dev/HLD_TEMPLATE.md)**           | **Template for system architecture documentation**             | **-> [Requirements](product/REQUIREMENTS_TEMPLATE.md), [Detailed Design](dev/DETAILED_DESIGN_TEMPLATE.md)** |
+| **[Detailed Design Template](dev/DETAILED_DESIGN_TEMPLATE.md)** | **Template for component implementation details**              | **-> [HLD](dev/HLD_TEMPLATE.md), [Test Plan](qa/TEST_PLAN_TEMPLATE.md)**                                    |
+| **[Application Architecture](../app/README.md)**                | **Microservices architecture, tech stack, data flow**          | **-> [System Diagram](../app/README.md#architecture-diagram)**                                              |
+| [System Architecture](devops/DEPLOYMENT_SUMMARY.md)             | High-level architecture and components                         | -> [Deployment Guide](devops/CLOUD_RUN_DEPLOYMENT.md)                                                       |
+| [Database Schema](../app/database/README.md)                    | Database tables, relationships, migrations                     | -> [Integration Tests](../tests/integration/)                                                               |
+| **[CI/CD Guide](devops/CI_CD_GUIDE.md)**                        | **Build, test, and deployment automation with GitHub Actions** | **-> [GitHub Actions](../.github/workflows/ci-cd.yml)**                                                     |
 
 ### 🧪 Testing & Quality
 
-| Document                                                                | Description                                         | Related Tests                                                                                       |
-| ----------------------------------------------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **[Test Plan Template](qa/test-plans/TEST_PLAN_TEMPLATE.md)**           | **Template for feature/release test planning**      | **-> [Requirements](product/REQUIREMENTS_TEMPLATE.md), [Testing Strategy](qa/TESTING_STRATEGY.md)** |
-| **[Test Execution Template](qa/test-plans/TEST_EXECUTION_TEMPLATE.md)** | **Template for documenting test execution results** | **-> [Test Plan Template](qa/test-plans/TEST_PLAN_TEMPLATE.md)**                                    |
-| **[Testing Strategy (Workflow)](qa/TESTING_STRATEGY.md)**               | **QA workflows, issue classification, PR review**   | **-> [Test Strategy](qa/TEST_STRATEGY.md)**                                                         |
-| **[Test Strategy (Technical)](qa/TEST_STRATEGY.md)**                    | **Testing architecture, tools, implementation**     | **-> All test suites**                                                                              |
-| [Manual Testing Guide](qa/TESTING.md)                                   | Step-by-step manual test scenarios                  | -> Manual test execution                                                                            |
-| [E2E Test Guide](qa/E2E-QUICK-START.md)                                 | End-to-end testing with Playwright                  | -> [E2E Tests](../tests/e2e/)                                                                       |
-| [Multi-Environment Testing](qa/README-MULTI-ENV-E2E.md)                 | Test across local, staging, production              | -> [E2E Config](../tests/config/playwright.config.ts)                                               |
-| [E2E Implementation Complete](qa/E2E-IMPLEMENTATION-COMPLETE.md)        | Complete E2E testing implementation details         | -> [E2E Tests](../tests/e2e/)                                                                       |
-| [E2E Quick Reference](qa/QUICK-REFERENCE-E2E.md)                        | E2E testing commands cheat sheet                    | -> [E2E Tests](../tests/e2e/)                                                                       |
-| [Implementation Checklist](qa/IMPLEMENTATION_CHECKLIST.md)              | Testing infrastructure setup checklist              | -> [Test Strategy](qa/TESTING_STRATEGY.md)                                                          |
-| [Test Implementation Summary](qa/IMPLEMENTATION_SUMMARY.md)             | What's tested and coverage overview                 | -> [Test Results](../tests/reports/)                                                                |
-| [Non-Functional Testing Guide](qa/NON_FUNCTIONAL_SIMPLE_GUIDE.md)       | Performance, security, accessibility testing        | -> [Non-Functional Tests](../tests/non-functional/)                                                 |
+| Document                                                                | Description                                                    | Related Tests                                                                                    |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **[Test Plan Template](qa/test-plans/TEST_PLAN_TEMPLATE.md)**           | **Template for feature/release test planning**                 | **-> [Requirements](product/REQUIREMENTS_TEMPLATE.md), [Testing Strategy](qa/TEST_STRATEGY.md)** |
+| **[Test Execution Template](qa/test-plans/TEST_EXECUTION_TEMPLATE.md)** | **Template for documenting test execution results**            | **-> [Test Plan Template](qa/test-plans/TEST_PLAN_TEMPLATE.md)**                                 |
+| **[Test Strategy](qa/TEST_STRATEGY.md)**                                | **Complete testing architecture, tools, and workflows**        | **-> All test suites**                                                                           |
+| **[E2E Testing Guide](qa/E2E_TESTING_GUIDE.md)**                        | **End-to-end testing across all environments with Playwright** | **-> [E2E Tests](../tests/e2e/)**                                                                |
+| [E2E Implementation Complete](qa/E2E-IMPLEMENTATION-COMPLETE.md)        | Complete E2E testing implementation details                    | -> [E2E Tests](../tests/e2e/)                                                                    |
+| [Implementation Checklist](qa/IMPLEMENTATION_CHECKLIST.md)              | Testing infrastructure setup checklist                         | -> [Test Strategy](qa/TEST_STRATEGY.md)                                                          |
+| [Test Implementation Summary](qa/IMPLEMENTATION_SUMMARY.md)             | What's tested and coverage overview                            | -> [Test Results](../tests/reports/)                                                             |
+| [Non-Functional Testing Guide](qa/NON_FUNCTIONAL_SIMPLE_GUIDE.md)       | Performance, security, accessibility testing                   | -> [Non-Functional Tests](../tests/non-functional/)                                              |
 
 ### 🚀 Development & Workflows
 
@@ -80,8 +76,8 @@ Comprehensive guide to all project documentation organized by category and use c
 | [Database Quick Fix](dev/QUICK_FIX.md)                    | Quick fixes for database issues                   | -> [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md) |
 | [PR Workflow Guide](qa/PR_WORKFLOW_GUIDE.md)              | Complete PR process from task to merge            | -> [Testing Strategy](qa/TESTING_STRATEGY.md)                |
 | [Development Insights](dev/DEVELOPMENT_INSIGHTS.md)       | Lessons learned and best practices                | -> [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)                    |
-| [GitHub Actions Setup](devops/GITHUB_ACTIONS_SETUP.md)    | CI/CD configuration details                       | -> [Workflows](../.github/workflows/)                        |
-| [Cloud Run Deployment](devops/DEPLOYMENT.md)              | Deploy to staging and production                  | -> [Cloud Run Management](devops/CLOUD_RUN_MANAGEMENT.md)    |
+| [GitHub Actions Setup](devops/GITHUB_ACTIONS_SETUP.md)    | CI/CD configuration details                       | -> [CI/CD Guide](devops/CI_CD_GUIDE.md)                      |
+| [Cloud Run Deployment](devops/CLOUD_RUN_DEPLOYMENT.md)    | Deploy to staging and production                  | -> [Cloud Run Management](devops/CLOUD_RUN_MANAGEMENT.md)    |
 
 ### 📊 Demo & Presentation
 
@@ -122,8 +118,8 @@ Deployment              Quality Metrics
 ### By Role
 
 - **Developers** -> Start with [dev/RUN_LOCALLY.md](dev/RUN_LOCALLY.md)
-- **QA Engineers** -> Check [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)
-- **DevOps** -> See [devops/CI_CD_PIPELINE.md](devops/CI_CD_PIPELINE.md)
+- **QA Engineers** -> Check [qa/TEST_STRATEGY.md](qa/TEST_STRATEGY.md)
+- **DevOps** -> See [devops/CI_CD_GUIDE.md](devops/CI_CD_GUIDE.md)
 - **Interviewers** -> View [demo/SDET_DEMO_SCRIPT.md](demo/SDET_DEMO_SCRIPT.md)
 - **Product/Stakeholders** -> Read [general/PROJECT_STATUS.md](general/PROJECT_STATUS.md)
 
@@ -138,9 +134,9 @@ Deployment              Quality Metrics
 - **Add a feature** -> [qa/PR_WORKFLOW_GUIDE.md](qa/PR_WORKFLOW_GUIDE.md) + [Issue Templates](../.github/ISSUE_TEMPLATE/)
 - **Track issues** -> [qa/TASK_BUG_MANAGEMENT.md](qa/TASK_BUG_MANAGEMENT.md)
 - **Do maintenance** -> [dev/MAINTENANCE.md](dev/MAINTENANCE.md)
-- **Write tests** -> [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md) + [E2E Guide](qa/E2E-QUICK-START.md)
-- **Deploy** -> [devops/DEPLOYMENT.md](devops/DEPLOYMENT.md)
-- **Debug CI/CD** -> [devops/CI_CD_PIPELINE.md](devops/CI_CD_PIPELINE.md)
+- **Write tests** -> [qa/TEST_STRATEGY.md](qa/TEST_STRATEGY.md) + [E2E Guide](qa/E2E_TESTING_GUIDE.md)
+- **Deploy** -> [devops/CLOUD_RUN_DEPLOYMENT.md](devops/CLOUD_RUN_DEPLOYMENT.md)
+- **Debug CI/CD** -> [devops/CI_CD_GUIDE.md](devops/CI_CD_GUIDE.md)
 - **Demo for interview** -> [demo/SDET_DEMO_SCRIPT.md](demo/SDET_DEMO_SCRIPT.md)
 - **View architecture** -> [../app/README.md](../app/README.md)
 - **Check API docs** -> [dev/API_REFERENCE.md](dev/API_REFERENCE.md)

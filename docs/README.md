@@ -2,7 +2,20 @@
 
 Welcome to the documentation for the Automation Interview Pre project - an expense tracking application with comprehensive testing infrastructure.
 
-## 📂 Documentation Structure
+## � Quick Start for AI Workflow
+
+**Working with AI assistants?** Use the **Prompt Catalog System**:
+
+```
+Simply say: "load [name]"
+Examples: load reset | load planning | load docs | load test
+```
+
+📖 **See**: [general/prompts/PROMPT_CATALOG.md](general/prompts/PROMPT_CATALOG.md) for all available prompts and commands
+
+---
+
+## �📂 Documentation Structure
 
 ### � Document Traceability
 
@@ -32,9 +45,11 @@ REQ-001 (Requirements) ↔ HLD-001 (Design) ↔ TEST-001 (Test Plan)
 
 General project information and tracking:
 
+- **[prompts/PROMPT_CATALOG.md](general/prompts/PROMPT_CATALOG.md)** - 🚀 AI prompt catalog (start here for AI workflows)
 - **[ABOUTME.md](general/ABOUTME.md)** - Project overview and author information
 - **[PROJECT_STATUS.md](general/PROJECT_STATUS.md)** - Current status, roadmap, and priorities
 - **[SESSION_RESUME.md](general/SESSION_RESUME.md)** - Resume work after interruption
+- **[prompts/](general/prompts/)** - AI prompt templates library
 - **[temp.md](general/temp.md)** - Temporary notes and scratchpad
 
 ### � [product/](product/) - Product Requirements
@@ -65,23 +80,23 @@ Testing strategy and quality assurance processes:
   - **[TEST_PLAN_TEMPLATE.md](qa/test-plans/TEST_PLAN_TEMPLATE.md)** - Template for test plans
   - **[TEST_EXECUTION_TEMPLATE.md](qa/test-plans/TEST_EXECUTION_TEMPLATE.md)** - Template for test execution reports
   - **[TEST-001-expense-sorting.md](qa/test-plans/TEST-001-expense-sorting.md)** - Example: Expense sorting test plan
-- **[TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)** - Comprehensive QA approach
-- **[TESTING.md](qa/TESTING.md)** - Testing implementation details
+- **[TEST_STRATEGY.md](qa/TEST_STRATEGY.md)** - Complete testing architecture, tools, and workflows ⭐
+- **[E2E_TESTING_GUIDE.md](qa/E2E_TESTING_GUIDE.md)** - End-to-end testing across all environments ⭐
+- **[DATA_TESTID_CONVENTION.md](qa/DATA_TESTID_CONVENTION.md)** - Test ID naming standards
 - **[PWA_TESTING.md](qa/PWA_TESTING.md)** - Progressive Web App testing guide
 - **[PR_WORKFLOW_GUIDE.md](qa/PR_WORKFLOW_GUIDE.md)** - Pull request workflow
 - **[TASK_BUG_MANAGEMENT.md](qa/TASK_BUG_MANAGEMENT.md)** - Issue tracking and workflows
+- **[NON_FUNCTIONAL_SIMPLE_GUIDE.md](qa/NON_FUNCTIONAL_SIMPLE_GUIDE.md)** - Performance, security, accessibility testing
 
 ### 🚀 [devops/](devops/) - CI/CD & Deployment
 
 DevOps, infrastructure, and deployment:
 
-- **[CI_CD_PIPELINE.md](devops/CI_CD_PIPELINE.md)** - CI/CD pipeline documentation
-- **[CI_CD_WORKFLOW.md](devops/CI_CD_WORKFLOW.md)** - Workflow details
-- **[DEPLOYMENT.md](devops/DEPLOYMENT.md)** - Deployment guide
-- **[DEPLOYMENT_SUMMARY.md](devops/DEPLOYMENT_SUMMARY.md)** - Deployment overview
-- **[CLOUD_RUN_MANAGEMENT.md](devops/CLOUD_RUN_MANAGEMENT.md)** - Cloud Run configuration
-- **[CLOUD_RUN_README.md](devops/CLOUD_RUN_README.md)** - Cloud Run setup
+- **[CI_CD_GUIDE.md](devops/CI_CD_GUIDE.md)** - Complete CI/CD pipeline guide ⭐
+- **[CLOUD_RUN_DEPLOYMENT.md](devops/CLOUD_RUN_DEPLOYMENT.md)** - Google Cloud Run deployment guide
+- **[CLOUD_RUN_MANAGEMENT.md](devops/CLOUD_RUN_MANAGEMENT.md)** - Cloud Run service management
 - **[GITHUB_ACTIONS_SETUP.md](devops/GITHUB_ACTIONS_SETUP.md)** - GitHub Actions configuration
+- **[CODE_SCANNING_SETUP.md](devops/CODE_SCANNING_SETUP.md)** - Security scanning setup
 
 ### 🎨 [ui/](ui/) - UI/UX Documentation
 
@@ -108,15 +123,16 @@ Presentation materials and demo scripts:
 **By Role:**
 
 - **Developers** -> Start with [dev/RUN_LOCALLY.md](dev/RUN_LOCALLY.md)
-- **QA Engineers** -> Check [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)
-- **DevOps** -> See [devops/CI_CD_PIPELINE.md](devops/CI_CD_PIPELINE.md)
+- **QA Engineers** -> Check [qa/TEST_STRATEGY.md](qa/TEST_STRATEGY.md)
+- **DevOps** -> See [devops/CI_CD_GUIDE.md](devops/CI_CD_GUIDE.md)
 - **Interviewers** -> View [demo/SDET_DEMO_SCRIPT.md](demo/SDET_DEMO_SCRIPT.md)
 
 **By Task:**
 
 - **Run the app** -> [dev/RUN_LOCALLY.md](dev/RUN_LOCALLY.md)
-- **Write tests** -> [qa/TESTING_STRATEGY.md](qa/TESTING_STRATEGY.md)
-- **Deploy** -> [devops/DEPLOYMENT.md](devops/DEPLOYMENT.md)
+- **Write tests** -> [qa/TEST_STRATEGY.md](qa/TEST_STRATEGY.md) + [E2E Guide](qa/E2E_TESTING_GUIDE.md)
+- **Deploy** -> [devops/CLOUD_RUN_DEPLOYMENT.md](devops/CLOUD_RUN_DEPLOYMENT.md)
+- **CI/CD Pipeline** -> [devops/CI_CD_GUIDE.md](devops/CI_CD_GUIDE.md)
 - **Report bug** -> [qa/TASK_BUG_MANAGEMENT.md](qa/TASK_BUG_MANAGEMENT.md)
 - **Submit PR** -> [qa/PR_WORKFLOW_GUIDE.md](qa/PR_WORKFLOW_GUIDE.md)
 

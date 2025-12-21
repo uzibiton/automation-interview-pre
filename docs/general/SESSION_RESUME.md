@@ -5,6 +5,22 @@
 
 ---
 
+## 🎯 AI Workflow Reference
+
+**Using AI Prompts**: This project has a prompt catalog system. Use **`load [name]`** commands:
+
+- `load reset` - Save context at end of session
+- `load resume` - Restore from saved context
+- `load requirements` - Create REQ-### documents
+- `load planning` - Break down tasks/issues
+- `load design` - Create HLD-### designs
+- `load test` - Generate test cases
+- `load docs` - Create documentation
+
+📖 **Full Catalog**: [docs/general/prompts/PROMPT_CATALOG.md](prompts/PROMPT_CATALOG.md)
+
+---
+
 ## 🔴 IMMEDIATE ACTION WHEN YOU RETURN
 
 **You need to deploy the latest fix!**

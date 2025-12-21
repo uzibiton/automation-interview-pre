@@ -4,6 +4,17 @@
 
 This directory contains reusable AI prompt templates designed to accelerate development, testing, and documentation workflows in this QA/SDET showcase project. These prompts are optimized for use with GitHub Copilot and other AI assistants.
 
+## Quick Start
+
+🚀 **New!** Use the prompt catalog for easy access:
+
+```
+Simply say: "load [name]"
+Example: "load reset" or "load planning for issue #123"
+```
+
+See **[PROMPT_CATALOG.md](PROMPT_CATALOG.md)** for the complete quick reference guide.
+
 **📖 New to prompt engineering?** Start with [Prompt Engineering Guide](prompt-engineering-guide.md) to learn core principles, patterns, and best practices before diving into specific templates.
 
 ## Purpose
@@ -16,6 +27,32 @@ This directory contains reusable AI prompt templates designed to accelerate deve
 ## Integration with Agent Workflow
 
 These prompts complement the guidelines in [WORKING_WITH_AGENTS.md](../dev/WORKING_WITH_AGENTS.md). Use them as starting points and customize based on specific needs.
+
+## 📚 Prompt Catalog System
+
+The **[Prompt Catalog](PROMPT_CATALOG.md)** provides a streamlined way to access prompts:
+
+### How to Use
+
+Just say: **`load [name]`**
+
+**Examples:**
+
+- `load reset` - Save context at end of session
+- `load planning for issue #123` - Break down an issue into tasks
+- `load docs for POST /api/expenses` - Generate API documentation
+- `load test for expense component` - Create test cases
+
+The AI will:
+
+1. ✅ **Load the appropriate prompt** from this library
+2. ✅ **Ask for missing info** if needed (interactive)
+3. ✅ **Execute immediately** if you provide context
+4. ✅ **Deliver results** in the expected format
+
+**📖 Full Reference**: [PROMPT_CATALOG.md](PROMPT_CATALOG.md) - Complete catalog with all commands and examples
+
+**🔧 For AI Assistants**: [PROMPT_LOADER.md](PROMPT_LOADER.md) - Implementation guide for handling load commands
 
 ## Prompt Categories
 
