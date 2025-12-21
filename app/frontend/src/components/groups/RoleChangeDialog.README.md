@@ -21,10 +21,10 @@ The `RoleChangeDialog` component provides a user interface for changing a group 
 
 ```typescript
 interface RoleChangeDialogProps {
-  isOpen: boolean;           // Controls dialog visibility
+  isOpen: boolean; // Controls dialog visibility
   member: GroupMember | null; // Member whose role is being changed
-  onClose: () => void;       // Callback when dialog is closed
-  onSuccess?: () => void;    // Optional callback after successful role change
+  onClose: () => void; // Callback when dialog is closed
+  onSuccess?: () => void; // Optional callback after successful role change
 }
 ```
 
@@ -59,9 +59,7 @@ function MemberManagement() {
   return (
     <div>
       {/* Your member list UI */}
-      <button onClick={() => handleChangeRole(someMember)}>
-        Change Role
-      </button>
+      <button onClick={() => handleChangeRole(someMember)}>Change Role</button>
 
       {/* Role Change Dialog */}
       <RoleChangeDialog
@@ -116,6 +114,7 @@ The component uses the following CSS classes (defined in `index.css`):
 The component requires the following translation keys in your i18n files:
 
 ### English (en.json)
+
 ```json
 {
   "groups": {
@@ -190,6 +189,7 @@ This prevents accidental or unauthorized changes to the Owner role.
 ## Testing
 
 A comprehensive example component is available at:
+
 - `src/components/groups/RoleChangeDialog.example.tsx`
 
 This example demonstrates integration with a member list and can be used for manual testing during development.

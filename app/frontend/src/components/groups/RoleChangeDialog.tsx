@@ -174,7 +174,11 @@ function RoleChangeDialog({ isOpen, member, onClose, onSuccess }: RoleChangeDial
                 {translation('groups.selectNewRole')} <span className="required">*</span>
               </label>
 
-              <div className="role-options" role="radiogroup" aria-label={translation('groups.selectNewRole')}>
+              <div
+                className="role-options"
+                role="radiogroup"
+                aria-label={translation('groups.selectNewRole')}
+              >
                 {[GroupRole.ADMIN, GroupRole.MEMBER, GroupRole.VIEWER].map((role) => (
                   <label
                     key={role}
