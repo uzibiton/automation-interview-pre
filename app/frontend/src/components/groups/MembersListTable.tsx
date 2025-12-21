@@ -90,10 +90,10 @@ function MembersListTable({
     }
   };
 
-  const handleResetPassword = async (member: GroupMember) => {
+  const handleResetPassword = async (_member: GroupMember) => {
     // TODO: Implement reset password functionality
     // For now, just show success message (should be replaced with actual API call)
-    // console.log('Reset password for:', member.email);
+    // console.log('Reset password for:', _member.email);
     // In production, this should use a proper toast notification system
     window.confirm(translation('groups.members.resetPasswordSuccess'));
   };

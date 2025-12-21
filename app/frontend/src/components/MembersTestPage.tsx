@@ -10,7 +10,7 @@ interface MembersTestPageProps {
 
 /**
  * Test/Demo page for MembersListTable component
- * 
+ *
  * This page demonstrates the MembersListTable component with mock data.
  * It shows different user roles and permission-based action visibility.
  */
@@ -27,7 +27,7 @@ function MembersTestPage({ token }: MembersTestPageProps) {
 
   // For demo purposes, use group-1 as the default group ID
   const groupId = currentGroup?.id || 'group-1';
-  
+
   // Demo: Show the component as an Admin user
   const demoUserRole = GroupRole.ADMIN;
   const demoUserId = 'user-2'; // Jane Smith (Admin)
@@ -42,14 +42,21 @@ function MembersTestPage({ token }: MembersTestPageProps) {
       </div>
 
       <div style={{ marginTop: '24px' }}>
-        <MembersListTable 
+        <MembersListTable
           groupId={groupId}
           currentUserRole={demoUserRole}
           currentUserId={demoUserId}
         />
       </div>
 
-      <div style={{ marginTop: '40px', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
+      <div
+        style={{
+          marginTop: '40px',
+          padding: '20px',
+          backgroundColor: '#f9f9f9',
+          borderRadius: '8px',
+        }}
+      >
         <h3 style={{ marginBottom: '12px' }}>Component Features:</h3>
         <ul style={{ lineHeight: '1.8', color: '#666' }}>
           <li>✓ Displays members with avatar, name, email, role, and joined date</li>

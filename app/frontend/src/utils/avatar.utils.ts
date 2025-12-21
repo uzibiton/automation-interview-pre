@@ -12,7 +12,7 @@ export function getAvatarUrl(avatar: string | undefined, name: string): string {
   if (avatar) {
     return avatar;
   }
-  
+
   // Fallback to UI Avatars service
   const encodedName = encodeURIComponent(name);
   return `https://ui-avatars.com/api/?name=${encodedName}&background=4285f4&color=fff`;
