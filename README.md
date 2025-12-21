@@ -53,10 +53,10 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 **Exploring New Features:**
 
-- 💬 [#68 - AI-Powered Conversational Expense Input & Comparative Analytics](https://github.com/uzibiton/automation-interview-pre/issues/68)
-- 👥 [#69 - Household/Group Management with Role-Based Permissions](https://github.com/uzibiton/automation-interview-pre/issues/69)
-- 📱 [#80 - Add PWA + Mobile/Desktop Testing Demo (Without Native Apps)](https://github.com/uzibiton/automation-interview-pre/issues/80)
-- 🔍 [#81 - Implement Production Synthetic Monitoring (Shift-Right Testing)](https://github.com/uzibiton/automation-interview-pre/issues/81)
+- 💬 [#68 - AI-Powered Conversational Expense Input & Comparative Analytics](https://github.com/uzibiton/automation-interview-pre/issues/68) - **8%** (2/25 subtasks completed)
+- 👥 [#69 - Household/Group Management with Role-Based Permissions](https://github.com/uzibiton/automation-interview-pre/issues/69) - **0%** (idea phase)
+- 📱 [#80 - Add PWA + Mobile/Desktop Testing Demo (Without Native Apps)](https://github.com/uzibiton/automation-interview-pre/issues/80) - **0%** (idea phase)
+- 🔍 [#81 - Implement Production Synthetic Monitoring (Shift-Right Testing)](https://github.com/uzibiton/automation-interview-pre/issues/81) - **0%** (idea phase)
 
 📝 **[View All Ideas](https://github.com/uzibiton/automation-interview-pre/labels/type%3Aidea)** | **[Suggest New Idea](https://github.com/uzibiton/automation-interview-pre/issues/new?template=template-idea.md)**
 
