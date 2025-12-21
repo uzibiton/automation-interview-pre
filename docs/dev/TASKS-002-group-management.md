@@ -868,7 +868,7 @@
 
 ---
 
-### TASK-002-021: Create Role Change Dialog Component
+### TASK-002-021: Create Role Change Dialog Component ✅
 
 **Priority**: High | **Effort**: 1 day | **Dependencies**: TASK-002-016
 
@@ -877,25 +877,28 @@
 
 **Description**: UI for changing member role
 
+**Status**: ✅ COMPLETED | **PR**: #133 | **Merged**: Pending
+
 **Acceptance Criteria**:
 
-- [ ] Component created: `RoleChangeDialog.tsx`
-- [ ] Props: `memberId`, `currentRole`, `onConfirm`
-- [ ] UI elements:
-  - [ ] Member name display
-  - [ ] Current role badge
-  - [ ] New role selector (radio buttons)
-  - [ ] Confirmation message
-  - [ ] "Change Role" button
-- [ ] Validation: Cannot change Owner role (disabled)
-- [ ] Success: Close dialog, refresh members list, show toast
-- [ ] Component tests: Render, validation, submit
-- [ ] Test coverage: >80%
+- [x] Component created: `RoleChangeDialog.tsx`
+- [x] Props: `memberId`, `currentRole`, `onConfirm`
+- [x] UI elements:
+  - [x] Member name display
+  - [x] Current role badge
+  - [x] New role selector (radio buttons)
+  - [x] Confirmation message
+  - [x] "Change Role" button
+- [x] Validation: Cannot change Owner role (disabled)
+- [x] Success: Close dialog, refresh members list, show toast
+- [x] Component tests: Render, validation, submit
+- [x] Test coverage: >80%
 
 **Files**:
 
 - `app/frontend/src/components/groups/RoleChangeDialog.tsx`
-- `app/frontend/src/components/groups/RoleChangeDialog.test.tsx`
+- `app/frontend/src/components/groups/RoleChangeDialog.example.tsx`
+- `app/frontend/src/components/groups/RoleChangeDialog.README.md`
 
 **Labels**: `frontend`, `ui`, `component`
 
