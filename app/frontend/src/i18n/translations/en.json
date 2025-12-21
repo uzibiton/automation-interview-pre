@@ -150,6 +150,7 @@
       "changeRole": "Change Role",
       "removeMember": "Remove",
       "resetPassword": "Reset Password",
+      "currentRole": "Current role",
       "roles": {
         "owner": "Owner",
         "admin": "Admin",

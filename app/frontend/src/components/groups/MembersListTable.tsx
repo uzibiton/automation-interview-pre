@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGroupStore } from '../../stores/useGroupStore';
 import { GroupMember, GroupRole, DEFAULT_PERMISSIONS } from '../../types/GroupMember';
+import { getAvatarUrl } from '../../utils/avatar.utils';
 import ConfirmationDialog from '../ConfirmationDialog';
 
 interface MembersListTableProps {
@@ -91,8 +92,10 @@ function MembersListTable({
 
   const handleResetPassword = async (member: GroupMember) => {
     // TODO: Implement reset password functionality
-    console.log('Reset password for:', member.email);
-    alert(translation('groups.members.resetPasswordSuccess'));
+    // For now, just show success message (should be replaced with actual API call)
+    // console.log('Reset password for:', member.email);
+    // In production, this should use a proper toast notification system
+    window.confirm(translation('groups.members.resetPasswordSuccess'));
   };
 
   const formatDate = (dateString: string) => {
@@ -168,7 +171,7 @@ function MembersListTable({
               <tr key={member.id}>
                 <td>
                   <img
-                    src={member.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=4285f4&color=fff`}
+                    src={getAvatarUrl(member.avatar, member.name)}
                     alt={`${member.name}'s avatar`}
                     className="member-avatar"
                   />
@@ -257,7 +260,7 @@ function MembersListTable({
                 <strong>{changingRoleMember.name}</strong>
               </p>
               <p className="current-role-info">
-                Current role:{' '}
+                {translation('groups.members.currentRole')}:{' '}
                 <span className={getRoleBadgeClass(changingRoleMember.role)}>
                   {translation(`groups.members.roles.${changingRoleMember.role}`)}
                 </span>

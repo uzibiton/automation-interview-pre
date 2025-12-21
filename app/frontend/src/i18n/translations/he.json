@@ -150,6 +150,7 @@
       "changeRole": "שנה תפקיד",
       "removeMember": "הסר",
       "resetPassword": "איפוס סיסמה",
+      "currentRole": "תפקיד נוכחי",
       "roles": {
         "owner": "בעלים",
         "admin": "מנהל",
