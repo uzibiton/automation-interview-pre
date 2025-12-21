@@ -1,34 +1,151 @@
 # Task Planning & Breakdown Prompts
 
-## Break Down Idea into Actionable Tasks
+## Feature Planning Workflow
 
-**Use Case**: Convert a high-level idea or epic into structured phases, tasks, and subtasks with clear deliverables and estimates. Creates GitHub issues for each subtask with proper parent/child relationships.
+**Use Case**: Convert a high-level idea or epic into professional, traceable documentation and actionable tasks following software engineering best practices.
 
-**When to use**: After initial idea validation, when you have a GitHub issue and need to break it down into trackable subtasks.
+**When to use**: When you have a GitHub issue/idea and need comprehensive planning from requirements through implementation tasks.
 
-**Workflow**:
+**Complete Workflow**:
 
-1. Read the idea/issue from GitHub
-2. Apply this prompt to generate phase/task breakdown
-3. Analyze dependencies and critical path
-4. Create GitHub issues for each subtask with parent references
-5. Update parent issue with complete task list
+### Step 1: Discussion Phase
+
+**Goal**: Clarify scope, approach, and priorities before creating documentation
+
+1. Read the idea/issue from GitHub or project documentation
+2. Discuss with stakeholder:
+   - **Scope & Vision**: What's included/excluded, user scenarios, core features
+   - **Planning Approach**: Which phases to prioritize (MVP vs. full feature)
+   - **Integration Points**: Dependencies on existing system components
+   - **Success Criteria**: How to measure success
+   - **Risk & Constraints**: Technical limitations, time/budget constraints
+
+### Step 2: Create Requirements Document (REQ-XXX)
+
+**Goal**: Define what we're building and why
+
+- Use template: `docs/product/REQUIREMENTS_TEMPLATE.md`
+- Output location: `docs/product/requirements/REQ-XXX-[feature-name].md`
+- Must include:
+  - Executive summary & business context
+  - User stories with acceptance criteria
+  - Functional requirements (FR-001, FR-002, etc.)
+  - Non-functional requirements (performance, security, usability)
+  - Success metrics
+  - Traceability to HLD and test plans
+
+### Step 3: Create High-Level Design (HLD-XXX)
+
+**Goal**: Define how we'll build it (architecture & design)
+
+- Use template: `docs/dev/HLD_TEMPLATE.md`
+- Output location: `docs/dev/designs/HLD-XXX-[feature-name].md`
+- Must include:
+  - System architecture diagram
+  - Component design (frontend, backend, database)
+  - API specifications
+  - Data models & schemas
+  - Security & authentication approach
+  - Traceability to requirements and test plans
+
+### Step 4: Create Test Plan (TEST-XXX)
+
+**Goal**: Define how we'll validate quality
+
+- Use template: `docs/qa/test-plans/TEST_PLAN_TEMPLATE.md`
+- Output location: `docs/qa/test-plans/TEST-XXX-[feature-name].md`
+- Must include:
+  - Test scope (in/out of scope)
+  - Test strategy & types (unit, integration, e2e, non-functional)
+  - Test cases with priorities
+  - Entry/exit criteria
+  - Test data requirements
+  - Traceability to requirements
+
+### Step 5: Break Down into Implementation Tasks
+
+**Goal**: Create actionable, trackable work items
+
+- Generate phase/task breakdown with clear numbering
+- Each task includes: deliverables, estimates, dependencies, acceptance criteria
+- Create GitHub issues for each task
+- Update parent issue with complete task list
 
 ---
 
-## Prompt Template
+## Output Structure
+
+When running "load planning for issue #XX", the agent should produce:
+
+### 1. Discussion Summary
+
+Brief summary of clarifications from stakeholder discussion
+
+### 2. Requirements Document (REQ-XXX)
+
+### 2. Requirements Document (REQ-XXX)
+
+**File**: `docs/product/requirements/REQ-XXX-[feature-name].md`
+
+- Template: `docs/product/REQUIREMENTS_TEMPLATE.md`
+- Contains:
+  - Executive summary & business context
+  - User stories (US-001, US-002, etc.)
+  - Functional requirements (FR-001, FR-002, etc.)
+  - Non-functional requirements (NFR-001, NFR-002, etc.)
+  - Success metrics
+- Traceability: Links to HLD-XXX, TEST-XXX, implementation tasks
+
+### 3. High-Level Design (HLD-XXX)
+
+**File**: `docs/dev/designs/HLD-XXX-[feature-name].md`
+
+- Template: `docs/dev/HLD_TEMPLATE.md`
+- Contains:
+  - System architecture diagrams
+  - Component design (frontend, backend, database)
+  - API specifications (endpoints, request/response)
+  - Data models & database schemas
+  - Security & authentication approach
+- Traceability: Links to REQ-XXX, TEST-XXX
+
+### 4. Test Plan (TEST-XXX)
+
+**File**: `docs/qa/test-plans/TEST-XXX-[feature-name].md`
+
+- Template: `docs/qa/test-plans/TEST_PLAN_TEMPLATE.md`
+- Contains:
+  - Test scope (in/out of scope)
+  - Test strategy by type (unit, integration, e2e, non-functional)
+  - Detailed test cases with priorities
+  - Entry/exit criteria
+- Traceability: Links to REQ-XXX, HLD-XXX
+
+### 5. Implementation Tasks
+
+Structured breakdown with:
+
+- Phases and task numbering
+- Dependencies and critical path
+- Links to requirements (FR-XXX) and design sections
+- Ready for GitHub issue creation
+
+---
+
+## Task Breakdown Template
+
+**Use this after REQ, HLD, and Test Plan documents are created**
 
 ```
-Break down this idea/feature into actionable tasks and phases suitable for GitHub issue tracking.
+Break down [FEATURE_NAME] into actionable implementation tasks and phases.
 
 **Parent Issue**: [GITHUB_ISSUE_URL or #NUMBER]
 
-**Idea/Feature**: [BRIEF_DESCRIPTION]
-
 **Context**:
+- Requirements: REQ-XXX (link)
+- Design: HLD-XXX (link)
+- Test Plan: TEST-XXX (link)
 - Current system capabilities: [WHAT_EXISTS_TODAY]
-- User problem being solved: [PROBLEM_STATEMENT]
-- Success criteria: [HOW_WE_MEASURE_SUCCESS]
 - Available labels: [LIST_OF_GITHUB_LABELS]
 
 **Output Requirements**:
@@ -40,6 +157,7 @@ Break down this idea/feature into actionable tasks and phases suitable for GitHu
    - Dependencies (list task numbers that must complete first, or "NONE")
    - Acceptance criteria (how we know it's done)
    - Appropriate labels (component, team, priority, size)
+   - Links to related requirements (FR-XXX) and design sections
 3. Identify critical path tasks (highest priority)
 4. Flag tasks that can run in parallel
 
@@ -171,6 +289,23 @@ gh issue edit PARENT_NUMBER --body "## 📋 Task Breakdown
 "
 ```
 
+**Result**:
+
+- ✅ **Discussion completed** with stakeholder clarifications
+- ✅ **REQ-002 created** in docs/product/requirements/
+- ✅ **HLD-002 created** in docs/dev/designs/
+- ✅ **TEST-002 created** in docs/qa/test-plans/
+- ✅ **18 trackable GitHub issues** created (#84-101)
+- ✅ **Parent issue #68 updated** with complete task list and traceability links
+- ✅ **Dependencies clearly marked** with "Blocked by" references
+- ✅ **Each subtask references** specific requirements (FR-XXX) and design sections
+- ✅ **Critical path identified**
+- ✅ **Bidirectional traceability** established between all documents
+
+---
+
+## After Breaking Down: Create GitHub Issues
+
 **Label Guidelines**:
 
 - **Component**: frontend, backend, database, ci-cd, docs
@@ -186,6 +321,12 @@ gh issue edit PARENT_NUMBER --body "## 📋 Task Breakdown
 ## Task Description
 
 Build natural language processor to extract expense details from user messages.
+
+## Related Documents
+
+- **Requirements**: REQ-002 FR-003 (NLP Parsing)
+- **Design**: HLD-002 Section 4.2 (NLP Service Architecture)
+- **Test Plan**: TEST-002 TC-002-005 to TC-002-010 (NLP Accuracy Tests)
 
 ## Sub-deliverables
 
@@ -229,35 +370,80 @@ Part of #68 - AI-Powered Conversational Expense Input
 **Input** (GitHub issue #68):
 "Add AI-powered conversational expense input and comparative analytics"
 
-**Step 1: Apply Planning Prompt**
+**Step 0: Discussion Phase**
+
+Ask stakeholder:
 
 ```
-Break down this idea/feature into actionable tasks and phases suitable for GitHub issue tracking.
+Before creating documents, let's discuss:
+
+1. **Scope & Vision**: Should this include real-time chat, historical context, multi-turn conversations?
+2. **AI Provider**: OpenAI, Anthropic, or local models? Budget constraints?
+3. **Integration**: How does this fit with existing expense form? Replace or supplement?
+4. **Success Metrics**: What accuracy rate is acceptable? User adoption target?
+
+[Wait for clarification before proceeding]
+```
+
+**Step 1: Create Requirements Document**
+
+After discussion, create `docs/product/requirements/REQ-002-ai-expense-input.md`:
+
+- Executive summary: "Enable users to add expenses via natural language chat"
+- User stories: US-001 through US-010
+- Functional requirements: FR-001 (NLP parsing), FR-002 (chat UI), etc.
+- Non-functional: NFR-001 (response time <2s), NFR-002 (90% accuracy)
+
+**Step 2: Create High-Level Design**
+
+Create `docs/dev/designs/HLD-002-ai-expense-input.md`:
+
+- Architecture: Add NLP service, chat controller
+- API endpoints: POST /api/chat/message, GET /api/chat/history
+- Data models: conversations, messages, parsed_expenses tables
+- Security: Rate limiting, input sanitization
+
+**Step 3: Create Test Plan**
+
+Create `docs/qa/test-plans/TEST-002-ai-expense-input.md`:
+
+- Functional tests: NLP accuracy, chat UI interaction
+- Non-functional: Performance (100 concurrent users), accuracy (>90%)
+- Test cases: TC-002-001 through TC-002-025
+
+**Step 4: Break Down into Tasks**
+
+Now apply task breakdown prompt:
+
+```
+Break down AI Expense Input feature into actionable tasks and phases suitable for GitHub issue tracking.
 
 **Parent Issue**: https://github.com/uzibiton/automation-interview-pre/issues/68
 
-**Idea/Feature**: AI-powered conversational expense input with comparative analytics
-
 **Context**:
-- Current system: Manual form-based expense entry (date, category, amount)
-- User problem: Slow data entry, requires many clicks, no spending insights
-- Success criteria: 80%+ parsing accuracy, users prefer chat input, actionable insights
-- Available labels: enhancement, component:{frontend|backend|database|ci-cd|docs}, team:{dev|qa|devops|product}, priority:{critical|high|medium|low}, size:{small|medium|large}, ux
+- Requirements: REQ-002 (docs/product/requirements/REQ-002-ai-expense-input.md)
+- Design: HLD-002 (docs/dev/designs/HLD-002-ai-expense-input.md)
+- Test Plan: TEST-002 (docs/qa/test-plans/TEST-002-ai-expense-input.md)
+- Current system: Manual form-based expense entry
+- Available labels: enhancement, component:{frontend|backend|database}, team:{dev|qa}, priority:{critical|high|medium|low}, size:{small|medium|large}
 
 [AI generates complete breakdown with phases 0-5, testing tasks]
 ```
 
-**Output**: Structured breakdown with 25 tasks across 6 phases:
+**Step 5: Output - Structured Breakdown**
 
-- Phase 0: UI Prototype (3 tasks, can start immediately)
-- Phase 1: Research & Design (4 tasks, critical foundation)
-- Phase 2: MVP Implementation (4 tasks)
-- Phase 3: Consultation Features (3 tasks)
-- Phase 4: Analytics (3 tasks)
-- Phase 5: Comparative Benchmarking (3 tasks)
-- Testing: 5 tasks
+Generated 25 tasks across 6 phases:
 
-**Step 2: Analyze Dependencies**
+- Phase 0: Database Schema (2 tasks) - implements HLD-002 Section 5.3
+- Phase 1: Backend API (4 tasks) - implements FR-001, FR-002, FR-003
+- Phase 2: Frontend Chat UI (3 tasks) - implements FR-004, FR-005
+- Phase 3: NLP Integration (3 tasks) - implements FR-006
+- Phase 4: Testing & QA (4 tasks) - covers TEST-002 test cases
+- Phase 5: Documentation (2 tasks)
+
+Each task references specific requirements (FR-XXX) and design sections.
+
+**Step 6: Analyze Dependencies**
 
 ```
 Analyze the dependencies between these tasks. Which can run in parallel? What's the critical path?
@@ -265,25 +451,54 @@ Analyze the dependencies between these tasks. Which can run in parallel? What's 
 
 **Output**:
 
-- **No dependencies (start immediately)**: Phase 0 all tasks, Tasks 1.1, 1.2, 1.3
-- **Critical path**: 1.1 (AI provider) → 1.4 (architecture) → 2.1 (NLP) → 2.3 (UI) → Testing
-- **Parallel work possible**: UI mockups (Phase 0) while doing research (Phase 1)
+- **No dependencies (start immediately)**: Phase 0 (database schema)
+- **Critical path**: Database → Backend API → Frontend UI → Testing
+- **Parallel work possible**: Documentation can start anytime
 
-**Step 3: Create GitHub Issues**
+**Step 7: Create GitHub Issues**
 
 ```bash
 # Get available labels first
 gh label list
 
 # Create each task as a GitHub issue
-gh issue create --title "[Phase 0] Task 0.1: Chat Interface UI Mockup" \
-  --label "enhancement,component:frontend,team:dev,priority:medium,size:small" \
-  --body "[Complete body with sub-deliverables, dependencies, etc.]"
+gh issue create --title "[Phase 0] Task 0.1: Database Schema Design" \
+  --label "enhancement,component:database,team:dev,priority:high,size:small" \
+  --body "## Task Description
+Create tables for conversations and messages.
 
-# Created issues: #84-108 (25 total)
+## Related Documents
+- Requirements: REQ-002 FR-001
+- Design: HLD-002 Section 5.3
+- Test Plan: TEST-002 TC-002-015
+
+## Sub-deliverables
+- migrations/create_conversations.sql
+- migrations/create_messages.sql
+- ER diagram
+
+## Estimated Effort
+2-3 days
+
+## Dependencies
+NONE ✅ Can start immediately
+
+## Acceptance Criteria
+- [ ] Tables created with proper indexes
+- [ ] Foreign key constraints configured
+- [ ] Migration tested on dev environment
+
+## Parent Issue
+Part of #68 - AI-Powered Expense Input
+
+## Blocks
+- Task 1.1: Chat API endpoint implementation
+"
+
+# Created issues: #84-108 (18 total)
 ```
 
-**Step 4: Update Parent Issue**
+**Step 8: Update Parent Issue & Documentation**
 
 ```bash
 gh issue edit 68 --body "## 📋 Task Breakdown

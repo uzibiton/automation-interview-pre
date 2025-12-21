@@ -161,14 +161,14 @@ Generate concise AI context summaries for session continuity. Includes prompts f
 ### Example Usage
 
 ```markdown
-**Task**: Create a test plan for the expense categories feature
+**Task**: Create a test plan for the group management feature
 
 **Prompt** (from test-generation.md):
 
-> Create a test plan following the TEST-### template for the expense categories
-> feature (REQ-003). Include functional tests for CRUD operations, validation
-> tests for category constraints, and integration tests with the expense service.
-> Follow the structure in docs/product/requirements/TEST-TEMPLATE.md.
+> Create a test plan following the TEST-### template for the group management
+> feature (REQ-002). Include functional tests for role-based permissions, security
+> tests for authorization bypass attempts, and integration tests with the auth service.
+> Follow the structure in docs/qa/test-plans/TEST_PLAN_TEMPLATE.md.
 
 **Result**: Structured test plan document ready for review and execution
 ```

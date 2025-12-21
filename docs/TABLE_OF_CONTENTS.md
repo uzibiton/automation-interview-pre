@@ -6,13 +6,16 @@ Comprehensive guide to all project documentation organized by category and use c
 
 **All feature documents follow a standard naming convention:**
 
-| Type             | Format                     | Location                                       | Example                                                                       |
-| ---------------- | -------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------- |
-| **Requirements** | `REQ-###-feature-name.md`  | [product/requirements/](product/requirements/) | [REQ-001-expense-sorting.md](product/requirements/REQ-001-expense-sorting.md) |
-| **Design (HLD)** | `HLD-###-feature-name.md`  | [dev/designs/](dev/designs/)                   | [HLD-001-expense-sorting.md](dev/designs/HLD-001-expense-sorting.md)          |
-| **Test Plans**   | `TEST-###-feature-name.md` | [qa/test-plans/](qa/test-plans/)               | [TEST-001-expense-sorting.md](qa/test-plans/TEST-001-expense-sorting.md)      |
+| Type             | Format                      | Location                                       | Example                                                                                                                                                        |
+| ---------------- | --------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Requirements** | `REQ-###-feature-name.md`   | [product/requirements/](product/requirements/) | [REQ-001-expense-sorting.md](product/requirements/REQ-001-expense-sorting.md), [REQ-002-group-management.md](product/requirements/REQ-002-group-management.md) |
+| **Design (HLD)** | `HLD-###-feature-name.md`   | [dev/designs/](dev/designs/)                   | [HLD-001-expense-sorting.md](dev/designs/HLD-001-expense-sorting.md), [HLD-002-group-management.md](dev/designs/HLD-002-group-management.md)                   |
+| **Test Plans**   | `TEST-###-feature-name.md`  | [qa/test-plans/](qa/test-plans/)               | [TEST-001-expense-sorting.md](qa/test-plans/TEST-001-expense-sorting.md), [TEST-002-group-management.md](qa/test-plans/TEST-002-group-management.md)           |
+| **Tasks**        | `TASKS-###-feature-name.md` | [dev/](dev/)                                   | [TASKS-002-group-management.md](dev/TASKS-002-group-management.md)                                                                                             |
 
 **Each document includes**: Role & Name (owner), Traceability links, Status, Related issues/PRs
+
+**Traceability Flow**: `REQ <-> HLD <-> TEST <-> TASKS <-> Implementation <-> E2E Tests`
 
 **See**: [TRACEABILITY_MATRIX.md](product/TRACEABILITY_MATRIX.md) for complete requirements mapping
 
@@ -32,52 +35,59 @@ Comprehensive guide to all project documentation organized by category and use c
 
 ### 📋 Requirements & Planning
 
-| Document                                                         | Description                                          | Related Docs                                                                              |
-| ---------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| **[Requirements Template](product/REQUIREMENTS_TEMPLATE.md)**    | **Template for documenting feature requirements**    | **-> [HLD](dev/HLD_TEMPLATE.md), [Test Plan](qa/test-plans/TEST_PLAN_TEMPLATE.md)**       |
-| **[Idea Template](qa/IDEA_TEMPLATE.md)**                         | **Template for capturing and researching new ideas** | **-> [IDEAS.md](general/IDEAS.md), [Requirements](product/REQUIREMENTS_TEMPLATE.md)**     |
-| [Feature Requirements](dev/INSTRUCTIONS.md)                      | User stories and acceptance criteria                 | -> [Test Strategy](qa/TESTING_STRATEGY.md), [Issue Templates](../.github/ISSUE_TEMPLATE/) |
-| [Issue Template Tracking](../.github/ISSUE_TEMPLATE/TRACKING.md) | Track which templates have been converted to issues  | -> [GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues)           |
-| [API Reference](dev/API_REFERENCE.md)                            | API endpoints, request/response formats              | -> [Contract Tests](../tests/contract/), [E2E Tests](../tests/e2e/)                       |
+| Document                                                                          | Description                                                              | Related Docs                                                                                                      |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| **[Requirements Template](product/REQUIREMENTS_TEMPLATE.md)**                     | **Template for documenting feature requirements**                        | **-> [HLD](dev/HLD_TEMPLATE.md), [Test Plan](qa/test-plans/TEST_PLAN_TEMPLATE.md)**                               |
+| **[REQ-001: Expense Sorting](product/requirements/REQ-001-expense-sorting.md)**   | **Requirements for expense sorting feature**                             | **-> [HLD-001](dev/designs/HLD-001-expense-sorting.md), [TEST-001](qa/test-plans/TEST-001-expense-sorting.md)**   |
+| **[REQ-002: Group Management](product/requirements/REQ-002-group-management.md)** | **Requirements for group management with RBAC (10 user stories, 6 FRs)** | **-> [HLD-002](dev/designs/HLD-002-group-management.md), [TEST-002](qa/test-plans/TEST-002-group-management.md)** |
+| **[Idea Template](qa/IDEA_TEMPLATE.md)**                                          | **Template for capturing and researching new ideas**                     | **-> [IDEAS.md](general/IDEAS.md), [Requirements](product/REQUIREMENTS_TEMPLATE.md)**                             |
+| [Feature Requirements](dev/INSTRUCTIONS.md)                                       | User stories and acceptance criteria                                     | -> [Test Strategy](qa/TESTING_STRATEGY.md), [Issue Templates](../.github/ISSUE_TEMPLATE/)                         |
+| [Issue Template Tracking](../.github/ISSUE_TEMPLATE/TRACKING.md)                  | Track which templates have been converted to issues                      | -> [GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues)                                   |
+| [API Reference](dev/API_REFERENCE.md)                                             | API endpoints, request/response formats                                  | -> [Contract Tests](../tests/contract/), [E2E Tests](../tests/e2e/)                                               |
+| **[Traceability Matrix](product/TRACEABILITY_MATRIX.md)**                         | **Complete requirements-to-test mapping**                                | **-> All requirements, designs, test plans**                                                                      |
 
 ### 🎨 Design & Architecture
 
-| Document                                                        | Description                                                    | Related Docs                                                                                                |
-| --------------------------------------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **[High-Level Design Template](dev/HLD_TEMPLATE.md)**           | **Template for system architecture documentation**             | **-> [Requirements](product/REQUIREMENTS_TEMPLATE.md), [Detailed Design](dev/DETAILED_DESIGN_TEMPLATE.md)** |
-| **[Detailed Design Template](dev/DETAILED_DESIGN_TEMPLATE.md)** | **Template for component implementation details**              | **-> [HLD](dev/HLD_TEMPLATE.md), [Test Plan](qa/TEST_PLAN_TEMPLATE.md)**                                    |
-| **[Application Architecture](../app/README.md)**                | **Microservices architecture, tech stack, data flow**          | **-> [System Diagram](../app/README.md#architecture-diagram)**                                              |
-| [System Architecture](devops/DEPLOYMENT_SUMMARY.md)             | High-level architecture and components                         | -> [Deployment Guide](devops/CLOUD_RUN_DEPLOYMENT.md)                                                       |
-| [Database Schema](../app/database/README.md)                    | Database tables, relationships, migrations                     | -> [Integration Tests](../tests/integration/)                                                               |
-| **[CI/CD Guide](devops/CI_CD_GUIDE.md)**                        | **Build, test, and deployment automation with GitHub Actions** | **-> [GitHub Actions](../.github/workflows/ci-cd.yml)**                                                     |
+| Document                                                                 | Description                                                      | Related Docs                                                                                                               |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **[High-Level Design Template](dev/HLD_TEMPLATE.md)**                    | **Template for system architecture documentation**               | **-> [Requirements](product/REQUIREMENTS_TEMPLATE.md), [Detailed Design](dev/DETAILED_DESIGN_TEMPLATE.md)**                |
+| **[HLD-002: Group Management](dev/designs/HLD-002-group-management.md)** | **Design for group management with RBAC (5 DB tables, 15 APIs)** | **-> [REQ-002](product/requirements/REQ-002-group-management.md), [TEST-002](qa/test-plans/TEST-002-group-management.md)** |
+| **[Detailed Design Template](dev/DETAILED_DESIGN_TEMPLATE.md)**          | **Template for component implementation details**                | **-> [HLD](dev/HLD_TEMPLATE.md), [Test Plan](qa/TEST_PLAN_TEMPLATE.md)**                                                   |
+| **[Application Architecture](../app/README.md)**                         | **Microservices architecture, tech stack, data flow**            | **-> [System Diagram](../app/README.md#architecture-diagram)**                                                             |
+| [System Architecture](devops/DEPLOYMENT_SUMMARY.md)                      | High-level architecture and components                           | -> [Deployment Guide](devops/CLOUD_RUN_DEPLOYMENT.md)                                                                      |
+| [Database Schema](../app/database/README.md)                             | Database tables, relationships, migrations                       | -> [Integration Tests](../tests/integration/)                                                                              |
+| **[CI/CD Guide](devops/CI_CD_GUIDE.md)**                                 | **Build, test, and deployment automation with GitHub Actions**   | **-> [GitHub Actions](../.github/workflows/ci-cd.yml)**                                                                    |
 
 ### 🧪 Testing & Quality
 
-| Document                                                                | Description                                                    | Related Tests                                                                                    |
-| ----------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| **[Test Plan Template](qa/test-plans/TEST_PLAN_TEMPLATE.md)**           | **Template for feature/release test planning**                 | **-> [Requirements](product/REQUIREMENTS_TEMPLATE.md), [Testing Strategy](qa/TEST_STRATEGY.md)** |
-| **[Test Execution Template](qa/test-plans/TEST_EXECUTION_TEMPLATE.md)** | **Template for documenting test execution results**            | **-> [Test Plan Template](qa/test-plans/TEST_PLAN_TEMPLATE.md)**                                 |
-| **[Test Strategy](qa/TEST_STRATEGY.md)**                                | **Complete testing architecture, tools, and workflows**        | **-> All test suites**                                                                           |
-| **[E2E Testing Guide](qa/E2E_TESTING_GUIDE.md)**                        | **End-to-end testing across all environments with Playwright** | **-> [E2E Tests](../tests/e2e/)**                                                                |
-| [E2E Implementation Complete](qa/E2E-IMPLEMENTATION-COMPLETE.md)        | Complete E2E testing implementation details                    | -> [E2E Tests](../tests/e2e/)                                                                    |
-| [Implementation Checklist](qa/IMPLEMENTATION_CHECKLIST.md)              | Testing infrastructure setup checklist                         | -> [Test Strategy](qa/TEST_STRATEGY.md)                                                          |
-| [Test Implementation Summary](qa/IMPLEMENTATION_SUMMARY.md)             | What's tested and coverage overview                            | -> [Test Results](../tests/reports/)                                                             |
-| [Non-Functional Testing Guide](qa/NON_FUNCTIONAL_SIMPLE_GUIDE.md)       | Performance, security, accessibility testing                   | -> [Non-Functional Tests](../tests/non-functional/)                                              |
+| Document                                                                     | Description                                                                            | Related Tests                                                                                                               |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **[TEST-001: Expense Sorting](qa/test-plans/TEST-001-expense-sorting.md)**   | **Test plan for expense sorting (12 test cases)**                                      | **-> [REQ-001](product/requirements/REQ-001-expense-sorting.md), [E2E Tests](../tests/e2e/expenses/sort-expenses.spec.ts)** |
+| **[TEST-002: Group Management](qa/test-plans/TEST-002-group-management.md)** | **Test plan for group management (110 test cases: functional, security, performance)** | **-> [REQ-002](product/requirements/REQ-002-group-management.md), [HLD-002](dev/designs/HLD-002-group-management.md)**      |
+| **[Test Plan Template](qa/test-plans/TEST_PLAN_TEMPLATE.md)**                | **Template for feature/release test planning**                                         | **-> [Requirements](product/REQUIREMENTS_TEMPLATE.md), [Testing Strategy](qa/TEST_STRATEGY.md)**                            |
+| **[Test Execution Template](qa/test-plans/TEST_EXECUTION_TEMPLATE.md)**      | **Template for documenting test execution results**                                    | **-> [Test Plan Template](qa/test-plans/TEST_PLAN_TEMPLATE.md)**                                                            |
+| **[Test Strategy](qa/TEST_STRATEGY.md)**                                     | **Complete testing architecture, tools, and workflows**                                | **-> All test suites**                                                                                                      |
+| **[E2E Testing Guide](qa/E2E_TESTING_GUIDE.md)**                             | **End-to-end testing across all environments with Playwright**                         | **-> [E2E Tests](../tests/e2e/)**                                                                                           |
+| [E2E Implementation Complete](qa/E2E-IMPLEMENTATION-COMPLETE.md)             | Complete E2E testing implementation details                                            | -> [E2E Tests](../tests/e2e/)                                                                                               |
+| [Implementation Checklist](qa/IMPLEMENTATION_CHECKLIST.md)                   | Testing infrastructure setup checklist                                                 | -> [Test Strategy](qa/TEST_STRATEGY.md)                                                                                     |
+| [Test Implementation Summary](qa/IMPLEMENTATION_SUMMARY.md)                  | What's tested and coverage overview                                                    | -> [Test Results](../tests/reports/)                                                                                        |
+| [Non-Functional Testing Guide](qa/NON_FUNCTIONAL_SIMPLE_GUIDE.md)            | Performance, security, accessibility testing                                           | -> [Non-Functional Tests](../tests/non-functional/)                                                                         |
 
 ### 🚀 Development & Workflows
 
-| Document                                                  | Description                                       | Related Docs                                                 |
-| --------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------ |
-| **[Task & Bug Management](qa/TASK_BUG_MANAGEMENT.md)**    | **Issue tracking, workflows, and best practices** | **-> [Issue Templates](../.github/ISSUE_TEMPLATE/)**         |
-| **[Maintenance Schedule](dev/MAINTENANCE.md)**            | **Recurring maintenance tasks and tracking**      | **-> Weekly, Monthly, Quarterly checklists**                 |
-| **[Working with AI Agents](dev/WORKING_WITH_AGENTS.md)**  | **Best practices for AI-assisted development**    | **-> [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)**                |
-| **[Database Tools](../tools/README.md)**                  | **Test data seeding and database management**     | **-> [Run Locally](dev/RUN_LOCALLY.md)**                     |
-| [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md) | Database category management implementation       | -> [Database Schema](../app/database/README.md)              |
-| [Database Quick Fix](dev/QUICK_FIX.md)                    | Quick fixes for database issues                   | -> [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md) |
-| [PR Workflow Guide](qa/PR_WORKFLOW_GUIDE.md)              | Complete PR process from task to merge            | -> [Testing Strategy](qa/TESTING_STRATEGY.md)                |
-| [Development Insights](dev/DEVELOPMENT_INSIGHTS.md)       | Lessons learned and best practices                | -> [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)                    |
-| [GitHub Actions Setup](devops/GITHUB_ACTIONS_SETUP.md)    | CI/CD configuration details                       | -> [CI/CD Guide](devops/CI_CD_GUIDE.md)                      |
-| [Cloud Run Deployment](devops/CLOUD_RUN_DEPLOYMENT.md)    | Deploy to staging and production                  | -> [Cloud Run Management](devops/CLOUD_RUN_MANAGEMENT.md)    |
+| Document | Description | Related Docs |
+| ---TASKS-002: Group Management](dev/TASKS-002-group-management.md)** | **Implementation tasks for group management (26 tasks, 4 phases, 39-48 days)** | **-> [REQ-002](product/requirements/REQ-002-group-management.md), [HLD-002](dev/designs/HLD-002-group-management.md)** |
+| **[------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------ |
+| **[Task & Bug Management](qa/TASK_BUG_MANAGEMENT.md)** | **Issue tracking, workflows, and best practices** | **-> [Issue Templates](../.github/ISSUE_TEMPLATE/)** |
+| **[Maintenance Schedule](dev/MAINTENANCE.md)** | **Recurring maintenance tasks and tracking** | **-> Weekly, Monthly, Quarterly checklists** |
+| **[Working with AI Agents](dev/WORKING_WITH_AGENTS.md)** | **Best practices for AI-assisted development** | **-> [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)** |
+| **[Database Tools](../tools/README.md)** | **Test data seeding and database management** | **-> [Run Locally](dev/RUN_LOCALLY.md)** |
+| [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md) | Database category management implementation | -> [Database Schema](../app/database/README.md) |
+| [Database Quick Fix](dev/QUICK_FIX.md) | Quick fixes for database issues | -> [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md) |
+| [PR Workflow Guide](qa/PR_WORKFLOW_GUIDE.md) | Complete PR process from task to merge | -> [Testing Strategy](qa/TESTING_STRATEGY.md) |
+| [Development Insights](dev/DEVELOPMENT_INSIGHTS.md) | Lessons learned and best practices | -> [PR Workflow](qa/PR_WORKFLOW_GUIDE.md) |
+| [GitHub Actions Setup](devops/GITHUB_ACTIONS_SETUP.md) | CI/CD configuration details | -> [CI/CD Guide](devops/CI_CD_GUIDE.md) |
+| [Cloud Run Deployment](devops/CLOUD_RUN_DEPLOYMENT.md) | Deploy to staging and production | -> [Cloud Run Management](devops/CLOUD_RUN_MANAGEMENT.md) |
 
 ### 📊 Demo & Presentation
 

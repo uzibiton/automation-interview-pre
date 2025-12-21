@@ -79,6 +79,7 @@ Testing strategy and quality assurance processes:
 - **[test-plans/](qa/test-plans/)** - Feature test plans (TEST-###) and execution reports
   - **[TEST_PLAN_TEMPLATE.md](qa/test-plans/TEST_PLAN_TEMPLATE.md)** - Template for test plans
   - **[TEST_EXECUTION_TEMPLATE.md](qa/test-plans/TEST_EXECUTION_TEMPLATE.md)** - Template for test execution reports
+  - **[TEST-002-group-management.md](qa/test-plans/TEST-002-group-management.md)** - Example: Group management test plan (110 test cases) ⭐
   - **[TEST-001-expense-sorting.md](qa/test-plans/TEST-001-expense-sorting.md)** - Example: Expense sorting test plan
 - **[TEST_STRATEGY.md](qa/TEST_STRATEGY.md)** - Complete testing architecture, tools, and workflows ⭐
 - **[E2E_TESTING_GUIDE.md](qa/E2E_TESTING_GUIDE.md)** - End-to-end testing across all environments ⭐

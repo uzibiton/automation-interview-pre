@@ -38,7 +38,6 @@ Brief summary of relevant functional and non-functional requirements from the re
 
 - REQ-001: [Requirement summary]
 - REQ-002: [Requirement summary]
-- REQ-003: [Requirement summary]
 
 **Reference:** [Full Requirements Document](../product/REQUIREMENTS_TEMPLATE.md)
 

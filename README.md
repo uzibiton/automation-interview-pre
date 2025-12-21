@@ -54,7 +54,12 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 **Exploring New Features:**
 
 - 💬 [#68 - AI-Powered Conversational Expense Input & Comparative Analytics](https://github.com/uzibiton/automation-interview-pre/issues/68) - **8%** (2/25 subtasks completed)
-- 👥 [#69 - Household/Group Management with Role-Based Permissions](https://github.com/uzibiton/automation-interview-pre/issues/69) - **0%** (idea phase)
+  - 💡 [REQ-003: Requirements](docs/product/requirements/REQ-003-ai-expense-input.md) - Planning phase (to be created)
+- 👥 [#69 - Household/Group Management with Role-Based Permissions](https://github.com/uzibiton/automation-interview-pre/issues/69) - **15%** (planning complete, 26 implementation tasks defined)
+  - ✅ [REQ-002: Requirements](docs/product/requirements/REQ-002-group-management.md) - 10 user stories, 6 FRs, 9 API specs
+  - ✅ [HLD-002: Design](docs/dev/designs/HLD-002-group-management.md) - Architecture, RBAC, database schema
+  - ✅ [TEST-002: Test Plan](docs/qa/test-plans/TEST-002-group-management.md) - 110 test cases across functional, security, performance
+  - ✅ [TASKS-002: Implementation](docs/dev/TASKS-002-group-management.md) - 26 tasks, 39-48 days estimated
 - 📱 [#80 - Add PWA + Mobile/Desktop Testing Demo (Without Native Apps)](https://github.com/uzibiton/automation-interview-pre/issues/80) - **0%** (idea phase)
 - 🔍 [#81 - Implement Production Synthetic Monitoring (Shift-Right Testing)](https://github.com/uzibiton/automation-interview-pre/issues/81) - **0%** (idea phase)
 
@@ -68,15 +73,16 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 Professional documentation with **bidirectional traceability** between requirements, design, tests, and implementation:
 
-| Type             | Format                     | Example                                                                            |
-| ---------------- | -------------------------- | ---------------------------------------------------------------------------------- |
-| **Requirements** | `REQ-###-feature-name.md`  | [REQ-001-expense-sorting.md](docs/product/requirements/REQ-001-expense-sorting.md) |
-| **Design (HLD)** | `HLD-###-feature-name.md`  | [HLD-001-expense-sorting.md](docs/dev/designs/HLD-001-expense-sorting.md)          |
-| **Test Plans**   | `TEST-###-feature-name.md` | [TEST-001-expense-sorting.md](docs/qa/test-plans/TEST-001-expense-sorting.md)      |
+| Type             | Format                      | Example                                                                                                                                                                  |
+| ---------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Requirements** | `REQ-###-feature-name.md`   | [REQ-001-expense-sorting.md](docs/product/requirements/REQ-001-expense-sorting.md), [REQ-002-group-management.md](docs/product/requirements/REQ-002-group-management.md) |
+| **Design (HLD)** | `HLD-###-feature-name.md`   | [HLD-001-expense-sorting.md](docs/dev/designs/HLD-001-expense-sorting.md), [HLD-002-group-management.md](docs/dev/designs/HLD-002-group-management.md)                   |
+| **Test Plans**   | `TEST-###-feature-name.md`  | [TEST-001-expense-sorting.md](docs/qa/test-plans/TEST-001-expense-sorting.md), [TEST-002-group-management.md](docs/qa/test-plans/TEST-002-group-management.md)           |
+| **Tasks**        | `TASKS-###-feature-name.md` | [TASKS-002-group-management.md](docs/dev/TASKS-002-group-management.md)                                                                                                  |
 
-**Traceability Flow**: `REQ-001 <-> HLD-001 <-> TEST-001 <-> Implementation <-> E2E Tests`
+**Traceability Flow**: `REQ <-> HLD <-> TEST <-> TASKS <-> Implementation <-> E2E Tests`
 
-📊 **[View Traceability Matrix](docs/product/TRACEABILITY_MATRIX.md)** - Complete requirements mapping
+📊 **[View Traceability Matrix](docs/product/TRACEABILITY_MATRIX.md)** - Complete requirements mapping for all features
 
 ## 🚀 Quick Start
 

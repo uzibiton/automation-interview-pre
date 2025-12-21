@@ -76,22 +76,22 @@ Include:
 **Example**:
 
 ```
-Create a test plan following the TEST-### template format for expense filtering by date range.
+Create a test plan following the TEST-### template format for group member management.
 
 Use this structure:
 - Template: docs/qa/test-plans/TEST_PLAN_TEMPLATE.md
-- File name: docs/qa/test-plans/TEST-002-expense-filtering.md
-- Related requirement: REQ-004
+- File name: docs/qa/test-plans/TEST-003-member-management.md
+- Related requirement: REQ-002 (Group Management)
 
 Test Plan Details:
 
 1. **Objective**
-   - Purpose: Validate expense filtering by date range functionality
+   - Purpose: Validate group member management functionality
    - Goals:
-     - Verify date range selection works correctly
-     - Confirm filtered results match criteria
-     - Test performance with large datasets
-     - Validate error handling for invalid dates
+     - Verify role assignment works correctly
+     - Confirm permission enforcement
+     - Test invitation flows (email, link, direct)
+     - Validate security and authorization
 
 [continues with full structure as above]
 ```
@@ -143,11 +143,11 @@ Reference the test strategy in docs/qa/TEST_STRATEGY.md for coverage requirement
 **Example**:
 
 ```
-Generate E2E test scenarios for expense category management based on REQ-003.
+Generate E2E test scenarios for group invitation management based on REQ-002.
 
 Requirements:
 - Framework: Playwright with TypeScript
-- Location: tests/e2e/specs/categories.spec.ts
+- Location: tests/e2e/groups/invitations.spec.ts
 - Follow patterns from existing tests in tests/e2e/
 - Use page objects from tests/e2e/pages/
 - Use fixtures from tests/e2e/fixtures/
