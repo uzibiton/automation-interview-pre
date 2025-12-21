@@ -1,0 +1,356 @@
+/**
+ * MSW handlers for Invitation API endpoints
+ */
+
+import { http, HttpResponse, delay } from 'msw';
+import {
+  mockInvitations,
+  getPendingInvitations,
+  getInvitationByToken,
+} from '../fixtures/invitations.fixture';
+import {
+  mockInviteLinks,
+  getActiveInviteLinks,
+  getInviteLinkByToken,
+} from '../fixtures/inviteLinks.fixture';
+import {
+  CreateInvitationDto,
+  InvitationStatus,
+} from '../../types/Invitation';
+import { CreateInviteLinkDto } from '../../types/InviteLink';
+import { GroupRole } from '../../types/GroupMember';
+
+// In-memory store
+let invitations = [...mockInvitations];
+let inviteLinks = [...mockInviteLinks];
+
+// Helper to generate random delay
+const randomDelay = () => delay(200 + Math.random() * 300);
+
+// Helper to validate email
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+// Helper to generate random token
+const generateToken = (length: number = 32): string => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let token = '';
+  for (let i = 0; i < length; i++) {
+    token += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return token;
+};
+
+export const invitationHandlers = [
+  // POST /api/invitations - Send email invitation
+  http.post('/api/invitations', async ({ request }) => {
+    await randomDelay();
+
+    const body = (await request.json()) as CreateInvitationDto & { groupId: string };
+
+    // Validation: Email
+    if (!body.email || !isValidEmail(body.email)) {
+      return HttpResponse.json(
+        { error: 'Valid email is required' },
+        { status: 400 },
+      );
+    }
+
+    // Validation: Role
+    if (!Object.values(GroupRole).includes(body.role)) {
+      return HttpResponse.json(
+        { error: 'Invalid role' },
+        { status: 400 },
+      );
+    }
+
+    // Check if email already invited (pending)
+    const existingInvitation = invitations.find(
+      (inv) =>
+        inv.email === body.email &&
+        inv.groupId === body.groupId &&
+        inv.status === InvitationStatus.PENDING,
+    );
+
+    if (existingInvitation) {
+      return HttpResponse.json(
+        { error: 'This email has already been invited' },
+        { status: 400 },
+      );
+    }
+
+    const newInvitation = {
+      id: `invitation-${Date.now()}`,
+      groupId: body.groupId || 'group-1',
+      groupName: 'Family Expenses',
+      inviterId: 'user-1',
+      inviterName: 'John Doe',
+      email: body.email,
+      role: body.role,
+      token: `inv-token-${generateToken(16)}`,
+      status: InvitationStatus.PENDING,
+      message: body.message,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      createdAt: new Date().toISOString(),
+    };
+
+    invitations.push(newInvitation);
+
+    return HttpResponse.json(newInvitation, { status: 201 });
+  }),
+
+  // POST /api/invitations/:token/accept - Accept invitation
+  http.post('/api/invitations/:token/accept', async ({ params }) => {
+    await randomDelay();
+
+    const { token } = params;
+    const invitation = getInvitationByToken(token as string);
+
+    if (!invitation) {
+      return HttpResponse.json(
+        { error: 'Invitation not found' },
+        { status: 404 },
+      );
+    }
+
+    // Check if expired
+    if (new Date(invitation.expiresAt) < new Date()) {
+      return HttpResponse.json(
+        { error: 'This invitation has expired' },
+        { status: 400 },
+      );
+    }
+
+    // Check if already accepted
+    if (invitation.status === InvitationStatus.ACCEPTED) {
+      return HttpResponse.json(
+        { error: 'This invitation has already been accepted' },
+        { status: 400 },
+      );
+    }
+
+    // Check if declined
+    if (invitation.status === InvitationStatus.DECLINED) {
+      return HttpResponse.json(
+        { error: 'This invitation has been declined' },
+        { status: 400 },
+      );
+    }
+
+    // Update invitation status
+    const invitationIndex = invitations.findIndex((inv) => inv.token === token);
+    if (invitationIndex !== -1) {
+      invitations[invitationIndex] = {
+        ...invitations[invitationIndex],
+        status: InvitationStatus.ACCEPTED,
+      };
+    }
+
+    return HttpResponse.json(
+      {
+        message: 'Invitation accepted successfully',
+        groupId: invitation.groupId,
+        role: invitation.role,
+      },
+      { status: 200 },
+    );
+  }),
+
+  // POST /api/invitations/:token/decline - Decline invitation
+  http.post('/api/invitations/:token/decline', async ({ params }) => {
+    await randomDelay();
+
+    const { token } = params;
+    const invitation = getInvitationByToken(token as string);
+
+    if (!invitation) {
+      return HttpResponse.json(
+        { error: 'Invitation not found' },
+        { status: 404 },
+      );
+    }
+
+    if (invitation.status !== InvitationStatus.PENDING) {
+      return HttpResponse.json(
+        { error: 'This invitation cannot be declined' },
+        { status: 400 },
+      );
+    }
+
+    // Update invitation status
+    const invitationIndex = invitations.findIndex((inv) => inv.token === token);
+    if (invitationIndex !== -1) {
+      invitations[invitationIndex] = {
+        ...invitations[invitationIndex],
+        status: InvitationStatus.DECLINED,
+      };
+    }
+
+    return HttpResponse.json(
+      { message: 'Invitation declined' },
+      { status: 200 },
+    );
+  }),
+
+  // GET /api/invitations?groupId=xxx - Get pending invitations for a group
+  http.get('/api/invitations', async ({ request }) => {
+    await randomDelay();
+
+    const url = new URL(request.url);
+    const groupId = url.searchParams.get('groupId');
+
+    if (!groupId) {
+      return HttpResponse.json(
+        { error: 'groupId is required' },
+        { status: 400 },
+      );
+    }
+
+    const pendingInvitations = getPendingInvitations(groupId);
+    return HttpResponse.json(pendingInvitations, { status: 200 });
+  }),
+
+  // POST /api/invite-links - Generate invite link
+  http.post('/api/invite-links', async ({ request }) => {
+    await randomDelay();
+
+    const body = (await request.json()) as CreateInviteLinkDto & { groupId: string };
+
+    // Validation: Role
+    if (!Object.values(GroupRole).includes(body.role)) {
+      return HttpResponse.json(
+        { error: 'Invalid role' },
+        { status: 400 },
+      );
+    }
+
+    // Validation: Max uses
+    if (body.maxUses !== undefined && body.maxUses !== null && body.maxUses < 1) {
+      return HttpResponse.json(
+        { error: 'Max uses must be at least 1 or null for unlimited' },
+        { status: 400 },
+      );
+    }
+
+    const newLink = {
+      id: `link-${Date.now()}`,
+      groupId: body.groupId || 'group-1',
+      createdBy: 'user-1',
+      createdByName: 'John Doe',
+      token: generateToken(8).toUpperCase(),
+      defaultRole: body.role,
+      maxUses: body.maxUses || null,
+      usesCount: 0,
+      expiresAt: body.expiresAt || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      isActive: true,
+      createdAt: new Date().toISOString(),
+    };
+
+    inviteLinks.push(newLink);
+
+    return HttpResponse.json(newLink, { status: 201 });
+  }),
+
+  // POST /api/invite-links/:token/join - Join via invite link
+  http.post('/api/invite-links/:token/join', async ({ params }) => {
+    await randomDelay();
+
+    const { token } = params;
+    const link = getInviteLinkByToken(token as string);
+
+    if (!link) {
+      return HttpResponse.json(
+        { error: 'Invite link not found' },
+        { status: 404 },
+      );
+    }
+
+    // Check if active
+    if (!link.isActive) {
+      return HttpResponse.json(
+        { error: 'This invite link has been revoked' },
+        { status: 400 },
+      );
+    }
+
+    // Check if expired
+    if (new Date(link.expiresAt) < new Date()) {
+      return HttpResponse.json(
+        { error: 'This invite link has expired' },
+        { status: 400 },
+      );
+    }
+
+    // Check max uses
+    if (link.maxUses !== null && link.usesCount >= link.maxUses) {
+      return HttpResponse.json(
+        { error: 'This invite link has reached its maximum uses' },
+        { status: 400 },
+      );
+    }
+
+    // Update uses count
+    const linkIndex = inviteLinks.findIndex((l) => l.token === token);
+    if (linkIndex !== -1) {
+      inviteLinks[linkIndex] = {
+        ...inviteLinks[linkIndex],
+        usesCount: inviteLinks[linkIndex].usesCount + 1,
+      };
+    }
+
+    return HttpResponse.json(
+      {
+        message: 'Successfully joined group via invite link',
+        groupId: link.groupId,
+        role: link.defaultRole,
+      },
+      { status: 200 },
+    );
+  }),
+
+  // DELETE /api/invite-links/:id - Revoke invite link
+  http.delete('/api/invite-links/:id', async ({ params }) => {
+    await randomDelay();
+
+    const { id } = params;
+    const linkIndex = inviteLinks.findIndex((link) => link.id === id);
+
+    if (linkIndex === -1) {
+      return HttpResponse.json(
+        { error: 'Invite link not found' },
+        { status: 404 },
+      );
+    }
+
+    // Deactivate the link
+    inviteLinks[linkIndex] = {
+      ...inviteLinks[linkIndex],
+      isActive: false,
+    };
+
+    return HttpResponse.json(
+      { message: 'Invite link revoked successfully' },
+      { status: 200 },
+    );
+  }),
+
+  // GET /api/invite-links?groupId=xxx - Get active invite links
+  http.get('/api/invite-links', async ({ request }) => {
+    await randomDelay();
+
+    const url = new URL(request.url);
+    const groupId = url.searchParams.get('groupId');
+
+    if (!groupId) {
+      return HttpResponse.json(
+        { error: 'groupId is required' },
+        { status: 400 },
+      );
+    }
+
+    const activeLinks = getActiveInviteLinks(groupId);
+    return HttpResponse.json(activeLinks, { status: 200 });
+  }),
+];
