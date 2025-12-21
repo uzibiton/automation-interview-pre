@@ -48,8 +48,8 @@ export const groupHandlers = [
       );
     }
 
-    // Validation: Name too short
-    if (body.name.length < 3) {
+    // Validation: Name too short (use trimmed length for consistency)
+    if (body.name.trim().length < 3) {
       return HttpResponse.json(
         { error: 'Group name must be at least 3 characters' },
         { status: 400 },
@@ -57,7 +57,7 @@ export const groupHandlers = [
     }
 
     // Validation: Name too long
-    if (body.name.length > 100) {
+    if (body.name.trim().length > 100) {
       return HttpResponse.json(
         { error: 'Group name must not exceed 100 characters' },
         { status: 400 },
@@ -74,8 +74,8 @@ export const groupHandlers = [
     }
 
     const newGroup: Group = {
-      id: `group-${Date.now()}`,
-      name: body.name,
+      id: `group-${crypto.randomUUID()}`,
+      name: body.name.trim(),
       description: body.description || '',
       createdBy: MOCK_USER_ID,
       memberCount: 1,
@@ -87,7 +87,7 @@ export const groupHandlers = [
 
     // Add creator as Owner
     const ownerMember: GroupMember = {
-      id: `member-${Date.now()}`,
+      id: `member-${crypto.randomUUID()}`,
       groupId: newGroup.id,
       userId: MOCK_USER_ID,
       name: MOCK_USER_NAME,
@@ -140,7 +140,14 @@ export const groupHandlers = [
 
     // Validation
     if (body.name !== undefined) {
-      if (body.name.length < 3 || body.name.length > 100) {
+      const trimmedName = body.name.trim();
+      if (trimmedName.length === 0) {
+        return HttpResponse.json(
+          { error: 'Group name cannot be empty' },
+          { status: 400 },
+        );
+      }
+      if (trimmedName.length < 3 || trimmedName.length > 100) {
         return HttpResponse.json(
           { error: 'Group name must be between 3 and 100 characters' },
           { status: 400 },
@@ -150,7 +157,7 @@ export const groupHandlers = [
 
     const updatedGroup = {
       ...groups[groupIndex],
-      ...(body.name !== undefined && { name: body.name }),
+      ...(body.name !== undefined && { name: body.name.trim() }),
       ...(body.description !== undefined && { description: body.description }),
       updatedAt: new Date().toISOString(),
     };

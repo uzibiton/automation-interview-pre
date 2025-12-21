@@ -90,7 +90,7 @@ export const invitationHandlers = [
     const inviter = mockMembers.find((m) => m.userId === MOCK_USER_ID);
 
     const newInvitation = {
-      id: `invitation-${Date.now()}`,
+      id: `invitation-${crypto.randomUUID()}`,
       groupId,
       groupName: group?.name || 'Unknown Group',
       inviterId: MOCK_USER_ID,
@@ -242,13 +242,12 @@ export const invitationHandlers = [
       );
     }
 
-    // Get group and creator details from fixtures
+    // Get creator details from fixtures (group variable removed as unused)
     const groupId = body.groupId || 'group-1';
-    const group = mockGroups.find((g) => g.id === groupId);
     const creator = mockMembers.find((m) => m.userId === MOCK_USER_ID);
 
     const newLink = {
-      id: `link-${Date.now()}`,
+      id: `link-${crypto.randomUUID()}`,
       groupId,
       createdBy: MOCK_USER_ID,
       createdByName: creator?.name || 'Unknown User',

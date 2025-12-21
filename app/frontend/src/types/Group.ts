@@ -29,4 +29,5 @@ export interface GroupResponseDto {
   createdBy: string;
   memberCount: number;
   createdAt: string;
+  updatedAt: string;
 }

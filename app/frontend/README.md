@@ -10,7 +10,7 @@ This application includes a comprehensive mock API infrastructure using [Mock Se
 
 - ✅ Complete mock API for Group Management feature
 - ✅ Realistic network delays (200-500ms)
-- ✅ Error simulation (validation, 400, 403, 404, 500)
+- ✅ Error simulation (validation, 400, 403, 404)
 - ✅ State persistence during testing session
 - ✅ Easy toggle between mock and real API
 
