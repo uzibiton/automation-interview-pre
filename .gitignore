@@ -71,7 +71,9 @@ allure-report/
 temp/
 tmp/
 *.tmp
-src/
+
+# Ignore specific src directories but not frontend
+# src/
 
 # PostgreSQL data (if running locally)
 postgres_data/

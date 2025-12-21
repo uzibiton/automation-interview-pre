@@ -94,7 +94,16 @@ Systematic code quality analysis following PR workflow guidelines. Includes prom
 - Best practices validation
 - Refactoring suggestions
 
-### 5. [Documentation](documentation.md)
+### 5. [PR Fix](pr-fix.md)
+
+Automatically address PR review feedback with interactive workflow. Includes prompts for:
+
+- Fetching unresolved PR comments
+- Applying code fixes locally
+- Prioritizing P1/P2 issues
+- Interactive test-or-commit workflow
+
+### 6. [Documentation](documentation.md)
 
 Generate consistent, high-quality documentation. Includes prompts for:
 
@@ -103,7 +112,7 @@ Generate consistent, high-quality documentation. Includes prompts for:
 - Inline code comments
 - Architecture decision records
 
-### 6. [Design Patterns](design-patterns.md)
+### 7. [Design Patterns](design-patterns.md)
 
 Create high-level and detailed designs following HLD-### template format. Includes prompts for:
 
@@ -112,7 +121,7 @@ Create high-level and detailed designs following HLD-### template format. Includ
 - Database schema design
 - Component interaction diagrams
 
-### 7. [Context Reset](context-reset.md)
+### 8. [Context Reset](context-reset.md)
 
 Generate concise AI context summaries for session continuity. Includes prompts for:
 
@@ -121,7 +130,7 @@ Generate concise AI context summaries for session continuity. Includes prompts f
 - Work resumption
 - AI agent context restoration
 
-### 8. [Prompt Engineering Guide](prompt-engineering-guide.md) ⭐
+### 9. [Prompt Engineering Guide](prompt-engineering-guide.md) ⭐
 
 **Start here if you're new to prompts!** Comprehensive guide covering:
 

@@ -107,6 +107,18 @@ This catalog provides a quick way to load and use prompts. Simply say **"load [n
   **Output**: Review checklist with findings  
   **File**: [code-review.md](code-review.md)
 
+#### `load pr-fix` - Fix PR Review Comments
+
+**Purpose**: Automatically address PR review feedback  
+**When to use**: PR has unresolved comments, reviewer requested changes  
+**Info needed**:
+
+- PR number (e.g., `127`) or full PR URL
+- Optional: Specific priority level to focus on (P1, P2)
+  **Output**: Code fixes applied locally, ready to commit  
+  **Workflow**: Fetch comments → Apply fixes → Ask to test or commit  
+  **File**: [pr-fix.md](pr-fix.md)
+
 ---
 
 ### Documentation
