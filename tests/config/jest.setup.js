@@ -37,4 +37,12 @@ if (typeof process !== 'undefined') {
   // Node environment setup
 }
 
+// Mock import.meta for Vite compatibility
+global.importMeta = {
+  env: {
+    VITE_API_BASE_URL: process.env.VITE_API_BASE_URL || 'http://localhost:3002',
+    VITE_USE_MOCK_API: process.env.VITE_USE_MOCK_API || 'true',
+  },
+};
+
 console.log('Jest setup complete');

@@ -5,6 +5,14 @@
  * with mocked API responses
  */
 
+// Mock the env module before importing the store
+jest.mock('../../../app/frontend/src/config/env', () => ({
+  env: {
+    API_BASE_URL: process.env.VITE_API_BASE_URL || 'http://localhost:3002',
+    USE_MOCK_API: process.env.VITE_USE_MOCK_API === 'true',
+  },
+}));
+
 import { useInvitationStore } from '../../../app/frontend/src/stores/useInvitationStore';
 import { GroupRole } from '../../../app/frontend/src/types/GroupMember';
 import { InvitationStatus } from '../../../app/frontend/src/types/Invitation';
@@ -41,7 +49,7 @@ describe('useInvitationStore', () => {
   describe('Initial State', () => {
     it('should have correct initial state', () => {
       const state = useInvitationStore.getState();
-      
+
       expect(state.invitations).toEqual([]);
       expect(state.links).toEqual([]);
       expect(state.loading).toBe(false);
@@ -80,26 +88,24 @@ describe('useInvitationStore', () => {
     it('should handle fetch invitations error', async () => {
       mockFetchError(500, 'Server error');
 
-      await expect(
-        useInvitationStore.getState().fetchInvitations('group-1')
-      ).rejects.toThrow();
+      await expect(useInvitationStore.getState().fetchInvitations('group-1')).rejects.toThrow();
 
       const state = useInvitationStore.getState();
       expect(state.invitations).toEqual([]);
       expect(state.loading).toBe(false);
-      expect(state.error).toContain('Failed to fetch invitations');
+      expect(state.error).toBe('Server error');
     });
 
     it('should set loading state during fetch', async () => {
       mockFetchSuccess([]);
 
       const fetchPromise = useInvitationStore.getState().fetchInvitations('group-1');
-      
+
       // Check loading state is true during fetch (before promise resolves)
       expect(useInvitationStore.getState().loading).toBe(true);
-      
+
       await fetchPromise;
-      
+
       // Check loading state is false after fetch
       expect(useInvitationStore.getState().loading).toBe(false);
     });
@@ -124,15 +130,12 @@ describe('useInvitationStore', () => {
 
       mockFetchSuccess(mockInvitation);
 
-      const result = await useInvitationStore.getState().sendEmailInvitation(
-        'group-1',
-        'newuser@example.com',
-        GroupRole.ADMIN,
-        'Welcome!'
-      );
+      const result = await useInvitationStore
+        .getState()
+        .sendEmailInvitation('group-1', 'newuser@example.com', GroupRole.ADMIN, 'Welcome!');
 
       expect(result).toEqual(mockInvitation);
-      
+
       const state = useInvitationStore.getState();
       expect(state.invitations).toContainEqual(mockInvitation);
       expect(state.loading).toBe(false);
@@ -143,31 +146,27 @@ describe('useInvitationStore', () => {
       mockFetchError(400, 'Valid email is required');
 
       await expect(
-        useInvitationStore.getState().sendEmailInvitation(
-          'group-1',
-          'invalid-email',
-          GroupRole.MEMBER
-        )
+        useInvitationStore
+          .getState()
+          .sendEmailInvitation('group-1', 'invalid-email', GroupRole.MEMBER),
       ).rejects.toThrow();
 
       const state = useInvitationStore.getState();
       expect(state.loading).toBe(false);
-      expect(state.error).toContain('Failed to send invitation');
+      expect(state.error).toBe('Valid email is required');
     });
 
     it('should handle duplicate invitation error', async () => {
       mockFetchError(400, 'This email has already been invited');
 
       await expect(
-        useInvitationStore.getState().sendEmailInvitation(
-          'group-1',
-          'duplicate@example.com',
-          GroupRole.MEMBER
-        )
+        useInvitationStore
+          .getState()
+          .sendEmailInvitation('group-1', 'duplicate@example.com', GroupRole.MEMBER),
       ).rejects.toThrow();
 
       const state = useInvitationStore.getState();
-      expect(state.error).toContain('Failed to send invitation');
+      expect(state.error).toBe('This email has already been invited');
     });
   });
 
@@ -202,14 +201,12 @@ describe('useInvitationStore', () => {
     it('should handle fetch invite links error', async () => {
       mockFetchError(403, 'Unauthorized');
 
-      await expect(
-        useInvitationStore.getState().fetchInviteLinks('group-1')
-      ).rejects.toThrow();
+      await expect(useInvitationStore.getState().fetchInviteLinks('group-1')).rejects.toThrow();
 
       const state = useInvitationStore.getState();
       expect(state.links).toEqual([]);
       expect(state.loading).toBe(false);
-      expect(state.error).toContain('Failed to fetch invite links');
+      expect(state.error).toBe('Unauthorized');
     });
   });
 
@@ -231,14 +228,12 @@ describe('useInvitationStore', () => {
 
       mockFetchSuccess(mockLink);
 
-      const result = await useInvitationStore.getState().generateInviteLink(
-        'group-1',
-        GroupRole.VIEWER,
-        null
-      );
+      const result = await useInvitationStore
+        .getState()
+        .generateInviteLink('group-1', GroupRole.VIEWER, null);
 
       expect(result).toEqual(mockLink);
-      
+
       const state = useInvitationStore.getState();
       expect(state.links).toContainEqual(mockLink);
       expect(state.loading).toBe(false);
@@ -262,11 +257,9 @@ describe('useInvitationStore', () => {
 
       mockFetchSuccess(mockLink);
 
-      const result = await useInvitationStore.getState().generateInviteLink(
-        'group-1',
-        GroupRole.MEMBER,
-        5
-      );
+      const result = await useInvitationStore
+        .getState()
+        .generateInviteLink('group-1', GroupRole.MEMBER, 5);
 
       expect(result).toEqual(mockLink);
       expect(result.maxUses).toBe(5);
@@ -276,15 +269,13 @@ describe('useInvitationStore', () => {
       mockFetchError(400, 'Invalid role');
 
       await expect(
-        useInvitationStore.getState().generateInviteLink(
-          'group-1',
-          'invalid-role' as GroupRole,
-          10
-        )
+        useInvitationStore
+          .getState()
+          .generateInviteLink('group-1', 'invalid-role' as GroupRole, 10),
       ).rejects.toThrow();
 
       const state = useInvitationStore.getState();
-      expect(state.error).toContain('Failed to generate invite link');
+      expect(state.error).toBe('Invalid role');
     });
   });
 
@@ -320,21 +311,19 @@ describe('useInvitationStore', () => {
     it('should handle revoke link not found error', async () => {
       mockFetchError(404, 'Invite link not found');
 
-      await expect(
-        useInvitationStore.getState().revokeLink('non-existent-id')
-      ).rejects.toThrow();
+      await expect(useInvitationStore.getState().revokeLink('non-existent-id')).rejects.toThrow();
 
       const state = useInvitationStore.getState();
-      expect(state.error).toContain('Failed to revoke invite link');
+      expect(state.error).toBe('Invite link not found');
     });
   });
 
   describe('Utility Actions', () => {
     it('should clear error', () => {
       useInvitationStore.setState({ error: 'Some error' });
-      
+
       useInvitationStore.getState().clearError();
-      
+
       expect(useInvitationStore.getState().error).toBe(null);
     });
 
@@ -374,9 +363,9 @@ describe('useInvitationStore', () => {
     it('should handle network timeout', async () => {
       (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('Network timeout'));
 
-      await expect(
-        useInvitationStore.getState().fetchInvitations('group-1')
-      ).rejects.toThrow('Network timeout');
+      await expect(useInvitationStore.getState().fetchInvitations('group-1')).rejects.toThrow(
+        'Network timeout',
+      );
 
       const state = useInvitationStore.getState();
       expect(state.loading).toBe(false);
@@ -427,11 +416,9 @@ describe('useInvitationStore', () => {
 
       mockFetchSuccess(newInvitation);
 
-      await useInvitationStore.getState().sendEmailInvitation(
-        'group-1',
-        'new@example.com',
-        GroupRole.ADMIN
-      );
+      await useInvitationStore
+        .getState()
+        .sendEmailInvitation('group-1', 'new@example.com', GroupRole.ADMIN);
 
       const state = useInvitationStore.getState();
       expect(state.invitations).toHaveLength(2);

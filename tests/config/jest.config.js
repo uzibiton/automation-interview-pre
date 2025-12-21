@@ -20,8 +20,12 @@ module.exports = {
   // Root directory for tests (where test files are located)
   rootDir: path.resolve(__dirname, '../'),
 
-  // Tell Jest where to find node_modules
-  moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
+  // Tell Jest where to find node_modules - include both test and frontend dependencies
+  moduleDirectories: [
+    'node_modules',
+    '<rootDir>/node_modules',
+    '<rootDir>/../app/frontend/node_modules',
+  ],
 
   // Test environment setup
   testEnvironment: 'node', // Default for API/backend tests
@@ -41,9 +45,27 @@ module.exports = {
             tsconfig: {
               esModuleInterop: true,
               allowSyntheticDefaultImports: true,
+              module: 'esnext',
+              moduleResolution: 'node',
+              resolveJsonModule: true,
+              baseUrl: '.',
+              paths: {
+                '*': [
+                  path.resolve(__dirname, '../node_modules/*'),
+                  path.resolve(__dirname, '../../app/frontend/node_modules/*'),
+                ],
+              },
             },
           },
         ],
+      },
+      globals: {
+        'import.meta': {
+          env: {
+            VITE_API_BASE_URL: process.env.VITE_API_BASE_URL || 'http://localhost:3002',
+            VITE_USE_MOCK_API: process.env.VITE_USE_MOCK_API || 'true',
+          },
+        },
       },
     },
     {
@@ -109,6 +131,9 @@ module.exports = {
 
   // Module resolution
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+
+  // Tell Jest where to find node_modules for frontend dependencies
+  modulePaths: ['<rootDir>/node_modules', '<rootDir>/../app/frontend/node_modules'],
 
   // Path aliases (matching tsconfig.json)
   moduleNameMapper: {

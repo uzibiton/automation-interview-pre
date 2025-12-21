@@ -9,6 +9,7 @@ import { create } from 'zustand';
 import { Invitation, CreateInvitationDto } from '../types/Invitation';
 import { InviteLink, CreateInviteLinkDto } from '../types/InviteLink';
 import { GroupRole } from '../types/GroupMember';
+import { env } from '../config/env';
 
 /**
  * Invitation Store State Interface
@@ -22,11 +23,20 @@ interface InvitationState {
 
   // Actions - Invitation Management
   fetchInvitations: (groupId: string) => Promise<void>;
-  sendEmailInvitation: (groupId: string, email: string, role: GroupRole, message?: string) => Promise<Invitation>;
-  
+  sendEmailInvitation: (
+    groupId: string,
+    email: string,
+    role: GroupRole,
+    message?: string,
+  ) => Promise<Invitation>;
+
   // Actions - Invite Link Management
   fetchInviteLinks: (groupId: string) => Promise<void>;
-  generateInviteLink: (groupId: string, role: GroupRole, maxUses?: number | null) => Promise<InviteLink>;
+  generateInviteLink: (
+    groupId: string,
+    role: GroupRole,
+    maxUses?: number | null,
+  ) => Promise<InviteLink>;
   revokeLink: (linkId: string) => Promise<void>;
 
   // Utility actions
@@ -35,18 +45,12 @@ interface InvitationState {
 }
 
 /**
- * API Base URL - reads from environment variable
- */
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002';
-const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true';
-
-/**
  * Helper function to make API requests
  */
 async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const url = USE_MOCK_API
+  const url = env.USE_MOCK_API
     ? `/api${endpoint}` // MSW intercepts requests to /api/*
-    : `${API_BASE_URL}${endpoint}`;
+    : `${env.API_BASE_URL}${endpoint}`;
 
   const response = await fetch(url, {
     ...options,
@@ -108,7 +112,7 @@ export const useInvitationStore = create<InvitationState>((set) => ({
         role,
         message,
       };
-      
+
       const invitation = await apiRequest<Invitation>('/invitations', {
         method: 'POST',
         body: JSON.stringify(dto),
@@ -142,11 +146,7 @@ export const useInvitationStore = create<InvitationState>((set) => ({
   },
 
   // Action: Generate invite link
-  generateInviteLink: async (
-    groupId: string,
-    role: GroupRole,
-    maxUses?: number | null,
-  ) => {
+  generateInviteLink: async (groupId: string, role: GroupRole, maxUses?: number | null) => {
     set({ loading: true, error: null });
     try {
       const dto: CreateInviteLinkDto & { groupId: string } = {
