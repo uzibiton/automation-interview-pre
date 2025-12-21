@@ -261,7 +261,7 @@ export const groupHandlers = [
     members.splice(memberIndex, 1);
 
     // Update group member count
-    const groupIndex = groups.findIndex((g) => g.groupId === groupId);
+    const groupIndex = groups.findIndex((g) => g.id === groupId);
     if (groupIndex !== -1) {
       groups[groupIndex].memberCount -= 1;
     }

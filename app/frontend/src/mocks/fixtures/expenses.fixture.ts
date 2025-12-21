@@ -187,7 +187,7 @@ export const mockExpenses: Expense[] = [
   },
 ];
 
-export const getExpensesByGroupId = (groupId: string): Expense[] => {
+export const getExpensesByGroupId = (_groupId: string): Expense[] => {
   // In a real scenario, expenses would be filtered by groupId
   // For mock purposes, return all expenses
   return mockExpenses;
