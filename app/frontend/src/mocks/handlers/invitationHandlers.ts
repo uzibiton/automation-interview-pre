@@ -153,7 +153,7 @@ export const invitationHandlers = [
       role: invitation.role,
       joinedAt: new Date().toISOString(),
     };
-    
+
     // Access members array from mockMembers and add the new member
     mockMembers.push(newMember);
 
@@ -299,7 +299,7 @@ export const invitationHandlers = [
       role: link.defaultRole,
       joinedAt: new Date().toISOString(),
     };
-    
+
     mockMembers.push(newMember);
 
     return HttpResponse.json(

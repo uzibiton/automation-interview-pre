@@ -3,10 +3,7 @@
  */
 
 import { http, HttpResponse, delay } from 'msw';
-import {
-  mockGroups,
-  getCurrentUserGroup,
-} from '../fixtures/groups.fixture';
+import { mockGroups, getCurrentUserGroup } from '../fixtures/groups.fixture';
 import { mockMembers } from '../fixtures/members.fixture';
 import { Group, CreateGroupDto, UpdateGroupDto } from '../../types/Group';
 import { GroupMember, GroupRole } from '../../types/GroupMember';
@@ -40,10 +37,7 @@ export const groupHandlers = [
 
     // Validation: Empty name
     if (!body.name || body.name.trim().length === 0) {
-      return HttpResponse.json(
-        { error: 'Group name is required' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'Group name is required' }, { status: 400 });
     }
 
     // Validation: Name too short (use trimmed length for consistency)
@@ -65,10 +59,7 @@ export const groupHandlers = [
     // Check if user already has a group (business rule)
     const userHasGroup = members.some((m) => m.userId === MOCK_USER_ID);
     if (userHasGroup) {
-      return HttpResponse.json(
-        { error: 'User can only be in one group' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'User can only be in one group' }, { status: 400 });
     }
 
     const newGroup: Group = {
@@ -130,20 +121,14 @@ export const groupHandlers = [
     const canEdit = true; // Simplified for mock
 
     if (!canEdit) {
-      return HttpResponse.json(
-        { error: 'Insufficient permissions' },
-        { status: 403 },
-      );
+      return HttpResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
     }
 
     // Validation
     if (body.name !== undefined) {
       const trimmedName = body.name.trim();
       if (trimmedName.length === 0) {
-        return HttpResponse.json(
-          { error: 'Group name cannot be empty' },
-          { status: 400 },
-        );
+        return HttpResponse.json({ error: 'Group name cannot be empty' }, { status: 400 });
       }
       if (trimmedName.length < 3 || trimmedName.length > 100) {
         return HttpResponse.json(
@@ -210,9 +195,7 @@ export const groupHandlers = [
     const { groupId, memberId } = params;
     const body = (await request.json()) as { role: GroupRole };
 
-    const memberIndex = members.findIndex(
-      (m) => m.id === memberId && m.groupId === groupId,
-    );
+    const memberIndex = members.findIndex((m) => m.id === memberId && m.groupId === groupId);
 
     if (memberIndex === -1) {
       return HttpResponse.json({ error: 'Member not found' }, { status: 404 });
@@ -222,18 +205,12 @@ export const groupHandlers = [
 
     // Cannot change Owner role
     if (member.role === GroupRole.OWNER) {
-      return HttpResponse.json(
-        { error: 'Cannot change owner role' },
-        { status: 403 },
-      );
+      return HttpResponse.json({ error: 'Cannot change owner role' }, { status: 403 });
     }
 
     // Validation
     if (!Object.values(GroupRole).includes(body.role)) {
-      return HttpResponse.json(
-        { error: 'Invalid role' },
-        { status: 400 },
-      );
+      return HttpResponse.json({ error: 'Invalid role' }, { status: 400 });
     }
 
     members[memberIndex] = {
@@ -250,9 +227,7 @@ export const groupHandlers = [
 
     const { groupId, memberId } = params;
 
-    const memberIndex = members.findIndex(
-      (m) => m.id === memberId && m.groupId === groupId,
-    );
+    const memberIndex = members.findIndex((m) => m.id === memberId && m.groupId === groupId);
 
     if (memberIndex === -1) {
       return HttpResponse.json({ error: 'Member not found' }, { status: 404 });
@@ -262,10 +237,7 @@ export const groupHandlers = [
 
     // Cannot revoke Owner
     if (member.role === GroupRole.OWNER) {
-      return HttpResponse.json(
-        { error: 'Cannot revoke group owner' },
-        { status: 403 },
-      );
+      return HttpResponse.json({ error: 'Cannot revoke group owner' }, { status: 403 });
     }
 
     members.splice(memberIndex, 1);
