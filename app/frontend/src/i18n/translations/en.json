@@ -167,6 +167,39 @@
       "nameTooShort": "Group name must be at least 3 characters",
       "nameTooLong": "Group name must not exceed 100 characters",
       "descriptionTooLong": "Description must not exceed 500 characters"
+    },
+    "invitation": {
+      "title": "Invite Members",
+      "emailTab": "Email Invitation",
+      "linkTab": "Shareable Link",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "Enter email address",
+      "roleLabel": "Role",
+      "rolePlaceholder": "Select a role",
+      "messageLabel": "Optional Message",
+      "messagePlaceholder": "Add a personal message to the invitation",
+      "sendInvitation": "Send Invitation",
+      "sending": "Sending...",
+      "generateLink": "Generate Link",
+      "generating": "Generating...",
+      "maxUsesLabel": "Max Uses (Optional)",
+      "maxUsesPlaceholder": "Leave empty for unlimited",
+      "linkGenerated": "Link Generated",
+      "copyLink": "Copy Link",
+      "linkCopied": "Link copied to clipboard!",
+      "invitationSent": "Invitation sent successfully!",
+      "linkGeneratedSuccess": "Invite link generated successfully!",
+      "emailRequired": "Email address is required",
+      "emailInvalid": "Please enter a valid email address",
+      "roleRequired": "Please select a role",
+      "maxUsesInvalid": "Max uses must be a positive number",
+      "sendError": "Failed to send invitation",
+      "generateError": "Failed to generate invite link",
+      "roles": {
+        "admin": "Admin",
+        "member": "Member",
+        "viewer": "Viewer"
+      }
     }
   }
 }

@@ -42,7 +42,8 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
 
   const handleGroupSuccess = (groupId: string) => {
     console.log('Group created successfully with ID:', groupId);
-    // Optionally navigate to the group page or refresh data
+    // Refresh the dashboard to show updated data
+    onUpdate();
   };
 
   return (
