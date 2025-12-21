@@ -137,6 +137,30 @@
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Enter group description (optional)",
     "descriptionHelp": "Maximum 500 characters",
+    "members": {
+      "title": "Members",
+      "noMembers": "No members yet",
+      "loading": "Loading members...",
+      "avatar": "Avatar",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "joinedDate": "Joined",
+      "actions": "Actions",
+      "changeRole": "Change Role",
+      "removeMember": "Remove",
+      "resetPassword": "Reset Password",
+      "roles": {
+        "owner": "Owner",
+        "admin": "Admin",
+        "member": "Member",
+        "viewer": "Viewer"
+      },
+      "confirmRemove": "Are you sure you want to remove this member?",
+      "removeSuccess": "Member removed successfully",
+      "roleChangeSuccess": "Role changed successfully",
+      "resetPasswordSuccess": "Password reset email sent"
+    },
     "errors": {
       "nameRequired": "Group name is required",
       "nameTooShort": "Group name must be at least 3 characters",

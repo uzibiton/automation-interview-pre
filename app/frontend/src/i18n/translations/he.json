@@ -137,6 +137,30 @@
     "descriptionLabel": "תיאור",
     "descriptionPlaceholder": "הזן תיאור קבוצה (אופציונלי)",
     "descriptionHelp": "עד 500 תווים",
+    "members": {
+      "title": "חברים",
+      "noMembers": "אין חברים עדיין",
+      "loading": "טוען חברים...",
+      "avatar": "תמונה",
+      "name": "שם",
+      "email": "אימייל",
+      "role": "תפקיד",
+      "joinedDate": "הצטרף",
+      "actions": "פעולות",
+      "changeRole": "שנה תפקיד",
+      "removeMember": "הסר",
+      "resetPassword": "איפוס סיסמה",
+      "roles": {
+        "owner": "בעלים",
+        "admin": "מנהל",
+        "member": "חבר",
+        "viewer": "צופה"
+      },
+      "confirmRemove": "האם אתה בטוח שברצונך להסיר חבר זה?",
+      "removeSuccess": "החבר הוסר בהצלחה",
+      "roleChangeSuccess": "התפקיד שונה בהצלחה",
+      "resetPasswordSuccess": "אימייל לאיפוס סיסמה נשלח"
+    },
     "errors": {
       "nameRequired": "שם הקבוצה הוא שדה חובה",
       "nameTooShort": "שם הקבוצה חייב להיות לפחות 3 תווים",
