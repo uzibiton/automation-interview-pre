@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGroupStore } from '../../stores/useGroupStore';
 import { CreateGroupDto } from '../../types/Group';
@@ -29,17 +29,29 @@ function GroupCreationDialog({ isOpen, onClose, onSuccess }: GroupCreationDialog
     description: false,
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const prevIsOpenRef = useRef(false);
 
-  // Reset form when dialog opens (using useEffect to avoid render-time state updates)
+  // Reset form when dialog opens - use ref to track previous state and avoid effect setState
+  if (isOpen && !prevIsOpenRef.current) {
+    // Dialog just opened - reset in render phase (before effect)
+    prevIsOpenRef.current = true;
+  } else if (!isOpen && prevIsOpenRef.current) {
+    // Dialog just closed
+    prevIsOpenRef.current = false;
+  }
+
+  // Perform reset actions in effect when dialog opens
   useEffect(() => {
     if (isOpen) {
+      // Only reset on mount or when reopening
       setFormData({ name: '', description: '' });
       setErrors({});
       setTouched({ name: false, description: false });
       setSuccessMessage(null);
       clearError();
     }
-  }, [isOpen, clearError]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen ? 'opened' : 'closed']); // Use string to track open/close transitions
 
   // Validate name field
   const validateName = useCallback(
