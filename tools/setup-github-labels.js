@@ -2,14 +2,14 @@
 
 /**
  * GitHub Labels Setup for TASK-002
- * 
+ *
  * This script generates the labels needed for Group Management tasks.
  * You can use GitHub CLI to create them automatically or copy the commands.
- * 
+ *
  * Prerequisites:
  *   npm install -g gh   # GitHub CLI
  *   gh auth login       # Authenticate
- * 
+ *
  * Usage:
  *   node tools/setup-github-labels.js         # Show manual instructions
  *   node tools/setup-github-labels.js auto    # Auto-create with gh CLI
@@ -18,33 +18,33 @@
 const labels = [
   // Main label
   { name: 'TASK-002', color: '0052CC', description: 'Group Management Feature Tasks' },
-  
+
   // Phase labels
   { name: 'phase-0-db', color: 'D73A4A', description: 'Phase 0: Database Schema' },
   { name: 'phase-1-auth', color: 'D73A4A', description: 'Phase 1: Auth Service' },
   { name: 'phase-2-api', color: 'D73A4A', description: 'Phase 2: API Service' },
   { name: 'phase-3-ui', color: 'FBCA04', description: 'Phase 3: Frontend UI' },
   { name: 'phase-4-testing', color: 'FBCA04', description: 'Phase 4: Testing & QA' },
-  
+
   // Priority labels
   { name: 'priority-critical', color: 'B60205', description: 'Critical priority - blocking' },
   { name: 'priority-high', color: 'D93F0B', description: 'High priority' },
   { name: 'priority-medium', color: 'FBCA04', description: 'Medium priority' },
-  
+
   // Tech stack labels
   { name: 'backend', color: '0E8A16', description: 'Backend code' },
   { name: 'frontend', color: '1D76DB', description: 'Frontend code' },
   { name: 'database', color: '5319E7', description: 'Database related' },
-  
+
   // Service labels
   { name: 'auth-service', color: '0E8A16', description: 'Auth Service (NestJS)' },
   { name: 'api-service', color: '0E8A16', description: 'API Service (NestJS)' },
-  
+
   // Technology labels
   { name: 'nestjs', color: 'E92063', description: 'NestJS framework' },
   { name: 'jwt', color: '000000', description: 'JWT authentication' },
   { name: 'security', color: 'D73A4A', description: 'Security related' },
-  
+
   // Feature labels
   { name: 'expenses', color: '1D76DB', description: 'Expenses feature' },
   { name: 'categories', color: '1D76DB', description: 'Categories feature' },
@@ -54,7 +54,7 @@ const labels = [
   { name: 'page', color: '1D76DB', description: 'Page/Route' },
   { name: 'mocks', color: 'BFD4F2', description: 'Mock data/services' },
   { name: 'setup', color: 'C5DEF5', description: 'Setup/Configuration' },
-  
+
   // Testing labels
   { name: 'testing', color: 'F9D0C4', description: 'Testing related' },
   { name: 'unit-tests', color: 'F9D0C4', description: 'Unit tests' },
@@ -72,14 +72,14 @@ function printManualInstructions() {
   console.log('1. Click "New label"');
   console.log('2. Copy the Name, Description, and Color');
   console.log('3. Click "Create label"\n');
-  console.log('=' .repeat(80));
-  
+  console.log('='.repeat(80));
+
   labels.forEach((label, index) => {
     console.log(`\n${index + 1}. Label: ${label.name}`);
     console.log(`   Description: ${label.description}`);
     console.log(`   Color: #${label.color}`);
   });
-  
+
   console.log('\n' + '='.repeat(80));
   console.log(`\n✅ Total: ${labels.length} labels to create\n`);
 }
@@ -90,12 +90,14 @@ function generateGhCommands() {
   console.log('  npm install -g gh');
   console.log('  gh auth login\n');
   console.log('Commands:\n');
-  console.log('=' .repeat(80) + '\n');
-  
-  labels.forEach(label => {
-    console.log(`gh label create "${label.name}" --description "${label.description}" --color "${label.color}" --repo uzibiton/automation-interview-pre`);
+  console.log('='.repeat(80) + '\n');
+
+  labels.forEach((label) => {
+    console.log(
+      `gh label create "${label.name}" --description "${label.description}" --color "${label.color}" --repo uzibiton/automation-interview-pre`,
+    );
   });
-  
+
   console.log('\n' + '='.repeat(80));
   console.log(`\n✅ Run these ${labels.length} commands to create all labels\n`);
   console.log('Or copy all commands and run:');
@@ -107,14 +109,14 @@ function generateBashScript() {
   console.log('# GitHub Labels Setup Script');
   console.log('# Run with: bash setup-labels.sh\n');
   console.log('REPO="uzibiton/automation-interview-pre"\n');
-  
-  labels.forEach(label => {
+
+  labels.forEach((label) => {
     console.log(`gh label create "${label.name}" \\`);
     console.log(`  --description "${label.description}" \\`);
     console.log(`  --color "${label.color}" \\`);
     console.log(`  --repo "$REPO" || echo "Label '${label.name}' may already exist"\n`);
   });
-  
+
   console.log('echo "✅ Label setup complete!"');
 }
 

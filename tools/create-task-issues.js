@@ -2,12 +2,12 @@
 
 /**
  * GitHub Issues Creator for TASK-002
- * 
+ *
  * This script helps create GitHub issues from TASKS-002 document.
- * 
+ *
  * Usage:
  *   node tools/create-task-issues.js [task-number]
- *   
+ *
  * Examples:
  *   node tools/create-task-issues.js 015        # Create TASK-002-015
  *   node tools/create-task-issues.js all        # Create all tasks
@@ -120,7 +120,14 @@ const tasks = [
     phase: 'phase-1-auth',
     priority: 'priority-critical',
     effort: '2 days',
-    labels: ['TASK-002', 'phase-1-auth', 'priority-critical', 'backend', 'security', 'auth-service'],
+    labels: [
+      'TASK-002',
+      'phase-1-auth',
+      'priority-critical',
+      'backend',
+      'security',
+      'auth-service',
+    ],
     dependencies: ['004'],
     blocks: ['010', '012'],
     requirements: 'FR-005',
@@ -375,13 +382,13 @@ const tasks = [
 ];
 
 function generateIssueBody(task) {
-  const depLinks = task.dependencies.length > 0 
-    ? task.dependencies.map(d => `#TASK-002-${d}`).join(', ')
-    : 'None';
-  
-  const blockLinks = task.blocks.length > 0
-    ? task.blocks.map(b => `#TASK-002-${b}`).join(', ')
-    : 'None';
+  const depLinks =
+    task.dependencies.length > 0
+      ? task.dependencies.map((d) => `#TASK-002-${d}`).join(', ')
+      : 'None';
+
+  const blockLinks =
+    task.blocks.length > 0 ? task.blocks.map((b) => `#TASK-002-${b}`).join(', ') : 'None';
 
   return `**Part of**: #69 (Group Management with Role-Based Permissions)
 
@@ -390,7 +397,7 @@ function generateIssueBody(task) {
 **Task ID**: TASK-002-${task.id}  
 **Priority**: ${task.priority.replace('priority-', '')}  
 **Effort**: ${task.effort}  
-**Phase**: ${task.phase.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}  
+**Phase**: ${task.phase.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}  
 **Tracking**: [TASKS-002 Document](https://github.com/uzibiton/automation-interview-pre/blob/main/docs/dev/TASKS-002-group-management.md#task-002-${task.id})
 
 ## Requirements
@@ -459,13 +466,13 @@ Examples:
   console.log(`\n✅ Generated ${tasks.length} task issue templates\n`);
 } else if (command.startsWith('phase')) {
   const phaseNum = command.replace('phase', '');
-  const phaseTasks = tasks.filter(t => t.phase.includes(`phase-${phaseNum}`));
+  const phaseTasks = tasks.filter((t) => t.phase.includes(`phase-${phaseNum}`));
   phaseTasks.forEach(printTask);
   console.log(`\n✅ Generated ${phaseTasks.length} Phase ${phaseNum} task issue templates\n`);
 } else {
   // Assume it's a task number
   const taskId = command.padStart(3, '0');
-  const task = tasks.find(t => t.id === taskId);
+  const task = tasks.find((t) => t.id === taskId);
   if (task) {
     printTask(task);
   } else {

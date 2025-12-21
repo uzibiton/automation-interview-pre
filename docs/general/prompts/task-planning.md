@@ -179,6 +179,7 @@ When running "load planning for issue #XX", the agent should produce:
 **File**: `docs/dev/TASKS-XXX-[feature-name].md`
 
 Structured breakdown with:
+
 - Task summary table (phases, effort estimates, priorities)
 - UI-First Development Approach section (if applicable)
 - Detailed tasks by phase (TASK-XXX-001, TASK-XXX-002, etc.)
@@ -195,16 +196,19 @@ Structured breakdown with:
 ### 6. GitHub Setup (30-60 minutes)
 
 **Create Labels**:
+
 - Run `node tools/setup-github-labels.js gh | bash`
 - Verify at: `https://github.com/[org]/[repo]/labels`
 
 **Create Issues**:
+
 - Use `gh issue create` or GitHub web UI
 - Follow format from TASKS-XXX document
 - Link dependencies between issues
 - Example: Issue #117 for TASK-002-015
 
 **Verify**:
+
 - Test filter: `label:TASK-XXX`
 - All phase filters work
 - Dependencies linked correctly
@@ -212,6 +216,7 @@ Structured breakdown with:
 ### 7. Documentation Updates (15-30 minutes)
 
 **Update Traceability**:
+
 - `docs/product/TRACEABILITY_MATRIX.md`: Add REQ-XXX row
 - `README.md`: Update parent issue progress
 - `docs/TABLE_OF_CONTENTS.md`: Add new document entries
@@ -221,6 +226,7 @@ Structured breakdown with:
 ## Complete Example: REQ-002 (Group Management)
 
 See these documents for reference:
+
 - Discussion: Captured in REQ-002 introduction
 - Requirements: `docs/product/requirements/REQ-002-group-management.md`
 - Design: `docs/dev/designs/HLD-002-group-management.md`

@@ -76,12 +76,12 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 Professional documentation with **bidirectional traceability** between requirements, design, tests, and implementation:
 
-| Type             | Format                      | Example                                                                                                                                                                  |
-| ---------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Type             | Format                      | Example                                                                                                                                                                                                                                                        |
+| ---------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Requirements** | `REQ-###-feature-name.md`   | [REQ-001-expense-sorting.md](docs/product/requirements/REQ-001-expense-sorting.md), [REQ-002-group-management.md](docs/product/requirements/REQ-002-group-management.md), [REQ-003-ai-expense-input.md](docs/product/requirements/REQ-003-ai-expense-input.md) |
-| **Design (HLD)** | `HLD-###-feature-name.md`   | [HLD-001-expense-sorting.md](docs/dev/designs/HLD-001-expense-sorting.md), [HLD-002-group-management.md](docs/dev/designs/HLD-002-group-management.md), [HLD-003-ai-expense-input.md](docs/dev/designs/HLD-003-ai-expense-input.md)                   |
-| **Test Plans**   | `TEST-###-feature-name.md`  | [TEST-001-expense-sorting.md](docs/qa/test-plans/TEST-001-expense-sorting.md), [TEST-002-group-management.md](docs/qa/test-plans/TEST-002-group-management.md), [TEST-003-ai-expense-input.md](docs/qa/test-plans/TEST-003-ai-expense-input.md)           |
-| **Tasks**        | `TASKS-###-feature-name.md` | [TASKS-002-group-management.md](docs/dev/TASKS-002-group-management.md)                                                                                                  |
+| **Design (HLD)** | `HLD-###-feature-name.md`   | [HLD-001-expense-sorting.md](docs/dev/designs/HLD-001-expense-sorting.md), [HLD-002-group-management.md](docs/dev/designs/HLD-002-group-management.md), [HLD-003-ai-expense-input.md](docs/dev/designs/HLD-003-ai-expense-input.md)                            |
+| **Test Plans**   | `TEST-###-feature-name.md`  | [TEST-001-expense-sorting.md](docs/qa/test-plans/TEST-001-expense-sorting.md), [TEST-002-group-management.md](docs/qa/test-plans/TEST-002-group-management.md), [TEST-003-ai-expense-input.md](docs/qa/test-plans/TEST-003-ai-expense-input.md)                |
+| **Tasks**        | `TASKS-###-feature-name.md` | [TASKS-002-group-management.md](docs/dev/TASKS-002-group-management.md)                                                                                                                                                                                        |
 
 **Traceability Flow**: `REQ <-> HLD <-> TEST <-> TASKS <-> Implementation <-> E2E Tests`
 
