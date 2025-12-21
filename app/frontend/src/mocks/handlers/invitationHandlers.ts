@@ -142,6 +142,21 @@ export const invitationHandlers = [
       };
     }
 
+    // Add member to the group (import members from groupHandlers would cause circular dependency,
+    // so we need to access it through the module)
+    const newMember = {
+      id: `member-${crypto.randomUUID()}`,
+      groupId: invitation.groupId,
+      userId: MOCK_USER_ID,
+      name: invitation.email.split('@')[0],
+      email: invitation.email,
+      role: invitation.role,
+      joinedAt: new Date().toISOString(),
+    };
+    
+    // Access members array from mockMembers and add the new member
+    mockMembers.push(newMember);
+
     return HttpResponse.json(
       {
         message: 'Invitation accepted successfully',
@@ -273,6 +288,19 @@ export const invitationHandlers = [
         usesCount: inviteLinks[linkIndex].usesCount + 1,
       };
     }
+
+    // Add member to the group
+    const newMember = {
+      id: `member-${crypto.randomUUID()}`,
+      groupId: link.groupId,
+      userId: MOCK_USER_ID,
+      name: 'New User',
+      email: 'newuser@example.com',
+      role: link.defaultRole,
+      joinedAt: new Date().toISOString(),
+    };
+    
+    mockMembers.push(newMember);
 
     return HttpResponse.json(
       {

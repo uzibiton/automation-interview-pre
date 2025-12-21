@@ -27,7 +27,8 @@ export const groupHandlers = [
   // GET /api/groups/current - Get current user's group
   http.get('/api/groups/current', async () => {
     await randomDelay();
-    const currentGroup = getCurrentUserGroup();
+    // Use mutable groups store instead of static fixture
+    const currentGroup = groups.find((g) => g.ownerId === MOCK_USER_ID);
     return HttpResponse.json(currentGroup, { status: 200 });
   }),
 
