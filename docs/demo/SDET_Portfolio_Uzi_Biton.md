@@ -47,9 +47,9 @@ Senior QA Automation Engineer specializing in **scalable test infrastructure** a
 ## AUTOMATION & TESTING PHILOSOPHY
 
 **🔺 Testing Strategy:** Multi-layered approach prioritizing fast unit tests, strategic integration tests, and focused E2E scenarios for critical paths
-*** Shift-Left:** Early testing integration in development cycle with unit and integration tests catching issues before deployment
-*** Shift-Right:** Production monitoring and synthetic testing to validate real-world behavior and user experience
-*** CI/CD Integration:** All tests integrated into automated pipelines for continuous feedback and validation on every commit
+**\* Shift-Left:** Early testing integration in development cycle with unit and integration tests catching issues before deployment
+**\* Shift-Right:** Production monitoring and synthetic testing to validate real-world behavior and user experience
+**\* CI/CD Integration:** All tests integrated into automated pipelines for continuous feedback and validation on every commit
 **🔗 Traceability:** Bidirectional linking between requirements, design documents, test cases, and implementation for complete coverage visibility
 **📊 Quality Metrics That Matter:** Focus on defect escape rate, mean time to detection, and deployment frequency over vanity metrics
 **🔧 Maintainability:** Page object models, reusable components, self-healing locators, clear naming conventions
@@ -106,10 +106,10 @@ Microservices application (Auth, API, Frontend) required automated deployment pi
 ## CI/CD & QUALITY GATES EXPERIENCE
 
 **🏗️ Pipeline Architecture:** Implemented parallel job execution (Prettier, ESLint, TypeScript, Security) running simultaneously for fast feedback
-*** Performance Testing:** Built non-functional test suite with k6, Locust, JMeter for load testing and Lighthouse for performance metrics
+**\* Performance Testing:** Built non-functional test suite with k6, Locust, JMeter for load testing and Lighthouse for performance metrics
 **🔒 Security Scanning:** Integrated OWASP ZAP for dynamic security testing and Bandit/Safety for Python dependency scanning
 **🚀 Multi-Environment Deployment:** Orchestrated Google Cloud Run deployments across develop, staging, production with conditional triggers
-*** Infrastructure as Code:** Maintained Docker Compose profiles for isolated test execution and environment-specific configurations
+**\* Infrastructure as Code:** Maintained Docker Compose profiles for isolated test execution and environment-specific configurations
 **📊 Documentation & Traceability:** Created bidirectional traceability (REQ → HLD → TEST → Implementation) with structured issue templates
 
 ---
@@ -136,11 +136,11 @@ Microservices application (Auth, API, Frontend) required automated deployment pi
 
 **This portfolio showcases:**
 
-- **Complete GitHub repository** with comprehensive testing infrastructure  
-- **Live deployed application** on Google Cloud Run (Develop, Staging, Production)  
-- **Professional documentation** including requirements, HLD, test plans, traceability matrix  
-- **Multi-tier test strategy** with 15+ test types and 200+ scenarios  
-- **CI/CD automation** with GitHub Actions and Docker containerization  
+- **Complete GitHub repository** with comprehensive testing infrastructure
+- **Live deployed application** on Google Cloud Run (Develop, Staging, Production)
+- **Professional documentation** including requirements, HLD, test plans, traceability matrix
+- **Multi-tier test strategy** with 15+ test types and 200+ scenarios
+- **CI/CD automation** with GitHub Actions and Docker containerization
 - **Real-world problem solving** from issue creation to deployment
 
 **📊 View Complete Documentation:** [Table of Contents](https://github.com/uzibiton/automation-interview-pre/blob/main/docs/TABLE_OF_CONTENTS.md)

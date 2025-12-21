@@ -7,18 +7,21 @@ Review and approve the proposed data-testid naming convention for the Expense Tr
 ## ✅ What We've Accomplished
 
 ### 1. Complete Component Audit
+
 - ✅ Audited all 15 React components in `app/frontend/src/components/`
 - ✅ Identified 120+ interactive elements requiring test identifiers
 - ✅ Analyzed existing E2E test expectations
 - ✅ Documented all patterns and special cases
 
 ### 2. Established Naming Convention
+
 - ✅ Defined clear, consistent naming pattern
 - ✅ Created component-specific guidelines
 - ✅ Documented edge cases and special scenarios
 - ✅ Provided practical implementation examples
 
 ### 3. Created Comprehensive Documentation
+
 - ✅ **DATA_TESTID_CONVENTION.md** - Full convention guide (15KB)
 - ✅ **COMPONENT_AUDIT_REPORT.md** - Detailed analysis (23KB)
 - ✅ **DATA_TESTID_QUICK_REFERENCE.md** - Quick lookup (10KB)
@@ -42,20 +45,21 @@ Review and approve the proposed data-testid naming convention for the Expense Tr
 
 ### Examples
 
-| Element Type | Example | Why It Works |
-|-------------|---------|--------------|
-| Input field | `login-email-input` | Clear component context + field name |
-| Button | `expense-form-submit-button` | Indicates action and context |
-| Link | `nav-dashboard-link` | Shows navigation destination |
-| List item | `expense-list-item-{id}` | Dynamic ID for unique identification |
-| Modal | `expense-dialog-overlay` | Clear component hierarchy |
-| State | `expense-list-loading` | Indicates current state |
+| Element Type | Example                      | Why It Works                         |
+| ------------ | ---------------------------- | ------------------------------------ |
+| Input field  | `login-email-input`          | Clear component context + field name |
+| Button       | `expense-form-submit-button` | Indicates action and context         |
+| Link         | `nav-dashboard-link`         | Shows navigation destination         |
+| List item    | `expense-list-item-{id}`     | Dynamic ID for unique identification |
+| Modal        | `expense-dialog-overlay`     | Clear component hierarchy            |
+| State        | `expense-list-loading`       | Indicates current state              |
 
 ## 📊 Coverage Summary
 
 ### Components by Priority
 
 **High Priority (6)** - Critical user flows
+
 - Login.tsx - Authentication entry point
 - Navigation.tsx - Primary navigation
 - ExpenseForm.tsx - Core functionality
@@ -64,6 +68,7 @@ Review and approve the proposed data-testid naming convention for the Expense Tr
 - ConfirmationDialog.tsx - User confirmations
 
 **Medium Priority (6)** - Main features
+
 - DashboardHome.tsx - Landing page
 - ExpensesPage.tsx - Expense management page
 - ExpensePieChart.tsx - Analytics visualization
@@ -72,22 +77,23 @@ Review and approve the proposed data-testid naming convention for the Expense Tr
 - TaskList.tsx - Task management
 
 **Low Priority (3)** - Supporting features
+
 - Dashboard.tsx - Container component
 - LanguageSwitcher.tsx - I18n utility
 - AuthCallback.tsx - OAuth handler
 
 ### Element Types Covered
 
-| Type | Count | Examples |
-|------|-------|----------|
-| Form inputs | 25+ | text, email, password, number, date |
-| Select dropdowns | 12+ | category, currency, priority, status |
-| Buttons | 30+ | submit, cancel, edit, delete, navigation |
-| Links | 10+ | navigation, quick links |
-| List items | 2 patterns | expenses, tasks (with dynamic IDs) |
-| Modal elements | 14+ | overlays, content, close buttons |
-| State indicators | 8+ | loading, empty, error states |
-| **Total** | **120+** | All interactive elements |
+| Type             | Count      | Examples                                 |
+| ---------------- | ---------- | ---------------------------------------- |
+| Form inputs      | 25+        | text, email, password, number, date      |
+| Select dropdowns | 12+        | category, currency, priority, status     |
+| Buttons          | 30+        | submit, cancel, edit, delete, navigation |
+| Links            | 10+        | navigation, quick links                  |
+| List items       | 2 patterns | expenses, tasks (with dynamic IDs)       |
+| Modal elements   | 14+        | overlays, content, close buttons         |
+| State indicators | 8+         | loading, empty, error states             |
+| **Total**        | **120+**   | All interactive elements                 |
 
 ## 🔍 Example Use Cases
 
@@ -103,6 +109,7 @@ Review and approve the proposed data-testid naming convention for the Expense Tr
 ```
 
 **Test Usage:**
+
 ```typescript
 await page.fill('[data-testid="login-email-input"]', 'user@example.com');
 await page.click('[data-testid="login-submit-button"]');
@@ -113,15 +120,16 @@ await expect(page.locator('[data-testid="login-error-message"]')).toBeVisible();
 
 ```html
 {expenses.map(expense => (
-  <tr data-testid={`expense-list-item-${expense.id}`}>
-    <td>{expense.description}</td>
-    <button data-testid={`expense-list-edit-button-${expense.id}`}>Edit</button>
-    <button data-testid={`expense-list-delete-button-${expense.id}`}>Delete</button>
-  </tr>
+<tr data-testid="{`expense-list-item-${expense.id}`}">
+  <td>{expense.description}</td>
+  <button data-testid="{`expense-list-edit-button-${expense.id}`}">Edit</button>
+  <button data-testid="{`expense-list-delete-button-${expense.id}`}">Delete</button>
+</tr>
 ))}
 ```
 
 **Test Usage:**
+
 ```typescript
 await page.click(`[data-testid="expense-list-edit-button-${expenseId}"]`);
 ```
@@ -144,18 +152,21 @@ await page.click(`[data-testid="expense-list-edit-button-${expenseId}"]`);
 ## ✨ Benefits of This Convention
 
 ### For Developers
+
 - **Clear guidelines**: Easy to know what testid to use
 - **Consistent patterns**: Same approach across all components
 - **Self-documenting**: Testids indicate element purpose
 - **Quick reference**: Multiple docs for different needs
 
 ### For QA Engineers
+
 - **Reliable selectors**: Not affected by CSS or structure changes
 - **Easy test writing**: Predictable testid names
 - **Maintainable tests**: Clear, readable test code
 - **Comprehensive coverage**: All interactive elements covered
 
 ### For the Team
+
 - **Reduced bugs**: Better test coverage prevents regressions
 - **Faster development**: Less time debugging test failures
 - **Better collaboration**: Shared vocabulary for testing
@@ -164,7 +175,9 @@ await page.click(`[data-testid="expense-list-edit-button-${expenseId}"]`);
 ## 🚀 Implementation Plan
 
 ### Phase 1: High Priority (Week 1)
+
 Implement testids in critical path components:
+
 1. Login.tsx
 2. Navigation.tsx
 3. ExpenseForm.tsx
@@ -175,7 +188,9 @@ Implement testids in critical path components:
 **Why:** These cover login, navigation, and core expense functionality.
 
 ### Phase 2: Medium Priority (Week 2)
+
 Implement testids in main feature components:
+
 1. DashboardHome.tsx
 2. ExpensesPage.tsx
 3. ExpensePieChart.tsx
@@ -186,7 +201,9 @@ Implement testids in main feature components:
 **Why:** These cover dashboard, analytics, and task management features.
 
 ### Phase 3: Low Priority (Week 3)
+
 Implement testids in supporting components:
+
 1. Dashboard.tsx
 2. LanguageSwitcher.tsx
 3. AuthCallback.tsx
@@ -194,6 +211,7 @@ Implement testids in supporting components:
 **Why:** These are container or utility components with fewer test scenarios.
 
 ### Parallel Activities
+
 - Update E2E tests to use new testids
 - Create automated checks for testid compliance
 - Add testid requirements to component templates
@@ -202,28 +220,33 @@ Implement testids in supporting components:
 ## ❓ Discussion Points
 
 ### 1. Naming Convention Approval
+
 - **Question:** Does the proposed pattern `[component]-[element]-[type]` work for everyone?
 - **Alternative considered:** `[page]-[component]-[element]` (too verbose)
 - **Decision needed:** ✅ Approve or 🔄 Suggest changes
 
 ### 2. Implementation Timeline
+
 - **Proposed:** 3-week phased rollout
 - **Alternative:** All at once (higher risk)
 - **Decision needed:** ✅ Approve timeline or 🔄 Adjust schedule
 
 ### 3. Dynamic ID Pattern
+
 - **Question:** Is `expense-list-item-{id}` acceptable for list items?
 - **Alternative:** `expense-list-item` with index (less reliable)
 - **Decision needed:** ✅ Approve or 🔄 Suggest alternative
 
 ### 4. Special Cases
+
 - **Question:** Any edge cases we haven't covered?
 - **Examples:** Third-party components, complex nested structures
 - **Decision needed:** 📝 Document additional cases if needed
 
 ### 5. Enforcement Strategy
+
 - **Question:** How do we ensure testids are added to new components?
-- **Options:** 
+- **Options:**
   - PR review checklist
   - Automated linting rule
   - Component template
@@ -232,6 +255,7 @@ Implement testids in supporting components:
 ## 📝 Action Items
 
 ### For Team Review
+
 - [ ] Review DATA_TESTID_CONVENTION.md
 - [ ] Review COMPONENT_AUDIT_REPORT.md
 - [ ] Review examples in DATA_TESTID_QUICK_REFERENCE.md
@@ -240,6 +264,7 @@ Implement testids in supporting components:
 - [ ] Approve or request changes
 
 ### After Approval
+
 - [ ] Assign Phase 1 components to developers
 - [ ] Create implementation tracking issue
 - [ ] Schedule Phase 1 completion target
@@ -290,6 +315,7 @@ All documentation is available in `docs/qa/`:
 ## ✅ Success Criteria
 
 We'll know this is successful when:
+
 - ✅ All components have consistent testids
 - ✅ E2E tests use data-testid selectors exclusively
 - ✅ Test reliability improves (fewer flaky tests)
@@ -299,6 +325,7 @@ We'll know this is successful when:
 ## 🙋 Questions?
 
 Please share:
+
 - Concerns about the proposed convention
 - Suggestions for improvement
 - Questions about implementation

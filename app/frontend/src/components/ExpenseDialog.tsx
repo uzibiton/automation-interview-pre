@@ -67,12 +67,10 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
 
   useEffect(() => {
     if (formData.categoryId) {
-       
       fetchSubCategories(parseInt(formData.categoryId));
     } else {
-       
       setSubCategories([]);
-       
+
       setFormData((prev) => ({ ...prev, subCategoryId: '' }));
     }
   }, [formData.categoryId]);

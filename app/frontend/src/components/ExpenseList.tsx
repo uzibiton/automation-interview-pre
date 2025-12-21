@@ -71,7 +71,7 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchExpenses();
-     
+
     fetchCategories();
   }, [refreshKey]);
 

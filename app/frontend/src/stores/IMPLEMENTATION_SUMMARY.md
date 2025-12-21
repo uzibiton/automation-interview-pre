@@ -10,12 +10,14 @@
 ## What Was Implemented
 
 ### 1. Zustand Installation
+
 - Added `zustand` v5.x to package.json dependencies
 - No breaking changes to existing dependencies
 
 ### 2. Store Implementation (`useGroupStore.ts`)
 
 #### State Structure
+
 ```typescript
 interface GroupState {
   currentGroup: Group | null;
@@ -30,17 +32,20 @@ interface GroupState {
 #### Actions Implemented (11 total)
 
 **Group Management (4 actions):**
+
 - `fetchCurrentGroup()` - Get current user's group
 - `createGroup(dto)` - Create new group (user becomes Owner)
 - `updateGroup(id, dto)` - Update group name/description
 - `deleteGroup(id)` - Delete group (Owner only)
 
 **Member Management (3 actions):**
+
 - `fetchMembers(groupId)` - List all group members
 - `changeRole(groupId, memberId, role)` - Change member's role
 - `removeMember(groupId, memberId)` - Remove member from group
 
 **Invitation Management (4 actions):**
+
 - `sendEmailInvitation(groupId, dto)` - Send email invitation
 - `fetchInvitations(groupId)` - Get pending invitations
 - `generateInviteLink(groupId, dto)` - Create shareable link
@@ -48,29 +53,34 @@ interface GroupState {
 - `revokeInviteLink(linkId)` - Deactivate invite link
 
 **Utility Actions (2):**
+
 - `clearError()` - Clear error state
 - `reset()` - Reset to initial state
 
 ### 3. Key Features
 
 #### Environment Toggle
+
 - Reads `VITE_USE_MOCK_API` environment variable
 - When `true`: Uses MSW mock API handlers
 - When `false`: Uses real backend at `VITE_API_BASE_URL`
 - Seamless switching between mock and real API
 
 #### Error Handling
+
 - All actions wrapped in try/catch
 - Errors stored in `state.error`
 - Errors also thrown for component-level handling
 - `clearError()` utility for manual error clearing
 
 #### Loading States
+
 - `state.loading` set during async operations
 - UI components can show loading indicators
 - Disabled buttons during operations
 
 #### State Updates
+
 - Pessimistic updates (after API success)
 - State only updated if API call succeeds
 - Prevents state/server desync
@@ -78,6 +88,7 @@ interface GroupState {
 ### 4. Bug Fixes
 
 **Fixed in `groupHandlers.ts`:**
+
 - Line 28: Changed `g.ownerId` → `g.createdBy`
 - Reason: Group type uses `createdBy` field, not `ownerId`
 - Impact: `/api/groups/current` now works correctly
@@ -107,6 +118,7 @@ interface GroupState {
 ## Technical Decisions
 
 ### Why Zustand?
+
 - Lightweight (1.3kb gzipped)
 - Minimal boilerplate vs Redux
 - No providers needed
@@ -114,12 +126,14 @@ interface GroupState {
 - Perfect for small-to-medium stores
 
 ### API Design
+
 - RESTful endpoints
 - Consistent error responses
 - Standard HTTP methods (GET, POST, PATCH, DELETE)
 - Query params for filtering (e.g., `?groupId=xxx`)
 
 ### Mock Integration
+
 - MSW intercepts `/api/*` requests
 - Realistic delays (200-500ms)
 - Validation errors (400)
@@ -129,29 +143,36 @@ interface GroupState {
 ## Testing Results
 
 ### Build Test
+
 ```bash
 npm run build
 ✓ built in 3.15s
 ```
+
 **Result**: ✅ PASS
 
 ### Dev Server Test
+
 ```bash
 npm run dev
 VITE v7.3.0 ready in 219 ms
 ```
+
 **Result**: ✅ PASS
 
 ### Code Review
+
 - 6 comments (5 nitpicks, 1 suggestion)
 - No critical issues
 - Code follows best practices
-**Result**: ✅ PASS
+  **Result**: ✅ PASS
 
 ### Security Check (CodeQL)
+
 ```
 Found 0 alerts
 ```
+
 **Result**: ✅ PASS
 
 ## Acceptance Criteria Status
@@ -173,6 +194,7 @@ From TASK-002-016 specification:
 - ✅ Loading states implemented
 
 **Additional (bonus):**
+
 - ✅ Invitation management actions
 - ✅ Invite link management actions
 - ✅ Comprehensive documentation
@@ -202,6 +224,7 @@ package-lock.json                                  (modified - zustand deps)
 ## Integration Points
 
 ### Current Dependencies
+
 - ✅ TASK-002-015: Mock API Infrastructure (Complete)
   - MSW handlers for groups
   - MSW handlers for invitations
@@ -209,6 +232,7 @@ package-lock.json                                  (modified - zustand deps)
   - Fixture data
 
 ### Enables Future Tasks
+
 This store enables the following Phase 3 UI tasks:
 
 - 🔜 TASK-002-018: Group Creation Dialog
@@ -260,12 +284,14 @@ This store enables the following Phase 3 UI tasks:
 ## Deployment Notes
 
 ### Development
+
 ```bash
 VITE_USE_MOCK_API=true
 VITE_API_BASE_URL=http://localhost:3002
 ```
 
 ### Production
+
 ```bash
 VITE_USE_MOCK_API=false
 VITE_API_BASE_URL=https://api.production.com
