@@ -167,6 +167,39 @@
       "nameTooShort": "שם הקבוצה חייב להיות לפחות 3 תווים",
       "nameTooLong": "שם הקבוצה לא יכול לעבור 100 תווים",
       "descriptionTooLong": "התיאור לא יכול לעבור 500 תווים"
+    },
+    "invitation": {
+      "title": "הזמן חברים",
+      "emailTab": "הזמנה באימייל",
+      "linkTab": "קישור לשיתוף",
+      "emailLabel": "כתובת אימייל",
+      "emailPlaceholder": "הזן כתובת אימייל",
+      "roleLabel": "תפקיד",
+      "rolePlaceholder": "בחר תפקיד",
+      "messageLabel": "הודעה אופציונלית",
+      "messagePlaceholder": "הוסף הודעה אישית להזמנה",
+      "sendInvitation": "שלח הזמנה",
+      "sending": "שולח...",
+      "generateLink": "צור קישור",
+      "generating": "יוצר...",
+      "maxUsesLabel": "מספר שימושים מקסימלי (אופציונלי)",
+      "maxUsesPlaceholder": "השאר ריק ללא הגבלה",
+      "linkGenerated": "קישור נוצר",
+      "copyLink": "העתק קישור",
+      "linkCopied": "הקישור הועתק ללוח!",
+      "invitationSent": "ההזמנה נשלחה בהצלחה!",
+      "linkGeneratedSuccess": "קישור ההזמנה נוצר בהצלחה!",
+      "emailRequired": "כתובת אימייל היא שדה חובה",
+      "emailInvalid": "אנא הזן כתובת אימייל תקינה",
+      "roleRequired": "אנא בחר תפקיד",
+      "maxUsesInvalid": "מספר השימושים חייב להיות מספר חיובי",
+      "sendError": "נכשל בשליחת ההזמנה",
+      "generateError": "נכשל ביצירת קישור ההזמנה",
+      "roles": {
+        "admin": "מנהל",
+        "member": "חבר",
+        "viewer": "צופה"
+      }
     }
   }
 }
