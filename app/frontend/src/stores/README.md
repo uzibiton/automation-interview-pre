@@ -6,6 +6,7 @@
 ## Overview
 
 Global state management for groups using Zustand. This store provides a centralized way to manage group-related data including:
+
 - Group CRUD operations
 - Member management
 - Email invitations
@@ -30,7 +31,7 @@ interface GroupState {
   members: GroupMember[];
   invitations: Invitation[];
   inviteLinks: InviteLink[];
-  
+
   // UI State
   loading: boolean;
   error: string | null;
@@ -40,17 +41,20 @@ interface GroupState {
 ### Actions
 
 #### Group Management
+
 - `fetchCurrentGroup()` - Get current user's group
 - `createGroup(dto)` - Create a new group
 - `updateGroup(id, dto)` - Update group details
 - `deleteGroup(id)` - Delete group (Owner only)
 
 #### Member Management
+
 - `fetchMembers(groupId?)` - Get group members list
 - `changeRole(groupId, memberId, role)` - Change member's role
 - `removeMember(groupId, memberId)` - Remove member from group
 
 #### Invitation Management
+
 - `fetchInvitations(groupId)` - Get pending invitations
 - `sendEmailInvitation(groupId, dto)` - Send email invitation
 - `fetchInviteLinks(groupId)` - Get active invite links
@@ -58,6 +62,7 @@ interface GroupState {
 - `revokeInviteLink(linkId)` - Deactivate invite link
 
 #### Utilities
+
 - `clearError()` - Clear error state
 - `reset()` - Reset store to initial state
 
@@ -92,7 +97,7 @@ function CreateGroupForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    
+
     try {
       await createGroup({
         name: formData.get('name'),
@@ -293,12 +298,14 @@ await createGroup(...);
 ## Mock Data
 
 The store uses mock data from fixtures:
+
 - `groups.fixture.ts` - 2 test groups
 - `members.fixture.ts` - 7 test members
 - `invitations.fixture.ts` - 5 test invitations
 - `inviteLinks.fixture.ts` - 3 test invite links
 
 Mock behaviors:
+
 - Random delays: 200-500ms
 - Validation errors: Empty names, invalid emails
 - Authorization errors: 403 for insufficient permissions
@@ -307,6 +314,7 @@ Mock behaviors:
 ## Testing
 
 See `useGroupStore.examples.tsx` for comprehensive usage examples covering:
+
 - Group CRUD operations
 - Member management
 - Invitations
@@ -315,6 +323,7 @@ See `useGroupStore.examples.tsx` for comprehensive usage examples covering:
 ## Type Definitions
 
 All types are imported from:
+
 - `../types/Group.ts` - Group, CreateGroupDto, UpdateGroupDto
 - `../types/GroupMember.ts` - GroupMember, GroupRole
 - `../types/Invitation.ts` - Invitation, CreateInvitationDto
@@ -331,6 +340,7 @@ All types are imported from:
 ## Next Steps
 
 This store is ready for use in Phase 3 UI components:
+
 - TASK-002-018: Group Creation Dialog
 - TASK-002-019: Members List Table
 - TASK-002-020: Invitation Modal

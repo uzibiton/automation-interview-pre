@@ -1,6 +1,6 @@
 /**
  * MSW browser setup for mocking API requests in development
- * 
+ *
  * This file initializes Mock Service Worker (MSW) for the browser environment.
  * It intercepts HTTP requests and returns mock responses based on defined handlers.
  */

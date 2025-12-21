@@ -74,7 +74,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchUserProfile();
-     
+
     fetchStats();
   }, [refreshKey]);
 

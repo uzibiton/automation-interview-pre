@@ -6,6 +6,7 @@
 ## Overview
 
 Dedicated state management for invitations and invite links using Zustand. This store provides a focused API for managing:
+
 - Email invitations to join groups
 - Shareable invite links with customizable permissions and usage limits
 
@@ -22,7 +23,7 @@ interface InvitationState {
   // Data
   invitations: Invitation[];
   links: InviteLink[];
-  
+
   // UI State
   loading: boolean;
   error: string | null;
@@ -32,15 +33,18 @@ interface InvitationState {
 ### Actions
 
 #### Invitation Management
+
 - `fetchInvitations(groupId)` - Get all pending invitations for a group
 - `sendEmailInvitation(groupId, email, role, message?)` - Send email invitation
 
 #### Invite Link Management
+
 - `fetchInviteLinks(groupId)` - Get all active invite links for a group
 - `generateInviteLink(groupId, role, maxUses?)` - Create shareable invite link
 - `revokeLink(linkId)` - Deactivate an invite link
 
 #### Utilities
+
 - `clearError()` - Clear error state
 - `reset()` - Reset store to initial state
 
@@ -195,10 +199,12 @@ The store makes requests to:
 ## Mock Data
 
 From TASK-002-015 fixtures:
+
 - **invitations.fixture.ts**: 2 pending invitations, 1 accepted, 1 expired
 - **inviteLinks.fixture.ts**: 1 single-use link, 1 multi-use link (3/10 used)
 
 Mock behaviors:
+
 - Random delays: 200-500ms
 - Validation errors: Invalid emails, duplicate invitations
 - Authorization errors: 403 for insufficient permissions
@@ -229,12 +235,14 @@ try {
 ## Testing
 
 See `tests/unit/stores/useInvitationStore.test.ts` for comprehensive unit tests covering:
+
 - All store actions
 - Success and error scenarios
 - State management
 - Edge cases
 
 Run tests:
+
 ```bash
 npm run test:unit -- useInvitationStore.test.ts
 ```
@@ -242,6 +250,7 @@ npm run test:unit -- useInvitationStore.test.ts
 ## Type Definitions
 
 All types are imported from:
+
 - `../types/Invitation.ts` - Invitation, InvitationStatus, CreateInvitationDto
 - `../types/InviteLink.ts` - InviteLink, CreateInviteLinkDto
 - `../types/GroupMember.ts` - GroupRole
@@ -249,6 +258,7 @@ All types are imported from:
 ## Comparison with useGroupStore
 
 While `useGroupStore` includes invitation management, `useInvitationStore` provides:
+
 - Focused API specifically for invitation operations
 - Cleaner separation of concerns
 - Easier to use in invitation-specific components (TASK-002-020: Invitation Modal)
@@ -259,6 +269,7 @@ Both stores can coexist and be used based on the component's needs.
 ## Next Steps
 
 This store is ready for use in:
+
 - **TASK-002-020**: Invitation Modal Component
 - Any other UI components that manage group invitations
 

@@ -32,16 +32,19 @@ interface ChatPageProps {
 
 function ChatPage({ token }: ChatPageProps) {
   const { t, i18n } = useTranslation();
-  
+
   // Create initial welcome message
-  const initialMessage: Message = useMemo(() => ({
-    id: '0',
-    text: t('chat.welcomeMessage'),
-    sender: 'ai' as const,
-    timestamp: new Date(),
-    status: 'sent' as const,
-  }), [t]);
-  
+  const initialMessage: Message = useMemo(
+    () => ({
+      id: '0',
+      text: t('chat.welcomeMessage'),
+      sender: 'ai' as const,
+      timestamp: new Date(),
+      status: 'sent' as const,
+    }),
+    [t],
+  );
+
   const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -126,7 +129,7 @@ function ChatPage({ token }: ChatPageProps) {
         { text: messageText },
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       setParsedExpense(response.data);
@@ -135,7 +138,7 @@ function ChatPage({ token }: ChatPageProps) {
     } catch (error) {
       console.error('Failed to parse expense', error);
       setIsTyping(false);
-      
+
       // Show error message
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -254,12 +257,12 @@ function ChatPage({ token }: ChatPageProps) {
       // Success - close preview and show success message
       setShowPreview(false);
       setParsedExpense(null);
-      
+
       const successMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: t('chat.expenseCreatedSuccess', {
           currency: parsedExpense.currency,
-          amount: parsedExpense.amount
+          amount: parsedExpense.amount,
         }),
         sender: 'ai',
         timestamp: new Date(),
@@ -268,7 +271,7 @@ function ChatPage({ token }: ChatPageProps) {
       setMessages((prev) => [...prev, successMessage]);
     } catch (error) {
       console.error('Failed to create expense', error);
-      
+
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: t('chat.errorMessage'),
@@ -290,7 +293,7 @@ function ChatPage({ token }: ChatPageProps) {
   const handleCancelPreview = () => {
     setShowPreview(false);
     setParsedExpense(null);
-    
+
     const cancelMessage: Message = {
       id: (Date.now() + 1).toString(),
       text: t('chat.cancelMessage'),
@@ -309,12 +312,12 @@ function ChatPage({ token }: ChatPageProps) {
   const handleExpenseDialogSuccess = () => {
     setShowEditDialog(false);
     setParsedExpense(null);
-    
+
     const successMessage: Message = {
       id: (Date.now() + 1).toString(),
       text: t('chat.expenseCreatedSuccess', {
         currency: 'N/A',
-        amount: 'N/A'
+        amount: 'N/A',
       }),
       sender: 'ai',
       timestamp: new Date(),

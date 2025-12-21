@@ -16,15 +16,15 @@ function Navigation({ userName, userAvatar, onLogout }: NavigationProps) {
     <div className="header">
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <h1>💰 {t('app.title')}</h1>
-        <Link 
-          to="/?add=true" 
-          className="btn btn-primary" 
-          style={{ 
-            fontSize: '24px', 
+        <Link
+          to="/?add=true"
+          className="btn btn-primary"
+          style={{
+            fontSize: '24px',
             padding: '10px 20px',
             fontWeight: 'bold',
             boxShadow: '0 2px 8px rgba(0, 123, 255, 0.3)',
-            minWidth: '50px'
+            minWidth: '50px',
           }}
         >
           ➕
@@ -34,10 +34,7 @@ function Navigation({ userName, userAvatar, onLogout }: NavigationProps) {
         <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} end>
           {t('nav.dashboard')}
         </NavLink>
-        <NavLink
-          to="/chat"
-          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-        >
+        <NavLink to="/chat" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
           {t('nav.chat')}
         </NavLink>
         <NavLink

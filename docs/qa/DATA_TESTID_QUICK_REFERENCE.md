@@ -34,7 +34,7 @@ Example: expense-form-amount-input
 <NavLink data-testid="nav-dashboard-link" />
 <NavLink data-testid="nav-analytics-link" />
 <NavLink data-testid="nav-expenses-link" />
-<Link data-testid="nav-add-expense-button" />
+<link data-testid="nav-add-expense-button" />
 <img data-testid="nav-user-avatar" />
 <span data-testid="nav-user-name" />
 <button data-testid="nav-logout-button" />
@@ -47,8 +47,8 @@ Example: expense-form-amount-input
 <div data-testid="dashboard-total-amount" />
 <div data-testid="dashboard-expense-count" />
 <div data-testid="dashboard-category-count" />
-<Link data-testid="dashboard-analytics-link" />
-<Link data-testid="dashboard-expenses-link" />
+<link data-testid="dashboard-analytics-link" />
+<link data-testid="dashboard-expenses-link" />
 ```
 
 ### Expense Form (`ExpenseForm.tsx`)
@@ -78,9 +78,9 @@ Example: expense-form-amount-input
     <th data-testid="expense-list-header-payment-method" />
   </thead>
   <tbody>
-    <tr data-testid={`expense-list-item-${expense.id}`}>
-      <button data-testid={`expense-list-edit-button-${expense.id}`} />
-      <button data-testid={`expense-list-delete-button-${expense.id}`} />
+    <tr data-testid="{`expense-list-item-${expense.id}`}">
+      <button data-testid="{`expense-list-edit-button-${expense.id}`}" />
+      <button data-testid="{`expense-list-delete-button-${expense.id}`}" />
     </tr>
   </tbody>
 </table>
@@ -116,7 +116,7 @@ Example: expense-form-amount-input
 <div data-testid="expenses-page">
   <h2 data-testid="expenses-page-title" />
   <p data-testid="expenses-page-description" />
-  <Link data-testid="expenses-page-analytics-link" />
+  <link data-testid="expenses-page-analytics-link" />
 </div>
 ```
 
@@ -126,7 +126,7 @@ Example: expense-form-amount-input
 <div data-testid="analytics-page">
   <h2 data-testid="analytics-page-title" />
   <p data-testid="analytics-page-description" />
-  <Link data-testid="analytics-page-expenses-link" />
+  <link data-testid="analytics-page-expenses-link" />
 </div>
 ```
 
@@ -173,12 +173,12 @@ Example: expense-form-amount-input
 ### Task List (`TaskList.tsx`)
 
 ```html
-<div data-testid={`task-list-item-${task.id}`}>
-  <div data-testid={`task-list-title-${task.id}`} />
-  <span data-testid={`task-list-status-${task.id}`} />
-  <p data-testid={`task-list-description-${task.id}`} />
-  <button data-testid={`task-list-update-status-button-${task.id}`} />
-  <button data-testid={`task-list-delete-button-${task.id}`} />
+<div data-testid="{`task-list-item-${task.id}`}">
+  <div data-testid="{`task-list-title-${task.id}`}" />
+  <span data-testid="{`task-list-status-${task.id}`}" />
+  <p data-testid="{`task-list-description-${task.id}`}" />
+  <button data-testid="{`task-list-update-status-button-${task.id}`}" />
+  <button data-testid="{`task-list-delete-button-${task.id}`}" />
 </div>
 <div data-testid="task-list-empty-state" />
 <div data-testid="task-list-loading" />
@@ -205,43 +205,51 @@ Example: expense-form-amount-input
 
 ```tsx
 // For list items with IDs
-{expenses.map(expense => (
-  <tr key={expense.id} data-testid={`expense-list-item-${expense.id}`}>
-    <button data-testid={`expense-list-edit-button-${expense.id}`}>Edit</button>
-    <button data-testid={`expense-list-delete-button-${expense.id}`}>Delete</button>
-  </tr>
-))}
+{
+  expenses.map((expense) => (
+    <tr key={expense.id} data-testid={`expense-list-item-${expense.id}`}>
+      <button data-testid={`expense-list-edit-button-${expense.id}`}>Edit</button>
+      <button data-testid={`expense-list-delete-button-${expense.id}`}>Delete</button>
+    </tr>
+  ));
+}
 ```
 
 ### Conditional Elements
 
 ```tsx
 // Loading state
-{loading && <div data-testid="expense-list-loading">Loading...</div>}
+{
+  loading && <div data-testid="expense-list-loading">Loading...</div>;
+}
 
 // Empty state
-{items.length === 0 && (
-  <div data-testid="expense-list-empty-state">No items found</div>
-)}
+{
+  items.length === 0 && <div data-testid="expense-list-empty-state">No items found</div>;
+}
 
 // Error message
-{error && <div data-testid="login-error-message">{error}</div>}
+{
+  error && <div data-testid="login-error-message">{error}</div>;
+}
 ```
 
 ### Modal/Dialog Pattern
 
 ```tsx
-{isOpen && (
-  <div data-testid="expense-dialog-overlay" onClick={onClose}>
-    <div data-testid="expense-dialog-content" onClick={e => e.stopPropagation()}>
-      <h3 data-testid="expense-dialog-title">Title</h3>
-      <button data-testid="expense-dialog-close-button">X</button>
-      {/* Form content */}
-      <button data-testid="expense-dialog-cancel-button">Cancel</button>
-      <button data-testid="expense-dialog-save-button">Save</button>
+{
+  isOpen && (
+    <div data-testid="expense-dialog-overlay" onClick={onClose}>
+      <div data-testid="expense-dialog-content" onClick={(e) => e.stopPropagation()}>
+        <h3 data-testid="expense-dialog-title">Title</h3>
+        <button data-testid="expense-dialog-close-button">X</button>
+        {/* Form content */}
+        <button data-testid="expense-dialog-cancel-button">Cancel</button>
+        <button data-testid="expense-dialog-save-button">Save</button>
+      </div>
     </div>
-  </div>
-)}
+  );
+}
 ```
 
 ## Testing Examples

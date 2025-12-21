@@ -322,7 +322,9 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: tests/package-lock.json
+
+      - name: Install workspace dependencies
+        run: npm ci
 
       - name: Cache node_modules
         id: cache-node-modules

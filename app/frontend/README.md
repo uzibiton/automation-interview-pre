@@ -46,34 +46,34 @@ npm run dev
 
 #### Group Management
 
-| Method | Endpoint                                  | Description                    |
-| ------ | ----------------------------------------- | ------------------------------ |
-| GET    | `/api/groups/current`                     | Get current user's group       |
-| POST   | `/api/groups`                             | Create a new group             |
-| GET    | `/api/groups/:id`                         | Get group details              |
-| PATCH  | `/api/groups/:id`                         | Update group                   |
-| DELETE | `/api/groups/:id`                         | Delete group (Owner only)      |
-| GET    | `/api/groups/:id/members`                 | List group members             |
-| PATCH  | `/api/groups/:groupId/members/:memberId/role` | Change member role       |
-| DELETE | `/api/groups/:groupId/members/:memberId`  | Remove member                  |
+| Method | Endpoint                                      | Description               |
+| ------ | --------------------------------------------- | ------------------------- |
+| GET    | `/api/groups/current`                         | Get current user's group  |
+| POST   | `/api/groups`                                 | Create a new group        |
+| GET    | `/api/groups/:id`                             | Get group details         |
+| PATCH  | `/api/groups/:id`                             | Update group              |
+| DELETE | `/api/groups/:id`                             | Delete group (Owner only) |
+| GET    | `/api/groups/:id/members`                     | List group members        |
+| PATCH  | `/api/groups/:groupId/members/:memberId/role` | Change member role        |
+| DELETE | `/api/groups/:groupId/members/:memberId`      | Remove member             |
 
 #### Invitations
 
-| Method | Endpoint                          | Description                |
-| ------ | --------------------------------- | -------------------------- |
-| POST   | `/api/invitations`                | Send email invitation      |
-| POST   | `/api/invitations/:token/accept`  | Accept invitation          |
-| POST   | `/api/invitations/:token/decline` | Decline invitation         |
-| GET    | `/api/invitations?groupId=xxx`    | Get pending invitations    |
+| Method | Endpoint                          | Description             |
+| ------ | --------------------------------- | ----------------------- |
+| POST   | `/api/invitations`                | Send email invitation   |
+| POST   | `/api/invitations/:token/accept`  | Accept invitation       |
+| POST   | `/api/invitations/:token/decline` | Decline invitation      |
+| GET    | `/api/invitations?groupId=xxx`    | Get pending invitations |
 
 #### Invite Links
 
-| Method | Endpoint                         | Description              |
-| ------ | -------------------------------- | ------------------------ |
-| POST   | `/api/invite-links`              | Generate invite link     |
-| POST   | `/api/invite-links/:token/join`  | Join via invite link     |
-| DELETE | `/api/invite-links/:id`          | Revoke invite link       |
-| GET    | `/api/invite-links?groupId=xxx`  | Get active invite links  |
+| Method | Endpoint                        | Description             |
+| ------ | ------------------------------- | ----------------------- |
+| POST   | `/api/invite-links`             | Generate invite link    |
+| POST   | `/api/invite-links/:token/join` | Join via invite link    |
+| DELETE | `/api/invite-links/:id`         | Revoke invite link      |
+| GET    | `/api/invite-links?groupId=xxx` | Get active invite links |
 
 ### Mock Data
 
@@ -99,23 +99,27 @@ All types for Group Management are defined in `src/types/`:
 The mock API simulates realistic error scenarios:
 
 #### Validation Errors (400)
+
 - Empty or invalid group name
 - Invalid email format
 - Invalid role values
 - Duplicate invitations
 
 #### Authorization Errors (403)
+
 - Insufficient permissions (non-Owner trying to delete group)
 - Cannot change Owner role
 - Cannot revoke Owner
 
 #### Not Found Errors (404)
+
 - Group not found
 - Member not found
 - Invitation not found
 - Invite link not found
 
 #### Business Rule Errors (400)
+
 - User already in a group
 - Invitation already accepted/declined
 - Invite link expired or max uses reached

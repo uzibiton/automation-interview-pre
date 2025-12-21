@@ -90,7 +90,11 @@ export class ExpensesService {
     return this.expensesRepository.save(expense);
   }
 
-  async update(userId: number, id: string | number, updateExpenseDto: UpdateExpenseDto): Promise<Expense> {
+  async update(
+    userId: number,
+    id: string | number,
+    updateExpenseDto: UpdateExpenseDto,
+  ): Promise<Expense> {
     if (this.useFirestore) {
       return this.firestoreRepo.update(id, userId, updateExpenseDto) as any;
     }
@@ -224,8 +228,8 @@ export class ExpensesService {
       'education|school|course|book|tuition': 6, // Education
       'travel|hotel|flight|vacation|holiday': 7, // Travel
       'utility|utilities|electric|water|gas|internet|phone': 8, // Utilities
-      'insurance': 9, // Insurance
-      'other': 10, // Other
+      insurance: 9, // Insurance
+      other: 10, // Other
     };
 
     for (const [keywords, categoryId] of Object.entries(categoryKeywords)) {
