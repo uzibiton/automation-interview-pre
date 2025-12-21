@@ -7,10 +7,7 @@ import {
   mockGroups,
   getCurrentUserGroup,
 } from '../fixtures/groups.fixture';
-import {
-  mockMembers,
-  getMembersByGroupId,
-} from '../fixtures/members.fixture';
+import { mockMembers } from '../fixtures/members.fixture';
 import { Group, CreateGroupDto, UpdateGroupDto } from '../../types/Group';
 import { GroupMember, GroupRole } from '../../types/GroupMember';
 
@@ -200,7 +197,7 @@ export const groupHandlers = [
     await randomDelay();
 
     const { id } = params;
-    const groupMembers = getMembersByGroupId(id as string);
+    const groupMembers = members.filter((member) => member.groupId === id);
 
     return HttpResponse.json(groupMembers, { status: 200 });
   }),

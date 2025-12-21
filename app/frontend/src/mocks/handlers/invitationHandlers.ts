@@ -5,16 +5,8 @@
 import { http, HttpResponse, delay } from 'msw';
 import { mockGroups } from '../fixtures/groups.fixture';
 import { mockMembers } from '../fixtures/members.fixture';
-import {
-  mockInvitations,
-  getPendingInvitations,
-  getInvitationByToken,
-} from '../fixtures/invitations.fixture';
-import {
-  mockInviteLinks,
-  getActiveInviteLinks,
-  getInviteLinkByToken,
-} from '../fixtures/inviteLinks.fixture';
+import { mockInvitations } from '../fixtures/invitations.fixture';
+import { mockInviteLinks } from '../fixtures/inviteLinks.fixture';
 import {
   CreateInvitationDto,
   InvitationStatus,
@@ -28,6 +20,22 @@ const MOCK_USER_ID = 'user-1';
 // In-memory store
 let invitations = [...mockInvitations];
 let inviteLinks = [...mockInviteLinks];
+
+// Helpers that operate on the mutable stores
+const findInvitationByToken = (token: string) =>
+  invitations.find((invitation) => invitation.token === token);
+
+const getPendingInvitations = (groupId: string) =>
+  invitations.filter(
+    (invitation) =>
+      invitation.groupId === groupId && invitation.status === InvitationStatus.PENDING,
+  );
+
+const getActiveInviteLinks = (groupId: string) =>
+  inviteLinks.filter((link) => link.groupId === groupId && link.isActive);
+
+const getInviteLinkByToken = (token: string) =>
+  inviteLinks.find((link) => link.token === token);
 
 // Helper to generate random delay
 const randomDelay = () => delay(200 + Math.random() * 300);
