@@ -48,6 +48,10 @@ desktop.ini
 *.swo
 *~
 .project
+
+# Temporary files (PR review diffs)
+temp/
+*.diff
 .classpath
 .settings/
 *.sublime-workspace

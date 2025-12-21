@@ -94,7 +94,19 @@ Systematic code quality analysis following PR workflow guidelines. Includes prom
 - Best practices validation
 - Refactoring suggestions
 
-### 5. [PR Fix](pr-fix.md)
+### 5. [PR Review Workflow](review-pr.md)
+
+Automated agent + Codex workflow for PR review with GitHub-pasteable output. Includes:
+
+- Automated branch checkout and diff generation
+- PR number detection via GitHub CLI
+- Complete Codex review prompt generation
+- Senior-level review output formatted for GitHub
+- Support for custom base branches
+
+**Quick Start**: `load review-pr #145` or `load review-pr`
+
+### 6. [PR Fix](pr-fix.md)
 
 Automatically address PR review feedback with interactive workflow. Includes prompts for:
 

@@ -107,6 +107,18 @@ This catalog provides a quick way to load and use prompts. Simply say **"load [n
   **Output**: Review checklist with findings  
   **File**: [code-review.md](code-review.md)
 
+#### `load review-pr` - PR Review Workflow (Agent + Codex)
+
+**Purpose**: Automated PR review with GitHub-formatted output  
+**When to use**: Ready to review a PR, need senior-level code review  
+**Info needed**:
+
+- PR number (e.g., `#145`) or uses current branch
+- Optional: Base branch (default: `main`)
+  **Output**: Agent creates diff → outputs Codex prompt → Codex reviews → GitHub-pasteable comments  
+  **Workflow**: `load review-pr #145` → Copy agent output → Paste to Copilot Chat → Copy review → Paste to GitHub  
+  **File**: [review-pr.md](review-pr.md)
+
 #### `load pr-fix` - Fix PR Review Comments
 
 **Purpose**: Automatically address PR review feedback  
