@@ -1,0 +1,290 @@
+{
+  "input": {
+    "expenses": [
+      {
+        "date": "2024-01-15",
+        "category": "Food",
+        "description": "Lunch at restaurant",
+        "amount": 45.5,
+        "paymentMethod": "credit_card"
+      },
+      {
+        "date": "2024-01-10",
+        "category": "Transport",
+        "description": "Bus ticket",
+        "amount": 12.0,
+        "paymentMethod": "cash"
+      },
+      {
+        "date": "2024-01-20",
+        "category": "Entertainment",
+        "description": "Movie tickets",
+        "amount": 30.0,
+        "paymentMethod": "credit_card"
+      },
+      {
+        "date": "2024-01-05",
+        "category": "Utilities",
+        "description": "Electricity bill",
+        "amount": 120.0,
+        "paymentMethod": "bank_transfer"
+      },
+      {
+        "date": "2024-01-12",
+        "category": "Food",
+        "description": "Grocery shopping",
+        "amount": 85.75,
+        "paymentMethod": "debit_card"
+      },
+      {
+        "date": "2024-01-18",
+        "category": "Health",
+        "description": "Pharmacy",
+        "amount": 25.0,
+        "paymentMethod": "cash"
+      },
+      {
+        "date": "2024-01-08",
+        "category": "Transport",
+        "description": "Taxi ride",
+        "amount": 22.5,
+        "paymentMethod": "credit_card"
+      },
+      {
+        "date": "2024-01-25",
+        "category": "Shopping",
+        "description": "Clothing",
+        "amount": 150.0,
+        "paymentMethod": "credit_card"
+      },
+      {
+        "date": "2024-01-03",
+        "category": "Food",
+        "description": "Coffee shop",
+        "amount": 8.5,
+        "paymentMethod": "cash"
+      },
+      {
+        "date": "2024-01-22",
+        "category": "Entertainment",
+        "description": "Concert tickets",
+        "amount": 95.0,
+        "paymentMethod": "credit_card"
+      },
+      {
+        "date": "2024-01-14",
+        "category": "Utilities",
+        "description": "Internet bill",
+        "amount": 60.0,
+        "paymentMethod": "bank_transfer"
+      },
+      {
+        "date": "2024-01-07",
+        "category": "Health",
+        "description": "Doctor visit",
+        "amount": 180.0,
+        "paymentMethod": "debit_card"
+      },
+      {
+        "date": "2024-01-28",
+        "category": "Transport",
+        "description": "Gas station",
+        "amount": 55.0,
+        "paymentMethod": "credit_card"
+      },
+      {
+        "date": "2024-01-11",
+        "category": "Shopping",
+        "description": "Books",
+        "amount": 42.0,
+        "paymentMethod": "debit_card"
+      },
+      {
+        "date": "2024-01-16",
+        "category": "Food",
+        "description": "Dinner with friends",
+        "amount": 78.0,
+        "paymentMethod": "credit_card"
+      },
+      {
+        "date": "2024-01-04",
+        "category": "Entertainment",
+        "description": "Streaming subscription",
+        "amount": 15.99,
+        "paymentMethod": "credit_card"
+      },
+      {
+        "date": "2024-01-23",
+        "category": "Health",
+        "description": "Gym membership",
+        "amount": 50.0,
+        "paymentMethod": "bank_transfer"
+      },
+      {
+        "date": "2024-01-09",
+        "category": "Utilities",
+        "description": "Water bill",
+        "amount": 35.0,
+        "paymentMethod": "bank_transfer"
+      },
+      {
+        "date": "2024-01-19",
+        "category": "Transport",
+        "description": "Train ticket",
+        "amount": 28.0,
+        "paymentMethod": "debit_card"
+      },
+      {
+        "date": "2024-01-26",
+        "category": "Shopping",
+        "description": "Electronics",
+        "amount": 299.99,
+        "paymentMethod": "credit_card"
+      }
+    ]
+  },
+  "output": {
+    "sorted": {
+      "date_asc": [
+        "2024-01-03",
+        "2024-01-04",
+        "2024-01-05",
+        "2024-01-07",
+        "2024-01-08",
+        "2024-01-09",
+        "2024-01-10",
+        "2024-01-11",
+        "2024-01-12",
+        "2024-01-14",
+        "2024-01-15",
+        "2024-01-16",
+        "2024-01-18",
+        "2024-01-19",
+        "2024-01-20",
+        "2024-01-22",
+        "2024-01-23",
+        "2024-01-25",
+        "2024-01-26",
+        "2024-01-28"
+      ],
+      "date_desc": [
+        "2024-01-28",
+        "2024-01-26",
+        "2024-01-25",
+        "2024-01-23",
+        "2024-01-22",
+        "2024-01-20",
+        "2024-01-19",
+        "2024-01-18",
+        "2024-01-16",
+        "2024-01-15",
+        "2024-01-14",
+        "2024-01-12",
+        "2024-01-11",
+        "2024-01-10",
+        "2024-01-09",
+        "2024-01-08",
+        "2024-01-07",
+        "2024-01-05",
+        "2024-01-04",
+        "2024-01-03"
+      ],
+      "category_asc": [
+        "Entertainment",
+        "Entertainment",
+        "Entertainment",
+        "Food",
+        "Food",
+        "Food",
+        "Food",
+        "Health",
+        "Health",
+        "Health",
+        "Shopping",
+        "Shopping",
+        "Shopping",
+        "Transport",
+        "Transport",
+        "Transport",
+        "Transport",
+        "Utilities",
+        "Utilities",
+        "Utilities"
+      ],
+      "category_desc": [
+        "Utilities",
+        "Utilities",
+        "Utilities",
+        "Transport",
+        "Transport",
+        "Transport",
+        "Transport",
+        "Shopping",
+        "Shopping",
+        "Shopping",
+        "Health",
+        "Health",
+        "Health",
+        "Food",
+        "Food",
+        "Food",
+        "Food",
+        "Entertainment",
+        "Entertainment",
+        "Entertainment"
+      ],
+      "description_asc": [
+        "Books",
+        "Bus ticket",
+        "Clothing",
+        "Coffee shop",
+        "Concert tickets",
+        "Dinner with friends",
+        "Doctor visit",
+        "Electricity bill",
+        "Electronics",
+        "Gas station",
+        "Grocery shopping",
+        "Gym membership",
+        "Internet bill",
+        "Lunch at restaurant",
+        "Movie tickets",
+        "Pharmacy",
+        "Streaming subscription",
+        "Taxi ride",
+        "Train ticket",
+        "Water bill"
+      ],
+      "description_desc": [
+        "Water bill",
+        "Train ticket",
+        "Taxi ride",
+        "Streaming subscription",
+        "Pharmacy",
+        "Movie tickets",
+        "Lunch at restaurant",
+        "Internet bill",
+        "Gym membership",
+        "Grocery shopping",
+        "Gas station",
+        "Electronics",
+        "Electricity bill",
+        "Doctor visit",
+        "Dinner with friends",
+        "Concert tickets",
+        "Coffee shop",
+        "Clothing",
+        "Bus ticket",
+        "Books"
+      ],
+      "amount_asc": [
+        8.5, 12.0, 15.99, 22.5, 25.0, 28.0, 30.0, 35.0, 42.0, 45.5, 50.0, 55.0, 60.0, 78.0, 85.75,
+        95.0, 120.0, 150.0, 180.0, 299.99
+      ],
+      "amount_desc": [
+        299.99, 180.0, 150.0, 120.0, 95.0, 85.75, 78.0, 60.0, 55.0, 50.0, 45.5, 42.0, 35.0, 30.0,
+        28.0, 25.0, 22.5, 15.99, 12.0, 8.5
+      ]
+    }
+  }
+}
