@@ -28,4 +28,6 @@ export interface Expense {
   paymentMethod: string;
   /** Optional array of label/tag strings for categorizing expenses */
   labels?: string[];
+  /** Name of the user who created this expense (for group collaboration) */
+  createdBy?: string;
 }
