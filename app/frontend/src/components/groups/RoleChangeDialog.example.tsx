@@ -1,6 +1,6 @@
 /**
  * Example usage of RoleChangeDialog component
- * 
+ *
  * This file demonstrates how to integrate the RoleChangeDialog into your application.
  * It can be used for development testing and as a reference for implementation.
  */
@@ -11,7 +11,7 @@ import { GroupMember, GroupRole } from '../../types/GroupMember';
 
 /**
  * Example: Role Change Dialog Usage
- * 
+ *
  * This component shows how to use the RoleChangeDialog in a real scenario,
  * typically within a member list or member management page.
  */
@@ -70,7 +70,7 @@ function RoleChangeDialogExample() {
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <h2>Role Change Dialog Example</h2>
-      <p>Click "Change Role" on any member to open the dialog.</p>
+      <p>Click &ldquo;Change Role&rdquo; on any member to open the dialog.</p>
 
       <div style={{ marginTop: '20px' }}>
         <h3>Group Members</h3>
