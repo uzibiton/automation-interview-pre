@@ -62,14 +62,60 @@
   - Test data requirements
   - Traceability to requirements
 
-### Step 5: Break Down into Implementation Tasks
+### Step 5: Break Down into Implementation Tasks (TASKS-XXX)
 
 **Goal**: Create actionable, trackable work items
 
-- Generate phase/task breakdown with clear numbering
-- Each task includes: deliverables, estimates, dependencies, acceptance criteria
-- Create GitHub issues for each task
-- Update parent issue with complete task list
+- Use structured task document format
+- Output location: `docs/dev/TASKS-XXX-[feature-name].md`
+- Must include:
+  - Task summary table (phases, effort, priorities)
+  - UI-First Development Approach (if applicable)
+  - Detailed task breakdown by phase
+  - Each task: ID, title, priority, effort, dependencies, acceptance criteria, files to modify, labels
+  - Task dependencies diagram
+  - GitHub issues template with examples
+
+### Step 6: Setup GitHub Infrastructure
+
+**Goal**: Enable tracking and assignment in GitHub
+
+1. **Create GitHub Labels** (if not exist):
+   - Use `tools/setup-github-labels.js`
+   - Main label: `TASK-XXX`
+   - Phase labels: `phase-0-db`, `phase-1-auth`, `phase-2-api`, `phase-3-ui`, `phase-4-testing`
+   - Priority labels: `priority-critical`, `priority-high`, `priority-medium`
+   - Tech stack labels: `frontend`, `backend`, `database`, etc.
+
+2. **Create GitHub Issues**:
+   - Use `tools/create-task-issues.js` or create manually
+   - One issue per task with proper:
+     - Title: `[TASK-XXX-001] Task Name`
+     - Labels: All relevant labels from task definition
+     - Body: Link to parent issue, dependencies, tracking document
+     - Link dependencies between issues
+   - Close any duplicate issues
+
+3. **Verify Setup**:
+   - Test filter: `label:TASK-XXX` shows all tasks
+   - Phase filters work: `label:TASK-XXX label:phase-3-ui`
+   - Dependencies are linked between issues
+
+### Step 7: Update Documentation & Tracking
+
+**Goal**: Maintain bidirectional traceability
+
+- Update `docs/product/TRACEABILITY_MATRIX.md`:
+  - Add new REQ-XXX row with links to HLD, TEST, TASKS
+  - Update test coverage tables
+  - Add FR/NFR mappings
+- Update `README.md`:
+  - Update parent issue progress (e.g., 0% → 15%)
+  - Add documentation links
+  - Update traceability example if needed
+- Update `docs/TABLE_OF_CONTENTS.md`:
+  - Add REQ-XXX, HLD-XXX, TEST-XXX, TASKS-XXX entries
+  - Update traceability system section
 
 ---
 
@@ -77,11 +123,18 @@
 
 When running "load planning for issue #XX", the agent should produce:
 
-### 1. Discussion Summary
+### 1. Discussion Summary (10-15 minutes)
 
-Brief summary of clarifications from stakeholder discussion
+**Purpose**: Clarify scope before documentation
 
-### 2. Requirements Document (REQ-XXX)
+- Interactive Q&A with stakeholder covering:
+  - Scope boundaries (MVP vs full feature)
+  - User scenarios and core features
+  - Technical approach and integration points
+  - Success criteria and constraints
+- Output: Brief summary of key decisions
+
+### 2. Requirements Document (REQ-XXX) (1-2 hours)
 
 ### 2. Requirements Document (REQ-XXX)
 
@@ -96,7 +149,7 @@ Brief summary of clarifications from stakeholder discussion
   - Success metrics
 - Traceability: Links to HLD-XXX, TEST-XXX, implementation tasks
 
-### 3. High-Level Design (HLD-XXX)
+### 3. High-Level Design (HLD-XXX) (2-3 hours)
 
 **File**: `docs/dev/designs/HLD-XXX-[feature-name].md`
 
@@ -109,7 +162,7 @@ Brief summary of clarifications from stakeholder discussion
   - Security & authentication approach
 - Traceability: Links to REQ-XXX, TEST-XXX
 
-### 4. Test Plan (TEST-XXX)
+### 4. Test Plan (TEST-XXX) (1-2 hours)
 
 **File**: `docs/qa/test-plans/TEST-XXX-[feature-name].md`
 
@@ -117,18 +170,63 @@ Brief summary of clarifications from stakeholder discussion
 - Contains:
   - Test scope (in/out of scope)
   - Test strategy by type (unit, integration, e2e, non-functional)
-  - Detailed test cases with priorities
+  - Detailed test cases with priorities (aim for 80-110 test cases)
   - Entry/exit criteria
 - Traceability: Links to REQ-XXX, HLD-XXX
 
-### 5. Implementation Tasks
+### 5. Implementation Tasks (TASKS-XXX) (1-2 hours)
+
+**File**: `docs/dev/TASKS-XXX-[feature-name].md`
 
 Structured breakdown with:
+- Task summary table (phases, effort estimates, priorities)
+- UI-First Development Approach section (if applicable)
+- Detailed tasks by phase (TASK-XXX-001, TASK-XXX-002, etc.)
+- Each task includes:
+  - Priority, effort estimate, dependencies
+  - Requirements traceability (FR-XXX, US-XXX)
+  - Design section references (HLD-XXX Section X.X)
+  - Acceptance criteria (checkboxes)
+  - Files to modify/create
+  - GitHub labels
+- Task dependencies diagram
+- GitHub Issues Template with examples
 
-- Phases and task numbering
-- Dependencies and critical path
-- Links to requirements (FR-XXX) and design sections
-- Ready for GitHub issue creation
+### 6. GitHub Setup (30-60 minutes)
+
+**Create Labels**:
+- Run `node tools/setup-github-labels.js gh | bash`
+- Verify at: `https://github.com/[org]/[repo]/labels`
+
+**Create Issues**:
+- Use `gh issue create` or GitHub web UI
+- Follow format from TASKS-XXX document
+- Link dependencies between issues
+- Example: Issue #117 for TASK-002-015
+
+**Verify**:
+- Test filter: `label:TASK-XXX`
+- All phase filters work
+- Dependencies linked correctly
+
+### 7. Documentation Updates (15-30 minutes)
+
+**Update Traceability**:
+- `docs/product/TRACEABILITY_MATRIX.md`: Add REQ-XXX row
+- `README.md`: Update parent issue progress
+- `docs/TABLE_OF_CONTENTS.md`: Add new document entries
+
+---
+
+## Complete Example: REQ-002 (Group Management)
+
+See these documents for reference:
+- Discussion: Captured in REQ-002 introduction
+- Requirements: `docs/product/requirements/REQ-002-group-management.md`
+- Design: `docs/dev/designs/HLD-002-group-management.md`
+- Test Plan: `docs/qa/test-plans/TEST-002-group-management.md`
+- Tasks: `docs/dev/TASKS-002-group-management.md`
+- GitHub: Issues #117-#126 with label `TASK-002`
 
 ---
 
