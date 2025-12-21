@@ -1,6 +1,6 @@
 /**
  * Example usage of useGroupStore
- * 
+ *
  * This file demonstrates how to use the Group Management Store in React components.
  */
 
@@ -42,7 +42,7 @@ export function CreateGroupExample() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
-    
+
     try {
       await createGroup({ name, description });
       alert('Group created successfully!');
@@ -58,7 +58,7 @@ export function CreateGroupExample() {
     <form onSubmit={handleSubmit}>
       <h2>Create New Group</h2>
       {error && <div style={{ color: 'red' }}>{error}</div>}
-      
+
       <div>
         <label>Group Name:</label>
         <input
@@ -70,15 +70,12 @@ export function CreateGroupExample() {
           maxLength={100}
         />
       </div>
-      
+
       <div>
         <label>Description:</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+        <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
       </div>
-      
+
       <button type="submit" disabled={loading}>
         {loading ? 'Creating...' : 'Create Group'}
       </button>
@@ -124,7 +121,7 @@ export function ChangeRoleExample({ memberId }: { memberId: string }) {
 
   const handleChangeRole = async () => {
     if (!currentGroup) return;
-    
+
     try {
       await changeRole(currentGroup.id, memberId, selectedRole);
       alert('Role changed successfully!');
@@ -135,16 +132,13 @@ export function ChangeRoleExample({ memberId }: { memberId: string }) {
 
   return (
     <div>
-      <select 
-        value={selectedRole} 
-        onChange={(e) => setSelectedRole(e.target.value as GroupRole)}
-      >
+      <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value as GroupRole)}>
         <option value={GroupRole.VIEWER}>Viewer</option>
         <option value={GroupRole.MEMBER}>Member</option>
         <option value={GroupRole.ADMIN}>Admin</option>
         <option value={GroupRole.OWNER}>Owner</option>
       </select>
-      
+
       <button onClick={handleChangeRole} disabled={loading}>
         {loading ? 'Changing...' : 'Change Role'}
       </button>
@@ -178,17 +172,12 @@ export function SendInvitationExample() {
   return (
     <form onSubmit={handleSendInvitation}>
       <h2>Send Email Invitation</h2>
-      
+
       <div>
         <label>Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       </div>
-      
+
       <div>
         <label>Role:</label>
         <select value={role} onChange={(e) => setRole(e.target.value as GroupRole)}>
@@ -197,15 +186,12 @@ export function SendInvitationExample() {
           <option value={GroupRole.ADMIN}>Admin</option>
         </select>
       </div>
-      
+
       <div>
         <label>Message (optional):</label>
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
+        <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
       </div>
-      
+
       <button type="submit" disabled={loading}>
         {loading ? 'Sending...' : 'Send Invitation'}
       </button>
@@ -237,7 +223,7 @@ export function GenerateInviteLinkExample() {
   return (
     <div>
       <h2>Generate Invite Link</h2>
-      
+
       <div>
         <label>Role:</label>
         <select value={role} onChange={(e) => setRole(e.target.value as GroupRole)}>
@@ -246,7 +232,7 @@ export function GenerateInviteLinkExample() {
           <option value={GroupRole.ADMIN}>Admin</option>
         </select>
       </div>
-      
+
       <div>
         <label>Max Uses (optional):</label>
         <input
@@ -256,11 +242,11 @@ export function GenerateInviteLinkExample() {
           onChange={(e) => setMaxUses(e.target.value ? parseInt(e.target.value) : null)}
         />
       </div>
-      
+
       <button onClick={handleGenerateLink} disabled={loading}>
         {loading ? 'Generating...' : 'Generate Link'}
       </button>
-      
+
       {generatedLink && (
         <div style={{ marginTop: '10px', padding: '10px', background: '#f0f0f0' }}>
           <strong>Generated Link:</strong>

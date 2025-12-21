@@ -19,23 +19,23 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 ## Components Overview
 
-| Component | Interactive Elements | Priority | Complexity |
-|-----------|---------------------|----------|------------|
-| Login.tsx | 8 | High | Medium |
-| Navigation.tsx | 8 | High | Low |
-| Dashboard.tsx | 3 | High | Low |
-| DashboardHome.tsx | 5 | High | Low |
-| ExpenseForm.tsx | 9 | High | Medium |
-| ExpenseList.tsx | 12 | High | High |
-| ExpenseDialog.tsx | 12 | High | High |
-| ExpensesPage.tsx | 4 | High | Low |
-| AnalyticsPage.tsx | 4 | Medium | Low |
-| ExpensePieChart.tsx | 7 | Medium | Medium |
-| ConfirmationDialog.tsx | 7 | High | Medium |
-| TaskForm.tsx | 7 | Medium | Low |
-| TaskList.tsx | 8 | Medium | Medium |
-| LanguageSwitcher.tsx | 3 | Low | Low |
-| AuthCallback.tsx | 1 | Low | Low |
+| Component              | Interactive Elements | Priority | Complexity |
+| ---------------------- | -------------------- | -------- | ---------- |
+| Login.tsx              | 8                    | High     | Medium     |
+| Navigation.tsx         | 8                    | High     | Low        |
+| Dashboard.tsx          | 3                    | High     | Low        |
+| DashboardHome.tsx      | 5                    | High     | Low        |
+| ExpenseForm.tsx        | 9                    | High     | Medium     |
+| ExpenseList.tsx        | 12                   | High     | High       |
+| ExpenseDialog.tsx      | 12                   | High     | High       |
+| ExpensesPage.tsx       | 4                    | High     | Low        |
+| AnalyticsPage.tsx      | 4                    | Medium   | Low        |
+| ExpensePieChart.tsx    | 7                    | Medium   | Medium     |
+| ConfirmationDialog.tsx | 7                    | High     | Medium     |
+| TaskForm.tsx           | 7                    | Medium   | Low        |
+| TaskList.tsx           | 8                    | Medium   | Medium     |
+| LanguageSwitcher.tsx   | 3                    | Low      | Low        |
+| AuthCallback.tsx       | 1                    | Low      | Low        |
 
 ## Detailed Component Breakdown
 
@@ -47,16 +47,16 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Email input | input[type="email"] | User email input | `login-email-input` |
-| Password input | input[type="password"] | User password input | `login-password-input` |
-| Name input | input[type="text"] | User name (registration) | `login-name-input` |
-| Login/Register submit | button[type="submit"] | Submit credentials | `login-submit-button` |
-| Mode toggle button | button[type="button"] | Switch login/register | `login-toggle-mode-button` |
-| Google OAuth button | button | Google sign-in | `login-google-button` |
-| Error message | div | Display errors | `login-error-message` |
-| Form | form | Main login form | `login-form` |
+| Element               | Type                   | Purpose                  | Proposed data-testid       |
+| --------------------- | ---------------------- | ------------------------ | -------------------------- |
+| Email input           | input[type="email"]    | User email input         | `login-email-input`        |
+| Password input        | input[type="password"] | User password input      | `login-password-input`     |
+| Name input            | input[type="text"]     | User name (registration) | `login-name-input`         |
+| Login/Register submit | button[type="submit"]  | Submit credentials       | `login-submit-button`      |
+| Mode toggle button    | button[type="button"]  | Switch login/register    | `login-toggle-mode-button` |
+| Google OAuth button   | button                 | Google sign-in           | `login-google-button`      |
+| Error message         | div                    | Display errors           | `login-error-message`      |
+| Form                  | form                   | Main login form          | `login-form`               |
 
 #### Special Cases
 
@@ -81,16 +81,16 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Dashboard NavLink | NavLink | Navigate to dashboard | `nav-dashboard-link` |
-| Analytics NavLink | NavLink | Navigate to analytics | `nav-analytics-link` |
-| Expenses NavLink | NavLink | Navigate to expenses | `nav-expenses-link` |
-| Add Expense Link | Link | Quick add expense | `nav-add-expense-button` |
-| User avatar | img | Display user photo | `nav-user-avatar` |
-| User name | span | Display user name | `nav-user-name` |
-| Logout button | button | Sign out | `nav-logout-button` |
-| Language switcher | Component | Language selection | `nav-language-switcher` |
+| Element           | Type      | Purpose               | Proposed data-testid     |
+| ----------------- | --------- | --------------------- | ------------------------ |
+| Dashboard NavLink | NavLink   | Navigate to dashboard | `nav-dashboard-link`     |
+| Analytics NavLink | NavLink   | Navigate to analytics | `nav-analytics-link`     |
+| Expenses NavLink  | NavLink   | Navigate to expenses  | `nav-expenses-link`      |
+| Add Expense Link  | Link      | Quick add expense     | `nav-add-expense-button` |
+| User avatar       | img       | Display user photo    | `nav-user-avatar`        |
+| User name         | span      | Display user name     | `nav-user-name`          |
+| Logout button     | button    | Sign out              | `nav-logout-button`      |
+| Language switcher | Component | Language selection    | `nav-language-switcher`  |
 
 #### Special Cases
 
@@ -114,11 +114,11 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Container | div | Main dashboard wrapper | `dashboard-container` |
-| Stats display | Stats object | Current statistics | Various stats testids |
-| Route content | Routes | Nested page components | Handled by child components |
+| Element       | Type         | Purpose                | Proposed data-testid        |
+| ------------- | ------------ | ---------------------- | --------------------------- |
+| Container     | div          | Main dashboard wrapper | `dashboard-container`       |
+| Stats display | Stats object | Current statistics     | Various stats testids       |
+| Route content | Routes       | Nested page components | Handled by child components |
 
 #### Special Cases
 
@@ -142,13 +142,13 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Total amount card | div | Display monthly total | `dashboard-total-amount` |
-| Count card | div | Display expense count | `dashboard-expense-count` |
-| Category count card | div | Display category count | `dashboard-category-count` |
-| Analytics quick link | Link | Navigate to analytics | `dashboard-analytics-link` |
-| Expenses quick link | Link | Navigate to expenses | `dashboard-expenses-link` |
+| Element              | Type | Purpose                | Proposed data-testid       |
+| -------------------- | ---- | ---------------------- | -------------------------- |
+| Total amount card    | div  | Display monthly total  | `dashboard-total-amount`   |
+| Count card           | div  | Display expense count  | `dashboard-expense-count`  |
+| Category count card  | div  | Display category count | `dashboard-category-count` |
+| Analytics quick link | Link | Navigate to analytics  | `dashboard-analytics-link` |
+| Expenses quick link  | Link | Navigate to expenses   | `dashboard-expenses-link`  |
 
 #### Special Cases
 
@@ -172,17 +172,17 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Category select | select | Choose category | `expense-form-category-select` |
-| Sub-category select | select | Choose sub-category | `expense-form-subcategory-select` |
-| Amount input | input[type="number"] | Enter amount | `expense-form-amount-input` |
-| Currency select | select | Choose currency | `expense-form-currency-select` |
-| Date input | input[type="date"] | Select date | `expense-form-date-input` |
-| Payment method select | select | Choose payment method | `expense-form-payment-method-select` |
-| Description textarea | textarea | Enter description | `expense-form-description-input` |
-| Submit button | button[type="submit"] | Save expense | `expense-form-submit-button` |
-| Form | form | Main form element | `expense-form` |
+| Element               | Type                  | Purpose               | Proposed data-testid                 |
+| --------------------- | --------------------- | --------------------- | ------------------------------------ |
+| Category select       | select                | Choose category       | `expense-form-category-select`       |
+| Sub-category select   | select                | Choose sub-category   | `expense-form-subcategory-select`    |
+| Amount input          | input[type="number"]  | Enter amount          | `expense-form-amount-input`          |
+| Currency select       | select                | Choose currency       | `expense-form-currency-select`       |
+| Date input            | input[type="date"]    | Select date           | `expense-form-date-input`            |
+| Payment method select | select                | Choose payment method | `expense-form-payment-method-select` |
+| Description textarea  | textarea              | Enter description     | `expense-form-description-input`     |
+| Submit button         | button[type="submit"] | Save expense          | `expense-form-submit-button`         |
+| Form                  | form                  | Main form element     | `expense-form`                       |
 
 #### Special Cases
 
@@ -209,19 +209,19 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Table | table | Expenses table | `expense-list-table` |
-| Date header | th | Sortable date column | `expense-list-header-date` |
-| Category header | th | Sortable category column | `expense-list-header-category` |
-| Description header | th | Sortable description column | `expense-list-header-description` |
-| Amount header | th | Sortable amount column | `expense-list-header-amount` |
-| Payment header | th | Sortable payment column | `expense-list-header-payment-method` |
-| Expense row | tr | Individual expense | `expense-list-item-{id}` |
-| Edit button | button | Edit expense | `expense-list-edit-button-{id}` |
-| Delete button | button | Delete expense | `expense-list-delete-button-{id}` |
-| Loading state | div | Loading indicator | `expense-list-loading` |
-| Empty state | div | No expenses message | `expense-list-empty-state` |
+| Element            | Type   | Purpose                     | Proposed data-testid                 |
+| ------------------ | ------ | --------------------------- | ------------------------------------ |
+| Table              | table  | Expenses table              | `expense-list-table`                 |
+| Date header        | th     | Sortable date column        | `expense-list-header-date`           |
+| Category header    | th     | Sortable category column    | `expense-list-header-category`       |
+| Description header | th     | Sortable description column | `expense-list-header-description`    |
+| Amount header      | th     | Sortable amount column      | `expense-list-header-amount`         |
+| Payment header     | th     | Sortable payment column     | `expense-list-header-payment-method` |
+| Expense row        | tr     | Individual expense          | `expense-list-item-{id}`             |
+| Edit button        | button | Edit expense                | `expense-list-edit-button-{id}`      |
+| Delete button      | button | Delete expense              | `expense-list-delete-button-{id}`    |
+| Loading state      | div    | Loading indicator           | `expense-list-loading`               |
+| Empty state        | div    | No expenses message         | `expense-list-empty-state`           |
 
 #### Special Cases
 
@@ -249,21 +249,21 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Modal overlay | div | Background overlay | `expense-dialog-overlay` |
-| Modal content | div | Dialog container | `expense-dialog-content` |
-| Title | h3 | Dialog title | `expense-dialog-title` |
-| Close button | button | Close dialog | `expense-dialog-close-button` |
-| Category select | select | Choose category | `expense-dialog-category-select` |
-| Sub-category select | select | Choose sub-category | `expense-dialog-subcategory-select` |
-| Amount input | input | Enter amount | `expense-dialog-amount-input` |
-| Currency select | select | Choose currency | `expense-dialog-currency-select` |
-| Date input | input[type="date"] | Select date | `expense-dialog-date-input` |
-| Payment method select | select | Choose payment | `expense-dialog-payment-method-select` |
-| Description textarea | textarea | Enter description | `expense-dialog-description-input` |
-| Cancel button | button | Cancel action | `expense-dialog-cancel-button` |
-| Save button | button[type="submit"] | Save expense | `expense-dialog-save-button` |
+| Element               | Type                  | Purpose             | Proposed data-testid                   |
+| --------------------- | --------------------- | ------------------- | -------------------------------------- |
+| Modal overlay         | div                   | Background overlay  | `expense-dialog-overlay`               |
+| Modal content         | div                   | Dialog container    | `expense-dialog-content`               |
+| Title                 | h3                    | Dialog title        | `expense-dialog-title`                 |
+| Close button          | button                | Close dialog        | `expense-dialog-close-button`          |
+| Category select       | select                | Choose category     | `expense-dialog-category-select`       |
+| Sub-category select   | select                | Choose sub-category | `expense-dialog-subcategory-select`    |
+| Amount input          | input                 | Enter amount        | `expense-dialog-amount-input`          |
+| Currency select       | select                | Choose currency     | `expense-dialog-currency-select`       |
+| Date input            | input[type="date"]    | Select date         | `expense-dialog-date-input`            |
+| Payment method select | select                | Choose payment      | `expense-dialog-payment-method-select` |
+| Description textarea  | textarea              | Enter description   | `expense-dialog-description-input`     |
+| Cancel button         | button                | Cancel action       | `expense-dialog-cancel-button`         |
+| Save button           | button[type="submit"] | Save expense        | `expense-dialog-save-button`           |
 
 #### Special Cases
 
@@ -290,11 +290,11 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Page container | div | Main container | `expenses-page` |
-| Page title | h2 | Page heading | `expenses-page-title` |
-| Description | p | Page description | `expenses-page-description` |
+| Element        | Type | Purpose               | Proposed data-testid           |
+| -------------- | ---- | --------------------- | ------------------------------ |
+| Page container | div  | Main container        | `expenses-page`                |
+| Page title     | h2   | Page heading          | `expenses-page-title`          |
+| Description    | p    | Page description      | `expenses-page-description`    |
 | Analytics link | Link | View analytics button | `expenses-page-analytics-link` |
 
 #### Special Cases
@@ -318,12 +318,12 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Page container | div | Main container | `analytics-page` |
-| Page title | h2 | Page heading | `analytics-page-title` |
-| Description | p | Page description | `analytics-page-description` |
-| Expenses link | Link | View expenses button | `analytics-page-expenses-link` |
+| Element        | Type | Purpose              | Proposed data-testid           |
+| -------------- | ---- | -------------------- | ------------------------------ |
+| Page container | div  | Main container       | `analytics-page`               |
+| Page title     | h2   | Page heading         | `analytics-page-title`         |
+| Description    | p    | Page description     | `analytics-page-description`   |
+| Expenses link  | Link | View expenses button | `analytics-page-expenses-link` |
 
 #### Special Cases
 
@@ -344,15 +344,15 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Chart container | div | Chart wrapper | `chart-container` |
-| Chart title | h3 | Chart heading | `chart-title` |
-| Pie chart | Pie (Chart.js) | Visual chart | `chart-canvas` |
-| Total amount | strong | Total display | `chart-total-amount` |
-| Expense count | span | Count display | `chart-expense-count` |
-| Loading state | div | Loading message | `chart-loading` |
-| Empty state | div | No data message | `chart-empty-state` |
+| Element         | Type           | Purpose         | Proposed data-testid  |
+| --------------- | -------------- | --------------- | --------------------- |
+| Chart container | div            | Chart wrapper   | `chart-container`     |
+| Chart title     | h3             | Chart heading   | `chart-title`         |
+| Pie chart       | Pie (Chart.js) | Visual chart    | `chart-canvas`        |
+| Total amount    | strong         | Total display   | `chart-total-amount`  |
+| Expense count   | span           | Count display   | `chart-expense-count` |
+| Loading state   | div            | Loading message | `chart-loading`       |
+| Empty state     | div            | No data message | `chart-empty-state`   |
 
 #### Special Cases
 
@@ -378,15 +378,15 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Modal overlay | div | Background overlay | `confirm-dialog-overlay` |
-| Modal content | div | Dialog container | `confirm-dialog-content` |
-| Title | h3 | Dialog title | `confirm-dialog-title` |
-| Message | p | Confirmation text | `confirm-dialog-message` |
-| Close button | button | Close dialog (X) | `confirm-dialog-close-button` |
-| Cancel button | button | Cancel action | `confirm-dialog-cancel-button` |
-| Confirm button | button | Confirm action | `confirm-dialog-confirm-button` |
+| Element        | Type   | Purpose            | Proposed data-testid            |
+| -------------- | ------ | ------------------ | ------------------------------- |
+| Modal overlay  | div    | Background overlay | `confirm-dialog-overlay`        |
+| Modal content  | div    | Dialog container   | `confirm-dialog-content`        |
+| Title          | h3     | Dialog title       | `confirm-dialog-title`          |
+| Message        | p      | Confirmation text  | `confirm-dialog-message`        |
+| Close button   | button | Close dialog (X)   | `confirm-dialog-close-button`   |
+| Cancel button  | button | Cancel action      | `confirm-dialog-cancel-button`  |
+| Confirm button | button | Confirm action     | `confirm-dialog-confirm-button` |
 
 #### Special Cases
 
@@ -411,15 +411,15 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Form | form | Main form | `task-form` |
-| Title input | input[type="text"] | Task title | `task-form-title-input` |
-| Description textarea | textarea | Task description | `task-form-description-input` |
-| Priority select | select | Task priority | `task-form-priority-select` |
-| Status select | select | Task status | `task-form-status-select` |
-| Due date input | input[type="date"] | Due date | `task-form-due-date-input` |
-| Submit button | button[type="submit"] | Create task | `task-form-submit-button` |
+| Element              | Type                  | Purpose          | Proposed data-testid          |
+| -------------------- | --------------------- | ---------------- | ----------------------------- |
+| Form                 | form                  | Main form        | `task-form`                   |
+| Title input          | input[type="text"]    | Task title       | `task-form-title-input`       |
+| Description textarea | textarea              | Task description | `task-form-description-input` |
+| Priority select      | select                | Task priority    | `task-form-priority-select`   |
+| Status select        | select                | Task status      | `task-form-status-select`     |
+| Due date input       | input[type="date"]    | Due date         | `task-form-due-date-input`    |
+| Submit button        | button[type="submit"] | Create task      | `task-form-submit-button`     |
 
 #### Special Cases
 
@@ -443,16 +443,16 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Task card | div | Individual task | `task-list-item-{id}` |
-| Title | div | Task title | `task-list-title-{id}` |
-| Status badge | span | Status indicator | `task-list-status-{id}` |
-| Description | p | Task description | `task-list-description-{id}` |
+| Element       | Type   | Purpose             | Proposed data-testid                  |
+| ------------- | ------ | ------------------- | ------------------------------------- |
+| Task card     | div    | Individual task     | `task-list-item-{id}`                 |
+| Title         | div    | Task title          | `task-list-title-{id}`                |
+| Status badge  | span   | Status indicator    | `task-list-status-{id}`               |
+| Description   | p      | Task description    | `task-list-description-{id}`          |
 | Update button | button | Start/Complete task | `task-list-update-status-button-{id}` |
-| Delete button | button | Delete task | `task-list-delete-button-{id}` |
-| Empty state | p | No tasks message | `task-list-empty-state` |
-| Loading state | div | Loading message | `task-list-loading` |
+| Delete button | button | Delete task         | `task-list-delete-button-{id}`        |
+| Empty state   | p      | No tasks message    | `task-list-empty-state`               |
+| Loading state | div    | Loading message     | `task-list-loading`                   |
 
 #### Special Cases
 
@@ -477,11 +477,11 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Container | div | Wrapper | `language-switcher` |
+| Element        | Type   | Purpose           | Proposed data-testid      |
+| -------------- | ------ | ----------------- | ------------------------- |
+| Container      | div    | Wrapper           | `language-switcher`       |
 | English button | button | Switch to English | `language-english-button` |
-| Hebrew button | button | Switch to Hebrew | `language-hebrew-button` |
+| Hebrew button  | button | Switch to Hebrew  | `language-hebrew-button`  |
 
 #### Special Cases
 
@@ -505,9 +505,9 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 #### Interactive Elements
 
-| Element | Type | Purpose | Proposed data-testid |
-|---------|------|---------|---------------------|
-| Loading message | p | Authenticating text | `auth-callback-loading` |
+| Element         | Type | Purpose             | Proposed data-testid    |
+| --------------- | ---- | ------------------- | ----------------------- |
+| Loading message | p    | Authenticating text | `auth-callback-loading` |
 
 #### Special Cases
 
@@ -627,23 +627,23 @@ This document provides a comprehensive audit of all React components in `app/fro
 
 ## Appendix: Element Count Summary
 
-| Element Type | Count | Examples |
-|-------------|-------|----------|
-| Form Inputs | 25+ | text, email, password, number, date inputs |
-| Select Dropdowns | 12+ | category, currency, priority, status selects |
-| Buttons | 30+ | submit, cancel, edit, delete, navigation buttons |
-| Links | 10+ | nav links, quick links |
-| List Items | 2 patterns | expenses, tasks (with dynamic IDs) |
-| Modal/Dialog Elements | 14+ | overlays, content containers, close buttons |
-| State Indicators | 8+ | loading, empty states, error messages |
-| Headers/Titles | 15+ | page titles, dialog titles, section headers |
-| **Total** | **120+** | Interactive and testable elements |
+| Element Type          | Count      | Examples                                         |
+| --------------------- | ---------- | ------------------------------------------------ |
+| Form Inputs           | 25+        | text, email, password, number, date inputs       |
+| Select Dropdowns      | 12+        | category, currency, priority, status selects     |
+| Buttons               | 30+        | submit, cancel, edit, delete, navigation buttons |
+| Links                 | 10+        | nav links, quick links                           |
+| List Items            | 2 patterns | expenses, tasks (with dynamic IDs)               |
+| Modal/Dialog Elements | 14+        | overlays, content containers, close buttons      |
+| State Indicators      | 8+         | loading, empty states, error messages            |
+| Headers/Titles        | 15+        | page titles, dialog titles, section headers      |
+| **Total**             | **120+**   | Interactive and testable elements                |
 
 ## Document History
 
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0.0 | 2024-12-18 | Initial audit completed | Copilot |
+| Version | Date       | Changes                 | Author  |
+| ------- | ---------- | ----------------------- | ------- |
+| 1.0.0   | 2024-12-18 | Initial audit completed | Copilot |
 
 ---
 

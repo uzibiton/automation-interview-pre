@@ -106,7 +106,7 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
         onClose={handleCloseDialog}
         onSuccess={handleExpenseCreated}
       />
-      
+
       <GroupCreationDialog
         isOpen={showGroupDialog}
         onClose={() => setShowGroupDialog(false)}

@@ -29,9 +29,12 @@ This document defines the standard naming convention for `data-testid` attribute
 <div data-testid="expense-item">...</div>
 
 <!-- Avoid -->
-<button data-testid="btn1">Login</button>  <!-- Too vague -->
-<input data-testid="input-field-for-expense-amount-currency-usd" />  <!-- Too verbose -->
-<div data-testid="expenseListItemDiv">...</div>  <!-- Uses camelCase -->
+<button data-testid="btn1">Login</button>
+<!-- Too vague -->
+<input data-testid="input-field-for-expense-amount-currency-usd" />
+<!-- Too verbose -->
+<div data-testid="expenseListItemDiv">...</div>
+<!-- Uses camelCase -->
 ```
 
 ## Component-Specific Conventions
@@ -40,194 +43,194 @@ This document defines the standard naming convention for `data-testid` attribute
 
 **Component Prefix:** `login-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Email input | `login-email-input` | Email address field |
-| Password input | `login-password-input` | Password field |
-| Name input (register) | `login-name-input` | Name field for registration |
-| Submit button | `login-submit-button` | Submit login/register form |
-| Toggle mode button | `login-toggle-mode-button` | Switch between login/register |
-| Google login button | `login-google-button` | Google OAuth sign-in |
-| Error message | `login-error-message` | Display error messages |
-| Form container | `login-form` | Main form element |
+| Element               | data-testid                | Purpose                       |
+| --------------------- | -------------------------- | ----------------------------- |
+| Email input           | `login-email-input`        | Email address field           |
+| Password input        | `login-password-input`     | Password field                |
+| Name input (register) | `login-name-input`         | Name field for registration   |
+| Submit button         | `login-submit-button`      | Submit login/register form    |
+| Toggle mode button    | `login-toggle-mode-button` | Switch between login/register |
+| Google login button   | `login-google-button`      | Google OAuth sign-in          |
+| Error message         | `login-error-message`      | Display error messages        |
+| Form container        | `login-form`               | Main form element             |
 
 ### 2. Navigation Component
 
 **Component Prefix:** `nav-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Dashboard link | `nav-dashboard-link` | Navigate to dashboard |
-| Analytics link | `nav-analytics-link` | Navigate to analytics |
-| Expenses link | `nav-expenses-link` | Navigate to expenses |
+| Element            | data-testid              | Purpose                       |
+| ------------------ | ------------------------ | ----------------------------- |
+| Dashboard link     | `nav-dashboard-link`     | Navigate to dashboard         |
+| Analytics link     | `nav-analytics-link`     | Navigate to analytics         |
+| Expenses link      | `nav-expenses-link`      | Navigate to expenses          |
 | Add expense button | `nav-add-expense-button` | Quick add expense (➕ button) |
-| User avatar | `nav-user-avatar` | User profile picture |
-| User name | `nav-user-name` | Display user name |
-| Logout button | `nav-logout-button` | Logout action |
-| Language switcher | `nav-language-switcher` | Language selection container |
+| User avatar        | `nav-user-avatar`        | User profile picture          |
+| User name          | `nav-user-name`          | Display user name             |
+| Logout button      | `nav-logout-button`      | Logout action                 |
+| Language switcher  | `nav-language-switcher`  | Language selection container  |
 
 ### 3. Dashboard Home Component
 
 **Component Prefix:** `dashboard-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Total amount card | `dashboard-total-amount` | Monthly total expense amount |
-| Expense count card | `dashboard-expense-count` | Number of expenses this month |
-| Category count card | `dashboard-category-count` | Number of categories used |
-| Analytics link | `dashboard-analytics-link` | Quick link to analytics |
-| Expenses link | `dashboard-expenses-link` | Quick link to expenses |
+| Element             | data-testid                | Purpose                       |
+| ------------------- | -------------------------- | ----------------------------- |
+| Total amount card   | `dashboard-total-amount`   | Monthly total expense amount  |
+| Expense count card  | `dashboard-expense-count`  | Number of expenses this month |
+| Category count card | `dashboard-category-count` | Number of categories used     |
+| Analytics link      | `dashboard-analytics-link` | Quick link to analytics       |
+| Expenses link       | `dashboard-expenses-link`  | Quick link to expenses        |
 
 ### 4. Expense Form Component
 
 **Component Prefix:** `expense-form-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Category select | `expense-form-category-select` | Select expense category |
-| Sub-category select | `expense-form-subcategory-select` | Select expense sub-category |
-| Amount input | `expense-form-amount-input` | Enter expense amount |
-| Currency select | `expense-form-currency-select` | Select currency |
-| Date input | `expense-form-date-input` | Select expense date |
-| Payment method select | `expense-form-payment-method-select` | Select payment method |
-| Description textarea | `expense-form-description-input` | Enter expense description |
-| Submit button | `expense-form-submit-button` | Save expense |
-| Form container | `expense-form` | Main form element |
+| Element               | data-testid                          | Purpose                     |
+| --------------------- | ------------------------------------ | --------------------------- |
+| Category select       | `expense-form-category-select`       | Select expense category     |
+| Sub-category select   | `expense-form-subcategory-select`    | Select expense sub-category |
+| Amount input          | `expense-form-amount-input`          | Enter expense amount        |
+| Currency select       | `expense-form-currency-select`       | Select currency             |
+| Date input            | `expense-form-date-input`            | Select expense date         |
+| Payment method select | `expense-form-payment-method-select` | Select payment method       |
+| Description textarea  | `expense-form-description-input`     | Enter expense description   |
+| Submit button         | `expense-form-submit-button`         | Save expense                |
+| Form container        | `expense-form`                       | Main form element           |
 
 ### 5. Expense List Component
 
 **Component Prefix:** `expense-list-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Table | `expense-list-table` | Main expenses table |
-| Table header | `expense-list-header` | Table header row |
-| Date header | `expense-list-header-date` | Date column header (sortable) |
-| Category header | `expense-list-header-category` | Category column header (sortable) |
-| Description header | `expense-list-header-description` | Description column header (sortable) |
-| Amount header | `expense-list-header-amount` | Amount column header (sortable) |
+| Element               | data-testid                          | Purpose                                 |
+| --------------------- | ------------------------------------ | --------------------------------------- |
+| Table                 | `expense-list-table`                 | Main expenses table                     |
+| Table header          | `expense-list-header`                | Table header row                        |
+| Date header           | `expense-list-header-date`           | Date column header (sortable)           |
+| Category header       | `expense-list-header-category`       | Category column header (sortable)       |
+| Description header    | `expense-list-header-description`    | Description column header (sortable)    |
+| Amount header         | `expense-list-header-amount`         | Amount column header (sortable)         |
 | Payment method header | `expense-list-header-payment-method` | Payment method column header (sortable) |
-| Expense row | `expense-list-item-{id}` | Individual expense row (dynamic ID) |
-| Edit button | `expense-list-edit-button-{id}` | Edit specific expense |
-| Delete button | `expense-list-delete-button-{id}` | Delete specific expense |
-| Empty state | `expense-list-empty-state` | No expenses message |
-| Loading state | `expense-list-loading` | Loading indicator |
+| Expense row           | `expense-list-item-{id}`             | Individual expense row (dynamic ID)     |
+| Edit button           | `expense-list-edit-button-{id}`      | Edit specific expense                   |
+| Delete button         | `expense-list-delete-button-{id}`    | Delete specific expense                 |
+| Empty state           | `expense-list-empty-state`           | No expenses message                     |
+| Loading state         | `expense-list-loading`               | Loading indicator                       |
 
 ### 6. Expense Dialog Component
 
 **Component Prefix:** `expense-dialog-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Modal overlay | `expense-dialog-overlay` | Background overlay |
-| Modal content | `expense-dialog-content` | Dialog content container |
-| Title | `expense-dialog-title` | Dialog title |
-| Close button | `expense-dialog-close-button` | Close dialog (X button) |
-| Category select | `expense-dialog-category-select` | Select expense category |
-| Sub-category select | `expense-dialog-subcategory-select` | Select expense sub-category |
-| Amount input | `expense-dialog-amount-input` | Enter expense amount |
-| Currency select | `expense-dialog-currency-select` | Select currency |
-| Date input | `expense-dialog-date-input` | Select expense date |
-| Payment method select | `expense-dialog-payment-method-select` | Select payment method |
-| Description textarea | `expense-dialog-description-input` | Enter expense description |
-| Cancel button | `expense-dialog-cancel-button` | Cancel and close dialog |
-| Save button | `expense-dialog-save-button` | Save expense |
+| Element               | data-testid                            | Purpose                     |
+| --------------------- | -------------------------------------- | --------------------------- |
+| Modal overlay         | `expense-dialog-overlay`               | Background overlay          |
+| Modal content         | `expense-dialog-content`               | Dialog content container    |
+| Title                 | `expense-dialog-title`                 | Dialog title                |
+| Close button          | `expense-dialog-close-button`          | Close dialog (X button)     |
+| Category select       | `expense-dialog-category-select`       | Select expense category     |
+| Sub-category select   | `expense-dialog-subcategory-select`    | Select expense sub-category |
+| Amount input          | `expense-dialog-amount-input`          | Enter expense amount        |
+| Currency select       | `expense-dialog-currency-select`       | Select currency             |
+| Date input            | `expense-dialog-date-input`            | Select expense date         |
+| Payment method select | `expense-dialog-payment-method-select` | Select payment method       |
+| Description textarea  | `expense-dialog-description-input`     | Enter expense description   |
+| Cancel button         | `expense-dialog-cancel-button`         | Cancel and close dialog     |
+| Save button           | `expense-dialog-save-button`           | Save expense                |
 
 ### 7. Expenses Page Component
 
 **Component Prefix:** `expenses-page-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Page container | `expenses-page` | Main page container |
-| Page title | `expenses-page-title` | Page heading |
-| Page description | `expenses-page-description` | Page description text |
-| Analytics link | `expenses-page-analytics-link` | View analytics button |
+| Element          | data-testid                    | Purpose               |
+| ---------------- | ------------------------------ | --------------------- |
+| Page container   | `expenses-page`                | Main page container   |
+| Page title       | `expenses-page-title`          | Page heading          |
+| Page description | `expenses-page-description`    | Page description text |
+| Analytics link   | `expenses-page-analytics-link` | View analytics button |
 
 ### 8. Analytics Page Component
 
 **Component Prefix:** `analytics-page-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Page container | `analytics-page` | Main page container |
-| Page title | `analytics-page-title` | Page heading |
-| Page description | `analytics-page-description` | Page description text |
-| View expenses link | `analytics-page-expenses-link` | View expenses button |
+| Element            | data-testid                    | Purpose               |
+| ------------------ | ------------------------------ | --------------------- |
+| Page container     | `analytics-page`               | Main page container   |
+| Page title         | `analytics-page-title`         | Page heading          |
+| Page description   | `analytics-page-description`   | Page description text |
+| View expenses link | `analytics-page-expenses-link` | View expenses button  |
 
 ### 9. Expense Pie Chart Component
 
 **Component Prefix:** `chart-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Chart container | `chart-container` | Pie chart wrapper |
-| Chart title | `chart-title` | Chart heading |
-| Chart canvas | `chart-canvas` | Actual chart element |
-| Total amount | `chart-total-amount` | Total displayed below chart |
-| Expense count | `chart-expense-count` | Count displayed below chart |
-| Empty state | `chart-empty-state` | No data message |
-| Loading state | `chart-loading` | Loading indicator |
+| Element         | data-testid           | Purpose                     |
+| --------------- | --------------------- | --------------------------- |
+| Chart container | `chart-container`     | Pie chart wrapper           |
+| Chart title     | `chart-title`         | Chart heading               |
+| Chart canvas    | `chart-canvas`        | Actual chart element        |
+| Total amount    | `chart-total-amount`  | Total displayed below chart |
+| Expense count   | `chart-expense-count` | Count displayed below chart |
+| Empty state     | `chart-empty-state`   | No data message             |
+| Loading state   | `chart-loading`       | Loading indicator           |
 
 ### 10. Confirmation Dialog Component
 
 **Component Prefix:** `confirm-dialog-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Modal overlay | `confirm-dialog-overlay` | Background overlay |
-| Modal content | `confirm-dialog-content` | Dialog content container |
-| Title | `confirm-dialog-title` | Dialog title |
-| Message | `confirm-dialog-message` | Confirmation message text |
-| Close button | `confirm-dialog-close-button` | Close dialog (X button) |
-| Cancel button | `confirm-dialog-cancel-button` | Cancel action |
-| Confirm button | `confirm-dialog-confirm-button` | Confirm action |
+| Element        | data-testid                     | Purpose                   |
+| -------------- | ------------------------------- | ------------------------- |
+| Modal overlay  | `confirm-dialog-overlay`        | Background overlay        |
+| Modal content  | `confirm-dialog-content`        | Dialog content container  |
+| Title          | `confirm-dialog-title`          | Dialog title              |
+| Message        | `confirm-dialog-message`        | Confirmation message text |
+| Close button   | `confirm-dialog-close-button`   | Close dialog (X button)   |
+| Cancel button  | `confirm-dialog-cancel-button`  | Cancel action             |
+| Confirm button | `confirm-dialog-confirm-button` | Confirm action            |
 
 ### 11. Task Form Component
 
 **Component Prefix:** `task-form-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Form container | `task-form` | Main form element |
-| Title input | `task-form-title-input` | Task title field |
+| Element              | data-testid                   | Purpose                |
+| -------------------- | ----------------------------- | ---------------------- |
+| Form container       | `task-form`                   | Main form element      |
+| Title input          | `task-form-title-input`       | Task title field       |
 | Description textarea | `task-form-description-input` | Task description field |
-| Priority select | `task-form-priority-select` | Select task priority |
-| Status select | `task-form-status-select` | Select task status |
-| Due date input | `task-form-due-date-input` | Select due date |
-| Submit button | `task-form-submit-button` | Create task |
+| Priority select      | `task-form-priority-select`   | Select task priority   |
+| Status select        | `task-form-status-select`     | Select task status     |
+| Due date input       | `task-form-due-date-input`    | Select due date        |
+| Submit button        | `task-form-submit-button`     | Create task            |
 
 ### 12. Task List Component
 
 **Component Prefix:** `task-list-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Task container | `task-list-item-{id}` | Individual task card (dynamic ID) |
-| Task title | `task-list-title-{id}` | Task title text |
-| Task status | `task-list-status-{id}` | Task status badge |
-| Task description | `task-list-description-{id}` | Task description text |
-| Update status button | `task-list-update-status-button-{id}` | Start/Complete task |
-| Delete button | `task-list-delete-button-{id}` | Delete task |
-| Empty state | `task-list-empty-state` | No tasks message |
-| Loading state | `task-list-loading` | Loading indicator |
+| Element              | data-testid                           | Purpose                           |
+| -------------------- | ------------------------------------- | --------------------------------- |
+| Task container       | `task-list-item-{id}`                 | Individual task card (dynamic ID) |
+| Task title           | `task-list-title-{id}`                | Task title text                   |
+| Task status          | `task-list-status-{id}`               | Task status badge                 |
+| Task description     | `task-list-description-{id}`          | Task description text             |
+| Update status button | `task-list-update-status-button-{id}` | Start/Complete task               |
+| Delete button        | `task-list-delete-button-{id}`        | Delete task                       |
+| Empty state          | `task-list-empty-state`               | No tasks message                  |
+| Loading state        | `task-list-loading`                   | Loading indicator                 |
 
 ### 13. Language Switcher Component
 
 **Component Prefix:** `language-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
-| Container | `language-switcher` | Language switcher container |
-| English button | `language-english-button` | Switch to English |
-| Hebrew button | `language-hebrew-button` | Switch to Hebrew |
+| Element        | data-testid               | Purpose                     |
+| -------------- | ------------------------- | --------------------------- |
+| Container      | `language-switcher`       | Language switcher container |
+| English button | `language-english-button` | Switch to English           |
+| Hebrew button  | `language-hebrew-button`  | Switch to Hebrew            |
 
 ### 14. Auth Callback Component
 
 **Component Prefix:** `auth-callback-`
 
-| Element | data-testid | Purpose |
-|---------|-------------|---------|
+| Element         | data-testid             | Purpose                |
+| --------------- | ----------------------- | ---------------------- |
 | Loading message | `auth-callback-loading` | Authenticating message |
 
 ## Special Cases and Patterns
@@ -265,7 +268,9 @@ For form inputs, use the pattern: `[component]-[field-name]-[input|select|textar
 
 ```html
 <input data-testid="expense-form-amount-input" type="number" />
-<select data-testid="expense-form-category-select">...</select>
+<select data-testid="expense-form-category-select">
+  ...
+</select>
 <textarea data-testid="expense-form-description-input">...</textarea>
 ```
 
@@ -309,9 +314,7 @@ For modals and dialogs:
 For sortable columns, include the column name:
 
 ```html
-<th data-testid="expense-list-header-date" onClick={handleSort}>
-  Date {sortIcon}
-</th>
+<th data-testid="expense-list-header-date" onClick="{handleSort}">Date {sortIcon}</th>
 ```
 
 ## Implementation Guidelines

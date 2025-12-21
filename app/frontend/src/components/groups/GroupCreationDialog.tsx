@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGroupStore } from '../../stores/useGroupStore';
 import { CreateGroupDto } from '../../types/Group';
@@ -29,62 +29,96 @@ function GroupCreationDialog({ isOpen, onClose, onSuccess }: GroupCreationDialog
     description: false,
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [prevIsOpen, setPrevIsOpen] = useState(false);
 
-  // Reset form when dialog opens
-  useEffect(() => {
-    if (isOpen) {
-      setFormData({ name: '', description: '' });
-      setErrors({});
-      setTouched({ name: false, description: false });
-      setSuccessMessage(null);
-      clearError();
-    }
-  }, [isOpen, clearError]);
+  // Reset form when dialog opens (using derived state pattern)
+  if (isOpen && !prevIsOpen) {
+    setFormData({ name: '', description: '' });
+    setErrors({});
+    setTouched({ name: false, description: false });
+    setSuccessMessage(null);
+    clearError();
+    setPrevIsOpen(true);
+  } else if (!isOpen && prevIsOpen) {
+    setPrevIsOpen(false);
+  }
 
   // Validate name field
-  const validateName = (name: string): string | undefined => {
-    const trimmedName = name.trim();
-    if (!trimmedName) {
-      return translation('groups.errors.nameRequired');
-    }
-    if (trimmedName.length < 3) {
-      return translation('groups.errors.nameTooShort');
-    }
-    if (trimmedName.length > 100) {
-      return translation('groups.errors.nameTooLong');
-    }
-    return undefined;
-  };
+  const validateName = useCallback(
+    (name: string): string | undefined => {
+      const trimmedName = name.trim();
+      if (!trimmedName) {
+        return translation('groups.errors.nameRequired');
+      }
+      if (trimmedName.length < 3) {
+        return translation('groups.errors.nameTooShort');
+      }
+      if (trimmedName.length > 100) {
+        return translation('groups.errors.nameTooLong');
+      }
+      return undefined;
+    },
+    [translation],
+  );
 
   // Validate description field
-  const validateDescription = (description?: string): string | undefined => {
-    if (description && description.length > 500) {
-      return translation('groups.errors.descriptionTooLong');
-    }
-    return undefined;
-  };
-
-  // Real-time validation
-  useEffect(() => {
-    const newErrors: FormErrors = {};
-    if (touched.name) {
-      const nameError = validateName(formData.name);
-      if (nameError) newErrors.name = nameError;
-    }
-    if (touched.description) {
-      const descError = validateDescription(formData.description);
-      if (descError) newErrors.description = descError;
-    }
-    setErrors(newErrors);
-  }, [formData, touched, translation]);
+  const validateDescription = useCallback(
+    (description?: string): string | undefined => {
+      if (description && description.length > 500) {
+        return translation('groups.errors.descriptionTooLong');
+      }
+      return undefined;
+    },
+    [translation],
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Validate on change if field was already touched
+    if (touched[name as keyof typeof touched]) {
+      const newErrors = { ...errors };
+      if (name === 'name') {
+        const error = validateName(value);
+        if (error) {
+          newErrors.name = error;
+        } else {
+          delete newErrors.name;
+        }
+      } else if (name === 'description') {
+        const error = validateDescription(value);
+        if (error) {
+          newErrors.description = error;
+        } else {
+          delete newErrors.description;
+        }
+      }
+      setErrors(newErrors);
+    }
   };
 
   const handleBlur = (field: 'name' | 'description') => {
     setTouched((prev) => ({ ...prev, [field]: true }));
+
+    // Validate on blur
+    const newErrors = { ...errors };
+    if (field === 'name') {
+      const error = validateName(formData.name);
+      if (error) {
+        newErrors.name = error;
+      } else {
+        delete newErrors.name;
+      }
+    } else if (field === 'description') {
+      const error = validateDescription(formData.description);
+      if (error) {
+        newErrors.description = error;
+      } else {
+        delete newErrors.description;
+      }
+    }
+    setErrors(newErrors);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

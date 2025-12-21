@@ -15,7 +15,7 @@ export type SupportedLanguage = 'en' | 'he';
  */
 export const getLocalizedName = <T extends { nameEn: string; nameHe: string }>(
   item: T,
-  language: string
+  language: string,
 ): string => {
   return language === 'he' ? item.nameHe : item.nameEn;
 };
