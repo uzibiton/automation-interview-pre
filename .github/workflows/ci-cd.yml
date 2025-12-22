@@ -312,7 +312,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     needs: [generate-timestamp]
-    if: github.event.inputs.skip_unit_tests != 'true'
+    if: (github.event_name == 'workflow_dispatch' || vars.CI_CD_ENABLED == 'true') && github.event.inputs.skip_unit_tests != 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -370,7 +370,7 @@ jobs:
   coverage:
     name: Code Coverage
     needs: [generate-timestamp, unit-tests]
-    if: github.event.inputs.skip_coverage != 'true' && github.event.inputs.skip_unit_tests != 'true'
+    if: (github.event_name == 'workflow_dispatch' || vars.CI_CD_ENABLED == 'true') && github.event.inputs.skip_coverage != 'true' && github.event.inputs.skip_unit_tests != 'true'
     runs-on: ubuntu-latest
     continue-on-error: true
 
