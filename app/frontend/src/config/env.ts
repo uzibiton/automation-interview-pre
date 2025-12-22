@@ -10,6 +10,13 @@ interface EnvironmentConfig {
 }
 
 function getEnvironmentConfig(): EnvironmentConfig {
+  // Prefer runtime config (window.ENV) if available
+  if (typeof window !== 'undefined' && (window as any).ENV) {
+    return {
+      API_BASE_URL: (window as any).ENV.VITE_API_SERVICE_URL || 'http://localhost:3002',
+      USE_MOCK_API: (window as any).ENV.VITE_USE_MOCK_API === 'true',
+    };
+  }
   // In Jest/Node environment (check for process first)
   if (typeof process !== 'undefined' && process.versions && process.versions.node) {
     return {
@@ -17,8 +24,7 @@ function getEnvironmentConfig(): EnvironmentConfig {
       USE_MOCK_API: process.env.VITE_USE_MOCK_API === 'true',
     };
   }
-
-  // In Vite/Browser environment
+  // In Vite/Browser environment (fallback)
   return {
     // @ts-expect-error - import.meta.env is available in Vite
     API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3002',
