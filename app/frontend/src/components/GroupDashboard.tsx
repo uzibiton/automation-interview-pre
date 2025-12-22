@@ -9,12 +9,21 @@ import GroupCreationDialog from './groups/GroupCreationDialog';
 import ConfirmationDialog from './ConfirmationDialog';
 
 interface GroupDashboardProps {
-  token?: string;
   user?: { id: number; email: string; name: string; avatarUrl?: string } | null;
 }
 
 function GroupDashboard({ user }: GroupDashboardProps) {
   const { t: translation } = useTranslation();
+
+  // Early guard: user must be authenticated to view groups
+  if (!user) {
+    return (
+      <div className="error-message" style={{ padding: '40px', textAlign: 'center' }}>
+        <h2>{translation('groups.dashboard.authRequired', 'Authentication Required')}</h2>
+        <p>{translation('groups.dashboard.authRequiredMessage', 'Please log in to view and manage groups.')}</p>
+      </div>
+    );
+  }
 
   // Group store state
   const {
@@ -39,9 +48,12 @@ function GroupDashboard({ user }: GroupDashboardProps) {
   const [editFormData, setEditFormData] = useState({ name: '', description: '' });
 
   // Get current user's role from authenticated user
-  const currentUserId = user?.id?.toString() || 'user-1'; // Fallback to user-1 for development
+  const currentUserId = user.id.toString();
   const currentMember = members.find((m) => m.userId === currentUserId);
   const currentUserRole = currentMember?.role || GroupRole.VIEWER;
+
+  // Check if user is a member of the current group
+  const isGroupMember = currentGroup && members.length > 0 ? !!currentMember : true; // Allow access if no group or loading
 
   // Check permissions
   const canInviteMembers = DEFAULT_PERMISSIONS.invite_members.includes(currentUserRole);
@@ -128,6 +140,21 @@ function GroupDashboard({ user }: GroupDashboardProps) {
         </div>
         <div style={{ textAlign: 'center', padding: '40px' }}>
           {translation('groups.dashboard.loading')}
+        </div>
+      </div>
+    );
+  }
+
+  // Not a member of the group
+  if (currentGroup && !groupLoading && !isGroupMember) {
+    return (
+      <div className="container">
+        <div className="page-header">
+          <h2>{translation('groups.dashboard.title')}</h2>
+        </div>
+        <div className="error-message" style={{ padding: '40px', textAlign: 'center' }}>
+          <h3>{translation('groups.dashboard.notMember', 'Not a Member')}</h3>
+          <p>{translation('groups.dashboard.notMemberMessage', 'You are not a member of this group.')}</p>
         </div>
       </div>
     );
