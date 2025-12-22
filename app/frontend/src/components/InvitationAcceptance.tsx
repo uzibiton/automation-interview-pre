@@ -57,7 +57,6 @@ function InvitationAcceptance() {
       }, 2000);
     } catch {
       // Error is already set in the store
-      setActionLoading(false);
     } finally {
       setActionLoading(false);
     }
@@ -77,7 +76,6 @@ function InvitationAcceptance() {
       }, 2000);
     } catch {
       // Error is already set in the store
-      setActionLoading(false);
     } finally {
       setActionLoading(false);
     }
