@@ -73,7 +73,10 @@
     "editConfirmTitle": "עדכן הוצאה",
     "editConfirmMessage": "האם אתה בטוח שברצונך לשמור שינויים אלה?",
     "viewDetails": "פרטי הוצאה",
-    "show": "הצג פרטים"
+    "show": "הצג פרטים",
+    "createdBy": "נוצר על ידי",
+    "myExpenses": "ההוצאות שלי",
+    "allExpenses": "כל ההוצאות"
   },
   "paymentMethods": {
     "credit_card": "כרטיס אשראי",
