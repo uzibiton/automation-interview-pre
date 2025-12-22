@@ -31,7 +31,7 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   const [deletingExpenseId, setDeletingExpenseId] = useState<number | null>(null);
   const [sortField, setSortField] = useState<SortField>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [showMyExpensesOnly, setShowMyExpensesOnly] = useState(false);
+  const [showMyExpensesOnly, setShowMyExpensesOnly] = useState(false); // Default: show all expenses
   const [contextMenu, setContextMenu] = useState<{
     isOpen: boolean;
     position: { x: number; y: number };

@@ -38,7 +38,10 @@
     "format:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "lint": "eslint \"app/**/*.{js,ts,tsx}\" \"tests/**/*.{js,ts,tsx}\" \"tools/**/*.js\" --ignore-pattern \"tests/reports/**\"",
     "lint:fix": "eslint \"app/**/*.{js,ts,tsx}\" \"tests/**/*.{js,ts,tsx}\" \"tools/**/*.js\" --ignore-pattern \"tests/reports/**\" --fix",
-    "type-check": "npm run type-check --workspaces --if-present"
+    "type-check": "npm run type-check --workspaces --if-present",
+    "seed:postgres": "node tools/seed-postgres-test-data.js",
+    "seed:firestore": "node tools/seed-firestore-test-data.js",
+    "seed:all": "node tools/seed-all-environments.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
