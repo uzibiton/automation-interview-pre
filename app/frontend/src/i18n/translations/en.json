@@ -73,7 +73,10 @@
     "editConfirmTitle": "Update Expense",
     "editConfirmMessage": "Are you sure you want to save these changes?",
     "viewDetails": "Expense Details",
-    "show": "Show Details"
+    "show": "Show Details",
+    "createdBy": "Created by",
+    "myExpenses": "My Expenses",
+    "allExpenses": "All Expenses"
   },
   "paymentMethods": {
     "credit_card": "Credit Card",

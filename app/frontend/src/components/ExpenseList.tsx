@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { getApiServiceUrl } from '../utils/config';
-import { getLocalizedName } from '../utils/i18n.utils';
-import { parseExpenseAmount } from '../utils/expense.utils';
 import { Expense, Category } from '../types/expense.types';
+import { getCurrentUserName } from '../utils/jwt.utils';
 import ExpenseDialog from './ExpenseDialog';
 import ExpenseDetailsDialog from './ExpenseDetailsDialog';
 import ConfirmationDialog from './ConfirmationDialog';
 import ContextMenu, { ContextMenuItem } from './ContextMenu';
+import ExpenseListItem from './expenses/ExpenseListItem';
 
 const API_SERVICE_URL = getApiServiceUrl();
 
@@ -31,6 +31,7 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   const [deletingExpenseId, setDeletingExpenseId] = useState<number | null>(null);
   const [sortField, setSortField] = useState<SortField>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [showMyExpensesOnly, setShowMyExpensesOnly] = useState(false);
   const [contextMenu, setContextMenu] = useState<{
     isOpen: boolean;
     position: { x: number; y: number };
@@ -40,6 +41,8 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
     position: { x: 0, y: 0 },
     expense: null,
   });
+
+  const currentUserName = getCurrentUserName(token);
 
   const fetchExpenses = async () => {
     try {
@@ -74,17 +77,6 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
 
     fetchCategories();
   }, [refreshKey]);
-
-  const getCategoryName = (categoryId: number) => {
-    const category = categories.find((c) => c.id === categoryId);
-    if (!category) return '';
-    return getLocalizedName(category, i18n.language);
-  };
-
-  const getCategoryIcon = (categoryId: number) => {
-    const category = categories.find((c) => c.id === categoryId);
-    return category?.icon || '📝';
-  };
 
   const handleDeleteClick = (id: number) => {
     setDeletingExpenseId(id);
@@ -213,16 +205,22 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   };
 
   const getSortedExpenses = () => {
+    // First, filter by "My Expenses" if enabled
+    let filteredExpenses = expenses;
+    if (showMyExpensesOnly && currentUserName) {
+      filteredExpenses = expenses.filter((expense) => expense.createdBy === currentUserName);
+    }
+
     if (!sortField || !sortDirection) {
       // Default sort: date descending when no sort is active
-      return [...expenses].sort((a, b) => {
+      return [...filteredExpenses].sort((a, b) => {
         const dateA = new Date(a.date).getTime();
         const dateB = new Date(b.date).getTime();
         return dateB - dateA;
       });
     }
 
-    return [...expenses].sort((a, b) => {
+    return [...filteredExpenses].sort((a, b) => {
       let compareResult = 0;
 
       switch (sortField) {
@@ -236,8 +234,14 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
           compareResult = a.description.localeCompare(b.description);
           break;
         case 'category': {
-          const categoryA = getCategoryName(a.categoryId) || 'Unknown';
-          const categoryB = getCategoryName(b.categoryId) || 'Unknown';
+          const categoryA =
+            categories.find((c) => c.id === a.categoryId)?.[
+              i18n.language === 'he' ? 'nameHe' : 'nameEn'
+            ] || 'Unknown';
+          const categoryB =
+            categories.find((c) => c.id === b.categoryId)?.[
+              i18n.language === 'he' ? 'nameHe' : 'nameEn'
+            ] || 'Unknown';
           compareResult = categoryA.localeCompare(categoryB);
           break;
         }
@@ -286,6 +290,20 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
   return (
     <div>
       <h2>{translation('expenses.title')}</h2>
+
+      {/* My Expenses Filter Toggle */}
+      <div style={{ marginBottom: '16px' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <input
+            type="checkbox"
+            checked={showMyExpensesOnly}
+            onChange={(e) => setShowMyExpensesOnly(e.target.checked)}
+            data-testid="my-expenses-toggle"
+          />
+          <span>{translation('expenses.myExpenses')}</span>
+        </label>
+      </div>
+
       <table className="table">
         <thead>
           <tr>
@@ -314,49 +332,15 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
         </thead>
         <tbody>
           {sortedExpenses.map((expense) => (
-            <tr
+            <ExpenseListItem
               key={expense.id}
-              onClick={(e) => handleRowClick(expense, e)}
-              onKeyDown={(e) => handleRowKeyDown(expense, e)}
-              tabIndex={0}
-              data-testid={`expense-row-${expense.id}`}
-            >
-              <td>{new Date(expense.date).toLocaleDateString()}</td>
-              <td>
-                <span style={{ fontSize: '1.5em', marginRight: '8px' }}>
-                  {getCategoryIcon(expense.categoryId)}
-                </span>
-                {getCategoryName(expense.categoryId)}
-              </td>
-              <td>{expense.description}</td>
-              <td style={{ fontWeight: 'bold' }}>
-                {expense.currency} {parseExpenseAmount(expense.amount).toFixed(2)}
-              </td>
-              <td>
-                {expense.paymentMethod
-                  ? translation(
-                      `paymentMethods.${expense.paymentMethod.toLowerCase().replace(/ /g, '_')}`,
-                    )
-                  : '-'}
-              </td>
-              <td>
-                <button
-                  onClick={() => handleEdit(expense)}
-                  className="btn btn-secondary btn-sm"
-                  style={{ marginRight: '8px' }}
-                  data-testid={`edit-button-${expense.id}`}
-                >
-                  {translation('expenses.edit')}
-                </button>
-                <button
-                  onClick={() => handleDeleteClick(expense.id)}
-                  className="btn btn-danger btn-sm"
-                  data-testid={`delete-button-${expense.id}`}
-                >
-                  {translation('expenses.delete')}
-                </button>
-              </td>
-            </tr>
+              expense={expense}
+              categories={categories}
+              onEdit={handleEdit}
+              onDelete={handleDeleteClick}
+              onRowClick={handleRowClick}
+              onRowKeyDown={handleRowKeyDown}
+            />
           ))}
         </tbody>
       </table>
