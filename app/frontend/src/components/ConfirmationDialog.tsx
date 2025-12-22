@@ -10,6 +10,7 @@ interface ConfirmationDialogProps {
   onConfirm: () => void;
   onCancel: () => void;
   type?: 'danger' | 'warning' | 'info';
+  children?: React.ReactNode;
 }
 
 function ConfirmationDialog({
@@ -21,6 +22,7 @@ function ConfirmationDialog({
   onConfirm,
   onCancel,
   type = 'info',
+  children,
 }: ConfirmationDialogProps) {
   const { t: translation } = useTranslation();
 
@@ -47,7 +49,8 @@ function ConfirmationDialog({
           </button>
         </div>
         <div className="confirmation-message">
-          <p>{message}</p>
+          {message && <p>{message}</p>}
+          {children}
         </div>
         <div className="modal-actions">
           <button type="button" className="btn btn-secondary" onClick={onCancel}>

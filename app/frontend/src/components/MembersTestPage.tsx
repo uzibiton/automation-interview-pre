@@ -15,7 +15,7 @@ interface MembersTestPageProps {
  * This page demonstrates the MembersListTable component with mock data.
  * It shows different user roles and permission-based action visibility.
  */
-function MembersTestPage({ token }: MembersTestPageProps) {
+function MembersTestPage({ token: _token }: MembersTestPageProps) {
   const { t: translation } = useTranslation();
   const { currentGroup, fetchCurrentGroup } = useGroupStore();
   const [showInviteModal, setShowInviteModal] = useState(false);
