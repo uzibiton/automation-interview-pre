@@ -12,13 +12,13 @@ interface JWTPayload {
 
 /**
  * Decode JWT token without verification (for client-side use only)
- * 
+ *
  * ⚠️ SECURITY WARNING: This function does NOT verify the JWT signature.
  * This is intentional as it's only used for extracting user information
  * for display purposes on the client side. The server MUST verify all
  * tokens before processing any requests. Never use decoded token data
  * for security decisions on the client side.
- * 
+ *
  * @param token JWT token string
  * @returns Decoded payload or null if invalid
  */
@@ -30,7 +30,9 @@ export function decodeJWT(token: string): JWTPayload | null {
     }
 
     const payload = parts[1];
-    const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+    const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = normalized + '='.repeat((4 - (normalized.length % 4)) % 4);
+    const decoded = atob(padded);
     return JSON.parse(decoded);
   } catch (error) {
     console.error('Failed to decode JWT:', error);

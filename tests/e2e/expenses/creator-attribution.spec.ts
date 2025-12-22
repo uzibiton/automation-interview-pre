@@ -7,11 +7,13 @@
 import { test, expect, Page } from '@playwright/test';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+const TEST_USER_EMAIL = process.env.TEST_USER_EMAIL || 'test@example.com';
+const TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD || 'testpassword123';
 
 async function login(page: Page) {
   await page.goto(`${BASE_URL}/login`);
-  await page.fill('input[type="email"]', 'test@example.com');
-  await page.fill('input[type="password"]', 'password123');
+  await page.fill('input[type="email"]', TEST_USER_EMAIL);
+  await page.fill('input[type="password"]', TEST_USER_PASSWORD);
   await page.click('button[type="submit"]');
   // Wait for navigation after login
   await page.waitForURL(`${BASE_URL}/`, { timeout: 5000 });
