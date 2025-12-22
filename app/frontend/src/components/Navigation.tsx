@@ -52,6 +52,12 @@ function Navigation({ userName, userAvatar, onLogout }: NavigationProps) {
         <NavLink to="/members" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
           {t('nav.members', 'Members')}
         </NavLink>
+        <NavLink
+          to="/group"
+          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+        >
+          {t('nav.groups')}
+        </NavLink>
       </nav>
       <div className="user-info">
         <LanguageSwitcher />
