@@ -8,7 +8,7 @@ import { GroupRole } from '../../types/GroupMember';
 export const mockInvitations: Invitation[] = [
   {
     id: 'invitation-1',
-    groupId: 'group-1',
+    groupId: 'group-001',
     groupName: 'Family Expenses',
     inviterId: 'user-1',
     inviterName: 'John Doe',
@@ -22,7 +22,7 @@ export const mockInvitations: Invitation[] = [
   },
   {
     id: 'invitation-2',
-    groupId: 'group-1',
+    groupId: 'group-001',
     groupName: 'Family Expenses',
     inviterId: 'user-2',
     inviterName: 'Jane Smith',
@@ -35,7 +35,7 @@ export const mockInvitations: Invitation[] = [
   },
   {
     id: 'invitation-3',
-    groupId: 'group-1',
+    groupId: 'group-001',
     groupName: 'Family Expenses',
     inviterId: 'user-1',
     inviterName: 'John Doe',
@@ -48,7 +48,7 @@ export const mockInvitations: Invitation[] = [
   },
   {
     id: 'invitation-4',
-    groupId: 'group-1',
+    groupId: 'group-001',
     groupName: 'Family Expenses',
     inviterId: 'user-1',
     inviterName: 'John Doe',

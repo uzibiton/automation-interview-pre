@@ -95,7 +95,7 @@ export const invitationHandlers = [
     }
 
     // Get group and inviter details from fixtures
-    const groupId = body.groupId || 'group-1';
+    const groupId = body.groupId || 'group-001';
     const group = mockGroups.find((g) => g.id === groupId);
     const inviter = mockMembers.find((m) => m.userId === MOCK_USER_ID);
 
@@ -244,7 +244,7 @@ export const invitationHandlers = [
     }
 
     // Get creator details from fixtures (group variable removed as unused)
-    const groupId = body.groupId || 'group-1';
+    const groupId = body.groupId || 'group-001';
     const creator = mockMembers.find((m) => m.userId === MOCK_USER_ID);
 
     const newLink = {

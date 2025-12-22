@@ -6,7 +6,7 @@ import { Group } from '../../types/Group';
 
 export const mockGroups: Group[] = [
   {
-    id: 'group-1',
+    id: 'group-001',
     name: 'Family Expenses',
     description: 'Shared household expenses for our family',
     createdBy: 'user-1',

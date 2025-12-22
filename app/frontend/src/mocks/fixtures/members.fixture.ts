@@ -7,7 +7,7 @@ import { GroupMember, GroupRole } from '../../types/GroupMember';
 export const mockMembers: GroupMember[] = [
   {
     id: 'member-1',
-    groupId: 'group-1',
+    groupId: 'group-001',
     userId: 'user-1',
     name: 'John Doe',
     email: 'john.doe@example.com',
@@ -17,7 +17,7 @@ export const mockMembers: GroupMember[] = [
   },
   {
     id: 'member-2',
-    groupId: 'group-1',
+    groupId: 'group-001',
     userId: 'user-2',
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
@@ -27,7 +27,7 @@ export const mockMembers: GroupMember[] = [
   },
   {
     id: 'member-3',
-    groupId: 'group-1',
+    groupId: 'group-001',
     userId: 'user-3',
     name: 'Bob Johnson',
     email: 'bob.johnson@example.com',
@@ -37,7 +37,7 @@ export const mockMembers: GroupMember[] = [
   },
   {
     id: 'member-4',
-    groupId: 'group-1',
+    groupId: 'group-001',
     userId: 'user-4',
     name: 'Alice Williams',
     email: 'alice.williams@example.com',

@@ -164,8 +164,8 @@ export const groupHandlers = [
       return HttpResponse.json({ error: 'Group not found' }, { status: 404 });
     }
 
-    // Check if user is Owner (simplified - assume user-1 is owner of group-1)
-    const isOwner = id === 'group-1'; // Simplified check
+    // Check if user is Owner (simplified - assume user-1 is owner of group-001)
+    const isOwner = id === 'group-001'; // Simplified check
 
     if (!isOwner) {
       return HttpResponse.json(

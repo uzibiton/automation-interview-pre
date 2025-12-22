@@ -27,8 +27,8 @@ function MembersTestPage({ token: _token }: MembersTestPageProps) {
     });
   }, [fetchCurrentGroup]);
 
-  // For demo purposes, use group-1 as the default group ID
-  const groupId = currentGroup?.id || 'group-1';
+  // For demo purposes, use group-001 as the default group ID
+  const groupId = currentGroup?.id || 'group-001';
 
   // Demo: Show the component as an Admin user
   const demoUserRole = GroupRole.ADMIN;

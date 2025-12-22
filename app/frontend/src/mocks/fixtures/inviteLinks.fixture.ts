@@ -8,7 +8,7 @@ import { GroupRole } from '../../types/GroupMember';
 export const mockInviteLinks: InviteLink[] = [
   {
     id: 'link-1',
-    groupId: 'group-1',
+    groupId: 'group-001',
     createdBy: 'user-1',
     createdByName: 'John Doe',
     token: 'ABC12345',
@@ -21,7 +21,7 @@ export const mockInviteLinks: InviteLink[] = [
   },
   {
     id: 'link-2',
-    groupId: 'group-1',
+    groupId: 'group-001',
     createdBy: 'user-2',
     createdByName: 'Jane Smith',
     token: 'DEF67890',
@@ -34,7 +34,7 @@ export const mockInviteLinks: InviteLink[] = [
   },
   {
     id: 'link-3',
-    groupId: 'group-1',
+    groupId: 'group-001',
     createdBy: 'user-1',
     createdByName: 'John Doe',
     token: 'GHI11111',
