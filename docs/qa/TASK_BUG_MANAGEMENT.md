@@ -29,6 +29,54 @@
 | **Enhancement** | Improvements to existing features     | N/A               | Improve page load performance           |
 | **Question**    | Clarification or investigation needed | N/A               | How should token expiration be handled? |
 
+---
+
+## 🏗️ Task Naming Convention
+
+### Standard Format
+
+All implementation tasks for features follow a standardized naming convention:
+
+**Format**: `[TASK-XXX-YYY] Descriptive Title`
+
+- **XXX** = Feature/Epic number (e.g., 002 for Group Management, 003 for AI Expense Input)
+- **YYY** = Sequential task number within the feature (001, 002, 003...)
+- **Descriptive Title** = Clear, action-oriented description
+
+**Examples**:
+
+- `[TASK-002-015] Setup Mock API Infrastructure`
+- `[TASK-003-008] Create NLP Parser Service with Prompt Engineering`
+- `[TASK-004-001] Create Budget Alerts Table Migration`
+
+### Benefits
+
+- **Filterability**: Quick GitHub filtering using `label:TASK-XXX`
+- **Traceability**: Direct mapping to requirements (REQ-XXX) and designs (HLD-XXX)
+- **Organization**: Sequential numbering shows implementation order
+- **Professionalism**: Consistent, structured task management
+
+### Naming Rules
+
+1. **Always use brackets**: `[TASK-XXX-YYY]` format (not parentheses or none)
+2. **Zero-pad numbers**: Use `TASK-003-001` not `TASK-3-1`
+3. **Descriptive titles**: Should clearly indicate what's being built
+4. **Action-oriented**: Start with verbs (Create, Setup, Implement, Add, Configure)
+5. **No abbreviations**: Write "API" not "Appl Programming Interface", but be clear
+
+### Task Document Structure
+
+Each feature has a `TASKS-XXX-feature-name.md` document containing:
+
+- Complete task breakdown across all phases
+- Dependencies between tasks
+- Effort estimates (in days)
+- Acceptance criteria (8-15 per task)
+- File paths for all changes
+- Proper label assignments
+
+**Reference Template**: [TASKS-002-group-management.md](../dev/TASKS-002-group-management.md) (Gold Standard)
+
 ### When to Create What
 
 **Create a Bug when:**
@@ -123,6 +171,126 @@ Links to dependencies
 ## 🏷️ Labels
 
 Suggested labels
+```
+
+---
+
+## 🏷️ GitHub Labeling Strategy
+
+### Label Categories
+
+Implementation tasks (following [TASK-XXX-YYY] naming convention) use a comprehensive labeling system:
+
+#### 1. **Core Task Label** (Required)
+
+- **Format**: `TASK-XXX` (matches feature number)
+- **Purpose**: Enable GitHub filtering for all tasks in a feature
+- **Examples**: `TASK-002`, `TASK-003`, `TASK-004`
+- **Usage**: `label:TASK-003` to see all AI Expense Input tasks
+
+#### 2. **Phase Labels** (Required)
+
+Indicate which development phase the task belongs to:
+
+| Label          | Description                  | Examples                            |
+| -------------- | ---------------------------- | ----------------------------------- |
+| `phase-0-db`   | Database schema/migrations   | Create tables, add columns, indexes |
+| `phase-1-auth` | Authentication/authorization | JWT, OAuth, permissions             |
+| `phase-1-nlp`  | NLP/AI backend services      | AI adapters, parsers, consultations |
+| `phase-2-api`  | API endpoints/controllers    | REST APIs, DTOs, validators         |
+| `phase-3-ui`   | Frontend UI components       | React components, pages, forms      |
+| `phase-4-test` | Testing & QA                 | Unit tests, E2E tests, integration  |
+
+#### 3. **Priority Labels** (Required)
+
+Indicate urgency and importance:
+
+| Label               | Description                        | SLA         |
+| ------------------- | ---------------------------------- | ----------- |
+| `priority-critical` | Blocking issue, must be done first | < 1 day     |
+| `priority-high`     | Important, should be done soon     | < 3 days    |
+| `priority-medium`   | Normal priority, regular workflow  | < 1 week    |
+| `priority-low`      | Nice to have, can be deferred      | No deadline |
+
+#### 4. **Technology Stack Labels**
+
+Indicate which part of the codebase is affected:
+
+| Label      | Scope                           |
+| ---------- | ------------------------------- |
+| `frontend` | React, Vite, UI components      |
+| `backend`  | NestJS, services, controllers   |
+| `database` | PostgreSQL, migrations, queries |
+| `testing`  | Test files, test infrastructure |
+| `security` | Auth, encryption, PII handling  |
+| `ai-ml`    | AI/ML features, NLP, prompts    |
+| `devops`   | Docker, CI/CD, deployment       |
+
+#### 5. **Service Labels**
+
+For microservices architecture:
+
+| Label          | Service                     |
+| -------------- | --------------------------- |
+| `auth-service` | Authentication microservice |
+| `api-service`  | Main API microservice       |
+| `frontend`     | Frontend application        |
+
+#### 6. **Component Type Labels**
+
+Specific component types:
+
+| Label               | Use Case                         |
+| ------------------- | -------------------------------- |
+| `ui`                | UI-related tasks                 |
+| `component`         | React component creation/updates |
+| `page`              | Full page implementation         |
+| `api`               | API endpoint                     |
+| `migration`         | Database migration               |
+| `integration`       | External service integration     |
+| `monitoring`        | Logging, metrics, tracking       |
+| `cost-optimization` | Performance/cost improvements    |
+| `architecture`      | System design, patterns          |
+
+### Complete Labeling Example
+
+For task: `[TASK-003-008] Create NLP Parser Service with Prompt Engineering`
+
+**Applied Labels**:
+
+```
+TASK-003
+phase-1-nlp
+priority-critical
+backend
+ai-ml
+api-service
+```
+
+### GitHub Filtering Examples
+
+**Find all Phase 3 UI tasks for AI feature**:
+
+```
+label:TASK-003 label:phase-3-ui
+```
+
+**Find all critical priority database tasks**:
+
+```
+label:phase-0-db label:priority-critical
+```
+
+**Find all backend tasks across all features**:
+
+```
+label:backend is:issue
+```
+
+**Find testing tasks for specific feature**:
+
+```
+label:TASK-002 label:phase-4-test
 ```
 
 ---

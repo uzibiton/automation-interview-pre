@@ -57,12 +57,17 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
   - ✅ [REQ-003: Requirements](docs/product/requirements/REQ-003-ai-expense-input.md) - 7 user stories, 7 FRs, 7 NFRs
   - ✅ [HLD-003: Design](docs/dev/designs/HLD-003-ai-expense-input.md) - NLP pipeline, AI adapter, security architecture
   - ✅ [TEST-003: Test Plan](docs/qa/test-plans/TEST-003-ai-expense-input.md) - 150 test cases (AI accuracy, security, privacy, bias)
-  - 🔍 [Tasks #84-#108](https://github.com/uzibiton/automation-interview-pre/issues?q=is%3Aissue+label%3Aai-expense-input) - 25 tasks across 6 phases
-- 👥 [#69 - Household/Group Management with Role-Based Permissions](https://github.com/uzibiton/automation-interview-pre/issues/69) - **15%** (planning complete, 28 implementation tasks defined)
+  - ✅ [TASKS-003: Implementation](docs/dev/TASKS-003-ai-expense-input.md) - 40 tasks, 56-69 days estimated
+  - ✅ [GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues?q=is%3Aissue+label%3ATASK-003) - 23 issues retrofitted with [TASK-003-XXX] naming (P0:4, P1:9, P2:11, P3:7, P4:9)
+  - 🔍 17 additional tasks need GitHub issues created
+- 👥 [#69 - Household/Group Management with Role-Based Permissions](https://github.com/uzibiton/automation-interview-pre/issues/69) - **78%** (Phase 3 UI: 7/9 completed, 3 in progress)
   - ✅ [REQ-002: Requirements](docs/product/requirements/REQ-002-group-management.md) - 10 user stories, 6 FRs, 9 API specs
   - ✅ [HLD-002: Design](docs/dev/designs/HLD-002-group-management.md) - Architecture, RBAC, database schema
   - ✅ [TEST-002: Test Plan](docs/qa/test-plans/TEST-002-group-management.md) - 110 test cases across functional, security, performance
   - ✅ [TASKS-002: Implementation](docs/dev/TASKS-002-group-management.md) - 28 tasks, 41-50 days estimated
+  - ✅ [GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues?q=is%3Aissue+label%3ATASK-002) - 30 issues created with [TASK-002-XXX] naming (P0:2, P1:8, P2:4, P3:11, P4:5)
+  - 🔍 Phase 3 UI Components: Mock API, Stores (Group/Invitation), Dialogs (Creation/Role), Tables (Members), Modals (Invitation) - 7/9 ✅
+  - 🔍 In Progress: Group Dashboard Page, Expense List Updates, Invitation Acceptance Page
 - 📱 [#80 - Add PWA + Mobile/Desktop Testing Demo (Without Native Apps)](https://github.com/uzibiton/automation-interview-pre/issues/80) - **0%** (idea phase)
 - 🔍 [#81 - Implement Production Synthetic Monitoring (Shift-Right Testing)](https://github.com/uzibiton/automation-interview-pre/issues/81) - **0%** (idea phase)
 
@@ -76,12 +81,13 @@ This project demonstrates **QA planning and strategic thinking** rather than jus
 
 Professional documentation with **bidirectional traceability** between requirements, design, tests, and implementation:
 
-| Type             | Format                      | Example                                                                                                                                                                                                                                                        |
-| ---------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Requirements** | `REQ-###-feature-name.md`   | [REQ-001-expense-sorting.md](docs/product/requirements/REQ-001-expense-sorting.md), [REQ-002-group-management.md](docs/product/requirements/REQ-002-group-management.md), [REQ-003-ai-expense-input.md](docs/product/requirements/REQ-003-ai-expense-input.md) |
-| **Design (HLD)** | `HLD-###-feature-name.md`   | [HLD-001-expense-sorting.md](docs/dev/designs/HLD-001-expense-sorting.md), [HLD-002-group-management.md](docs/dev/designs/HLD-002-group-management.md), [HLD-003-ai-expense-input.md](docs/dev/designs/HLD-003-ai-expense-input.md)                            |
-| **Test Plans**   | `TEST-###-feature-name.md`  | [TEST-001-expense-sorting.md](docs/qa/test-plans/TEST-001-expense-sorting.md), [TEST-002-group-management.md](docs/qa/test-plans/TEST-002-group-management.md), [TEST-003-ai-expense-input.md](docs/qa/test-plans/TEST-003-ai-expense-input.md)                |
-| **Tasks**        | `TASKS-###-feature-name.md` | [TASKS-002-group-management.md](docs/dev/TASKS-002-group-management.md)                                                                                                                                                                                        |
+| Type              | Format                      | Example                                                                                                                                                                                                                                                        |
+| ----------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Requirements**  | `REQ-###-feature-name.md`   | [REQ-001-expense-sorting.md](docs/product/requirements/REQ-001-expense-sorting.md), [REQ-002-group-management.md](docs/product/requirements/REQ-002-group-management.md), [REQ-003-ai-expense-input.md](docs/product/requirements/REQ-003-ai-expense-input.md) |
+| **Design (HLD)**  | `HLD-###-feature-name.md`   | [HLD-001-expense-sorting.md](docs/dev/designs/HLD-001-expense-sorting.md), [HLD-002-group-management.md](docs/dev/designs/HLD-002-group-management.md), [HLD-003-ai-expense-input.md](docs/dev/designs/HLD-003-ai-expense-input.md)                            |
+| **Test Plans**    | `TEST-###-feature-name.md`  | [TEST-001-expense-sorting.md](docs/qa/test-plans/TEST-001-expense-sorting.md), [TEST-002-group-management.md](docs/qa/test-plans/TEST-002-group-management.md), [TEST-003-ai-expense-input.md](docs/qa/test-plans/TEST-003-ai-expense-input.md)                |
+| **Tasks**         | `TASKS-###-feature-name.md` | [TASKS-002-group-management.md](docs/dev/TASKS-002-group-management.md), [TASKS-003-ai-expense-input.md](docs/dev/TASKS-003-ai-expense-input.md)                                                                                                               |
+| **GitHub Issues** | `[TASK-###-YYY] Title`      | [View TASK-002 Issues](https://github.com/uzibiton/automation-interview-pre/issues?q=is%3Aissue+label%3ATASK-002), [View TASK-003 Issues](https://github.com/uzibiton/automation-interview-pre/issues?q=is%3Aissue+label%3ATASK-003)                           |
 
 **Traceability Flow**: `REQ <-> HLD <-> TEST <-> TASKS <-> Implementation <-> E2E Tests`
 

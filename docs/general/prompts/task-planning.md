@@ -68,6 +68,10 @@
 
 - Use structured task document format
 - Output location: `docs/dev/TASKS-XXX-[feature-name].md`
+- **Naming Convention**: `[TASK-XXX-YYY] Descriptive Title`
+  - `XXX` = Feature/Epic number (e.g., 002 for Group Management)
+  - `YYY` = Sequential task number (001, 002, 003...)
+  - Example: `[TASK-002-015] Setup Mock API Infrastructure`
 - Must include:
   - Task summary table (phases, effort, priorities)
   - UI-First Development Approach (if applicable)
@@ -75,6 +79,7 @@
   - Each task: ID, title, priority, effort, dependencies, acceptance criteria, files to modify, labels
   - Task dependencies diagram
   - GitHub issues template with examples
+- **Reference**: See `docs/dev/TASKS-002-group-management.md` as the gold standard template
 
 ### Step 6: Setup GitHub Infrastructure
 
@@ -90,8 +95,15 @@
 2. **Create GitHub Issues**:
    - Use `tools/create-task-issues.js` or create manually
    - One issue per task with proper:
-     - Title: `[TASK-XXX-001] Task Name`
-     - Labels: All relevant labels from task definition
+     - **Title Format**: `[TASK-XXX-YYY] Task Name`
+       - Example: `[TASK-002-001] Create Database Migrations for Groups Tables`
+     - **Labels**: All relevant labels from task definition:
+       - Core: `TASK-XXX` (required for filtering)
+       - Phase: `phase-0-db`, `phase-1-auth`, `phase-2-api`, `phase-3-ui`, `phase-4-test`
+       - Priority: `priority-critical`, `priority-high`, `priority-medium`
+       - Tech: `frontend`, `backend`, `database`, `testing`, `security`
+       - Service: `auth-service`, `api-service`, `frontend` (if applicable)
+       - Type: `ui`, `component`, `page`, `api`, `migration` (optional)
      - Body: Link to parent issue, dependencies, tracking document
      - Link dependencies between issues
    - Close any duplicate issues
@@ -231,8 +243,17 @@ See these documents for reference:
 - Requirements: `docs/product/requirements/REQ-002-group-management.md`
 - Design: `docs/dev/designs/HLD-002-group-management.md`
 - Test Plan: `docs/qa/test-plans/TEST-002-group-management.md`
-- Tasks: `docs/dev/TASKS-002-group-management.md`
-- GitHub: Issues #117-#126 with label `TASK-002`
+- Tasks: `docs/dev/TASKS-002-group-management.md` ⭐ **Gold Standard Template**
+- GitHub: Issues with label `TASK-002` and `[TASK-002-XXX]` naming convention
+
+**Key Features of TASKS-002 Template**:
+
+- ✅ Consistent `[TASK-002-XXX]` naming throughout
+- ✅ Comprehensive label strategy (phase, priority, tech, service)
+- ✅ Clear dependencies and blocking relationships
+- ✅ GitHub-ready issue templates with examples
+- ✅ Phase-based organization (Phase 0-4)
+- ✅ Effort estimates and priority flags
 
 ---
 
@@ -253,19 +274,64 @@ Break down [FEATURE_NAME] into actionable implementation tasks and phases.
 - Available labels: [LIST_OF_GITHUB_LABELS]
 
 **Output Requirements**:
-1. Structured phase/task breakdown with clear numbering (0.1, 1.1, 2.1, etc.)
+1. Structured phase/task breakdown following **[TASK-XXX-YYY]** naming convention
 2. Each task must include:
-   - Clear title: "[Phase X] Task X.Y: Descriptive Name"
-   - Sub-deliverables (what gets produced)
-   - Estimated effort (in days, e.g., "5-7 days")
-   - Dependencies (list task numbers that must complete first, or "NONE")
+   - Clear title: `[TASK-XXX-YYY] Descriptive Name` (e.g., `[TASK-003-001] Setup NLP Pipeline`)
+   - Priority: Critical/High/Medium | Effort: X days | Dependencies: TASK-XXX-YYY or None
+   - Requirements: Link to FR-XXX from REQ document
+   - Design: Link to HLD section
+   - Description: Brief overview of what needs to be built
    - Acceptance criteria (how we know it's done)
-   - Appropriate labels (component, team, priority, size)
-   - Links to related requirements (FR-XXX) and design sections
+   - Files to create/modify
+   - Labels for GitHub:
+     - Core: `TASK-XXX`
+     - Phase: `phase-N-name`
+     - Priority: `priority-critical/high/medium`
+     - Tech: `frontend`, `backend`, `database`, etc.
+     - Optional: service and type labels
 3. Identify critical path tasks (highest priority)
 4. Flag tasks that can run in parallel
+5. Include GitHub issue template section with examples
+
+**Format Reference**: Use `docs/dev/TASKS-002-group-management.md` as the template
 
 **Output Structure**:
+
+## TASKS-XXX: [Feature Name] Implementation Tasks
+
+### Overview
+- Parent Issue: #XX
+- Requirements: REQ-XXX
+- Design: HLD-XXX
+- Test Plan: TEST-XXX
+
+### Task Summary
+| Phase | Tasks | Effort (days) | Priority |
+|-------|-------|---------------|----------|
+| Phase 0: DB | X | Y-Z | Critical |
+...
+
+### Phase 0: [Phase Name] (X-Y days) 🔴 CRITICAL
+
+#### TASK-XXX-001: [Task Title]
+
+**Priority**: Critical | **Effort**: X days | **Dependencies**: None
+
+**Requirements**: FR-XXX
+**Design**: HLD-XXX Section X.X
+
+**Description**: [What needs to be built]
+
+**Acceptance Criteria**:
+- [ ] Criterion 1
+- [ ] Criterion 2
+
+**Files**:
+- `path/to/file.ts`
+
+**Labels**: `TASK-XXX`, `phase-0-db`, `priority-critical`, `backend`, `database`
+
+---
 
 ### Phase 0: Prototype/Validation (Optional)
 **Goal**: [EARLY_VALIDATION_WITHOUT_BACKEND]

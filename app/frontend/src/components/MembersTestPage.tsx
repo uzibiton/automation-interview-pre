@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MembersListTable from './groups/MembersListTable';
+import InvitationModal from './groups/InvitationModal';
 import { useGroupStore } from '../stores/useGroupStore';
 import { GroupRole } from '../types/GroupMember';
 
@@ -17,6 +18,7 @@ interface MembersTestPageProps {
 function MembersTestPage({ token }: MembersTestPageProps) {
   const { t: translation } = useTranslation();
   const { currentGroup, fetchCurrentGroup } = useGroupStore();
+  const [showInviteModal, setShowInviteModal] = useState(false);
 
   useEffect(() => {
     // Fetch the current user's group
@@ -35,10 +37,17 @@ function MembersTestPage({ token }: MembersTestPageProps) {
   return (
     <div className="container">
       <div className="page-header">
-        <h1>{translation('groups.members.title')}</h1>
-        <p style={{ color: '#666', marginTop: '8px' }}>
-          Demo page for Members List Table component - Viewing as: {demoUserRole}
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1>{translation('groups.members.title')}</h1>
+            <p style={{ color: '#666', marginTop: '8px' }}>
+              Demo page for Members List Table component - Viewing as: {demoUserRole}
+            </p>
+          </div>
+          <button className="btn btn-primary" onClick={() => setShowInviteModal(true)}>
+            Invite Member
+          </button>
+        </div>
       </div>
 
       <div style={{ marginTop: '24px' }}>
@@ -72,6 +81,17 @@ function MembersTestPage({ token }: MembersTestPageProps) {
           <li>✓ Mobile responsive design</li>
         </ul>
       </div>
+
+      <InvitationModal
+        isOpen={showInviteModal}
+        onClose={() => setShowInviteModal(false)}
+        groupId={groupId}
+        onSuccess={() => {
+          setShowInviteModal(false);
+          // Optionally refresh the members list if needed
+          fetchCurrentGroup();
+        }}
+      />
     </div>
   );
 }
