@@ -777,8 +777,16 @@ jobs:
 
       - name: Update Frontend with all URLs
         run: |
+          echo "[DEBUG] Deploying to environment: ${{ needs.setup.outputs.env_name }}"
+          echo "[DEBUG] Service suffix: ${{ steps.config.outputs.suffix }}"
+          echo "[DEBUG] Region: ${{ steps.config.outputs.region }}"
+          echo "[DEBUG] Frontend service: expense-tracker${{ steps.config.outputs.suffix }}"
+          echo "[DEBUG] Auth service: auth-service${{ steps.config.outputs.suffix }}"
+          echo "[DEBUG] API service: api-service${{ steps.config.outputs.suffix }}"
           AUTH_SERVICE_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
           API_SERVICE_URL=$(gcloud run services describe api-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          echo "[DEBUG] AUTH_SERVICE_URL: $AUTH_SERVICE_URL"
+          echo "[DEBUG] API_SERVICE_URL: $API_SERVICE_URL"
           gcloud run deploy expense-tracker${{ steps.config.outputs.suffix }} \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:${{ github.sha }} \
             --region ${{ steps.config.outputs.region }} \
