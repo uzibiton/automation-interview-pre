@@ -41,8 +41,9 @@ function GroupDashboard(_props: GroupDashboardProps) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editFormData, setEditFormData] = useState({ name: '', description: '' });
 
-  // Get current user's role (for simplicity, assuming first member is current user)
-  // In production, this would come from auth context
+  // Get current user's role
+  // TODO: Replace with proper user context from auth when available
+  // For now, assuming first member in the list is the current user
   const currentUserRole = members[0]?.role || GroupRole.VIEWER;
   const currentUserId = members[0]?.userId || '';
 
@@ -114,7 +115,8 @@ function GroupDashboard(_props: GroupDashboardProps) {
     try {
       await deleteGroup(currentGroup.id);
       setShowDeleteDialog(false);
-      // Redirect to home or show empty state
+      // TODO: Use React Router navigation when user context is available
+      // For now, using window.location for full reload to clear all state
       window.location.href = '/';
     } catch (error) {
       console.error('Failed to delete group:', error);
