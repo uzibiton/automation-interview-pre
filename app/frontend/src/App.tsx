@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import AuthCallback from './components/AuthCallback';
+import InvitationAcceptance from './components/InvitationAcceptance';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -74,6 +75,7 @@ function App() {
       <Routes>
         <Route path="/login" element={token ? <Navigate to="/" /> : <Login />} />
         <Route path="/auth/callback" element={<AuthCallback onLogin={handleLogin} />} />
+        <Route path="/invitations/:token" element={<InvitationAcceptance />} />
         <Route
           path="/*"
           element={

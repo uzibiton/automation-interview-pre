@@ -29,6 +29,9 @@ interface InvitationState {
     role: GroupRole,
     message?: string,
   ) => Promise<Invitation>;
+  getInvitationByToken: (token: string) => Promise<Invitation>;
+  acceptInvitation: (token: string) => Promise<{ message: string; groupId: string; role: string }>;
+  declineInvitation: (token: string) => Promise<{ message: string }>;
 
   // Actions - Invite Link Management
   fetchInviteLinks: (groupId: string) => Promise<void>;
@@ -131,6 +134,55 @@ export const useInvitationStore = create<InvitationState>((set) => ({
       return invitation;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to send invitation';
+      set({ error: errorMessage, loading: false });
+      throw error;
+    }
+  },
+
+  // Action: Get invitation details by token
+  getInvitationByToken: async (token: string) => {
+    set({ loading: true, error: null });
+    try {
+      const invitation = await apiRequest<Invitation>(`/invitations/${token}`);
+      set({ loading: false });
+      return invitation;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch invitation';
+      set({ error: errorMessage, loading: false });
+      throw error;
+    }
+  },
+
+  // Action: Accept invitation
+  acceptInvitation: async (token: string) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await apiRequest<{ message: string; groupId: string; role: string }>(
+        `/invitations/${token}/accept`,
+        {
+          method: 'POST',
+        },
+      );
+      set({ loading: false });
+      return response;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to accept invitation';
+      set({ error: errorMessage, loading: false });
+      throw error;
+    }
+  },
+
+  // Action: Decline invitation
+  declineInvitation: async (token: string) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await apiRequest<{ message: string }>(`/invitations/${token}/decline`, {
+        method: 'POST',
+      });
+      set({ loading: false });
+      return response;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to decline invitation';
       set({ error: errorMessage, loading: false });
       throw error;
     }
