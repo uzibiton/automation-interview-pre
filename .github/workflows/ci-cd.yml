@@ -512,6 +512,48 @@ jobs:
       should_run_e2e: ${{ steps.set_env.outputs.should_run_e2e }}
 
     steps:
+      # - name: Determine environment
+      #   id: set_env
+      #   run: |
+      #     if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+      #       # Manual trigger - use input
+      #       ENV="${{ github.event.inputs.environment }}"
+      #       CUSTOM_NAME="${{ github.event.inputs.custom_env_name }}"
+
+      #       if [ "$ENV" = "production" ]; then
+      #         echo "env_name=production" >> $GITHUB_OUTPUT
+      #         echo "env_suffix=" >> $GITHUB_OUTPUT
+      #         echo "should_run_e2e=false" >> $GITHUB_OUTPUT
+      #       elif [ "$ENV" = "staging" ]; then
+      #         echo "env_name=staging" >> $GITHUB_OUTPUT
+      #         echo "env_suffix=-staging" >> $GITHUB_OUTPUT
+      #         echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+      #       else
+      #         # Develop environment or custom temp environment
+      #         if [ -n "$CUSTOM_NAME" ]; then
+      #           # Use custom name for temp environment
+      #           echo "env_name=${CUSTOM_NAME}" >> $GITHUB_OUTPUT
+      #           echo "env_suffix=-${CUSTOM_NAME}" >> $GITHUB_OUTPUT
+      #           echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+      #         else
+      #           echo "env_name=develop" >> $GITHUB_OUTPUT
+      #           echo "env_suffix=-develop" >> $GITHUB_OUTPUT
+      #           echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+      #         fi
+      #       fi
+      #     elif [ "${{ github.event_name }}" = "pull_request" ]; then
+      #       # PR = temporary environment
+      #       PR_NUMBER="${{ github.event.pull_request.number }}"
+      #       echo "env_name=pr-${PR_NUMBER}" >> $GITHUB_OUTPUT
+      #       echo "env_suffix=-pr-${PR_NUMBER}" >> $GITHUB_OUTPUT
+      #       echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+      #     else
+      #       # Push to main = develop
+      #       echo "env_name=develop" >> $GITHUB_OUTPUT
+      #       echo "env_suffix=-develop" >> $GITHUB_OUTPUT
+      #       echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+      #     fi
+
       - name: Determine environment
         id: set_env
         run: |
@@ -519,7 +561,7 @@ jobs:
             # Manual trigger - use input
             ENV="${{ github.event.inputs.environment }}"
             CUSTOM_NAME="${{ github.event.inputs.custom_env_name }}"
-            
+
             if [ "$ENV" = "production" ]; then
               echo "env_name=production" >> $GITHUB_OUTPUT
               echo "env_suffix=" >> $GITHUB_OUTPUT
@@ -528,14 +570,18 @@ jobs:
               echo "env_name=staging" >> $GITHUB_OUTPUT
               echo "env_suffix=-staging" >> $GITHUB_OUTPUT
               echo "should_run_e2e=true" >> $GITHUB_OUTPUT
+            elif [ "$ENV" = "develop" ]; then
+              echo "env_name=develop" >> $GITHUB_OUTPUT
+              echo "env_suffix=-develop" >> $GITHUB_OUTPUT
+              echo "should_run_e2e=true" >> $GITHUB_OUTPUT
             else
-              # Develop environment or custom temp environment
+              # Custom temp environment
               if [ -n "$CUSTOM_NAME" ]; then
-                # Use custom name for temp environment
                 echo "env_name=${CUSTOM_NAME}" >> $GITHUB_OUTPUT
                 echo "env_suffix=-${CUSTOM_NAME}" >> $GITHUB_OUTPUT
                 echo "should_run_e2e=true" >> $GITHUB_OUTPUT
               else
+                # Fallback to develop if no custom name is provided
                 echo "env_name=develop" >> $GITHUB_OUTPUT
                 echo "env_suffix=-develop" >> $GITHUB_OUTPUT
                 echo "should_run_e2e=true" >> $GITHUB_OUTPUT
@@ -636,6 +682,19 @@ jobs:
 
       - name: Configure Docker for GCR
         run: gcloud auth configure-docker
+
+      - name: Select correct .env file for frontend
+        run: |
+          cd app/frontend
+          # Default to development
+          ENV_FILE=".env.development"
+          if [ "${{ needs.setup.outputs.env_name }}" = "production" ]; then
+            ENV_FILE=".env.production"
+          elif [ "${{ needs.setup.outputs.env_name }}" = "staging" ]; then
+            ENV_FILE=".env.staging"
+          fi
+          echo "Using $ENV_FILE for frontend build"
+          cp "$ENV_FILE" .env
 
       - name: Build and push Frontend
         run: |
