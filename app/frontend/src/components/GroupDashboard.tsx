@@ -15,16 +15,6 @@ interface GroupDashboardProps {
 function GroupDashboard({ user }: GroupDashboardProps) {
   const { t: translation } = useTranslation();
 
-  // Early guard: user must be authenticated to view groups
-  if (!user) {
-    return (
-      <div className="error-message" style={{ padding: '40px', textAlign: 'center' }}>
-        <h2>{translation('groups.dashboard.authRequired', 'Authentication Required')}</h2>
-        <p>{translation('groups.dashboard.authRequiredMessage', 'Please log in to view and manage groups.')}</p>
-      </div>
-    );
-  }
-
   // Group store state
   const {
     currentGroup,
@@ -47,19 +37,6 @@ function GroupDashboard({ user }: GroupDashboardProps) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editFormData, setEditFormData] = useState({ name: '', description: '' });
 
-  // Get current user's role from authenticated user
-  const currentUserId = user.id.toString();
-  const currentMember = members.find((m) => m.userId === currentUserId);
-  const currentUserRole = currentMember?.role || GroupRole.VIEWER;
-
-  // Check if user is a member of the current group
-  const isGroupMember = currentGroup && members.length > 0 ? !!currentMember : true; // Allow access if no group or loading
-
-  // Check permissions
-  const canInviteMembers = DEFAULT_PERMISSIONS.invite_members.includes(currentUserRole);
-  const canEditGroup = DEFAULT_PERMISSIONS.edit_group.includes(currentUserRole);
-  const canDeleteGroup = DEFAULT_PERMISSIONS.delete_group.includes(currentUserRole);
-
   // Fetch data on mount
   useEffect(() => {
     fetchCurrentGroup();
@@ -73,6 +50,34 @@ function GroupDashboard({ user }: GroupDashboardProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentGroup?.id]); // Only re-fetch when group ID changes
+
+  // Early guard: user must be authenticated to view groups (after all hooks)
+  if (!user) {
+    return (
+      <div className="error-message" style={{ padding: '40px', textAlign: 'center' }}>
+        <h2>{translation('groups.dashboard.authRequired', 'Authentication Required')}</h2>
+        <p>
+          {translation(
+            'groups.dashboard.authRequiredMessage',
+            'Please log in to view and manage groups.',
+          )}
+        </p>
+      </div>
+    );
+  }
+
+  // Get current user's role from authenticated user
+  const currentUserId = user.id.toString();
+  const currentMember = members.find((m) => m.userId === currentUserId);
+  const currentUserRole = currentMember?.role || GroupRole.VIEWER;
+
+  // Check if user is a member of the current group
+  const isGroupMember = currentGroup && members.length > 0 ? !!currentMember : true; // Allow access if no group or loading
+
+  // Check permissions
+  const canInviteMembers = DEFAULT_PERMISSIONS.invite_members.includes(currentUserRole);
+  const canEditGroup = DEFAULT_PERMISSIONS.edit_group.includes(currentUserRole);
+  const canDeleteGroup = DEFAULT_PERMISSIONS.delete_group.includes(currentUserRole);
 
   // Calculate stats
   const totalMembers = members.length;
@@ -154,7 +159,12 @@ function GroupDashboard({ user }: GroupDashboardProps) {
         </div>
         <div className="error-message" style={{ padding: '40px', textAlign: 'center' }}>
           <h3>{translation('groups.dashboard.notMember', 'Not a Member')}</h3>
-          <p>{translation('groups.dashboard.notMemberMessage', 'You are not a member of this group.')}</p>
+          <p>
+            {translation(
+              'groups.dashboard.notMemberMessage',
+              'You are not a member of this group.',
+            )}
+          </p>
         </div>
       </div>
     );
