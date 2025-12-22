@@ -5,17 +5,16 @@
 import { GroupMember, GroupRole } from '../../types/GroupMember';
 
 export const mockMembers: GroupMember[] = [
-  // Commented out to allow testing group creation with user-1
-  // {
-  //   id: 'member-1',
-  //   groupId: 'group-1',
-  //   userId: 'user-1',
-  //   name: 'John Doe',
-  //   email: 'john.doe@example.com',
-  //   role: GroupRole.OWNER,
-  //   avatar: 'https://i.pravatar.cc/150?u=john',
-  //   joinedAt: '2024-01-15T10:00:00Z',
-  // },
+  {
+    id: 'member-1',
+    groupId: 'group-1',
+    userId: 'user-1',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    role: GroupRole.OWNER,
+    avatar: 'https://i.pravatar.cc/150?u=john',
+    joinedAt: '2024-01-15T10:00:00Z',
+  },
   {
     id: 'member-2',
     groupId: 'group-1',

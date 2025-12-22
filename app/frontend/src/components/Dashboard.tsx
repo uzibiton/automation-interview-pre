@@ -8,6 +8,7 @@ import AnalyticsPage from './AnalyticsPage';
 import ExpensesPage from './ExpensesPage';
 import ChatPage from './ChatPage';
 import MembersTestPage from './MembersTestPage';
+import GroupDashboard from './GroupDashboard';
 import { getApiServiceUrl, getAuthServiceUrl } from '../utils/config';
 
 const API_SERVICE_URL = getApiServiceUrl();
@@ -98,6 +99,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
           element={<ExpensesPage token={token} refreshKey={refreshKey} onUpdate={handleUpdate} />}
         />
         <Route path="/members" element={<MembersTestPage token={token} />} />
+        <Route path="/group" element={<GroupDashboard user={user} />} />
       </Routes>
     </div>
   );
