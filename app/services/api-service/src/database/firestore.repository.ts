@@ -16,6 +16,7 @@ export class FirestoreRepository implements IExpenseRepository {
   private expenses: CollectionReference;
   private categories: CollectionReference;
   private subCategories: CollectionReference;
+  private groups: CollectionReference;
 
   constructor() {
     // Initialize Firestore
@@ -27,6 +28,7 @@ export class FirestoreRepository implements IExpenseRepository {
     this.expenses = this.db.collection('expenses');
     this.categories = this.db.collection('categories');
     this.subCategories = this.db.collection('sub_categories');
+    this.groups = this.db.collection('groups');
   }
 
   async create(userId: number | string, expenseDto: CreateExpenseDto): Promise<Expense> {
@@ -221,5 +223,17 @@ export class FirestoreRepository implements IExpenseRepository {
       id: parseInt(doc.id),
       ...doc.data(),
     }));
+  }
+
+  // Find group by userId
+  async findGroupByUserId(userId: string): Promise<any> {
+    // Assumes groups collection has a 'members' array field with userIds
+    const snapshot = await this.groups.where('members', 'array-contains', userId).get();
+    if (snapshot.empty) {
+      return null;
+    }
+    // Return the first group found
+    const doc = snapshot.docs[0];
+    return { id: doc.id, ...doc.data() };
   }
 }

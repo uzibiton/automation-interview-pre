@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from '@nestjs/axios';
 import { ExpensesModule } from './expenses/expenses.module';
+import { GroupsModule } from './groups/groups.module';
 
 // Database configuration - only for PostgreSQL
 const databaseConfig =
@@ -31,6 +32,7 @@ const databaseConfig =
     ...databaseConfig,
     HttpModule,
     ExpensesModule,
+    GroupsModule,
   ],
 })
 export class AppModule {}
