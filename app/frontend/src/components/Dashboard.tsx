@@ -99,7 +99,7 @@ function Dashboard({ token, onLogout }: DashboardProps) {
           element={<ExpensesPage token={token} refreshKey={refreshKey} onUpdate={handleUpdate} />}
         />
         <Route path="/members" element={<MembersTestPage token={token} />} />
-        <Route path="/group" element={<GroupDashboard />} />
+        <Route path="/group" element={<GroupDashboard token={token} user={user} />} />
       </Routes>
     </div>
   );

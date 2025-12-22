@@ -9,10 +9,11 @@ import GroupCreationDialog from './groups/GroupCreationDialog';
 import ConfirmationDialog from './ConfirmationDialog';
 
 interface GroupDashboardProps {
-  token?: string; // Not used yet, but may be needed for future auth integration
+  token?: string;
+  user?: { id: number; email: string; name: string; avatarUrl?: string } | null;
 }
 
-function GroupDashboard(_props: GroupDashboardProps) {
+function GroupDashboard({ user }: GroupDashboardProps) {
   const { t: translation } = useTranslation();
 
   // Group store state
@@ -28,11 +29,7 @@ function GroupDashboard(_props: GroupDashboardProps) {
   } = useGroupStore();
 
   // Invitation store state
-  const {
-    invitations,
-    loading: invitationsLoading,
-    fetchInvitations,
-  } = useInvitationStore();
+  const { invitations, loading: invitationsLoading, fetchInvitations } = useInvitationStore();
 
   // Local state
   const [showInvitationModal, setShowInvitationModal] = useState(false);
@@ -41,11 +38,10 @@ function GroupDashboard(_props: GroupDashboardProps) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editFormData, setEditFormData] = useState({ name: '', description: '' });
 
-  // Get current user's role
-  // TODO: Replace with proper user context from auth when available
-  // For now, assuming first member in the list is the current user
-  const currentUserRole = members[0]?.role || GroupRole.VIEWER;
-  const currentUserId = members[0]?.userId || '';
+  // Get current user's role from authenticated user
+  const currentUserId = user?.id?.toString() || 'user-1'; // Fallback to user-1 for development
+  const currentMember = members.find((m) => m.userId === currentUserId);
+  const currentUserRole = currentMember?.role || GroupRole.VIEWER;
 
   // Check permissions
   const canInviteMembers = DEFAULT_PERMISSIONS.invite_members.includes(currentUserRole);
@@ -146,9 +142,7 @@ function GroupDashboard(_props: GroupDashboardProps) {
         </div>
         <div style={{ textAlign: 'center', padding: '60px 20px' }}>
           <div style={{ fontSize: '48px', marginBottom: '20px' }}>👥</div>
-          <h3 style={{ marginBottom: '10px' }}>
-            {translation('groups.dashboard.noGroupTitle')}
-          </h3>
+          <h3 style={{ marginBottom: '10px' }}>{translation('groups.dashboard.noGroupTitle')}</h3>
           <p style={{ color: '#666', marginBottom: '30px' }}>
             {translation('groups.dashboard.noGroupDescription')}
           </p>
@@ -238,13 +232,17 @@ function GroupDashboard(_props: GroupDashboardProps) {
 
       {/* Members Section */}
       <div style={{ marginTop: '30px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
           <h3>{translation('groups.members.title')}</h3>
           {canInviteMembers && (
-            <button
-              className="btn btn-primary"
-              onClick={() => setShowInvitationModal(true)}
-            >
+            <button className="btn btn-primary" onClick={() => setShowInvitationModal(true)}>
               {translation('groups.dashboard.inviteMember')}
             </button>
           )}
