@@ -51,6 +51,21 @@ const generateToken = (length: number = 32): string => {
 };
 
 export const invitationHandlers = [
+  // GET /api/invitations/:token - Get invitation details by token
+  http.get('/api/invitations/:token', async ({ params }) => {
+    await randomDelay();
+
+    const { token } = params;
+    const invitation = findInvitationByToken(token as string);
+
+    if (!invitation) {
+      return HttpResponse.json({ error: 'Invitation not found' }, { status: 404 });
+    }
+
+    // Return invitation details
+    return HttpResponse.json(invitation, { status: 200 });
+  }),
+
   // POST /api/invitations - Send email invitation
   http.post('/api/invitations', async ({ request }) => {
     await randomDelay();
