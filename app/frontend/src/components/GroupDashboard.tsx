@@ -9,10 +9,10 @@ import GroupCreationDialog from './groups/GroupCreationDialog';
 import ConfirmationDialog from './ConfirmationDialog';
 
 interface GroupDashboardProps {
-  token: string;
+  token?: string; // Not used yet, but may be needed for future auth integration
 }
 
-function GroupDashboard({ token }: GroupDashboardProps) {
+function GroupDashboard(_props: GroupDashboardProps) {
   const { t: translation } = useTranslation();
 
   // Group store state
@@ -62,7 +62,8 @@ function GroupDashboard({ token }: GroupDashboardProps) {
       fetchMembers(currentGroup.id);
       fetchInvitations(currentGroup.id);
     }
-  }, [currentGroup, fetchMembers, fetchInvitations]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentGroup?.id]); // Only re-fetch when group ID changes
 
   // Calculate stats
   const totalMembers = members.length;
@@ -75,12 +76,12 @@ function GroupDashboard({ token }: GroupDashboardProps) {
   // Handlers
   const handleInvitationSuccess = () => {
     setShowInvitationModal(false);
-    if (currentGroup) {
+    if (currentGroup?.id) {
       fetchInvitations(currentGroup.id);
     }
   };
 
-  const handleGroupCreated = (groupId: string) => {
+  const handleGroupCreated = (_groupId: string) => {
     setShowCreateGroupDialog(false);
     fetchCurrentGroup();
   };
