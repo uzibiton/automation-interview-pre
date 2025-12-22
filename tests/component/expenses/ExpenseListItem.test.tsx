@@ -83,11 +83,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -102,11 +98,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -119,11 +111,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -137,11 +125,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -154,11 +138,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -191,11 +171,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -213,11 +189,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -233,11 +205,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -253,11 +221,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -272,11 +236,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -367,11 +327,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );
@@ -388,11 +344,7 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem
-              expense={mockExpense}
-              categories={mockCategories}
-              {...mockHandlers}
-            />
+            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
           </tbody>
         </table>,
       );

@@ -1,6 +1,7 @@
 # GroupDashboard Page Implementation
 
 ## Overview
+
 This document describes the implementation of the Group Dashboard Page (TASK-002-022) as part of the Group Management feature.
 
 ## Implementation Summary
@@ -28,13 +29,16 @@ This document describes the implementation of the Group Dashboard Page (TASK-002
 ### GroupDashboard Component (`/group` route)
 
 #### 1. Header Section
+
 - Displays group name and description
 - **Edit Group** button (Owner/Admin only)
 - **Delete Group** button (Owner only)
 - Permission-based visibility using `DEFAULT_PERMISSIONS`
 
 #### 2. Stats Cards Section
+
 Three informative stat cards:
+
 - **Total Members**: Shows count of all group members
 - **Total Expenses**: Placeholder for total expenses (shows $0.00)
 - **Member Roles**: Breakdown of members by role with emoji icons:
@@ -44,6 +48,7 @@ Three informative stat cards:
   - 👁️ Viewer
 
 #### 3. Members Section
+
 - Heading: "Members"
 - **Invite Member** button (Owner/Admin only)
 - Integrates `<MembersListTable />` component
@@ -52,6 +57,7 @@ Three informative stat cards:
   - All filtered by current user permissions
 
 #### 4. Pending Invitations Section
+
 - Shows only when there are pending invitations
 - Lists all pending invitations with:
   - Email address
@@ -61,6 +67,7 @@ Three informative stat cards:
 - Styled with cards for each invitation
 
 #### 5. Modals/Dialogs
+
 - **InvitationModal**: For inviting new members (email or link)
 - **Edit Group Dialog**: Uses ConfirmationDialog with custom form fields
   - Group name input
@@ -68,18 +75,23 @@ Three informative stat cards:
 - **Delete Group Confirmation**: Warns about data loss
 
 #### 6. State Management
+
 Uses Zustand stores:
+
 - `useGroupStore`: For group, members data and actions
 - `useInvitationStore`: For invitations data and actions
 
 #### 7. Empty State
+
 When no group exists:
+
 - Shows friendly icon (👥)
 - Message: "Create a group to collaborate"
 - Description: "Groups allow you to share expenses and manage them together..."
 - **Create Group** button
 
 #### 8. Loading & Error States
+
 - Loading spinner while fetching data
 - Error message display with clear feedback
 - Graceful handling of missing data
@@ -99,6 +111,7 @@ Buttons are conditionally rendered based on these permissions.
 ## Integration with Existing Components
 
 ### Uses Dependencies:
+
 1. **GroupCreationDialog** (TASK-002-018)
 2. **MembersListTable** (TASK-002-019)
 3. **InvitationModal** (TASK-002-020)
@@ -109,6 +122,7 @@ Buttons are conditionally rendered based on these permissions.
 ## Mock Data Integration
 
 The component works with Mock Service Worker (MSW) API:
+
 - GET `/api/groups/current` - Fetch current user's group
 - GET `/api/groups/:id/members` - Fetch group members
 - GET `/api/groups/:id/invitations` - Fetch invitations
@@ -118,6 +132,7 @@ The component works with Mock Service Worker (MSW) API:
 ## Styling
 
 Uses existing CSS classes from `index.css`:
+
 - `.container` - Main page container
 - `.page-header` - Page header with title
 - `.stats` - Stats cards grid
@@ -125,6 +140,7 @@ Uses existing CSS classes from `index.css`:
 - `.btn`, `.btn-primary`, `.btn-secondary`, `.btn-danger` - Button styles
 
 Custom inline styles for:
+
 - Pending invitations cards
 - Role breakdown display
 - Dialog form inputs
@@ -132,6 +148,7 @@ Custom inline styles for:
 ## Responsive Design
 
 The component uses existing responsive CSS:
+
 - Stats cards adjust to screen size (grid layout)
 - Mobile-friendly button placement
 - Flexible layouts for invitations section
@@ -145,6 +162,7 @@ The component uses existing responsive CSS:
 ## Testing Status
 
 ⚠️ **Manual Testing**: Not completed due to auth requirements
+
 - The application requires backend authentication
 - Mock API (MSW) is properly configured and working
 - Component is ready for testing once auth services are available
@@ -152,6 +170,7 @@ The component uses existing responsive CSS:
 ## Translations
 
 All user-facing strings use i18n:
+
 - `groups.dashboard.title`
 - `groups.dashboard.totalMembers`
 - `groups.dashboard.totalExpenses`
@@ -173,6 +192,7 @@ All user-facing strings use i18n:
 ## Next Steps for Full Testing
 
 To fully test this component:
+
 1. Start backend auth service
 2. Start backend API service
 3. Login with valid credentials

@@ -53,7 +53,6 @@ function ExpenseDetailsDialog({ token, isOpen, onClose, expense }: ExpenseDetail
       // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchCategories();
       if (expense.categoryId) {
-         
         fetchSubCategories(expense.categoryId);
       }
     }
