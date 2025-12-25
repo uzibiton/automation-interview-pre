@@ -1,5 +1,29 @@
 ﻿# Documentation Hub
 
+## 🤖 AI Stack (Project)
+
+### Core
+
+- **GitHub Copilot (VS Code)** – Daily development and implementation according to spec
+- **Codex (GitHub PR)** – Code review, address comments, and code polishing
+- **Agent OS (Specs only)** – Specifications, tasks, and standards (not a running agent)
+
+### Testing
+
+- **Unit / Integration Tests** – Source of truth (Jest / Vitest / Pytest, etc.)
+- **Playwright (+ MCP)** (only if significant UI) – E2E and debugging flaky tests
+
+### Quality (Optional but recommended)
+
+- **Lint / Formatter** – ESLint / Prettier / Ruff
+- **Basic CI** – Run tests and lint on PR
+
+### Principles
+
+- **No extra AI agents**
+- **Specs > Code**
+- **Tests = contract for AI** (in bolts to README and to content table)
+
 Welcome to the documentation for the Automation Interview Pre project - an expense tracking application with comprehensive testing infrastructure.
 
 ## � Quick Start for AI Workflow

@@ -1,5 +1,9 @@
 ﻿# Documentation Table of Contents
 
+## 🤖 AI Stack (Project)
+
+- [AI Stack Overview](README.md#ai-stack-project)
+
 Comprehensive guide to all project documentation organized by category and use case.
 
 ## � Document Traceability System
