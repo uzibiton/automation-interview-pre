@@ -1,24 +1,26 @@
-// Load environment variables FIRST before any imports
-require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
+// Load environment variables (for local development only - Cloud Run sets env vars directly)
+// Only load dotenv if not in production (Cloud Run sets NODE_ENV=production)
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
+}
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as winston from 'winston';
-import * as path from 'path';
 
 // Configure Winston logger
-const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.errors({ stack: true }),
-    winston.format.json(),
-  ),
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
-    }),
+// Note: Cloud Run has a read-only filesystem, so only use Console transport in production
+const transports: winston.transport[] = [
+  new winston.transports.Console({
+    format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
+  }),
+];
+
+// Only add file transports for local development
+if (process.env.NODE_ENV !== 'production') {
+  const path = require('path');
+  transports.push(
     new winston.transports.File({
       filename: path.join(__dirname, '../logs/auth-error.log'),
       level: 'error',
@@ -26,7 +28,17 @@ const logger = winston.createLogger({
     new winston.transports.File({
       filename: path.join(__dirname, '../logs/auth-combined.log'),
     }),
-  ],
+  );
+}
+
+const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.errors({ stack: true }),
+    winston.format.json(),
+  ),
+  transports,
 });
 
 async function bootstrap() {

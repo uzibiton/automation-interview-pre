@@ -10,6 +10,6 @@ COPY . .
 
 RUN node node_modules/@nestjs/cli/bin/nest.js build
 
-EXPOSE 3001
+EXPOSE 8080
 
 CMD ["node", "dist/main"]

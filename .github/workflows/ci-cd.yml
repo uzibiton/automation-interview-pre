@@ -763,6 +763,7 @@ jobs:
             --region ${{ steps.config.outputs.region }} \
             --platform managed \
             --allow-unauthenticated \
+            --port 8080 \
             --set-env-vars "NODE_ENV=production,DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},JWT_SECRET=${{ secrets.JWT_SECRET }},GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }},FRONTEND_URL=${{ steps.frontend_url.outputs.url }},GOOGLE_CALLBACK_URL=$GOOGLE_CALLBACK_URL"
 
       - name: Deploy API Service
@@ -773,6 +774,7 @@ jobs:
             --region ${{ steps.config.outputs.region }} \
             --platform managed \
             --allow-unauthenticated \
+            --port 8080 \
             --set-env-vars "NODE_ENV=production,DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},AUTH_SERVICE_URL=$AUTH_SERVICE_URL"
 
       - name: Update Frontend with all URLs
