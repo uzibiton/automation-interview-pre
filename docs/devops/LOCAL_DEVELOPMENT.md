@@ -26,13 +26,13 @@ cd automation-interview-pre
 
 After starting, services are available at:
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| Frontend | http://localhost:3000 | React application |
+| Service      | URL                   | Description        |
+| ------------ | --------------------- | ------------------ |
+| Frontend     | http://localhost:3000 | React application  |
 | Auth Service | http://localhost:3001 | Authentication API |
-| API Service | http://localhost:3002 | Main API |
-| Nginx Proxy | http://localhost:80 | Unified gateway |
-| PostgreSQL | localhost:5432 | Database |
+| API Service  | http://localhost:3002 | Main API           |
+| Nginx Proxy  | http://localhost:80   | Unified gateway    |
+| PostgreSQL   | localhost:5432        | Database           |
 
 ## Development Script
 

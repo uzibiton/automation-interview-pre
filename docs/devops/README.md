@@ -33,20 +33,24 @@ This folder contains documentation for development, deployment, and operations.
 ## Documentation Index
 
 ### Getting Started
+
 - [Local Development](LOCAL_DEVELOPMENT.md) - Set up and run locally
 - [Environment Configuration](ENVIRONMENT_CONFIGURATION.md) - Environment files and variables
 
 ### Deployment
+
 - [Cloud Run Deployment](CLOUD_RUN_DEPLOYMENT.md) - Deploy to Cloud Run
 - [Deployment Summary](DEPLOYMENT_SUMMARY.md) - Quick deployment reference
 - [Cloud Run Management](CLOUD_RUN_MANAGEMENT.md) - Manage Cloud Run services
 
 ### CI/CD
+
 - [CI/CD Guide](CI_CD_GUIDE.md) - GitHub Actions pipeline overview
 - [GitHub Actions Setup](GITHUB_ACTIONS_SETUP.md) - Configure GitHub Actions
 - [Branching Strategy](BRANCHING_STRATEGY.md) - Git branching model
 
 ### Security
+
 - [Code Scanning Setup](CODE_SCANNING_SETUP.md) - Security scanning configuration
 
 ## Architecture
@@ -86,13 +90,13 @@ This folder contains documentation for development, deployment, and operations.
 
 ## Environments
 
-| Environment | Trigger | Service Suffix | Database |
-|-------------|---------|----------------|----------|
-| local | Manual | N/A | PostgreSQL |
-| develop | Push to main | -develop | Firestore |
-| staging | Manual workflow | -staging | Firestore |
-| production | Manual workflow | (none) | Firestore |
-| pr-{n} | Pull Request | -pr-{n} | Firestore |
+| Environment | Trigger         | Service Suffix | Database   |
+| ----------- | --------------- | -------------- | ---------- |
+| local       | Manual          | N/A            | PostgreSQL |
+| develop     | Push to main    | -develop       | Firestore  |
+| staging     | Manual workflow | -staging       | Firestore  |
+| production  | Manual workflow | (none)         | Firestore  |
+| pr-{n}      | Pull Request    | -pr-{n}        | Firestore  |
 
 ## Key Files
 
@@ -143,6 +147,7 @@ docker exec -it test-postgres psql -U testuser -d testdb
 ## Troubleshooting
 
 See individual documentation files for detailed troubleshooting:
+
 - [Local Development](LOCAL_DEVELOPMENT.md#troubleshooting)
 - [Cloud Run Deployment](CLOUD_RUN_DEPLOYMENT.md#troubleshooting)
 - [Environment Configuration](ENVIRONMENT_CONFIGURATION.md#troubleshooting)

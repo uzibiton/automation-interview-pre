@@ -34,12 +34,12 @@ The `scripts/deploy.sh` script handles building and deploying to Cloud Run.
 
 ### Environments
 
-| Environment | Suffix | Trigger |
-|-------------|--------|---------|
-| develop | -develop | Push to main, manual |
-| staging | -staging | Manual workflow |
-| production | (none) | Manual workflow |
-| pr-{number} | -pr-{number} | Pull requests |
+| Environment | Suffix       | Trigger              |
+| ----------- | ------------ | -------------------- |
+| develop     | -develop     | Push to main, manual |
+| staging     | -staging     | Manual workflow      |
+| production  | (none)       | Manual workflow      |
+| pr-{number} | -pr-{number} | Pull requests        |
 
 ### Options
 
@@ -63,6 +63,7 @@ The `scripts/deploy.sh` script handles building and deploying to Cloud Run.
 **CRITICAL**: All services MUST listen on port 8080 for Cloud Run.
 
 The deployment script automatically sets:
+
 - `--port 8080` flag
 - `PORT=8080` environment variable
 
@@ -71,6 +72,7 @@ The deployment script automatically sets:
 Each service receives environment-specific variables:
 
 #### Auth Service
+
 ```
 PORT=8080
 NODE_ENV=production
@@ -84,6 +86,7 @@ GOOGLE_CALLBACK_URL=<callback-url>
 ```
 
 #### API Service
+
 ```
 PORT=8080
 NODE_ENV=production
@@ -93,6 +96,7 @@ AUTH_SERVICE_URL=<auth-service-url>
 ```
 
 #### Frontend
+
 ```
 VITE_AUTH_SERVICE_URL=<auth-url>
 VITE_API_SERVICE_URL=<api-url>
@@ -105,9 +109,9 @@ The GitHub Actions workflow handles deployments automatically:
 
 ### Automatic Deployments
 
-| Trigger | Action |
-|---------|--------|
-| Push to main | Deploy to develop |
+| Trigger      | Action                |
+| ------------ | --------------------- |
+| Push to main | Deploy to develop     |
 | Pull Request | Deploy to pr-{number} |
 
 ### Manual Deployments
@@ -121,13 +125,13 @@ The GitHub Actions workflow handles deployments automatically:
 
 Set these in GitHub repository settings:
 
-| Secret | Description |
-|--------|-------------|
-| `GCP_PROJECT_ID` | Google Cloud project ID |
-| `GCP_SA_KEY` | Service account key JSON |
-| `JWT_SECRET` | JWT signing secret |
-| `GOOGLE_CLIENT_ID` | OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | OAuth client secret |
+| Secret                 | Description              |
+| ---------------------- | ------------------------ |
+| `GCP_PROJECT_ID`       | Google Cloud project ID  |
+| `GCP_SA_KEY`           | Service account key JSON |
+| `JWT_SECRET`           | JWT signing secret       |
+| `GOOGLE_CLIENT_ID`     | OAuth client ID          |
+| `GOOGLE_CLIENT_SECRET` | OAuth client secret      |
 
 ## Deployment Order
 
@@ -182,6 +186,7 @@ gcloud run services describe api-service-develop \
 **Cause**: Application not listening on PORT=8080.
 
 **Solution**:
+
 1. Check Dockerfile: `EXPOSE 8080`
 2. Check deployment: `--port 8080 --set-env-vars "PORT=8080,..."`
 3. Check application code uses `process.env.PORT`
@@ -193,6 +198,7 @@ gcloud run services describe api-service-develop \
 **Cause**: Application crashing after startup.
 
 **Solution**:
+
 1. Check logs: `gcloud run logs read api-service-develop --region us-central1`
 2. Verify environment variables are set correctly
 3. Check for missing dependencies
@@ -204,6 +210,7 @@ gcloud run services describe api-service-develop \
 **Cause**: Callback URL not configured in Google Console.
 
 **Solution**:
+
 1. Get callback URL from deployment output
 2. Add to Google Cloud Console: APIs & Services > Credentials
 3. Redeploy auth service if URL changed
@@ -215,9 +222,10 @@ gcloud run services describe api-service-develop \
 **Cause**: Frontend deployed with wrong backend URLs.
 
 **Solution**:
+
 1. Deploy backend services first
 2. Redeploy frontend with updated URLs
-3. Verify VITE_* variables are set correctly
+3. Verify VITE\_\* variables are set correctly
 
 ## Rollback
 

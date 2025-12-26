@@ -6,24 +6,24 @@ Comprehensive guide to all project documentation organized by category and use c
 
 ## Quick Links (For Recruiters)
 
-| Start Here | Description |
-|------------|-------------|
-| [Portfolio README](../README.md) | Project overview and key achievements |
-| [About Me](../ABOUTME.md) | Author background and expertise |
-| [Test Strategy](qa/TEST_STRATEGY.md) | Testing approach and philosophy |
-| [CI/CD Pipeline](devops/CI_CD_GUIDE.md) | Automation and deployment |
-| [Demo Script](demo/SDET_DEMO_SCRIPT.md) | 15-minute interview walkthrough |
+| Start Here                              | Description                           |
+| --------------------------------------- | ------------------------------------- |
+| [Portfolio README](../README.md)        | Project overview and key achievements |
+| [About Me](../ABOUTME.md)               | Author background and expertise       |
+| [Test Strategy](qa/TEST_STRATEGY.md)    | Testing approach and philosophy       |
+| [CI/CD Pipeline](devops/CI_CD_GUIDE.md) | Automation and deployment             |
+| [Demo Script](demo/SDET_DEMO_SCRIPT.md) | 15-minute interview walkthrough       |
 
 ---
 
 ## New Documentation
 
-| Document | Description |
-|----------|-------------|
-| [Getting Started](GETTING_STARTED.md) | Quick setup guide for contributors |
-| [Technical Overview](TECHNICAL_OVERVIEW.md) | Deep-dive technical documentation |
-| [Notes](NOTES.md) | Architectural decisions and lessons learned |
-| [TODO / Roadmap](TODO.md) | Future improvements and ideas |
+| Document                                    | Description                                 |
+| ------------------------------------------- | ------------------------------------------- |
+| [Getting Started](GETTING_STARTED.md)       | Quick setup guide for contributors          |
+| [Technical Overview](TECHNICAL_OVERVIEW.md) | Deep-dive technical documentation           |
+| [Notes](NOTES.md)                           | Architectural decisions and lessons learned |
+| [TODO / Roadmap](TODO.md)                   | Future improvements and ideas               |
 
 ---
 
@@ -103,19 +103,19 @@ Comprehensive guide to all project documentation organized by category and use c
 
 ### 🚀 Development & Workflows
 
-| Document | Description | Related Docs |
-| -------- | ----------- | ------------ |
+| Document                                                             | Description                                                        | Related Docs                                                                                                           |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
 | **[TASKS-002: Group Management](dev/TASKS-002-group-management.md)** | **Implementation tasks for group management (26 tasks, 4 phases)** | **-> [REQ-002](product/requirements/REQ-002-group-management.md), [HLD-002](dev/designs/HLD-002-group-management.md)** |
-| **[Task & Bug Management](qa/TASK_BUG_MANAGEMENT.md)** | **Issue tracking, workflows, and best practices** | **-> [Issue Templates](../.github/ISSUE_TEMPLATE/)** |
-| **[Maintenance Schedule](dev/MAINTENANCE.md)** | **Recurring maintenance tasks and tracking** | **-> Weekly, Monthly, Quarterly checklists** |
-| **[Working with AI Agents](dev/WORKING_WITH_AGENTS.md)** | **Best practices for AI-assisted development** | **-> [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)** |
-| **[Database Tools](../tools/README.md)** | **Test data seeding and database management** | **-> [Run Locally](dev/RUN_LOCALLY.md)** |
-| [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md) | Database category management implementation | -> [Database Schema](../app/database/README.md) |
-| [Database Quick Fix](dev/QUICK_FIX.md) | Quick fixes for database issues | -> [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md) |
-| [PR Workflow Guide](qa/PR_WORKFLOW_GUIDE.md) | Complete PR process from task to merge | -> [Testing Strategy](qa/TESTING_STRATEGY.md) |
-| [Development Insights](dev/DEVELOPMENT_INSIGHTS.md) | Lessons learned and best practices | -> [PR Workflow](qa/PR_WORKFLOW_GUIDE.md) |
-| [GitHub Actions Setup](devops/GITHUB_ACTIONS_SETUP.md) | CI/CD configuration details | -> [CI/CD Guide](devops/CI_CD_GUIDE.md) |
-| [Cloud Run Deployment](devops/CLOUD_RUN_DEPLOYMENT.md) | Deploy to staging and production | -> [Cloud Run Management](devops/CLOUD_RUN_MANAGEMENT.md) |
+| **[Task & Bug Management](qa/TASK_BUG_MANAGEMENT.md)**               | **Issue tracking, workflows, and best practices**                  | **-> [Issue Templates](../.github/ISSUE_TEMPLATE/)**                                                                   |
+| **[Maintenance Schedule](dev/MAINTENANCE.md)**                       | **Recurring maintenance tasks and tracking**                       | **-> Weekly, Monthly, Quarterly checklists**                                                                           |
+| **[Working with AI Agents](dev/WORKING_WITH_AGENTS.md)**             | **Best practices for AI-assisted development**                     | **-> [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)**                                                                          |
+| **[Database Tools](../tools/README.md)**                             | **Test data seeding and database management**                      | **-> [Run Locally](dev/RUN_LOCALLY.md)**                                                                               |
+| [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md)            | Database category management implementation                        | -> [Database Schema](../app/database/README.md)                                                                        |
+| [Database Quick Fix](dev/QUICK_FIX.md)                               | Quick fixes for database issues                                    | -> [Category Implementation](dev/CATEGORY_IMPLEMENTATION.md)                                                           |
+| [PR Workflow Guide](qa/PR_WORKFLOW_GUIDE.md)                         | Complete PR process from task to merge                             | -> [Testing Strategy](qa/TESTING_STRATEGY.md)                                                                          |
+| [Development Insights](dev/DEVELOPMENT_INSIGHTS.md)                  | Lessons learned and best practices                                 | -> [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)                                                                              |
+| [GitHub Actions Setup](devops/GITHUB_ACTIONS_SETUP.md)               | CI/CD configuration details                                        | -> [CI/CD Guide](devops/CI_CD_GUIDE.md)                                                                                |
+| [Cloud Run Deployment](devops/CLOUD_RUN_DEPLOYMENT.md)               | Deploy to staging and production                                   | -> [Cloud Run Management](devops/CLOUD_RUN_MANAGEMENT.md)                                                              |
 
 ### 📊 Demo & Presentation
 

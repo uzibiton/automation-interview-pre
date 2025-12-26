@@ -67,15 +67,15 @@ I specialize in building **robust, scalable testing infrastructure** that catche
 
 This repository demonstrates my capabilities in:
 
-| Area                     | Implementation                                           |
-| ------------------------ | -------------------------------------------------------- |
-| **Architecture**         | Multi-layered test strategy (Unit -> Integration -> E2E) |
-| **CI/CD**                | Automated testing pipeline with GitHub Actions           |
-| **DevOps**               | Docker containerization & cloud deployment               |
-| **Multi-Environment**    | Tests running across local, Docker, staging, production  |
-| **Documentation**        | Comprehensive guides, strategies, and workflows          |
-| **Strategy**             | Issue lifecycle management and QA planning               |
-| **Modern Practices**     | AI-assisted development with clear requirements          |
+| Area                  | Implementation                                           |
+| --------------------- | -------------------------------------------------------- |
+| **Architecture**      | Multi-layered test strategy (Unit -> Integration -> E2E) |
+| **CI/CD**             | Automated testing pipeline with GitHub Actions           |
+| **DevOps**            | Docker containerization & cloud deployment               |
+| **Multi-Environment** | Tests running across local, Docker, staging, production  |
+| **Documentation**     | Comprehensive guides, strategies, and workflows          |
+| **Strategy**          | Issue lifecycle management and QA planning               |
+| **Modern Practices**  | AI-assisted development with clear requirements          |
 
 ## Notable Features
 

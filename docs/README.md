@@ -8,13 +8,13 @@ Welcome to the documentation for the Expense Tracker portfolio project - an expe
 
 ## New in This Restructure
 
-| Document | Description |
-|----------|-------------|
-| [GETTING_STARTED.md](GETTING_STARTED.md) | Quick setup guide for contributors |
-| [TECHNICAL_OVERVIEW.md](TECHNICAL_OVERVIEW.md) | Deep-dive technical documentation |
-| [NOTES.md](NOTES.md) | Architectural decisions and lessons learned |
-| [TODO.md](TODO.md) | Roadmap and future improvements |
-| [About Me](../ABOUTME.md) | Author profile (now at root) |
+| Document                                       | Description                                 |
+| ---------------------------------------------- | ------------------------------------------- |
+| [GETTING_STARTED.md](GETTING_STARTED.md)       | Quick setup guide for contributors          |
+| [TECHNICAL_OVERVIEW.md](TECHNICAL_OVERVIEW.md) | Deep-dive technical documentation           |
+| [NOTES.md](NOTES.md)                           | Architectural decisions and lessons learned |
+| [TODO.md](TODO.md)                             | Roadmap and future improvements             |
+| [About Me](../ABOUTME.md)                      | Author profile (now at root)                |
 
 ---
 

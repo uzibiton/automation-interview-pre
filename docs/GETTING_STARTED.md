@@ -51,12 +51,12 @@ npm run test               # All tests
 
 ## Key Files
 
-| What | Where |
-|------|-------|
+| What                | Where                                        |
+| ------------------- | -------------------------------------------- |
 | Documentation index | [TABLE_OF_CONTENTS.md](TABLE_OF_CONTENTS.md) |
-| Testing strategy | [TEST_STRATEGY.md](qa/TEST_STRATEGY.md) |
-| CI/CD pipeline | [CI_CD_GUIDE.md](devops/CI_CD_GUIDE.md) |
-| Roadmap | [TODO.md](TODO.md) |
+| Testing strategy    | [TEST_STRATEGY.md](qa/TEST_STRATEGY.md)      |
+| CI/CD pipeline      | [CI_CD_GUIDE.md](devops/CI_CD_GUIDE.md)      |
+| Roadmap             | [TODO.md](TODO.md)                           |
 
 ---
 

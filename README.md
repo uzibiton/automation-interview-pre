@@ -13,14 +13,14 @@
 
 This isn't just a collection of test cases - it's a complete **test automation infrastructure** designed with enterprise-grade practices:
 
-| Capability | Implementation |
-|------------|----------------|
-| **Test Architecture** | Multi-layered strategy (Unit -> Integration -> Contract -> E2E) |
-| **CI/CD Pipeline** | GitHub Actions with automated testing gates |
-| **Multi-Environment Testing** | Same tests run on local, Docker, staging, and production |
-| **Cloud Deployment** | Google Cloud Run with auto-scaling and PR environments |
-| **Documentation System** | Full traceability: Requirements -> Design -> Test Plans -> Implementation |
-| **Non-Functional Testing** | Performance (k6), Security (OWASP ZAP), Accessibility (WCAG) |
+| Capability                    | Implementation                                                            |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| **Test Architecture**         | Multi-layered strategy (Unit -> Integration -> Contract -> E2E)           |
+| **CI/CD Pipeline**            | GitHub Actions with automated testing gates                               |
+| **Multi-Environment Testing** | Same tests run on local, Docker, staging, and production                  |
+| **Cloud Deployment**          | Google Cloud Run with auto-scaling and PR environments                    |
+| **Documentation System**      | Full traceability: Requirements -> Design -> Test Plans -> Implementation |
+| **Non-Functional Testing**    | Performance (k6), Security (OWASP ZAP), Accessibility (WCAG)              |
 
 ---
 
@@ -40,12 +40,12 @@ This isn't just a collection of test cases - it's a complete **test automation i
 
 [![Watch Test Execution](https://github.com/uzibiton/automation-interview-pre/blob/main/docs/demo/screenshots/Screenshot.png)](https://youtu.be/zOg7DhXGRH4)
 
-| Document | Status |
-|----------|--------|
-| [REQ-001: Requirements](docs/product/requirements/REQ-001-expense-sorting.md) | 7 FRs, 5 NFRs |
-| [HLD-001: Design](docs/dev/designs/HLD-001-expense-sorting.md) | Architecture & algorithms |
-| [TEST-001: Test Plan](docs/qa/test-plans/TEST-001-expense-sorting.md) | 12 test cases |
-| [E2E Tests](tests/e2e/expenses/sort-expenses.spec.ts) | 8/8 passing |
+| Document                                                                      | Status                    |
+| ----------------------------------------------------------------------------- | ------------------------- |
+| [REQ-001: Requirements](docs/product/requirements/REQ-001-expense-sorting.md) | 7 FRs, 5 NFRs             |
+| [HLD-001: Design](docs/dev/designs/HLD-001-expense-sorting.md)                | Architecture & algorithms |
+| [TEST-001: Test Plan](docs/qa/test-plans/TEST-001-expense-sorting.md)         | 12 test cases             |
+| [E2E Tests](tests/e2e/expenses/sort-expenses.spec.ts)                         | 8/8 passing               |
 
 **Traceability Flow**: `Requirements -> Design -> Test Plan -> Implementation -> E2E Tests`
 
@@ -53,12 +53,12 @@ This isn't just a collection of test cases - it's a complete **test automation i
 
 ## Live Environments
 
-| Environment | URL | Trigger |
-|-------------|-----|---------|
-| **Develop** | [expense-tracker-develop](https://expense-tracker-develop-buuath6a3q-uc.a.run.app) | Auto on push to main |
-| **Staging** | [expense-tracker-staging](https://expense-tracker-staging-buuath6a3q-uc.a.run.app) | Manual |
-| **Production** | [expense-tracker](https://expense-tracker-buuath6a3q-uc.a.run.app) | Manual |
-| **PR Environments** | `pr-{number}` | Auto-created, auto-cleanup |
+| Environment         | URL                                                                                | Trigger                    |
+| ------------------- | ---------------------------------------------------------------------------------- | -------------------------- |
+| **Develop**         | [expense-tracker-develop](https://expense-tracker-develop-buuath6a3q-uc.a.run.app) | Auto on push to main       |
+| **Staging**         | [expense-tracker-staging](https://expense-tracker-staging-buuath6a3q-uc.a.run.app) | Manual                     |
+| **Production**      | [expense-tracker](https://expense-tracker-buuath6a3q-uc.a.run.app)                 | Manual                     |
+| **PR Environments** | `pr-{number}`                                                                      | Auto-created, auto-cleanup |
 
 ---
 
@@ -69,6 +69,7 @@ This isn't just a collection of test cases - it's a complete **test automation i
 <td valign="top" width="50%">
 
 **Application**
+
 - React + TypeScript + Vite
 - NestJS (Auth & API services)
 - Firestore / PostgreSQL
@@ -78,6 +79,7 @@ This isn't just a collection of test cases - it's a complete **test automation i
 <td valign="top" width="50%">
 
 **Testing & Infrastructure**
+
 - Playwright (E2E, multi-browser)
 - Jest (Unit, Component)
 - Pact (Contract testing)
@@ -93,15 +95,15 @@ This isn't just a collection of test cases - it's a complete **test automation i
 
 ## Quick Navigation
 
-| For... | Start Here |
-|--------|------------|
-| **About Me** | [ABOUTME.md](ABOUTME.md) |
-| **Full Documentation** | [Table of Contents](docs/TABLE_OF_CONTENTS.md) |
-| **Test Strategy** | [TEST_STRATEGY.md](docs/qa/TEST_STRATEGY.md) |
-| **CI/CD Pipeline** | [CI_CD_GUIDE.md](docs/devops/CI_CD_GUIDE.md) |
-| **Demo Script** | [SDET_DEMO_SCRIPT.md](docs/demo/SDET_DEMO_SCRIPT.md) |
-| **Getting Started** | [GETTING_STARTED.md](docs/GETTING_STARTED.md) |
-| **Technical Details** | [TECHNICAL_OVERVIEW.md](docs/TECHNICAL_OVERVIEW.md) |
+| For...                 | Start Here                                           |
+| ---------------------- | ---------------------------------------------------- |
+| **About Me**           | [ABOUTME.md](ABOUTME.md)                             |
+| **Full Documentation** | [Table of Contents](docs/TABLE_OF_CONTENTS.md)       |
+| **Test Strategy**      | [TEST_STRATEGY.md](docs/qa/TEST_STRATEGY.md)         |
+| **CI/CD Pipeline**     | [CI_CD_GUIDE.md](docs/devops/CI_CD_GUIDE.md)         |
+| **Demo Script**        | [SDET_DEMO_SCRIPT.md](docs/demo/SDET_DEMO_SCRIPT.md) |
+| **Getting Started**    | [GETTING_STARTED.md](docs/GETTING_STARTED.md)        |
+| **Technical Details**  | [TECHNICAL_OVERVIEW.md](docs/TECHNICAL_OVERVIEW.md)  |
 
 ---
 

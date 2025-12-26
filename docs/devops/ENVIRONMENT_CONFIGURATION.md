@@ -5,6 +5,7 @@ This document describes the environment configuration for local development and 
 ## Overview
 
 The project supports four environments:
+
 - **local** - Local development with Docker Compose
 - **develop** - Development Cloud Run environment (auto-deployed from main)
 - **staging** - Pre-production Cloud Run environment
@@ -38,23 +39,23 @@ project-root/
 
 ### Local Development (Docker Compose)
 
-| Service | Internal Port | External Port |
-|---------|--------------|---------------|
-| PostgreSQL | 5432 | 5432 |
-| Auth Service | 3001 | 3001 |
-| API Service | 3002 | 3002 |
-| Frontend (Vite) | 3000 | 3000 |
-| Nginx Proxy | 8080 | 80 |
+| Service         | Internal Port | External Port |
+| --------------- | ------------- | ------------- |
+| PostgreSQL      | 5432          | 5432          |
+| Auth Service    | 3001          | 3001          |
+| API Service     | 3002          | 3002          |
+| Frontend (Vite) | 3000          | 3000          |
+| Nginx Proxy     | 8080          | 80            |
 
 ### Cloud Run
 
 All services MUST listen on port 8080 for Cloud Run compatibility:
 
-| Service | Port | Notes |
-|---------|------|-------|
+| Service      | Port | Notes                |
+| ------------ | ---- | -------------------- |
 | Auth Service | 8080 | Set via PORT env var |
-| API Service | 8080 | Set via PORT env var |
-| Frontend | 8080 | Nginx serves on 8080 |
+| API Service  | 8080 | Set via PORT env var |
+| Frontend     | 8080 | Nginx serves on 8080 |
 
 **CRITICAL**: The `PORT=8080` environment variable MUST be set for all Cloud Run deployments.
 
@@ -62,25 +63,28 @@ All services MUST listen on port 8080 for Cloud Run compatibility:
 
 ### Shared Variables
 
-| Variable | Local | Cloud Run | Description |
-|----------|-------|-----------|-------------|
-| `PORT` | 3001/3002 | 8080 | Service port |
-| `NODE_ENV` | development | production | Node environment |
-| `DATABASE_TYPE` | postgresql | firestore | Database adapter |
-| `JWT_SECRET` | - | - | JWT signing secret |
-| `GOOGLE_CLIENT_ID` | - | - | OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | - | - | OAuth client secret |
+| Variable               | Local       | Cloud Run  | Description         |
+| ---------------------- | ----------- | ---------- | ------------------- |
+| `PORT`                 | 3001/3002   | 8080       | Service port        |
+| `NODE_ENV`             | development | production | Node environment    |
+| `DATABASE_TYPE`        | postgresql  | firestore  | Database adapter    |
+| `JWT_SECRET`           | -           | -          | JWT signing secret  |
+| `GOOGLE_CLIENT_ID`     | -           | -          | OAuth client ID     |
+| `GOOGLE_CLIENT_SECRET` | -           | -          | OAuth client secret |
 
 ### Service-Specific Variables
 
 #### Auth Service
+
 - `FRONTEND_URL` - Frontend URL for CORS/redirects
 - `GOOGLE_CALLBACK_URL` - OAuth callback URL
 
 #### API Service
+
 - `AUTH_SERVICE_URL` - Auth service URL for validation
 
 #### Frontend (Vite)
+
 - `VITE_AUTH_SERVICE_URL` - Auth service URL
 - `VITE_API_SERVICE_URL` - API service URL
 - `VITE_GOOGLE_CLIENT_ID` - OAuth client ID
@@ -128,13 +132,13 @@ The script automatically loads the corresponding environment file.
 
 The GitHub Actions workflow handles environment selection automatically:
 
-| Trigger | Environment | Suffix |
-|---------|-------------|--------|
-| Push to main | develop | -develop |
-| Pull Request | pr-{number} | -pr-{number} |
-| Manual (develop) | develop | -develop |
-| Manual (staging) | staging | -staging |
-| Manual (production) | production | (none) |
+| Trigger             | Environment | Suffix       |
+| ------------------- | ----------- | ------------ |
+| Push to main        | develop     | -develop     |
+| Pull Request        | pr-{number} | -pr-{number} |
+| Manual (develop)    | develop     | -develop     |
+| Manual (staging)    | staging     | -staging     |
+| Manual (production) | production  | (none)       |
 
 ## Adding a New Environment
 
@@ -152,6 +156,7 @@ The GitHub Actions workflow handles environment selection automatically:
 **Cause**: Service not listening on PORT=8080.
 
 **Solution**: Ensure `PORT=8080` is set in deployment:
+
 ```bash
 gcloud run deploy service-name \
   --port 8080 \
@@ -165,6 +170,7 @@ gcloud run deploy service-name \
 **Cause**: Environment file not sourced or wrong file loaded.
 
 **Solution**: Check file path and use scripts:
+
 ```bash
 # Local
 ./scripts/dev.sh start
@@ -177,8 +183,9 @@ gcloud run deploy service-name \
 
 **Symptom**: API calls fail with network errors.
 
-**Cause**: VITE_* variables not set correctly.
+**Cause**: VITE\_\* variables not set correctly.
 
 **Solution**:
+
 - Local: Check `app/frontend/.env.development`
 - Cloud Run: Ensure frontend is redeployed after backend with correct URLs

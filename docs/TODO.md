@@ -16,6 +16,7 @@ This document tracks planned improvements to the test automation infrastructure 
 ## In Progress
 
 ### Group Management Feature (TASK-002)
+
 - **Status**: 78% complete
 - **Tracking**: [GitHub Issue #69](https://github.com/uzibiton/automation-interview-pre/issues/69)
 - **Details**: [TASKS-002-group-management.md](dev/TASKS-002-group-management.md)
@@ -26,6 +27,7 @@ This document tracks planned improvements to the test automation infrastructure 
   - [ ] E2E tests for group flows
 
 ### AI Expense Input Feature (TASK-003)
+
 - **Status**: 8% complete
 - **Tracking**: [GitHub Issue #68](https://github.com/uzibiton/automation-interview-pre/issues/68)
 - **Details**: [TASKS-003-ai-expense-input.md](dev/TASKS-003-ai-expense-input.md)
@@ -113,6 +115,7 @@ For exploratory ideas and future features, see [IDEAS.md](general/IDEAS.md).
 ## Contributing
 
 Want to help? Check:
+
 - [GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues) - Open tasks
 - [GETTING_STARTED.md](GETTING_STARTED.md) - How to contribute
 - [PR_WORKFLOW_GUIDE.md](qa/PR_WORKFLOW_GUIDE.md) - PR process

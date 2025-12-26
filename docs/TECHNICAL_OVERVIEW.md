@@ -174,14 +174,14 @@ All build contexts updated to reference `app/` folder structure.
 
 ## Quick Links
 
-| Category | Links |
-|----------|-------|
-| **Getting Started** | [Run Locally](dev/RUN_LOCALLY.md) |
-| **Architecture** | [Application Architecture](../app/README.md) |
-| **Testing** | [Test Strategy](qa/TEST_STRATEGY.md) / [E2E Guide](qa/E2E_TESTING_GUIDE.md) |
-| **Deployment** | [CI/CD Guide](devops/CI_CD_GUIDE.md) / [Cloud Run](devops/CLOUD_RUN_DEPLOYMENT.md) |
-| **Contributing** | [PR Workflow](qa/PR_WORKFLOW_GUIDE.md) |
-| **Demo** | [SDET Demo Script](demo/SDET_DEMO_SCRIPT.md) |
+| Category            | Links                                                                              |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| **Getting Started** | [Run Locally](dev/RUN_LOCALLY.md)                                                  |
+| **Architecture**    | [Application Architecture](../app/README.md)                                       |
+| **Testing**         | [Test Strategy](qa/TEST_STRATEGY.md) / [E2E Guide](qa/E2E_TESTING_GUIDE.md)        |
+| **Deployment**      | [CI/CD Guide](devops/CI_CD_GUIDE.md) / [Cloud Run](devops/CLOUD_RUN_DEPLOYMENT.md) |
+| **Contributing**    | [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)                                             |
+| **Demo**            | [SDET Demo Script](demo/SDET_DEMO_SCRIPT.md)                                       |
 
 ---
 

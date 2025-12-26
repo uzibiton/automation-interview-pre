@@ -18,19 +18,23 @@ interface DashboardHomeProps {
 }
 
 function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
-  const { t: translation } = useTranslation();
+  const { t: _translation } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [showDialog, setShowDialog] = useState(false);
+
+  // Initialize showDialog based on URL param (sync read, not effect)
+  const shouldOpenDialog = searchParams.get('add') === 'true';
+  const [showDialog, setShowDialog] = useState(shouldOpenDialog);
   const [showGroupDialog, setShowGroupDialog] = useState(false);
 
+  // Clean up URL param after initial render
   useEffect(() => {
-    if (searchParams.get('add') === 'true') {
-      setShowDialog(true);
-      // Remove the query param after opening dialog
-      searchParams.delete('add');
-      setSearchParams(searchParams, { replace: true });
+    if (shouldOpenDialog) {
+      // Remove the query param after dialog is shown
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('add');
+      setSearchParams(newParams, { replace: true });
     }
-  }, [searchParams, setSearchParams]);
+  }, [shouldOpenDialog, searchParams, setSearchParams]);
 
   const handleExpenseCreated = () => {
     onUpdate();
