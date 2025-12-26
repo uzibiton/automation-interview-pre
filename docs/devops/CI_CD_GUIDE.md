@@ -518,9 +518,25 @@ git push origin feature/add-category-filter
 
 ---
 
-## Required Secrets
+## Required Secrets and Variables
 
 Configure these in GitHub Settings → Secrets and variables → Actions:
+
+### Repository Variables
+
+| Variable         | Description                              | Values        |
+| ---------------- | ---------------------------------------- | ------------- |
+| `CI_CD_ENABLED`  | Enable/disable automatic pipeline runs   | `true`/`false`|
+
+**Note**: When `CI_CD_ENABLED` is `false`, push/PR events skip the pipeline. Manual triggers (`workflow_dispatch`) always work regardless of this setting.
+
+To toggle via CLI:
+```bash
+gh variable set CI_CD_ENABLED --body "true"   # Enable auto-trigger
+gh variable set CI_CD_ENABLED --body "false"  # Disable auto-trigger
+```
+
+### Repository Secrets
 
 | Secret                 | Description                       | Example                             |
 | ---------------------- | --------------------------------- | ----------------------------------- |
@@ -596,6 +612,47 @@ Configure these in GitHub Settings → Secrets and variables → Actions:
 1. Manually delete via Cloud Run console
 2. Check cleanup workflow ran successfully
 3. Use gcloud CLI: `gcloud run services delete frontend-pr-{number}`
+
+---
+
+### All Jobs Skipped on Push
+
+**Problem**: Push to main triggers workflow but all jobs show as "skipped"
+
+**Cause**: `CI_CD_ENABLED` repository variable is set to `false`
+
+**Solutions**:
+
+1. Set the variable to `true` in GitHub Settings → Secrets and variables → Actions → Variables
+2. Or via CLI: `gh variable set CI_CD_ENABLED --body "true"`
+
+---
+
+### npm ci Fails with Lock File Sync Error
+
+**Problem**: `npm ci` fails with "package.json and package-lock.json are not in sync"
+
+**Cause**: Dependencies were added/updated in package.json but lock file wasn't regenerated
+
+**Solutions**:
+
+1. Run `npm install` locally to regenerate package-lock.json
+2. Commit and push the updated lock file
+3. For monorepos, run `npm install` from the root directory
+
+---
+
+### Node Version Mismatch
+
+**Problem**: CI fails with EBADENGINE errors or unexpected behavior
+
+**Cause**: CI using different Node.js version than packages require
+
+**Solutions**:
+
+1. Check package.json `engines` field for required Node version
+2. Update `node-version` in workflow file to match (e.g., '20' for modern packages)
+3. Ensure all jobs in workflow use consistent Node version
 
 ---
 

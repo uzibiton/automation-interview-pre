@@ -64,8 +64,9 @@ The `scripts/deploy.sh` script handles building and deploying to Cloud Run.
 
 The deployment script automatically sets:
 
-- `--port 8080` flag
-- `PORT=8080` environment variable
+- `--port 8080` flag (tells Cloud Run which port to use)
+
+**Important**: Do NOT set `PORT` in `--set-env-vars` - Cloud Run reserves `PORT` as a system variable and sets it automatically. Your application should read `process.env.PORT` which Cloud Run provides.
 
 ### Environment Variables
 
@@ -74,7 +75,6 @@ Each service receives environment-specific variables:
 #### Auth Service
 
 ```
-PORT=8080
 NODE_ENV=production
 DATABASE_TYPE=firestore
 FIREBASE_PROJECT_ID=<project-id>
@@ -88,7 +88,6 @@ GOOGLE_CALLBACK_URL=<callback-url>
 #### API Service
 
 ```
-PORT=8080
 NODE_ENV=production
 DATABASE_TYPE=firestore
 FIREBASE_PROJECT_ID=<project-id>
@@ -154,13 +153,14 @@ docker build -t gcr.io/<PROJECT_ID>/api-service:latest ./app/services/api-servic
 docker push gcr.io/<PROJECT_ID>/api-service:latest
 
 # Deploy to Cloud Run
+# NOTE: Do NOT include PORT in --set-env-vars (Cloud Run sets it automatically)
 gcloud run deploy api-service-develop \
   --image gcr.io/<PROJECT_ID>/api-service:latest \
   --region us-central1 \
   --platform managed \
   --allow-unauthenticated \
   --port 8080 \
-  --set-env-vars "PORT=8080,NODE_ENV=production,DATABASE_TYPE=firestore,..."
+  --set-env-vars "NODE_ENV=production,DATABASE_TYPE=firestore,..."
 ```
 
 ## Service URLs
@@ -188,8 +188,18 @@ gcloud run services describe api-service-develop \
 **Solution**:
 
 1. Check Dockerfile: `EXPOSE 8080`
-2. Check deployment: `--port 8080 --set-env-vars "PORT=8080,..."`
-3. Check application code uses `process.env.PORT`
+2. Check deployment uses: `--port 8080` flag (do NOT set PORT in env vars)
+3. Check application code uses `process.env.PORT || 8080`
+
+### PORT is a Reserved Env Name Error
+
+**Symptom**: Deployment fails with "PORT is a reserved env name".
+
+**Cause**: Trying to set `PORT=8080` in `--set-env-vars`.
+
+**Solution**:
+
+Remove `PORT` from `--set-env-vars`. Only use the `--port 8080` flag. Cloud Run sets `PORT` automatically.
 
 ### Service Returns 502
 
@@ -202,6 +212,41 @@ gcloud run services describe api-service-develop \
 1. Check logs: `gcloud run logs read api-service-develop --region us-central1`
 2. Verify environment variables are set correctly
 3. Check for missing dependencies
+
+### Container Crashes on Startup (Logging/File System)
+
+**Symptom**: Container starts but immediately crashes with file system errors.
+
+**Cause**: Cloud Run has a read-only filesystem. Common issues:
+- Winston logger trying to create log files
+- dotenv trying to load from non-existent paths
+
+**Solution**:
+
+1. Use console-only logging in production:
+   ```typescript
+   if (process.env.NODE_ENV !== 'production') {
+     // Add file transports only for local dev
+   }
+   ```
+2. Conditionally load dotenv:
+   ```typescript
+   if (process.env.NODE_ENV !== 'production') {
+     require('dotenv').config({ path: '...' });
+   }
+   ```
+
+### NestJS Dependency Injection Errors
+
+**Symptom**: Container crashes with "Nest can't resolve dependencies" error.
+
+**Cause**: Missing imports in NestJS modules.
+
+**Solution**:
+
+1. Check error message for which dependency is missing
+2. Add required module to imports array (e.g., `HttpModule` for `HttpService`)
+3. Add provider to providers array if it's a custom service
 
 ### Authentication Redirect Fails
 
