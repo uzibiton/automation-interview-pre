@@ -1,12 +1,33 @@
-﻿# Documentation Table of Contents
-
-## 🤖 AI Stack (Project)
-
-- [AI Stack Overview](README.md#ai-stack-project)
+# Documentation Table of Contents
 
 Comprehensive guide to all project documentation organized by category and use case.
 
-## � Document Traceability System
+---
+
+## Quick Links (For Recruiters)
+
+| Start Here | Description |
+|------------|-------------|
+| [Portfolio README](../README.md) | Project overview and key achievements |
+| [About Me](../ABOUTME.md) | Author background and expertise |
+| [Test Strategy](qa/TEST_STRATEGY.md) | Testing approach and philosophy |
+| [CI/CD Pipeline](devops/CI_CD_GUIDE.md) | Automation and deployment |
+| [Demo Script](demo/SDET_DEMO_SCRIPT.md) | 15-minute interview walkthrough |
+
+---
+
+## New Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Getting Started](GETTING_STARTED.md) | Quick setup guide for contributors |
+| [Technical Overview](TECHNICAL_OVERVIEW.md) | Deep-dive technical documentation |
+| [Notes](NOTES.md) | Architectural decisions and lessons learned |
+| [TODO / Roadmap](TODO.md) | Future improvements and ideas |
+
+---
+
+## Document Traceability System
 
 **All feature documents follow a standard naming convention:**
 
@@ -83,8 +104,8 @@ Comprehensive guide to all project documentation organized by category and use c
 ### 🚀 Development & Workflows
 
 | Document | Description | Related Docs |
-| ---TASKS-002: Group Management](dev/TASKS-002-group-management.md)** | **Implementation tasks for group management (26 tasks, 4 phases, 39-48 days)** | **-> [REQ-002](product/requirements/REQ-002-group-management.md), [HLD-002](dev/designs/HLD-002-group-management.md)** |
-| **[------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------ |
+| -------- | ----------- | ------------ |
+| **[TASKS-002: Group Management](dev/TASKS-002-group-management.md)** | **Implementation tasks for group management (26 tasks, 4 phases)** | **-> [REQ-002](product/requirements/REQ-002-group-management.md), [HLD-002](dev/designs/HLD-002-group-management.md)** |
 | **[Task & Bug Management](qa/TASK_BUG_MANAGEMENT.md)** | **Issue tracking, workflows, and best practices** | **-> [Issue Templates](../.github/ISSUE_TEMPLATE/)** |
 | **[Maintenance Schedule](dev/MAINTENANCE.md)** | **Recurring maintenance tasks and tracking** | **-> Weekly, Monthly, Quarterly checklists** |
 | **[Working with AI Agents](dev/WORKING_WITH_AGENTS.md)** | **Best practices for AI-assisted development** | **-> [PR Workflow](qa/PR_WORKFLOW_GUIDE.md)** |
@@ -144,7 +165,8 @@ Deployment              Quality Metrics
 
 **I want to...**
 
-- **Understand the project** -> Start with [general/ABOUTME.md](general/ABOUTME.md)
+- **Understand the project** -> Start with [About Me](../ABOUTME.md) or [Portfolio README](../README.md)
+- **Get started quickly** -> [GETTING_STARTED.md](GETTING_STARTED.md)
 - **Run locally** -> [dev/RUN_LOCALLY.md](dev/RUN_LOCALLY.md)
 - **Capture an idea** -> [general/IDEAS.md](general/IDEAS.md) + [Idea Template](qa/IDEA_TEMPLATE.md)
 - **Report a bug** -> [qa/TASK_BUG_MANAGEMENT.md](qa/TASK_BUG_MANAGEMENT.md) + [Bug Templates](../.github/ISSUE_TEMPLATE/)

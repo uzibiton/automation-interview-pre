@@ -1,267 +1,145 @@
-# Automation infrastructure - Expense Tracker
+# Uzi Biton - Senior SDET Portfolio
 
-Multi-environment expense tracking application with comprehensive testing infrastructure for SDET interview showcase.
+**Senior QA Automation Engineer & Test Infrastructure Architect**
 
-## 🎯 Project Purpose
+> Building robust, scalable testing infrastructure that catches bugs before they reach production. This portfolio showcases enterprise-grade test automation, CI/CD integration, and quality engineering practices.
 
-This project demonstrates **QA planning and strategic thinking** rather than just testing a specific application. The focus is on:
+[![GitHub](https://img.shields.io/badge/GitHub-@uzibiton-181717?style=flat&logo=github)](https://github.com/uzibiton)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Uzi_Biton-0A66C2?style=flat&logo=linkedin)](https://www.linkedin.com/in/uzibiton)
 
-- **Issue lifecycle management**: Template → Issue → Development → Review → Testing → Deployment
-- **AI-assisted development**: Using GitHub Copilot agents to implement features based on defined requirements
-- **Iterative quality process**: Manual testing, pipeline validation, and continuous improvement
-- **Professional practices**: Issue tracking, PR reviews, automated testing, cloud deployment
+---
 
-**The Application**: A web-based expense tracker with microservices architecture (Auth, API, Frontend), deployed on Google Cloud Run with PostgreSQL/Firestore databases and CI/CD via GitHub Actions.
+## What This Portfolio Demonstrates
 
-📑 **[Table of Contents](docs/TABLE_OF_CONTENTS.md)** | 📋 **[Test Strategy](docs/qa/TEST_STRATEGY.md)** | 🧪 **[E2E Testing Guide](docs/qa/E2E_TESTING_GUIDE.md)** | 🚀 **[CI/CD Guide](docs/devops/CI_CD_GUIDE.md)** | 👤 **[About the Author](docs/general/ABOUTME.md)** | 🐛 **[GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues)** | 📊 **[Project Board](https://github.com/users/uzibiton/projects/2/views/2)**
+This isn't just a collection of test cases - it's a complete **test automation infrastructure** designed with enterprise-grade practices:
 
-> **Note:** All issues, bugs, and feature requests are now tracked in GitHub Issues with structured templates for consistent tracking and workflow management.
+| Capability | Implementation |
+|------------|----------------|
+| **Test Architecture** | Multi-layered strategy (Unit -> Integration -> Contract -> E2E) |
+| **CI/CD Pipeline** | GitHub Actions with automated testing gates |
+| **Multi-Environment Testing** | Same tests run on local, Docker, staging, and production |
+| **Cloud Deployment** | Google Cloud Run with auto-scaling and PR environments |
+| **Documentation System** | Full traceability: Requirements -> Design -> Test Plans -> Implementation |
+| **Non-Functional Testing** | Performance (k6), Security (OWASP ZAP), Accessibility (WCAG) |
 
-## 🎬 Demo: Feature in Action
+---
 
-**Expense Sorting Feature** - Complete traceability from requirements to passing tests:
+## Key Achievements
 
-🎥 **[![Watch Test Execution Video](https://github.com/uzibiton/automation-interview-pre/blob/main/docs/demo/screenshots/Screenshot.png)](https://youtu.be/zOg7DhXGRH4)**
+- **272+ test scenarios** documented across 3 features (expense sorting, group management, AI input)
+- **4-environment test execution** without code changes (local/docker/staging/production)
+- **Ephemeral PR environments** with automatic cleanup
+- **Complete traceability** from requirements to E2E tests
+- **7-stage CI/CD pipeline** with parallel execution (10-16 min total)
 
-**Complete Feature Documentation:**
+---
 
-- 📋 [REQ-001: Requirements](docs/product/requirements/REQ-001-expense-sorting.md) - 7 FRs, 5 NFRs
-- 🏗️ [HLD-001: Design](docs/dev/designs/HLD-001-expense-sorting.md) - Architecture & algorithms
-- ✅ [TEST-001: Test Plan](docs/qa/test-plans/TEST-001-expense-sorting.md) - 12 test cases, 10/12 passed
-- 🔗 [Traceability Matrix](docs/product/TRACEABILITY_MATRIX.md) - End-to-end mapping
+## Featured: End-to-End Traceability
 
-**Traceability Flow**: Requirements → Design → Test Plan → Implementation → E2E Tests ✅
+**Expense Sorting Feature** - Complete documentation from requirements to passing tests:
 
-**Test Results**: 8/8 E2E automated tests passing | [View E2E Tests](tests/e2e/expenses/sort-expenses.spec.ts) | [📊 View Execution Report](docs/qa/test-plans/EXEC-001-expense-sorting.md)
+[![Watch Test Execution](https://github.com/uzibiton/automation-interview-pre/blob/main/docs/demo/screenshots/Screenshot.png)](https://youtu.be/zOg7DhXGRH4)
 
-## 🌐 Environments
+| Document | Status |
+|----------|--------|
+| [REQ-001: Requirements](docs/product/requirements/REQ-001-expense-sorting.md) | 7 FRs, 5 NFRs |
+| [HLD-001: Design](docs/dev/designs/HLD-001-expense-sorting.md) | Architecture & algorithms |
+| [TEST-001: Test Plan](docs/qa/test-plans/TEST-001-expense-sorting.md) | 12 test cases |
+| [E2E Tests](tests/e2e/expenses/sort-expenses.spec.ts) | 8/8 passing |
 
-- **Local**: http://localhost:3000
-- **Develop**: [https://expense-tracker-develop-buuath6a3q-uc.a.run.app](https://expense-tracker-develop-buuath6a3q-uc.a.run.app) (Auto-deploy on push to main)
-- **Staging**: [https://expense-tracker-staging-buuath6a3q-uc.a.run.app](https://expense-tracker-staging-buuath6a3q-uc.a.run.app) (Manual deployment)
-- **Production**: [https://expense-tracker-buuath6a3q-uc.a.run.app](https://expense-tracker-buuath6a3q-uc.a.run.app) (Manual deployment)
-- **PR Environments**: `pr-{number}` format, temporary (auto-cleanup on PR close)
+**Traceability Flow**: `Requirements -> Design -> Test Plan -> Implementation -> E2E Tests`
 
-**Deployment Strategy:**
+---
 
-- Push to `main` → Auto-deploys to **Develop**
-- Staging & Production → [Manual workflow dispatch](https://github.com/uzibiton/automation-interview-pre/actions/workflows/ci-cd.yml)
+## Live Environments
 
-📖 See [CI/CD Guide](docs/devops/CI_CD_GUIDE.md) for complete deployment documentation.
+| Environment | URL | Trigger |
+|-------------|-----|---------|
+| **Develop** | [expense-tracker-develop](https://expense-tracker-develop-buuath6a3q-uc.a.run.app) | Auto on push to main |
+| **Staging** | [expense-tracker-staging](https://expense-tracker-staging-buuath6a3q-uc.a.run.app) | Manual |
+| **Production** | [expense-tracker](https://expense-tracker-buuath6a3q-uc.a.run.app) | Manual |
+| **PR Environments** | `pr-{number}` | Auto-created, auto-cleanup |
 
-## 💡 Ideas & Innovation
+---
 
-**Exploring New Features:**
+## Tech Stack
 
-- 💬 [#68 - AI-Powered Conversational Expense Input & Comparative Analytics](https://github.com/uzibiton/automation-interview-pre/issues/68) - **8%** (2/25 subtasks completed)
-  - ✅ [REQ-003: Requirements](docs/product/requirements/REQ-003-ai-expense-input.md) - 7 user stories, 7 FRs, 7 NFRs
-  - ✅ [HLD-003: Design](docs/dev/designs/HLD-003-ai-expense-input.md) - NLP pipeline, AI adapter, security architecture
-  - ✅ [TEST-003: Test Plan](docs/qa/test-plans/TEST-003-ai-expense-input.md) - 150 test cases (AI accuracy, security, privacy, bias)
-  - ✅ [TASKS-003: Implementation](docs/dev/TASKS-003-ai-expense-input.md) - 40 tasks, 56-69 days estimated
-  - ✅ [GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues?q=is%3Aissue+label%3ATASK-003) - 23 issues retrofitted with [TASK-003-XXX] naming (P0:4, P1:9, P2:11, P3:7, P4:9)
-  - 🔍 17 additional tasks need GitHub issues created
-- 👥 [#69 - Household/Group Management with Role-Based Permissions](https://github.com/uzibiton/automation-interview-pre/issues/69) - **78%** (Phase 3 UI: 7/9 completed, 3 in progress)
-  - ✅ [REQ-002: Requirements](docs/product/requirements/REQ-002-group-management.md) - 10 user stories, 6 FRs, 9 API specs
-  - ✅ [HLD-002: Design](docs/dev/designs/HLD-002-group-management.md) - Architecture, RBAC, database schema
-  - ✅ [TEST-002: Test Plan](docs/qa/test-plans/TEST-002-group-management.md) - 110 test cases across functional, security, performance
-  - ✅ [TASKS-002: Implementation](docs/dev/TASKS-002-group-management.md) - 28 tasks, 41-50 days estimated
-  - ✅ [GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues?q=is%3Aissue+label%3ATASK-002) - 30 issues created with [TASK-002-XXX] naming (P0:2, P1:8, P2:4, P3:11, P4:5)
-  - 🔍 Phase 3 UI Components: Mock API, Stores (Group/Invitation), Dialogs (Creation/Role), Tables (Members), Modals (Invitation) - 7/9 ✅
-  - 🔍 In Progress: Group Dashboard Page, Expense List Updates, Invitation Acceptance Page
-- 📱 [#80 - Add PWA + Mobile/Desktop Testing Demo (Without Native Apps)](https://github.com/uzibiton/automation-interview-pre/issues/80) - **0%** (idea phase)
-- 🔍 [#81 - Implement Production Synthetic Monitoring (Shift-Right Testing)](https://github.com/uzibiton/automation-interview-pre/issues/81) - **0%** (idea phase)
+<table>
+<tr>
+<td valign="top" width="50%">
 
-📝 **[View All Ideas](https://github.com/uzibiton/automation-interview-pre/labels/type%3Aidea)** | **[Suggest New Idea](https://github.com/uzibiton/automation-interview-pre/issues/new?template=template-idea.md)**
+**Application**
+- React + TypeScript + Vite
+- NestJS (Auth & API services)
+- Firestore / PostgreSQL
+- Google Cloud Run
 
-## 📚 Documentation
+</td>
+<td valign="top" width="50%">
 
-📖 **[Complete Table of Contents](docs/TABLE_OF_CONTENTS.md)** - Full documentation index with all guides and resources
+**Testing & Infrastructure**
+- Playwright (E2E, multi-browser)
+- Jest (Unit, Component)
+- Pact (Contract testing)
+- k6 & Locust (Performance)
+- OWASP ZAP (Security)
+- GitHub Actions (CI/CD)
 
-### 📋 Document Traceability
+</td>
+</tr>
+</table>
 
-Professional documentation with **bidirectional traceability** between requirements, design, tests, and implementation:
+---
 
-| Type              | Format                      | Example                                                                                                                                                                                                                                                        |
-| ----------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Requirements**  | `REQ-###-feature-name.md`   | [REQ-001-expense-sorting.md](docs/product/requirements/REQ-001-expense-sorting.md), [REQ-002-group-management.md](docs/product/requirements/REQ-002-group-management.md), [REQ-003-ai-expense-input.md](docs/product/requirements/REQ-003-ai-expense-input.md) |
-| **Design (HLD)**  | `HLD-###-feature-name.md`   | [HLD-001-expense-sorting.md](docs/dev/designs/HLD-001-expense-sorting.md), [HLD-002-group-management.md](docs/dev/designs/HLD-002-group-management.md), [HLD-003-ai-expense-input.md](docs/dev/designs/HLD-003-ai-expense-input.md)                            |
-| **Test Plans**    | `TEST-###-feature-name.md`  | [TEST-001-expense-sorting.md](docs/qa/test-plans/TEST-001-expense-sorting.md), [TEST-002-group-management.md](docs/qa/test-plans/TEST-002-group-management.md), [TEST-003-ai-expense-input.md](docs/qa/test-plans/TEST-003-ai-expense-input.md)                |
-| **Tasks**         | `TASKS-###-feature-name.md` | [TASKS-002-group-management.md](docs/dev/TASKS-002-group-management.md), [TASKS-003-ai-expense-input.md](docs/dev/TASKS-003-ai-expense-input.md)                                                                                                               |
-| **GitHub Issues** | `[TASK-###-YYY] Title`      | [View TASK-002 Issues](https://github.com/uzibiton/automation-interview-pre/issues?q=is%3Aissue+label%3ATASK-002), [View TASK-003 Issues](https://github.com/uzibiton/automation-interview-pre/issues?q=is%3Aissue+label%3ATASK-003)                           |
+## Quick Navigation
 
-**Traceability Flow**: `REQ <-> HLD <-> TEST <-> TASKS <-> Implementation <-> E2E Tests`
+| For... | Start Here |
+|--------|------------|
+| **About Me** | [ABOUTME.md](ABOUTME.md) |
+| **Full Documentation** | [Table of Contents](docs/TABLE_OF_CONTENTS.md) |
+| **Test Strategy** | [TEST_STRATEGY.md](docs/qa/TEST_STRATEGY.md) |
+| **CI/CD Pipeline** | [CI_CD_GUIDE.md](docs/devops/CI_CD_GUIDE.md) |
+| **Demo Script** | [SDET_DEMO_SCRIPT.md](docs/demo/SDET_DEMO_SCRIPT.md) |
+| **Getting Started** | [GETTING_STARTED.md](docs/GETTING_STARTED.md) |
+| **Technical Details** | [TECHNICAL_OVERVIEW.md](docs/TECHNICAL_OVERVIEW.md) |
 
-📊 **[View Traceability Matrix](docs/product/TRACEABILITY_MATRIX.md)** - Complete requirements mapping for all features
+---
 
-## 🚀 Quick Start
+## Project Links
 
-### Local Development
+- [GitHub Issues](https://github.com/uzibiton/automation-interview-pre/issues) - Issue tracking with structured templates
+- [Project Board](https://github.com/users/uzibiton/projects/2/views/2) - QA backlog and task management
+- [CI/CD Workflows](https://github.com/uzibiton/automation-interview-pre/actions) - Pipeline executions
 
-```bash
-# Install dependencies
-npm install
+---
 
-# Build and start all services with Docker Compose
-docker-compose build
-docker-compose up -d
-
-# Or use npm script
-npm run docker:up
-
-# Start services individually
-npm run dev:auth      # Auth service on :3001
-npm run dev:api       # API service on :3002
-npm run dev:frontend  # Frontend on :3000
-```
-
-### Running Tests
-
-```bash
-# E2E tests
-npm run test:e2e:local              # Local environment
-npm run test:e2e:staging            # Staging environment
-npm run test:e2e:production:smoke   # Production smoke tests
-
-# Multi-environment tests
-npm run test:e2e:docker             # Docker environment
-```
-
-📖 **[E2E Testing Guide](docs/qa/E2E_TESTING_GUIDE.md)** - Complete multi-environment testing guide
-
-### Quick Links
-
-- **[Run Locally](docs/dev/RUN_LOCALLY.md)** - Get started with local development
-- **[Application Architecture](app/README.md)** - System design and data flow
-- **[Test Strategy](docs/qa/TEST_STRATEGY.md)** - Comprehensive testing approach ⭐
-- **[E2E Testing Guide](docs/qa/E2E_TESTING_GUIDE.md)** - End-to-end testing guide ⭐
-- **[CI/CD Guide](docs/devops/CI_CD_GUIDE.md)** - Pipeline and deployment guide ⭐
-- **[Portfolio Roadmap](docs/demo/PORTFOLIO_IMPROVEMENT_PLAN.md)** - 5-phase improvement plan
-- **[PR Workflow Guide](docs/qa/PR_WORKFLOW_GUIDE.md)** - Contribute to the project
-- **[Cloud Run Deployment](docs/devops/CLOUD_RUN_DEPLOYMENT.md)** - Deploy to staging/production
-- **[SDET Demo Script](docs/demo/SDET_DEMO_SCRIPT.md)** - Interview presentation
-
-### Documentation Structure
-
-- **[docs/product/](docs/product/)** - Requirements and traceability
-- **[docs/general/](docs/general/)** - Project overview and status
-- **[docs/dev/](docs/dev/)** - Development setup, API docs, and designs
-- **[docs/qa/](docs/qa/)** - Testing and quality assurance
-- **[docs/devops/](docs/devops/)** - CI/CD and deployment
-- **[docs/demo/](docs/demo/)** - Presentation materials
-
-## 🧪 Testing Infrastructure
-
-- **E2E**: Playwright with multi-environment support
-- **Contract**: API contract testing
-- **Performance**: k6 & Locust load testing
-- **Security**: OWASP ZAP, Bandit, dependency scanning
-- **Reliability**: Soak, stress, spike, recovery tests
-- **Visual**: Visual regression testing
-- **Accessibility**: WCAG compliance testing
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React + TypeScript + Vite
-- **Backend**: NestJS (Auth & API services)
-- **Database**: Firestore (production) / PostgreSQL (local)
-- **Infrastructure**: Google Cloud Run
-- **CI/CD**: GitHub Actions
-- **Testing**: Playwright, k6, Locust, OWASP ZAP
-
-## 📁 Project Structure
+## Documentation Structure
 
 ```
-automation-interview-pre/
-├── app/                          # Application code
-│   ├── services/                 # Backend microservices
-│   │   ├── auth-service/         # Authentication service (NestJS)
-│   │   └── api-service/          # API service (NestJS)
-│   ├── frontend/                 # React frontend (TypeScript + Vite)
-│   ├── database/                 # Database schemas & migrations
-│   ├── nginx/                    # Nginx configurations
-│   ├── scripts/                  # Utility scripts
-│   └── README.md                 # Architecture documentation
-│
-├── tests/                        # 🎯 COMPREHENSIVE TEST SUITE (Main Focus)
-│   ├── e2e/                      # End-to-end tests (Playwright)
-│   │   ├── specs/                # Test specifications
-│   │   ├── fixtures/             # Test data and utilities
-│   │   └── page-objects/         # Page object models
-│   ├── component/                # Component tests
-│   │   ├── frontend/             # React component tests
-│   │   └── storybook/            # Storybook stories
-│   ├── integration/              # Integration tests
-│   │   ├── api/                  # API integration tests
-│   │   └── database/             # Database integration tests
-│   ├── contract/                 # Contract tests (Pact)
-│   │   ├── consumers/            # Consumer contract tests
-│   │   └── providers/            # Provider contract tests
-│   ├── non-functional/           # Non-functional tests
-│   │   ├── performance/          # Load & stress tests
-│   │   ├── security/             # Security & penetration tests
-│   │   └── reliability/          # Chaos engineering tests
-│   ├── visual/                   # Visual regression tests
-│   ├── unit/                     # Unit tests
-│   ├── config/                   # Test configurations
-│   │   ├── playwright.config.ts  # Playwright config
-│   │   ├── jest.config.js        # Jest config
-│   │   └── environments/         # Environment configs
-│   ├── reports/                  # Test reports & artifacts
-│   ├── fixtures/                 # Shared test data
-│   └── README.md                 # Testing documentation
-│
-├── docs/                         # Documentation
-│   ├── product/                  # Requirements & traceability
-│   │   ├── requirements/         # Feature requirements (REQ-###)
-│   │   └── TRACEABILITY_MATRIX.md # Requirements mapping
-│   ├── dev/                      # Development docs
-│   │   └── designs/              # High-level designs (HLD-###)
-│   ├── qa/                       # QA & testing docs
-│   │   └── test-plans/           # Test plans (TEST-###)
-│   ├── general/                  # General project info
-│   ├── devops/                   # CI/CD & deployment
-│   ├── ui/                       # UI/UX guides
-│   ├── demo/                     # Demo materials
-│   └── README.md                 # Documentation hub
-│
-├── environments/                 # Environment configurations
-│   ├── docker-compose.yml        # Local development stack
-│   └── deploy-*.sh               # Deployment scripts
-│
-├── .github/                      # GitHub Actions workflows
-│   ├── workflows/                # CI/CD workflows
-│   └── ISSUE_TEMPLATE/           # Issue templates
-│
-├── docker-compose.yml            # Root Docker Compose file
-├── package.json                  # Root package.json (workspaces)
-└── README.md                     # This file
+docs/
+├── product/          # Requirements & traceability matrix
+├── dev/              # Designs (HLD), implementation tasks
+├── qa/               # Test strategy, test plans, E2E guides
+├── devops/           # CI/CD, deployment, Cloud Run
+├── demo/             # Interview scripts, portfolio materials
+└── general/          # Project status, prompts library
 ```
 
-## 📦 Workspaces
+---
 
-This project uses npm workspaces:
+## In Active Development
 
-```json
-{
-  "workspaces": ["app/services/auth-service", "app/services/api-service", "app/frontend"]
-}
-```
+- [Group Management](https://github.com/uzibiton/automation-interview-pre/issues/69) - 78% complete (RBAC, 110 test cases)
+- [AI Expense Input](https://github.com/uzibiton/automation-interview-pre/issues/68) - 8% complete (NLP, 150 test cases)
 
-## 🔧 Configuration
+See [PROJECT_STATUS.md](docs/general/PROJECT_STATUS.md) for current roadmap.
 
-Environment configurations are in `environments/`:
+---
 
-- `.env` - Local development
-- `.env.cloudrun` - Cloud Run deployment
-- `docker-compose.yml` - Docker stack
+<div align="center">
 
-All build contexts updated to reference `app/` folder structure.
+**[Explore the Automation Infrastructure](docs/TABLE_OF_CONTENTS.md)**
 
-## 📝 Notes
+_Quality is not an act, it is a habit._
 
-- **Date**: Folder structure reorganized December 5, 2025
-- **Branch**: `refactor/folder-structure-reorg`
-- **Purpose**: Cleaner organization for interview showcase
-- **Breaking Changes**: All paths updated in configs (docker-compose, package.json, CI/CD)
-
-See [docs/general/PROJECT_STATUS.md](docs/general/PROJECT_STATUS.md) for detailed status and next steps.
+</div>

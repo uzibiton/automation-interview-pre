@@ -105,7 +105,7 @@ postgres_data/
 yarn.lock
 
 # Reference folder (not part of the project)
-reference-expenses/
+ref/
 
 # AI Context (personal session context, not for version control)
 docs/ai-context.md

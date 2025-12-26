@@ -1,30 +1,22 @@
-﻿# Documentation Hub
+# Documentation Hub
 
-## 🤖 AI Stack (Project)
+Welcome to the documentation for the Expense Tracker portfolio project - an expense tracking application with comprehensive testing infrastructure.
 
-### Core
+**Looking for the portfolio overview?** See [README.md](../README.md) in the root.
 
-- **GitHub Copilot (VS Code)** – Daily development and implementation according to spec
-- **Codex (GitHub PR)** – Code review, address comments, and code polishing
-- **Agent OS (Specs only)** – Specifications, tasks, and standards (not a running agent)
+---
 
-### Testing
+## New in This Restructure
 
-- **Unit / Integration Tests** – Source of truth (Jest / Vitest / Pytest, etc.)
-- **Playwright (+ MCP)** (only if significant UI) – E2E and debugging flaky tests
+| Document | Description |
+|----------|-------------|
+| [GETTING_STARTED.md](GETTING_STARTED.md) | Quick setup guide for contributors |
+| [TECHNICAL_OVERVIEW.md](TECHNICAL_OVERVIEW.md) | Deep-dive technical documentation |
+| [NOTES.md](NOTES.md) | Architectural decisions and lessons learned |
+| [TODO.md](TODO.md) | Roadmap and future improvements |
+| [About Me](../ABOUTME.md) | Author profile (now at root) |
 
-### Quality (Optional but recommended)
-
-- **Lint / Formatter** – ESLint / Prettier / Ruff
-- **Basic CI** – Run tests and lint on PR
-
-### Principles
-
-- **No extra AI agents**
-- **Specs > Code**
-- **Tests = contract for AI** (in bolts to README and to content table)
-
-Welcome to the documentation for the Automation Interview Pre project - an expense tracking application with comprehensive testing infrastructure.
+---
 
 ## � Quick Start for AI Workflow
 
@@ -65,16 +57,16 @@ REQ-001 (Requirements) ↔ HLD-001 (Design) ↔ TEST-001 (Test Plan)
 
 ---
 
-### �📖 [general/](general/) - Project Overview & Status
+### [general/](general/) - Project Overview & Status
 
 General project information and tracking:
 
-- **[prompts/PROMPT_CATALOG.md](general/prompts/PROMPT_CATALOG.md)** - 🚀 AI prompt catalog (start here for AI workflows)
-- **[ABOUTME.md](general/ABOUTME.md)** - Project overview and author information
+- **[prompts/PROMPT_CATALOG.md](general/prompts/PROMPT_CATALOG.md)** - AI prompt catalog (start here for AI workflows)
+- **[ABOUTME.md](../ABOUTME.md)** - Project overview and author information (moved to root)
 - **[PROJECT_STATUS.md](general/PROJECT_STATUS.md)** - Current status, roadmap, and priorities
 - **[SESSION_RESUME.md](general/SESSION_RESUME.md)** - Resume work after interruption
+- **[IDEAS.md](general/IDEAS.md)** - Feature ideas and investigation backlog
 - **[prompts/](general/prompts/)** - AI prompt templates library
-- **[temp.md](general/temp.md)** - Temporary notes and scratchpad
 
 ### � [product/](product/) - Product Requirements
 
