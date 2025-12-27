@@ -236,4 +236,202 @@ export class FirestoreRepository implements IExpenseRepository {
     const doc = snapshot.docs[0];
     return { id: doc.id, ...doc.data() };
   }
+
+  // Find group by ID
+  async findGroupById(groupId: string): Promise<any> {
+    const doc = await this.groups.doc(groupId).get();
+    if (!doc.exists) {
+      return null;
+    }
+    return { id: doc.id, ...doc.data() };
+  }
+
+  // Create default group for a user
+  async createDefaultGroup(userId: string): Promise<any> {
+    const groupData = {
+      name: 'My Expenses',
+      ownerId: userId,
+      members: [userId],
+      memberDetails: [
+        {
+          id: userId,
+          role: 'owner',
+          joinedAt: new Date().toISOString(),
+        },
+      ],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const docRef = await this.groups.add(groupData);
+    return { id: docRef.id, ...groupData };
+  }
+
+  // Get group members with details
+  async getGroupMembers(groupId: string): Promise<any[]> {
+    const group = await this.findGroupById(groupId);
+    if (!group) {
+      return [];
+    }
+
+    // Return memberDetails if available, otherwise construct from members array
+    if (group.memberDetails && Array.isArray(group.memberDetails)) {
+      return group.memberDetails;
+    }
+
+    // Fallback: construct basic member info from members array
+    return (group.members || []).map((memberId: string) => ({
+      id: memberId,
+      role: memberId === group.ownerId ? 'owner' : 'member',
+    }));
+  }
+
+  // Update member role
+  async updateMemberRole(groupId: string, memberId: string, role: string): Promise<any> {
+    const group = await this.findGroupById(groupId);
+    if (!group) {
+      throw new Error('Group not found');
+    }
+
+    const memberDetails = group.memberDetails || [];
+    const memberIndex = memberDetails.findIndex((m: any) => m.id === memberId);
+
+    if (memberIndex === -1) {
+      throw new Error('Member not found in group');
+    }
+
+    memberDetails[memberIndex].role = role;
+
+    await this.groups.doc(groupId).update({
+      memberDetails,
+      updatedAt: new Date().toISOString(),
+    });
+
+    return { message: 'Role updated successfully' };
+  }
+
+  // Remove member from group
+  async removeMemberFromGroup(groupId: string, memberId: string): Promise<any> {
+    const group = await this.findGroupById(groupId);
+    if (!group) {
+      throw new Error('Group not found');
+    }
+
+    const members = (group.members || []).filter((id: string) => id !== memberId);
+    const memberDetails = (group.memberDetails || []).filter((m: any) => m.id !== memberId);
+
+    await this.groups.doc(groupId).update({
+      members,
+      memberDetails,
+      updatedAt: new Date().toISOString(),
+    });
+
+    return { message: 'Member removed successfully' };
+  }
+
+  // Invitations methods
+  private get invitationsCollection(): CollectionReference {
+    return this.db.collection('invitations');
+  }
+
+  async getInvitationsByGroupId(groupId: string): Promise<any[]> {
+    const snapshot = await this.invitationsCollection
+      .where('groupId', '==', groupId)
+      .where('status', '==', 'pending')
+      .get();
+
+    return snapshot.docs.map((doc: any) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  }
+
+  async createInvitation(data: {
+    groupId: string;
+    email: string;
+    invitedBy: string;
+    role?: string;
+  }): Promise<any> {
+    const token = this.generateToken();
+    const invitationData = {
+      ...data,
+      token,
+      role: data.role || 'member',
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+    };
+
+    const docRef = await this.invitationsCollection.add(invitationData);
+    return { id: docRef.id, ...invitationData };
+  }
+
+  async getInvitationByToken(token: string): Promise<any> {
+    const snapshot = await this.invitationsCollection.where('token', '==', token).get();
+    if (snapshot.empty) {
+      return null;
+    }
+    const doc = snapshot.docs[0];
+    return { id: doc.id, ...doc.data() };
+  }
+
+  async acceptInvitation(token: string, userId: string): Promise<any> {
+    const invitation = await this.getInvitationByToken(token);
+    if (!invitation) {
+      throw new Error('Invitation not found');
+    }
+
+    if (invitation.status !== 'pending') {
+      throw new Error('Invitation is no longer valid');
+    }
+
+    // Update invitation status
+    await this.invitationsCollection.doc(invitation.id).update({
+      status: 'accepted',
+      acceptedAt: new Date().toISOString(),
+      acceptedBy: userId,
+    });
+
+    // Add user to group
+    const group = await this.findGroupById(invitation.groupId);
+    if (group) {
+      const members = [...(group.members || []), userId];
+      const memberDetails = [
+        ...(group.memberDetails || []),
+        {
+          id: userId,
+          role: invitation.role || 'member',
+          joinedAt: new Date().toISOString(),
+        },
+      ];
+
+      await this.groups.doc(invitation.groupId).update({
+        members,
+        memberDetails,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    return { message: 'Invitation accepted' };
+  }
+
+  async declineInvitation(token: string): Promise<any> {
+    const invitation = await this.getInvitationByToken(token);
+    if (!invitation) {
+      throw new Error('Invitation not found');
+    }
+
+    await this.invitationsCollection.doc(invitation.id).update({
+      status: 'declined',
+      declinedAt: new Date().toISOString(),
+    });
+
+    return { message: 'Invitation declined' };
+  }
+
+  private generateToken(): string {
+    return (
+      Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    );
+  }
 }

@@ -1,6 +1,7 @@
 // Load environment variables (for local development only - Cloud Run sets env vars directly)
-// Only load dotenv if not in production (Cloud Run sets NODE_ENV=production)
-if (process.env.NODE_ENV !== 'production') {
+// Only load dotenv for local development
+const isCloudRun = process.env.K_SERVICE !== undefined;
+if (!isCloudRun && process.env.NODE_ENV !== 'production') {
   require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
 }
 
@@ -17,8 +18,8 @@ const transports: winston.transport[] = [
   }),
 ];
 
-// Only add file transports for local development
-if (process.env.NODE_ENV !== 'production') {
+// Only add file transports for local development (not on Cloud Run - read-only filesystem)
+if (!isCloudRun && process.env.NODE_ENV !== 'production') {
   const path = require('path');
   transports.push(
     new winston.transports.File({
@@ -54,10 +55,9 @@ async function bootstrap() {
     });
 
     // Enable CORS
-    const allowedOrigins =
-      process.env.NODE_ENV === 'production'
-        ? [process.env.FRONTEND_URL, /\.run\.app$/] // Allow Cloud Run domains in production
-        : ['http://localhost:3000', 'http://localhost'];
+    const allowedOrigins = isCloudRun
+      ? [process.env.FRONTEND_URL, /\.run\.app$/] // Allow Cloud Run domains
+      : ['http://localhost:3000', 'http://localhost'];
 
     app.enableCors({
       origin: allowedOrigins,

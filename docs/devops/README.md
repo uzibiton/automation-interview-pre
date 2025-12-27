@@ -19,15 +19,30 @@ This folder contains documentation for development, deployment, and operations.
 
 ### Cloud Run Deployment
 
+> **Full guide**: [CLOUD_RUN_DEPLOYMENT.md](CLOUD_RUN_DEPLOYMENT.md)
+
 ```bash
-# Deploy to develop
+# IMPORTANT: Load secrets before deploying (credentials not stored in repo)
+export $(grep -v '^#' .env | xargs)
+
+# Deploy all services to develop
 ./scripts/deploy.sh develop
 
-# Deploy to staging
-./scripts/deploy.sh staging
+# Deploy specific service only
+./scripts/deploy.sh develop --service auth
+./scripts/deploy.sh develop --service api
+./scripts/deploy.sh develop --service frontend
 
-# Deploy to production
+# Preview what would be deployed (no actual deployment)
+./scripts/deploy.sh develop --dry-run
+
+# Skip Docker build (use existing images)
+./scripts/deploy.sh develop --skip-build
+
+# Deploy to other environments
+./scripts/deploy.sh staging
 ./scripts/deploy.sh production
+./scripts/deploy.sh pr-123
 ```
 
 ## Documentation Index

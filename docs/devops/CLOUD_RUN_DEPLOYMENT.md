@@ -8,10 +8,14 @@ This guide covers deploying services to Google Cloud Run.
 - Authenticated: `gcloud auth login`
 - Docker installed and running
 - Project configured: `gcloud config set project <PROJECT_ID>`
+- Root `.env` file with secrets (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET)
 
 ## Quick Deployment
 
 ```bash
+# IMPORTANT: Load secrets first (credentials are NOT stored in repo)
+export $(grep -v '^#' .env | xargs)
+
 # Deploy all services to develop environment
 ./scripts/deploy.sh develop
 
@@ -21,6 +25,8 @@ This guide covers deploying services to Google Cloud Run.
 # Deploy to production
 ./scripts/deploy.sh production
 ```
+
+> **Note**: The `environments/.env.*` files reference variables like `${GOOGLE_CLIENT_ID}` that must be set in your shell environment before running the deploy script.
 
 ## Deployment Script
 
@@ -177,6 +183,29 @@ gcloud run services describe api-service-develop \
   --format='value(status.url)'
 ```
 
+## Debugging Commands
+
+Quick reference for common debugging tasks:
+
+```bash
+# View recent logs
+gcloud run services logs read auth-service-develop --region=us-central1 --limit=30
+
+# Check environment variables
+gcloud run services describe auth-service-develop --region=us-central1 \
+  --format="yaml(spec.template.spec.containers[0].env)"
+
+# Get service URL
+gcloud run services describe auth-service-develop --region=us-central1 \
+  --format='value(status.url)'
+
+# List all services
+gcloud run services list --region=us-central1
+
+# List revisions (for rollback)
+gcloud run revisions list --service=auth-service-develop --region=us-central1
+```
+
 ## Troubleshooting
 
 ### Container Fails Health Check
@@ -223,18 +252,95 @@ Remove `PORT` from `--set-env-vars`. Only use the `--port 8080` flag. Cloud Run 
 
 **Solution**:
 
-1. Use console-only logging in production:
-   ```typescript
-   if (process.env.NODE_ENV !== 'production') {
-     // Add file transports only for local dev
-   }
+Use `K_SERVICE` environment variable to detect Cloud Run (works with any `NODE_ENV`):
+
+```typescript
+const isCloudRun = process.env.K_SERVICE !== undefined;
+
+// Only load dotenv locally
+if (!isCloudRun) {
+  require('dotenv').config({ path: '...' });
+}
+
+// Only use file logging locally
+if (!isCloudRun) {
+  transports.push(new winston.transports.File({ ... }));
+}
+```
+
+### OAuth2Strategy requires a clientID option
+
+**Symptom**: Container crashes with "OAuth2Strategy requires a clientID option".
+
+**Cause**: `GOOGLE_CLIENT_ID` environment variable is empty or not set.
+
+**Solution**:
+
+1. Ensure secrets are loaded before deploying:
+   ```bash
+   export $(grep -v '^#' .env | xargs)
+   ./scripts/deploy.sh develop
    ```
-2. Conditionally load dotenv:
-   ```typescript
-   if (process.env.NODE_ENV !== 'production') {
-     require('dotenv').config({ path: '...' });
-   }
+
+2. Verify env vars are set on Cloud Run:
+   ```bash
+   gcloud run services describe auth-service-develop --region=us-central1 \
+     --format="yaml(spec.template.spec.containers[0].env)"
    ```
+
+### Database Connection Refused (TypeORM)
+
+**Symptom**: Container crashes with "connect ECONNREFUSED 127.0.0.1:5432".
+
+**Cause**: `DATABASE_TYPE=firestore` is not set, so app tries to connect to PostgreSQL.
+
+**Solution**:
+
+1. Verify `DATABASE_TYPE=firestore` is in `environments/.env.develop`
+2. Check the env var is being passed to Cloud Run (see command above)
+3. Ensure the module loads env vars at runtime, not import time
+
+### CORS Errors
+
+**Symptom**: Browser shows "blocked by CORS policy" errors.
+
+**Cause**: Backend CORS config doesn't allow the frontend origin.
+
+**Solution**:
+
+Use `K_SERVICE` to detect Cloud Run and allow `.run.app` domains:
+
+```typescript
+const isCloudRun = process.env.K_SERVICE !== undefined;
+const allowedOrigins = isCloudRun
+  ? [process.env.FRONTEND_URL, /\.run\.app$/]
+  : ['http://localhost:3000'];
+```
+
+### Google OAuth redirect_uri_mismatch
+
+**Symptom**: Google login fails with "Error 400: redirect_uri_mismatch".
+
+**Cause**: The callback URL is not registered in Google Cloud Console.
+
+**Solution**:
+
+1. Get your actual Cloud Run URL:
+   ```bash
+   gcloud run services describe auth-service-develop --region=us-central1 \
+     --format='value(status.url)'
+   ```
+
+2. Go to [Google Cloud Console - Credentials](https://console.cloud.google.com/apis/credentials)
+
+3. Edit your OAuth 2.0 Client ID
+
+4. Add the callback URL to **Authorized redirect URIs**:
+   ```
+   https://auth-service-develop-XXXXX-uc.a.run.app/auth/google/callback
+   ```
+
+5. Save and wait a few minutes for propagation
 
 ### NestJS Dependency Injection Errors
 

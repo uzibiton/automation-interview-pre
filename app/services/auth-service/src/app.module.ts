@@ -1,28 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-
-// Database configuration - only for PostgreSQL
-const databaseConfig =
-  process.env.DATABASE_TYPE === 'firestore'
-    ? []
-    : [
-        TypeOrmModule.forRoot({
-          type: 'postgres',
-          host: process.env.DB_HOST || 'localhost',
-          port: parseInt(process.env.DB_PORT || '5432'),
-          username: process.env.POSTGRES_USER || 'testuser',
-          password: process.env.POSTGRES_PASSWORD || 'testpass',
-          database: process.env.POSTGRES_DB || 'testdb',
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
-          synchronize: false, // Use migrations in production
-          logging: process.env.NODE_ENV === 'development',
-        }),
-      ];
 
 @Module({
   imports: [
@@ -30,7 +12,26 @@ const databaseConfig =
       isGlobal: true,
       envFilePath: '.env',
     }),
-    ...databaseConfig,
+    // Only load TypeORM if not using Firestore
+    ...(process.env.DATABASE_TYPE === 'firestore'
+      ? []
+      : [
+          TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+              type: 'postgres',
+              host: configService.get('DB_HOST', 'localhost'),
+              port: configService.get<number>('DB_PORT', 5432),
+              username: configService.get('POSTGRES_USER', 'testuser'),
+              password: configService.get('POSTGRES_PASSWORD', 'testpass'),
+              database: configService.get('POSTGRES_DB', 'testdb'),
+              entities: [__dirname + '/**/*.entity{.ts,.js}'],
+              synchronize: false,
+              logging: configService.get('NODE_ENV') === 'development',
+            }),
+          }),
+        ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'your-secret-key',

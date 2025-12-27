@@ -207,24 +207,41 @@ deploy_service() {
 # Deploy Auth Service
 deploy_auth() {
     local suffix=$(get_env_suffix)
-    local frontend_url="https://expense-tracker${suffix}-${GCP_PROJECT_NUMBER:-unknown}.${GCP_REGION}.run.app"
-    local callback_url="https://auth-service${suffix}-${GCP_PROJECT_NUMBER:-unknown}.${GCP_REGION}.run.app/auth/google/callback"
 
     build_and_push "auth-service" \
         "$PROJECT_ROOT/app/services/auth-service/Dockerfile" \
         "$PROJECT_ROOT/app/services/auth-service"
 
-    # Note: PORT is automatically set by Cloud Run, don't include it
+    # Initial deploy with placeholder URLs
     local env_vars="NODE_ENV=${NODE_ENV:-production}"
     env_vars+=",DATABASE_TYPE=${DATABASE_TYPE:-firestore}"
     env_vars+=",FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID:-$GCP_PROJECT_ID}"
     env_vars+=",JWT_SECRET=${JWT_SECRET}"
     env_vars+=",GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}"
     env_vars+=",GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}"
-    env_vars+=",FRONTEND_URL=${frontend_url}"
-    env_vars+=",GOOGLE_CALLBACK_URL=${callback_url}"
+    env_vars+=",FRONTEND_URL=placeholder"
+    env_vars+=",GOOGLE_CALLBACK_URL=placeholder"
 
     deploy_service "auth-service" "$env_vars"
+
+    # Get actual URLs after deployment and update
+    if [[ "$DRY_RUN" != true ]]; then
+        local auth_url=$(gcloud run services describe "auth-service${suffix}" \
+            --region "$GCP_REGION" \
+            --format='value(status.url)' 2>/dev/null || echo "")
+        local frontend_url=$(gcloud run services describe "expense-tracker${suffix}" \
+            --region "$GCP_REGION" \
+            --format='value(status.url)' 2>/dev/null || echo "")
+
+        if [[ -n "$auth_url" ]]; then
+            local callback_url="${auth_url}/auth/google/callback"
+            log_info "Updating auth-service with correct URLs..."
+            gcloud run services update "auth-service${suffix}" \
+                --region "$GCP_REGION" \
+                --update-env-vars "GOOGLE_CALLBACK_URL=${callback_url},FRONTEND_URL=${frontend_url:-placeholder}" \
+                --quiet
+        fi
+    fi
 }
 
 # Deploy API Service
@@ -318,6 +335,20 @@ main() {
             deploy_auth
             deploy_api
             deploy_frontend
+            # Update auth-service with final frontend URL
+            if [[ "$DRY_RUN" != true ]]; then
+                local suffix=$(get_env_suffix)
+                local frontend_url=$(gcloud run services describe "expense-tracker${suffix}" \
+                    --region "$GCP_REGION" \
+                    --format='value(status.url)' 2>/dev/null || echo "")
+                if [[ -n "$frontend_url" ]]; then
+                    log_info "Updating auth-service with frontend URL..."
+                    gcloud run services update "auth-service${suffix}" \
+                        --region "$GCP_REGION" \
+                        --update-env-vars "FRONTEND_URL=${frontend_url}" \
+                        --quiet
+                fi
+            fi
             ;;
         *)
             log_error "Unknown service: $SERVICE"
