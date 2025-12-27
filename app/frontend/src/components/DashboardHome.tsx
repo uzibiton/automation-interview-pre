@@ -18,7 +18,7 @@ interface DashboardHomeProps {
 }
 
 function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
-  const { t: _translation } = useTranslation();
+  const { t: translation } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Initialize showDialog based on URL param (sync read, not effect)
