@@ -112,7 +112,6 @@ jobs:
   # ============================================================================
 
   pre-deploy:
-    name: phase1
     uses: ./.github/workflows/pre-deploy.yml
     with:
       skip_static_analysis: ${{ inputs.skip_static_analysis || false }}
@@ -132,7 +131,6 @@ jobs:
   # ============================================================================
 
   deploy:
-    name: phase2
     needs: [pre-deploy]
     if: ${{ !inputs.skip_deployment && (success() || (github.event_name == 'push' && vars.CI_CD_ENABLED == 'true')) }}
     uses: ./.github/workflows/deploy-flow.yml
@@ -154,7 +152,6 @@ jobs:
   # ============================================================================
 
   post-deploy:
-    name: phase3
     needs: [pre-deploy, deploy]
     if: ${{ !inputs.skip_deployment && success() }}
     uses: ./.github/workflows/post-deploy.yml
