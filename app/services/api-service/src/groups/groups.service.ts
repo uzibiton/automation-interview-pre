@@ -6,8 +6,10 @@ export class GroupsService {
   constructor(private readonly firestore: FirestoreRepository) {}
 
   async getCurrentGroupForUser(userId: string) {
+    console.log('[GroupsService] getCurrentGroupForUser called with userId:', userId);
     // Query Firestore for the group associated with the user
     let group = await this.firestore.findGroupByUserId(userId);
+    console.log('[GroupsService] findGroupByUserId result:', group ? `Found: ${group.id}` : 'null');
 
     // If no group exists, create a default group for the user
     if (!group) {

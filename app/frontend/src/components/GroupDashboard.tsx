@@ -9,7 +9,14 @@ import GroupCreationDialog from './groups/GroupCreationDialog';
 import ConfirmationDialog from './ConfirmationDialog';
 
 interface GroupDashboardProps {
-  user?: { id: number; email: string; name: string; avatarUrl?: string } | null;
+  user?: {
+    id: number;
+    email: string;
+    name: string;
+    avatarUrl?: string;
+    firestoreId?: string;
+    userId?: string;
+  } | null;
 }
 
 function GroupDashboard({ user }: GroupDashboardProps) {
@@ -67,7 +74,8 @@ function GroupDashboard({ user }: GroupDashboardProps) {
   }
 
   // Get current user's role from authenticated user
-  const currentUserId = user.id.toString();
+  // Use firestoreId/userId (Firestore document ID) for group membership, fallback to numeric id
+  const currentUserId = user.firestoreId || user.userId || user.id.toString();
   const currentMember = members.find((m) => m.userId === currentUserId);
   const currentUserRole = currentMember?.role || GroupRole.VIEWER;
 

@@ -30,7 +30,7 @@ export class ExpensesService {
   }
 
   async findAll(
-    userId: number,
+    userId: number | string,
     filters?: { startDate?: string; endDate?: string; categoryId?: number },
   ): Promise<Expense[]> {
     if (this.useFirestore) {
@@ -61,13 +61,14 @@ export class ExpensesService {
     return query.getMany();
   }
 
-  async findOne(userId: number, id: string | number): Promise<Expense> {
+  async findOne(userId: number | string, id: string | number): Promise<Expense> {
     if (this.useFirestore) {
       return this.firestoreRepo.findOne(id, userId) as any;
     }
 
+    const numericUserId = typeof userId === 'string' ? parseInt(userId) : userId;
     const expense = await this.expensesRepository.findOne({
-      where: { id: typeof id === 'string' ? parseInt(id) : id, userId },
+      where: { id: typeof id === 'string' ? parseInt(id) : id, userId: numericUserId },
     });
 
     if (!expense) {
@@ -77,21 +78,22 @@ export class ExpensesService {
     return expense;
   }
 
-  async create(userId: number, createExpenseDto: CreateExpenseDto): Promise<Expense> {
+  async create(userId: number | string, createExpenseDto: CreateExpenseDto): Promise<Expense> {
     if (this.useFirestore) {
       return this.firestoreRepo.create(userId, createExpenseDto) as any;
     }
 
+    const numericUserId = typeof userId === 'string' ? parseInt(userId) : userId;
     const expense = this.expensesRepository.create({
       ...createExpenseDto,
-      userId,
+      userId: numericUserId,
     });
 
-    return this.expensesRepository.save(expense);
+    return this.expensesRepository.save(expense) as Promise<Expense>;
   }
 
   async update(
-    userId: number,
+    userId: number | string,
     id: string | number,
     updateExpenseDto: UpdateExpenseDto,
   ): Promise<Expense> {
@@ -106,7 +108,7 @@ export class ExpensesService {
     return this.expensesRepository.save(expense);
   }
 
-  async delete(userId: number, id: string | number): Promise<void> {
+  async delete(userId: number | string, id: string | number): Promise<void> {
     if (this.useFirestore) {
       return this.firestoreRepo.delete(id, userId);
     }
@@ -115,7 +117,7 @@ export class ExpensesService {
     await this.expensesRepository.remove(expense);
   }
 
-  async getStats(userId: number, period: string = 'month'): Promise<any> {
+  async getStats(userId: number | string, period: string = 'month'): Promise<any> {
     const now = new Date();
     let startDate: Date;
 

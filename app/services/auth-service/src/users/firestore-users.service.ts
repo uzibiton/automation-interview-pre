@@ -117,6 +117,8 @@ export class FirestoreUsersService {
     user.passwordHash = data.passwordHash;
     user.googleId = data.googleId;
     user.avatarUrl = data.avatarUrl;
+    // Store the actual Firestore document ID for use in API queries
+    (user as any).firestoreId = doc.id;
 
     return user;
   }

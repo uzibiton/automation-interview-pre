@@ -8,6 +8,7 @@ export class InvitationsService {
   async getInvitationsByGroupId(groupId: string, requestingUserId: string) {
     // Verify the requesting user is a member of the group
     const group = await this.firestore.findGroupById(groupId);
+
     if (!group) {
       throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
     }
@@ -19,12 +20,7 @@ export class InvitationsService {
     return this.firestore.getInvitationsByGroupId(groupId);
   }
 
-  async createInvitation(
-    groupId: string,
-    email: string,
-    role: string,
-    requestingUserId: string,
-  ) {
+  async createInvitation(groupId: string, email: string, role: string, requestingUserId: string) {
     // Verify the requesting user is an admin/owner of the group
     const group = await this.firestore.findGroupById(groupId);
     if (!group) {

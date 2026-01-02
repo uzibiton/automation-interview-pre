@@ -30,10 +30,13 @@ export class AuthService {
   }
 
   async login(user: User) {
+    const firestoreId = (user as any).firestoreId;
     const payload = {
       email: user.email,
       sub: user.id,
       name: user.name,
+      // Include Firestore document ID for API service queries
+      userId: firestoreId || String(user.id),
     };
 
     return {
@@ -43,12 +46,21 @@ export class AuthService {
         email: user.email,
         name: user.name,
         avatarUrl: user.avatarUrl,
+        // Include Firestore document ID
+        firestoreId: firestoreId || String(user.id),
       },
     };
   }
 
-  async validateToken(payload: any): Promise<User> {
-    return this.usersService.findById(payload.sub);
+  async validateToken(payload: any): Promise<any> {
+    const user = await this.usersService.findById(payload.sub);
+    if (user) {
+      // Include userId from payload for API service to use
+      (user as any).userId = payload.userId;
+      // Also include firestoreId for frontend member matching
+      (user as any).firestoreId = payload.userId;
+    }
+    return user;
   }
 
   async register(email: string, password: string, name?: string) {

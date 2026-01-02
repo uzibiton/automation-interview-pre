@@ -17,19 +17,25 @@ import { AuthGuard } from '../guards/auth.guard';
 export class InvitationsController {
   constructor(private readonly invitationsService: InvitationsService) {}
 
-  @UseGuards(AuthGuard)
-  @Get()
-  async getInvitations(@Query('groupId') groupId: string, @Req() req) {
-    const userId = req.user?.userId;
+  // Helper to get the correct user ID (Firestore doc ID)
+  private getUserId(req: any): string {
+    const userId = req.user?.userId || req.user?.id;
     if (!userId) {
       throw new HttpException('User not authenticated', HttpStatus.UNAUTHORIZED);
     }
+    return String(userId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get()
+  async getInvitations(@Query('groupId') groupId: string, @Req() req) {
+    const userId = this.getUserId(req);
 
     if (!groupId) {
       throw new HttpException('groupId query parameter is required', HttpStatus.BAD_REQUEST);
     }
 
-    return this.invitationsService.getInvitationsByGroupId(groupId, String(userId));
+    return this.invitationsService.getInvitationsByGroupId(groupId, userId);
   }
 
   @UseGuards(AuthGuard)
@@ -40,16 +46,13 @@ export class InvitationsController {
     @Body('role') role: string,
     @Req() req,
   ) {
-    const userId = req.user?.userId;
-    if (!userId) {
-      throw new HttpException('User not authenticated', HttpStatus.UNAUTHORIZED);
-    }
+    const userId = this.getUserId(req);
 
     if (!groupId || !email) {
       throw new HttpException('groupId and email are required', HttpStatus.BAD_REQUEST);
     }
 
-    return this.invitationsService.createInvitation(groupId, email, role, String(userId));
+    return this.invitationsService.createInvitation(groupId, email, role, userId);
   }
 
   @Get(':token')
@@ -60,12 +63,8 @@ export class InvitationsController {
   @UseGuards(AuthGuard)
   @Post(':token/accept')
   async acceptInvitation(@Param('token') token: string, @Req() req) {
-    const userId = req.user?.userId;
-    if (!userId) {
-      throw new HttpException('User not authenticated', HttpStatus.UNAUTHORIZED);
-    }
-
-    return this.invitationsService.acceptInvitation(token, String(userId));
+    const userId = this.getUserId(req);
+    return this.invitationsService.acceptInvitation(token, userId);
   }
 
   @Post(':token/decline')

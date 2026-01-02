@@ -8,8 +8,11 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
-# Build the frontend (no env vars needed - using runtime config)
-RUN npm run build
+# Fix permissions for node_modules binaries (after COPY)
+RUN chmod -R +x node_modules/.bin/ 2>/dev/null || true
+
+# Build the frontend using node directly
+RUN node ./node_modules/vite/bin/vite.js build
 
 FROM nginx:alpine
 

@@ -276,12 +276,17 @@ export class FirestoreRepository implements IExpenseRepository {
 
     // Return memberDetails if available, otherwise construct from members array
     if (group.memberDetails && Array.isArray(group.memberDetails)) {
-      return group.memberDetails;
+      // Map 'id' field to 'userId' for frontend compatibility
+      return group.memberDetails.map((member: any) => ({
+        ...member,
+        userId: member.userId || member.id, // Ensure userId field exists
+      }));
     }
 
     // Fallback: construct basic member info from members array
     return (group.members || []).map((memberId: string) => ({
       id: memberId,
+      userId: memberId, // Add userId field
       role: memberId === group.ownerId ? 'owner' : 'member',
     }));
   }

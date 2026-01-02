@@ -24,6 +24,8 @@ interface User {
   email: string;
   name: string;
   avatarUrl?: string;
+  firestoreId?: string; // Firestore document ID for group membership
+  userId?: string; // Alternative field name for Firestore ID
 }
 
 interface Stats {
