@@ -1,4 +1,4 @@
-name: ALL
+name: 'Main0: ALL'
 
 run-name: "${{ github.event_name == 'push' && format('main → staging') || format('{0} → {1}', github.ref_name, inputs.environment || 'manual') }}"
 
