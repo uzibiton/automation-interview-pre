@@ -646,6 +646,27 @@ gh variable set CI_CD_ENABLED --body "false"  # Disable auto-trigger
 
 ## Troubleshooting
 
+### All Jobs Skipped on Push/PR
+
+**Problem**: Pipeline runs but all jobs show "skipped"
+
+**Cause**: The `CI_CD_ENABLED` repository variable is set to `false` or missing.
+
+**Solution**:
+
+1. Go to **GitHub** → **Settings** → **Secrets and variables** → **Actions** → **Variables** tab
+2. Set `CI_CD_ENABLED` to `true`
+
+Or via CLI:
+
+```bash
+gh variable set CI_CD_ENABLED --body "true"
+```
+
+**Note**: Manual triggers (`workflow_dispatch`) always run regardless of this setting.
+
+---
+
 ### Pipeline Fails on Unit Tests
 
 **Problem**: Tests failing in CI but pass locally
