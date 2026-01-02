@@ -116,11 +116,11 @@ The CI/CD pipeline has been restructured to:
 
 ### Flow
 
-| Event                | Tests      | Deploy To                  | Notes                                         |
-| -------------------- | ---------- | -------------------------- | --------------------------------------------- |
-| PR opened/commit     | ❌ None    | -                          | Manual trigger required via workflow_dispatch |
-| Manual trigger on PR | ✅ Run all | PR temp env (if pass)      | Select "pr" environment, required for merge   |
-| Push/Merge to main   | ✅ Run all | Staging (if pass)          | Automatic                                     |
+| Event                | Tests      | Deploy To             | Notes                                         |
+| -------------------- | ---------- | --------------------- | --------------------------------------------- |
+| PR opened/commit     | ❌ None    | -                     | Manual trigger required via workflow_dispatch |
+| Manual trigger on PR | ✅ Run all | PR temp env (if pass) | Select "pr" environment, required for merge   |
+| Push/Merge to main   | ✅ Run all | Staging (if pass)     | Automatic                                     |
 
 ### Workflows
 
