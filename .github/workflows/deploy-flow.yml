@@ -101,9 +101,10 @@ jobs:
     outputs:
       deploy_env: ${{ steps.set-env.outputs.deploy_env }}
       service_suffix: ${{ steps.set-env.outputs.service_suffix }}
-      project_id: ${{ steps.set-env.outputs.project_id }}
+      # NOTE: project_id output removed - secrets in outputs get masked and become empty
+      # Use secrets.GCP_PROJECT_ID directly in consuming jobs instead
       region: ${{ steps.set-env.outputs.region }}
-      registry: ${{ steps.set-env.outputs.registry }}
+      # NOTE: registry constructed in consuming jobs to avoid secret masking
       frontend_bucket: ${{ steps.set-env.outputs.frontend_bucket }}
       api_url: ${{ steps.set-env.outputs.api_url }}
       auth_url: ${{ steps.set-env.outputs.auth_url }}
@@ -196,18 +197,20 @@ jobs:
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ needs.setup.outputs.project_id }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Configure Docker for GCP
         run: gcloud auth configure-docker ${{ needs.setup.outputs.region }}-docker.pkg.dev --quiet
 
       - name: Build and push auth-service
+        env:
+          REGISTRY: ${{ needs.setup.outputs.region }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/expense-tracker
         run: |
-          docker build -t ${{ needs.setup.outputs.registry }}/auth-service:${{ needs.setup.outputs.timestamp }} \
-            -t ${{ needs.setup.outputs.registry }}/auth-service:latest \
+          docker build -t ${REGISTRY}/auth-service:${{ needs.setup.outputs.timestamp }} \
+            -t ${REGISTRY}/auth-service:latest \
             ./app/services/auth-service
-          docker push ${{ needs.setup.outputs.registry }}/auth-service:${{ needs.setup.outputs.timestamp }}
-          docker push ${{ needs.setup.outputs.registry }}/auth-service:latest
+          docker push ${REGISTRY}/auth-service:${{ needs.setup.outputs.timestamp }}
+          docker push ${REGISTRY}/auth-service:latest
 
   build-api:
     name: Build API Service
@@ -227,18 +230,20 @@ jobs:
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ needs.setup.outputs.project_id }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Configure Docker for GCP
         run: gcloud auth configure-docker ${{ needs.setup.outputs.region }}-docker.pkg.dev --quiet
 
       - name: Build and push api-service
+        env:
+          REGISTRY: ${{ needs.setup.outputs.region }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/expense-tracker
         run: |
-          docker build -t ${{ needs.setup.outputs.registry }}/api-service:${{ needs.setup.outputs.timestamp }} \
-            -t ${{ needs.setup.outputs.registry }}/api-service:latest \
+          docker build -t ${REGISTRY}/api-service:${{ needs.setup.outputs.timestamp }} \
+            -t ${REGISTRY}/api-service:latest \
             ./app/services/api-service
-          docker push ${{ needs.setup.outputs.registry }}/api-service:${{ needs.setup.outputs.timestamp }}
-          docker push ${{ needs.setup.outputs.registry }}/api-service:latest
+          docker push ${REGISTRY}/api-service:${{ needs.setup.outputs.timestamp }}
+          docker push ${REGISTRY}/api-service:latest
 
   build-frontend:
     name: Build Frontend
@@ -301,12 +306,14 @@ jobs:
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ needs.setup.outputs.project_id }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Deploy auth-service to Cloud Run (background)
+        env:
+          REGISTRY: ${{ needs.setup.outputs.region }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/expense-tracker
         run: |
           gcloud run deploy auth-service${{ needs.setup.outputs.service_suffix }} \
-            --image=${{ needs.setup.outputs.registry }}/auth-service:${{ needs.setup.outputs.timestamp }} \
+            --image=${REGISTRY}/auth-service:${{ needs.setup.outputs.timestamp }} \
             --platform=managed \
             --region=${{ needs.setup.outputs.region }} \
             --allow-unauthenticated \
@@ -317,13 +324,16 @@ jobs:
           echo "AUTH_PID=$AUTH_PID" >> $GITHUB_ENV
 
       - name: Deploy api-service to Cloud Run (background)
+        env:
+          REGISTRY: ${{ needs.setup.outputs.region }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/expense-tracker
+          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         run: |
           gcloud run deploy api-service${{ needs.setup.outputs.service_suffix }} \
-            --image=${{ needs.setup.outputs.registry }}/api-service:${{ needs.setup.outputs.timestamp }} \
+            --image=${REGISTRY}/api-service:${{ needs.setup.outputs.timestamp }} \
             --platform=managed \
             --region=${{ needs.setup.outputs.region }} \
             --allow-unauthenticated \
-            --add-cloudsql-instances=${{ needs.setup.outputs.project_id }}:${{ needs.setup.outputs.region }}:expense-tracker-db${{ needs.setup.outputs.service_suffix != '' && needs.setup.outputs.service_suffix || '' }} \
+            --add-cloudsql-instances=${PROJECT_ID}:${{ needs.setup.outputs.region }}:expense-tracker-db${{ needs.setup.outputs.service_suffix != '' && needs.setup.outputs.service_suffix || '' }} \
             --set-env-vars="NODE_ENV=${{ inputs.environment }},DATABASE_HOST=${{ needs.setup.outputs.database_host }}" &
           API_PID=$!
 
