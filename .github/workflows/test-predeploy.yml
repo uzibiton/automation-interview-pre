@@ -1,0 +1,24 @@
+name: 'Test Pre-Deploy'
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      skip_static_analysis:
+        type: boolean
+        default: false
+    outputs:
+      timestamp:
+        description: 'CI Run timestamp'
+        value: ${{ jobs.generate-timestamp.outputs.timestamp }}
+
+jobs:
+  generate-timestamp:
+    name: Generate CI Run ID
+    runs-on: ubuntu-latest
+    outputs:
+      timestamp: ${{ steps.timestamp.outputs.value }}
+    steps:
+      - name: Generate timestamp for this CI run
+        id: timestamp
+        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
