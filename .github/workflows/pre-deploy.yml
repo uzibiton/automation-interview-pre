@@ -261,7 +261,7 @@ jobs:
       - name: Fail on vulnerabilities (non-blocking)
         if: steps.snyk.outcome == 'failure'
         run: |
-          echo "❌ Snyk found high or critical vulnerabilities!"
+          echo "ERROR: Snyk found high or critical vulnerabilities!"
           echo "Review the SARIF artifact or GitHub Security tab for details"
           exit 1
 
@@ -420,10 +420,10 @@ jobs:
              [[ "$SNYK" =~ ^(success|skipped)$ ]] && \
              [[ "$UNIT" =~ ^(success|skipped)$ ]] && \
              [[ "$COVERAGE" =~ ^(success|skipped)$ ]]; then
-            echo "✅ All static analysis stages passed or skipped"
+            echo "All static analysis stages passed or skipped"
             echo "all_passed=true" >> $GITHUB_OUTPUT
           else
-            echo "❌ Some static analysis stages failed."
+            echo "ERROR: Some static analysis stages failed."
             echo "all_passed=false" >> $GITHUB_OUTPUT
             exit 1
           fi

@@ -112,7 +112,7 @@ jobs:
   # ============================================================================
 
   pre-deploy:
-    name: 🔍 Pre-Deploy
+    name: Main1 Pre-Deploy
     uses: ./.github/workflows/pre-deploy.yml
     with:
       skip_static_analysis: ${{ inputs.skip_static_analysis || false }}
@@ -132,7 +132,7 @@ jobs:
   # ============================================================================
 
   deploy:
-    name: 🚀 Deploy
+    name: Main2 Deploy
     needs: [pre-deploy]
     if: ${{ !inputs.skip_deployment && (success() || (github.event_name == 'push' && vars.CI_CD_ENABLED == 'true')) }}
     uses: ./.github/workflows/deploy-flow.yml
@@ -154,7 +154,7 @@ jobs:
   # ============================================================================
 
   post-deploy:
-    name: ✅ Post-Deploy
+    name: Main3 Post-Deploy
     needs: [pre-deploy, deploy]
     if: ${{ !inputs.skip_deployment && success() }}
     uses: ./.github/workflows/post-deploy.yml
@@ -175,7 +175,7 @@ jobs:
   # ============================================================================
 
   summary:
-    name: 📋 Pipeline Summary
+    name: Pipeline Summary
     needs: [pre-deploy, deploy, post-deploy]
     if: always()
     runs-on: ubuntu-latest
@@ -183,24 +183,24 @@ jobs:
     steps:
       - name: Generate Summary
         run: |
-          echo "## 🎯 Main Flow Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## Main Flow Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Pipeline Phases" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Phase | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔍 Pre-Deploy | ${{ needs.pre-deploy.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🚀 Deploy | ${{ needs.deploy.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| ✅ Post-Deploy | ${{ needs.post-deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Main1 Pre-Deploy | ${{ needs.pre-deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Main2 Deploy | ${{ needs.deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Main3 Post-Deploy | ${{ needs.post-deploy.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Determine overall status
           if [[ "${{ needs.pre-deploy.result }}" == "success" ]] && \
              [[ "${{ needs.deploy.result }}" =~ ^(success|skipped)$ ]] && \
              [[ "${{ needs.post-deploy.result }}" =~ ^(success|skipped)$ ]]; then
-            echo "### ✅ Pipeline Completed Successfully" >> $GITHUB_STEP_SUMMARY
+            echo "### Pipeline Completed Successfully" >> $GITHUB_STEP_SUMMARY
           else
-            echo "### ⚠️ Pipeline Completed with Issues" >> $GITHUB_STEP_SUMMARY
+            echo "### Pipeline Completed with Issues" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY

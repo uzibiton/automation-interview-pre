@@ -74,7 +74,7 @@ jobs:
   # ============================================================================
 
   generate-timestamp:
-    name: 🕐 Generate Timestamp
+    name: Generate Timestamp
     runs-on: ubuntu-latest
     outputs:
       timestamp: ${{ steps.timestamp.outputs.value }}
@@ -88,14 +88,14 @@ jobs:
             TIMESTAMP=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)
           fi
           echo "value=${TIMESTAMP}" >> $GITHUB_OUTPUT
-          echo "📅 Timestamp: ${TIMESTAMP}"
+          echo "Timestamp: ${TIMESTAMP}"
 
   # ============================================================================
   # STAGE 3: Setup and Build (parallel builds)
   # ============================================================================
 
   setup:
-    name: 📦 Setup Environment
+    name: Setup Environment
     needs: [generate-timestamp]
     runs-on: ubuntu-latest
     outputs:
@@ -118,6 +118,13 @@ jobs:
           PR_NUM="${{ inputs.pr_number }}"
           PROJECT="${{ secrets.GCP_PROJECT }}"
           REGION="us-central1"
+
+          # Validate GCP_PROJECT is set
+          if [[ -z "$PROJECT" ]]; then
+            echo "::error::GCP_PROJECT secret is not set. Please configure it in repository secrets."
+            exit 1
+          fi
+
           REGISTRY="${REGION}-docker.pkg.dev/${PROJECT}/expense-tracker"
 
           # Set environment-specific variables
@@ -162,14 +169,14 @@ jobs:
           echo "auth_url=${AUTH_URL}" >> $GITHUB_OUTPUT
           echo "database_host=${DB_HOST}" >> $GITHUB_OUTPUT
 
-          echo "🎯 Deploying to ${ENV} environment"
+          echo "Deploying to ${ENV} environment"
           echo "  - Service suffix: ${SUFFIX}"
           echo "  - Registry: ${REGISTRY}"
           echo "  - Frontend bucket: ${BUCKET}"
 
   # Parallel build jobs for faster execution
   build-auth:
-    name: 🔐 Build Auth Service
+    name: Build Auth Service
     needs: [setup]
     if: ${{ !inputs.skip_build }}
     runs-on: ubuntu-latest
@@ -200,7 +207,7 @@ jobs:
           docker push ${{ needs.setup.outputs.registry }}/auth-service:latest
 
   build-api:
-    name: 🚀 Build API Service
+    name: Build API Service
     needs: [setup]
     if: ${{ !inputs.skip_build }}
     runs-on: ubuntu-latest
@@ -231,7 +238,7 @@ jobs:
           docker push ${{ needs.setup.outputs.registry }}/api-service:latest
 
   build-frontend:
-    name: 🎨 Build Frontend
+    name: Build Frontend
     needs: [setup]
     if: ${{ !inputs.skip_build }}
     runs-on: ubuntu-latest
@@ -268,7 +275,7 @@ jobs:
   # ============================================================================
 
   deploy:
-    name: 🚢 Deploy to ${{ inputs.environment }}
+    name: Deploy to ${{ inputs.environment }}
     needs: [setup, build-auth, build-api, build-frontend]
     if: ${{ !inputs.skip_deploy && always() && needs.setup.result == 'success' }}
     runs-on: ubuntu-latest
@@ -344,18 +351,18 @@ jobs:
 
           URL="https://storage.googleapis.com/${{ needs.setup.outputs.frontend_bucket }}/index.html"
           echo "url=${URL}" >> $GITHUB_OUTPUT
-          echo "🌐 Frontend deployed to: ${URL}"
+          echo "Frontend deployed to: ${URL}"
 
       - name: Wait for Cloud Run deployments
         run: |
-          echo "⏳ Waiting for Cloud Run deployments to complete..."
+          echo "Waiting for Cloud Run deployments to complete..."
           wait $AUTH_PID || echo "Auth service deployment completed with status $?"
           wait $API_PID || echo "API service deployment completed with status $?"
-          echo "✅ All Cloud Run deployments completed"
+          echo "All Cloud Run deployments completed"
 
       - name: Verify deployments
         run: |
-          echo "🔍 Verifying deployments..."
+          echo "Verifying deployments..."
 
           # Check auth-service
           AUTH_STATUS=$(gcloud run services describe auth-service${{ needs.setup.outputs.service_suffix }} \
@@ -370,7 +377,7 @@ jobs:
           echo "API service status: $API_STATUS"
 
           if [[ "$AUTH_STATUS" != "True" ]] || [[ "$API_STATUS" != "True" ]]; then
-            echo "⚠️ Some services may not be fully ready yet"
+            echo "Some services may not be fully ready yet"
           else
-            echo "✅ All services are ready"
+            echo "All services are ready"
           fi

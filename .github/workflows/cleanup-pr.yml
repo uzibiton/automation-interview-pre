@@ -54,7 +54,7 @@ jobs:
             ENV_NAME="pr-${PR_NUMBER}"
           elif [[ "$ENV" == "pr" ]]; then
             if [[ -z "$PR_NUMBER" ]]; then
-              echo "❌ PR number required for PR environments"
+              echo "ERROR: PR number required for PR environments"
               exit 1
             fi
             SUFFIX="-pr-${PR_NUMBER}"
@@ -66,13 +66,13 @@ jobs:
             SUFFIX="-staging"
             ENV_NAME="staging"
           else
-            echo "❌ Unknown environment: $ENV"
+            echo "ERROR: Unknown environment: $ENV"
             exit 1
           fi
 
           echo "suffix=${SUFFIX}" >> $GITHUB_OUTPUT
           echo "env_name=${ENV_NAME}" >> $GITHUB_OUTPUT
-          echo "🎯 Target environment: ${ENV_NAME} (suffix: ${SUFFIX})"
+          echo "Target environment: ${ENV_NAME} (suffix: ${SUFFIX})"
 
       - name: Delete Cloud Run services
         run: |
@@ -80,7 +80,7 @@ jobs:
           ENV_NAME="${{ steps.env.outputs.env_name }}"
           REGION="us-central1"
 
-          echo "🧹 Cleaning up environment: ${ENV_NAME}"
+          echo "Cleaning up environment: ${ENV_NAME}"
 
           # Delete services if they exist
           for service in expense-tracker api-service auth-service frontend; do
@@ -102,7 +102,7 @@ jobs:
             fi
           fi
 
-          echo "✅ Cleanup complete!"
+          echo "Cleanup complete!"
 
       - name: Comment on PR
         if: github.event_name == 'pull_request'
@@ -114,5 +114,5 @@ jobs:
               issue_number: ${{ github.event.pull_request.number }},
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🧹 PR environment `pr-${{ github.event.pull_request.number }}` has been cleaned up and all Cloud Run services have been deleted.'
+              body: 'PR environment `pr-${{ github.event.pull_request.number }}` has been cleaned up and all Cloud Run services have been deleted.'
             });
