@@ -205,7 +205,7 @@ jobs:
 
   snyk:
     name: Security Scan
-    needs: [security-checks]
+    needs: [security-checks, generate-timestamp]
     runs-on: ubuntu-latest
     if: ${{ !inputs.skip_snyk }}
     permissions:
