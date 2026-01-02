@@ -285,7 +285,13 @@ jobs:
   deploy:
     name: Deploy to ${{ inputs.environment }}
     needs: [setup, build-auth, build-api, build-frontend]
-    if: ${{ !inputs.skip_deploy && always() && needs.setup.result == 'success' }}
+    # Only deploy if all builds succeeded (or were skipped)
+    if: |
+      !inputs.skip_deploy &&
+      needs.setup.result == 'success' &&
+      (needs.build-auth.result == 'success' || needs.build-auth.result == 'skipped') &&
+      (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') &&
+      (needs.build-frontend.result == 'success' || needs.build-frontend.result == 'skipped')
     runs-on: ubuntu-latest
     outputs:
       frontend_url: ${{ steps.deploy-frontend.outputs.url }}
