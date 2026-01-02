@@ -3,6 +3,12 @@ name: 'Test: Main calls Pre-Deploy'
 on:
   workflow_dispatch:
 
+# Required for Snyk SARIF upload in pre-deploy
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
   pre-deploy:
     uses: ./.github/workflows/pre-deploy.yml

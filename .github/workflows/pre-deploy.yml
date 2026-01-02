@@ -208,10 +208,8 @@ jobs:
     needs: [security-checks, generate-timestamp]
     runs-on: ubuntu-latest
     if: ${{ !inputs.skip_snyk }}
-    permissions:
-      contents: read
-      security-events: write
-      actions: read
+    # NOTE: permissions removed - job-level permissions not allowed in reusable workflows
+    # The calling workflow must grant: contents: read, security-events: write, actions: read
 
     steps:
       - name: Checkout code
