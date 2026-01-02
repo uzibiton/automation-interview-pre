@@ -5,6 +5,7 @@ import { HttpModule } from '@nestjs/axios';
 import { ExpensesModule } from './expenses/expenses.module';
 import { GroupsModule } from './groups/groups.module';
 import { InvitationsModule } from './invitations/invitations.module';
+import { HealthModule } from './health/health.module';
 
 // Database configuration - only for PostgreSQL
 const databaseConfig =
@@ -32,6 +33,7 @@ const databaseConfig =
     }),
     ...databaseConfig,
     HttpModule,
+    HealthModule,
     ExpensesModule,
     GroupsModule,
     InvitationsModule,
