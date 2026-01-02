@@ -178,15 +178,6 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Ensure Artifact Registry repository exists
-        run: |
-          gcloud artifacts repositories describe expense-tracker \
-            --location=${{ steps.set-env.outputs.region }} 2>/dev/null || \
-          gcloud artifacts repositories create expense-tracker \
-            --repository-format=docker \
-            --location=${{ steps.set-env.outputs.region }} \
-            --description="Docker images for expense-tracker services"
-
   # Parallel build jobs for faster execution
   build-auth:
     name: Build Auth Service
