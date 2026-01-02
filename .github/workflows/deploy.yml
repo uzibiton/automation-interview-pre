@@ -1,0 +1,265 @@
+name: Deploy
+
+run-name: "Deploy → ${{ inputs.environment || 'called' }}"
+
+# This workflow can be:
+# 1. Called by ci-cd.yml as a reusable workflow
+# 2. Triggered manually to deploy any branch to any environment
+
+on:
+  # Reusable workflow - called by ci-cd.yml
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: string
+      image_tag:
+        description: 'Docker image tag (commit SHA)'
+        required: true
+        type: string
+    secrets:
+      GCP_SA_KEY:
+        required: true
+      GCP_PROJECT_ID:
+        required: true
+      JWT_SECRET:
+        required: true
+      GOOGLE_CLIENT_ID:
+        required: true
+      GOOGLE_CLIENT_SECRET:
+        required: true
+    outputs:
+      frontend_url:
+        description: 'Deployed frontend URL'
+        value: ${{ jobs.deploy.outputs.frontend_url }}
+      api_url:
+        description: 'Deployed API URL'
+        value: ${{ jobs.deploy.outputs.api_url }}
+      auth_url:
+        description: 'Deployed Auth URL'
+        value: ${{ jobs.deploy.outputs.auth_url }}
+
+  # Manual trigger - deploy any branch to any environment
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - develop
+          - staging
+          - production
+        default: develop
+      build_and_push:
+        description: 'Build and push new images (uncheck to deploy existing latest images)'
+        required: false
+        type: boolean
+        default: true
+
+# Prevent concurrent deployments to the same environment
+concurrency:
+  group: deploy-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  # ============================================================================
+  # Build Images (only for manual trigger with build_and_push=true)
+  # ============================================================================
+  build:
+    name: Build Images
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && inputs.build_and_push == true
+    outputs:
+      image_tag: ${{ steps.tag.outputs.value }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: tag
+        run: echo "value=${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker
+
+      - name: Build and push Auth Service
+        run: |
+          cd app/services/auth-service
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:${{ github.sha }} .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:latest .
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:latest
+
+      - name: Build and push API Service
+        run: |
+          cd app/services/api-service
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:${{ github.sha }} .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:latest .
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:latest
+
+      - name: Select correct .env file for frontend
+        run: |
+          cd app/frontend
+          ENV_FILE=".env.development"
+          if [ "${{ inputs.environment }}" = "production" ]; then
+            ENV_FILE=".env.production"
+          elif [ "${{ inputs.environment }}" = "staging" ]; then
+            ENV_FILE=".env.staging"
+          fi
+          echo "Using $ENV_FILE for frontend build"
+          cp "$ENV_FILE" .env
+
+      - name: Build and push Frontend
+        run: |
+          cd app/frontend
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:${{ github.sha }} .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:latest .
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:latest
+
+  # ============================================================================
+  # Deploy to Cloud Run
+  # ============================================================================
+  deploy:
+    name: Deploy to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    needs: [build]
+    # Run if: workflow_call (always) OR workflow_dispatch with build success OR workflow_dispatch without build
+    if: |
+      always() && 
+      (github.event_name == 'workflow_call' || 
+       (github.event_name == 'workflow_dispatch' && (needs.build.result == 'success' || inputs.build_and_push == false)))
+    outputs:
+      frontend_url: ${{ steps.urls.outputs.frontend_url }}
+      api_url: ${{ steps.urls.outputs.api_url }}
+      auth_url: ${{ steps.urls.outputs.auth_url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set deployment configuration
+        id: config
+        run: |
+          ENV="${{ inputs.environment }}"
+
+          # Determine suffix based on environment
+          if [ "$ENV" = "production" ]; then
+            echo "suffix=" >> $GITHUB_OUTPUT
+          elif [ "$ENV" = "staging" ]; then
+            echo "suffix=-staging" >> $GITHUB_OUTPUT
+          elif [ "$ENV" = "develop" ]; then
+            echo "suffix=-develop" >> $GITHUB_OUTPUT
+          else
+            # PR or custom environment
+            echo "suffix=-${ENV}" >> $GITHUB_OUTPUT
+          fi
+
+          echo "region=us-central1" >> $GITHUB_OUTPUT
+
+          # Determine image tag
+          if [ "${{ github.event_name }}" = "workflow_call" ]; then
+            echo "image_tag=${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
+          elif [ "${{ inputs.build_and_push }}" = "true" ]; then
+            echo "image_tag=${{ github.sha }}" >> $GITHUB_OUTPUT
+          else
+            echo "image_tag=latest" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy Frontend (initial)
+        run: |
+          gcloud run deploy expense-tracker${{ steps.config.outputs.suffix }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:${{ steps.config.outputs.image_tag }} \
+            --region ${{ steps.config.outputs.region }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars "VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
+
+      - name: Get Frontend URL
+        id: frontend_url
+        run: |
+          FRONTEND_URL=$(gcloud run services describe expense-tracker${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          echo "url=$FRONTEND_URL" >> $GITHUB_OUTPUT
+
+      - name: Deploy Auth Service
+        id: auth_service
+        run: |
+          AUTH_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)' 2>/dev/null || echo "")
+          if [ -z "$AUTH_URL" ]; then
+            AUTH_URL="https://auth-service${{ steps.config.outputs.suffix }}-buuath6a3q-uc.a.run.app"
+          fi
+          GOOGLE_CALLBACK_URL="$AUTH_URL/auth/google/callback"
+          echo "url=$AUTH_URL" >> $GITHUB_OUTPUT
+          echo "callback_url=$GOOGLE_CALLBACK_URL" >> $GITHUB_OUTPUT
+          echo "⚠️  Google OAuth Callback URL: $GOOGLE_CALLBACK_URL"
+          echo "⚠️  Add this URL to Google Cloud Console: https://console.cloud.google.com/apis/credentials"
+          gcloud run deploy auth-service${{ steps.config.outputs.suffix }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/auth-service:${{ steps.config.outputs.image_tag }} \
+            --region ${{ steps.config.outputs.region }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080 \
+            --set-env-vars "NODE_ENV=production,DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},JWT_SECRET=${{ secrets.JWT_SECRET }},GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }},FRONTEND_URL=${{ steps.frontend_url.outputs.url }},GOOGLE_CALLBACK_URL=$GOOGLE_CALLBACK_URL"
+
+      - name: Deploy API Service
+        run: |
+          AUTH_SERVICE_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          gcloud run deploy api-service${{ steps.config.outputs.suffix }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/api-service:${{ steps.config.outputs.image_tag }} \
+            --region ${{ steps.config.outputs.region }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080 \
+            --set-env-vars "NODE_ENV=production,DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},AUTH_SERVICE_URL=$AUTH_SERVICE_URL"
+
+      - name: Update Frontend with all URLs
+        run: |
+          echo "[DEBUG] Deploying to environment: ${{ inputs.environment }}"
+          echo "[DEBUG] Service suffix: ${{ steps.config.outputs.suffix }}"
+          echo "[DEBUG] Region: ${{ steps.config.outputs.region }}"
+          AUTH_SERVICE_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          API_SERVICE_URL=$(gcloud run services describe api-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          echo "[DEBUG] AUTH_SERVICE_URL: $AUTH_SERVICE_URL"
+          echo "[DEBUG] API_SERVICE_URL: $API_SERVICE_URL"
+          gcloud run deploy expense-tracker${{ steps.config.outputs.suffix }} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/expense-tracker:${{ steps.config.outputs.image_tag }} \
+            --region ${{ steps.config.outputs.region }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars "VITE_AUTH_SERVICE_URL=$AUTH_SERVICE_URL,VITE_API_SERVICE_URL=$API_SERVICE_URL,VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
+
+      - name: Capture deployment URLs
+        id: urls
+        run: |
+          AUTH_URL=$(gcloud run services describe auth-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          API_URL=$(gcloud run services describe api-service${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+          FRONTEND_URL=$(gcloud run services describe expense-tracker${{ steps.config.outputs.suffix }} --region ${{ steps.config.outputs.region }} --format='value(status.url)')
+
+          echo "auth_url=$AUTH_URL" >> $GITHUB_OUTPUT
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+          echo "frontend_url=$FRONTEND_URL" >> $GITHUB_OUTPUT
+
+          echo "🚀 Deployment Complete to ${{ inputs.environment }}!"
+          echo "Frontend: $FRONTEND_URL"
+          echo "API: $API_URL"
+          echo "Auth: $AUTH_URL"
