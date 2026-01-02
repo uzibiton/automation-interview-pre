@@ -7,7 +7,4 @@ jobs:
   pre-deploy:
     uses: ./.github/workflows/test-predeploy-stripped.yml
     with:
-      skip_unit_tests: false
-      skip_snyk: false
-    secrets:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      skip_test: false

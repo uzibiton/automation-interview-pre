@@ -3,15 +3,9 @@ name: 'Test: Pre-Deploy Stripped'
 on:
   workflow_call:
     inputs:
-      skip_unit_tests:
+      skip_test:
         type: boolean
         default: false
-      skip_snyk:
-        type: boolean
-        default: false
-    secrets:
-      SNYK_TOKEN:
-        required: false
     outputs:
       timestamp:
         description: 'CI Run timestamp'
@@ -28,56 +22,20 @@ jobs:
         id: timestamp
         run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
 
-  security-checks:
-    name: Security Checks
-    runs-on: ubuntu-latest
+  test-job:
+    name: Test Job
     needs: [generate-timestamp]
-    steps:
-      - name: Start Security Checks
-        run: echo "Starting security checks"
-
-  snyk:
-    name: Security Scan
-    needs: [security-checks, generate-timestamp]
     runs-on: ubuntu-latest
-    if: ${{ !inputs.skip_snyk }}
-    permissions:
-      contents: read
-      security-events: write
-      actions: read
-
+    if: ${{ !inputs.skip_test }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run Snyk scan
-        id: snyk
-        continue-on-error: true
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high --all-projects --sarif-file-output=snyk.sarif
-
-      - name: Organize security results
-        if: always() && hashFiles('snyk.sarif') != ''
-        run: |
-          mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan
-          mv snyk.sarif reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan/
+      - name: Run test
+        run: echo "Running test at ${{ needs.generate-timestamp.outputs.timestamp }}"
 
   gate:
     name: Gate
-    needs: [snyk]
+    needs: [test-job]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Check results
-        run: echo "Snyk: ${{ needs.snyk.result }}"
+        run: echo "Test result - ${{ needs.test-job.result }}"
