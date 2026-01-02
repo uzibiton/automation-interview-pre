@@ -122,6 +122,8 @@ jobs:
       skip_typecheck: ${{ inputs.skip_typecheck || false }}
       skip_audit: ${{ inputs.skip_audit || false }}
       skip_snyk: ${{ inputs.skip_snyk || false }}
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   # ============================================================================
   # PHASE 2: DEPLOY
