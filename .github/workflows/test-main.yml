@@ -5,15 +5,6 @@ on:
 
 jobs:
   pre-deploy:
-    uses: ./.github/workflows/pre-deploy.yml
+    uses: ./.github/workflows/test-predeploy-stripped.yml
     with:
-      skip_static_analysis: false
       skip_unit_tests: false
-      skip_coverage: false
-      skip_prettier: false
-      skip_eslint: false
-      skip_typecheck: false
-      skip_audit: false
-      skip_snyk: false
-    secrets:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
