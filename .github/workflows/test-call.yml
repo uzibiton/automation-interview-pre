@@ -20,5 +20,3 @@ jobs:
       skip_typecheck: true
       skip_audit: true
       skip_snyk: true
-    secrets:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
