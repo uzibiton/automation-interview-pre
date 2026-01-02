@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Firestore, CollectionReference } from '@google-cloud/firestore';
 import {
   IExpenseRepository,
@@ -9,6 +9,8 @@ import {
   Category,
   SubCategory,
 } from './database.interface';
+
+const UNKNOWN_CREATOR_NAME = 'Unknown';
 
 @Injectable()
 export class FirestoreRepository implements IExpenseRepository {
@@ -94,7 +96,10 @@ export class FirestoreRepository implements IExpenseRepository {
       // Security check: Verify the requesting user is a member of the group
       const memberIds = group.members || [];
       if (!memberIds.includes(String(userId))) {
-        throw new Error('Unauthorized: User is not a member of this group');
+        throw new HttpException(
+          'Unauthorized: User is not a member of this group',
+          HttpStatus.FORBIDDEN,
+        );
       }
       
       // Fetch expenses for all members in parallel for better performance
@@ -109,8 +114,8 @@ export class FirestoreRepository implements IExpenseRepository {
             ...doc.data(),
           }));
         } catch (error: any) {
-          // Log error but don't fail entire request
-          console.error(`[FirestoreRepository] Error fetching expenses for member ${memberId}:`, error.message || error);
+          // Log error but don't fail entire request (don't log sensitive user IDs)
+          console.error('[FirestoreRepository] Error fetching expenses for a group member:', error.message || error);
           return []; // Return empty array for this member
         }
       });
@@ -119,15 +124,20 @@ export class FirestoreRepository implements IExpenseRepository {
       const expenseResults = await Promise.all(expensePromises);
       const allExpenses = expenseResults.flat();
 
-      // Add creator attribution by looking up member details
+      // Create a lookup map for O(n+m) complexity instead of O(n*m)
       const memberDetails = group.memberDetails || [];
+      const memberDetailsMap = new Map(
+        memberDetails.map((m: any) => [this.getMemberId(m), m])
+      );
+
+      // Add creator attribution by looking up member details
       const expensesWithCreator = allExpenses.map((expense) => {
-        const creator = memberDetails.find((m: any) => this.getMemberId(m) === expense.userId);
+        const creator = memberDetailsMap.get(String(expense.userId));
         return {
           ...expense,
           createdBy: creator 
-            ? { id: this.getMemberId(creator), name: creator.name || 'Unknown' } 
-            : { id: String(expense.userId), name: 'Unknown' },
+            ? { id: this.getMemberId(creator), name: (creator as any).name || UNKNOWN_CREATOR_NAME } 
+            : { id: String(expense.userId), name: UNKNOWN_CREATOR_NAME },
         };
       });
 
