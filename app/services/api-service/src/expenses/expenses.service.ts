@@ -31,7 +31,7 @@ export class ExpensesService {
 
   async findAll(
     userId: number | string,
-    filters?: { startDate?: string; endDate?: string; categoryId?: number },
+    filters?: { startDate?: string; endDate?: string; categoryId?: number; groupId?: string },
   ): Promise<Expense[]> {
     if (this.useFirestore) {
       return this.firestoreRepo.findAll(userId, filters) as any;

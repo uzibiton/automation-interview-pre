@@ -49,6 +49,76 @@ export class FirestoreRepository implements IExpenseRepository {
   }
 
   async findAll(userId: number | string, filters?: ExpenseFilters): Promise<Expense[]> {
+    // If groupId is provided, fetch expenses for all group members
+    if (filters?.groupId) {
+      const group = await this.findGroupById(filters.groupId);
+      if (!group) {
+        return [];
+      }
+
+      // Get all member IDs from the group
+      const memberIds = group.members || [];
+      
+      // Fetch expenses for all members
+      const allExpenses: Expense[] = [];
+      for (const memberId of memberIds) {
+        let query: any = this.expenses.where('userId', '==', String(memberId));
+
+        if (filters?.startDate && filters?.endDate) {
+          const startDateStr =
+            filters.startDate instanceof Date
+              ? filters.startDate.toISOString().split('T')[0]
+              : filters.startDate;
+          const endDateStr =
+            filters.endDate instanceof Date
+              ? filters.endDate.toISOString().split('T')[0]
+              : filters.endDate;
+          query = query.where('date', '>=', startDateStr).where('date', '<=', endDateStr);
+        }
+
+        if (filters?.categoryId) {
+          query = query.where('categoryId', '==', filters.categoryId);
+        }
+
+        if (filters?.minAmount) {
+          query = query.where('amount', '>=', filters.minAmount);
+        }
+
+        if (filters?.maxAmount) {
+          query = query.where('amount', '<=', filters.maxAmount);
+        }
+
+        try {
+          const snapshot = await query.get();
+          const expenses = snapshot.docs.map((doc: any) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          allExpenses.push(...expenses);
+        } catch (error: any) {
+          console.log(`Error fetching expenses for member ${memberId}:`, error);
+        }
+      }
+
+      // Add creator attribution by looking up member details
+      const memberDetails = group.memberDetails || [];
+      const expensesWithCreator = allExpenses.map((expense) => {
+        const creator = memberDetails.find((m: any) => m.id === expense.userId || m.userId === expense.userId);
+        return {
+          ...expense,
+          createdBy: creator ? { id: creator.id || creator.userId, name: creator.name || 'Unknown' } : { id: expense.userId, name: 'Unknown' },
+        };
+      });
+
+      // Sort by date descending
+      return expensesWithCreator.sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA;
+      });
+    }
+
+    // Original single-user filtering logic
     let query: any = this.expenses.where('userId', '==', String(userId));
 
     if (filters?.startDate && filters?.endDate) {

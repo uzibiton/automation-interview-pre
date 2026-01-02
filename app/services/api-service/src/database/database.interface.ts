@@ -14,6 +14,7 @@ export interface Expense {
   labels?: string[];
   createdAt?: Date | string;
   updatedAt?: Date | string;
+  createdBy?: { id: string; name?: string };
 }
 
 export interface CreateExpenseDto {
@@ -57,6 +58,7 @@ export interface ExpenseFilters {
   categoryId?: number;
   minAmount?: number;
   maxAmount?: number;
+  groupId?: string;
 }
 
 export interface IExpenseRepository {
