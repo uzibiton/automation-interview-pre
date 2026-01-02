@@ -6,6 +6,12 @@ on:
       skip_unit_tests:
         type: boolean
         default: false
+      skip_snyk:
+        type: boolean
+        default: false
+    secrets:
+      SNYK_TOKEN:
+        required: false
     outputs:
       timestamp:
         description: 'CI Run timestamp'
@@ -22,37 +28,56 @@ jobs:
         id: timestamp
         run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
 
-  code-quality:
-    name: Code Quality
+  security-checks:
+    name: Security Checks
     runs-on: ubuntu-latest
     needs: [generate-timestamp]
     steps:
-      - name: Start Code Quality Checks
-        run: echo "Starting code quality checks"
+      - name: Start Security Checks
+        run: echo "Starting security checks"
 
-  prettier:
-    name: Code Formatting
-    needs: [code-quality]
+  snyk:
+    name: Security Scan
+    needs: [security-checks, generate-timestamp]
     runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Check formatting
-        run: echo "Prettier check"
+    if: ${{ !inputs.skip_snyk }}
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
 
-  unit-tests:
-    name: Unit Tests
-    needs: [generate-timestamp]
-    if: ${{ !inputs.skip_unit_tests }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Run unit tests
-        run: echo "Running unit tests"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Snyk scan
+        id: snyk
+        continue-on-error: true
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --all-projects --sarif-file-output=snyk.sarif
+
+      - name: Organize security results
+        if: always() && hashFiles('snyk.sarif') != ''
+        run: |
+          mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan
+          mv snyk.sarif reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan/
 
   gate:
     name: Gate
-    needs: [prettier, unit-tests]
+    needs: [snyk]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Check results
-        run: echo "All checks complete"
+        run: echo "Snyk: ${{ needs.snyk.result }}"
