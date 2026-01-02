@@ -88,7 +88,7 @@ jobs:
         run: |
           ENV="${{ inputs.environment }}"
           PR_NUM="${{ inputs.pr_number }}"
-          PROJECT="${{ secrets.GCP_PROJECT || 'expense-tracker-project' }}"
+          PROJECT="${{ secrets.GCP_PROJECT_ID || 'expense-tracker-project' }}"
           REGION="us-central1"
 
           # Use provided URLs for workflow_call, resolve for workflow_dispatch

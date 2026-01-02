@@ -142,7 +142,7 @@ jobs:
       skip_deploy: ${{ inputs.skip_deployment || false }}
     secrets:
       GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-      GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
