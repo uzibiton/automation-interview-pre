@@ -202,6 +202,15 @@ jobs:
       - name: Configure Docker for GCP
         run: gcloud auth configure-docker ${{ needs.setup.outputs.region }}-docker.pkg.dev --quiet
 
+      - name: Ensure Artifact Registry repository exists
+        run: |
+          gcloud artifacts repositories describe expense-tracker \
+            --location=${{ needs.setup.outputs.region }} 2>/dev/null || \
+          gcloud artifacts repositories create expense-tracker \
+            --repository-format=docker \
+            --location=${{ needs.setup.outputs.region }} \
+            --description="Docker images for expense-tracker services"
+
       - name: Build and push auth-service
         env:
           REGISTRY: ${{ needs.setup.outputs.region }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/expense-tracker
