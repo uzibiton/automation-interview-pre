@@ -70,7 +70,8 @@ on:
 
 jobs:
   # ============================================================================
-  # STAGE 3: Setup and Build (parallel builds)
+  # Setup, Build and Deploy
+  # Phase 4 (Cleanup) is handled by cleanup-pr.yml for PR environments only
   # ============================================================================
 
   setup:
@@ -287,7 +288,7 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # STAGE 4: Deploy to Cloud Run
+  # Deploy to Cloud Run
   # ============================================================================
 
   deploy:
