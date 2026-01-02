@@ -6,8 +6,13 @@
 
 ## Quick Links
 
-- 🔗 [GitHub Actions Workflow File](../../.github/workflows/ci-cd.yml)
-- 🚀 [Run Workflow Manually](https://github.com/uzibiton/automation-interview-pre/actions/workflows/ci-cd.yml)
+- 🔗 [Main Flow Workflow](../../.github/workflows/main-flow.yml) - Orchestrates the full pipeline
+- 🔗 [Pre-Deploy Workflow](../../.github/workflows/pre-deploy.yml) - Static analysis, tests (standalone)
+- 🔗 [Deploy Workflow](../../.github/workflows/deploy-flow.yml) - Build and deploy services
+- 🔗 [Post-Deploy Workflow](../../.github/workflows/post-deploy.yml) - Integration & smoke tests (standalone)
+- 🔗 [Standalone Deploy](../../.github/workflows/deploy.yml) - Manual deployments
+- 🔗 [Clean Up Workflow](../../.github/workflows/cleanup-pr.yml) - Delete environment resources (standalone)
+- 🚀 [Run Workflow Manually](https://github.com/uzibiton/automation-interview-pre/actions/workflows/main-flow.yml)
 - 📊 [View Workflow Runs](https://github.com/uzibiton/automation-interview-pre/actions)
 
 ---
@@ -15,14 +20,15 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Planned Changes](#planned-changes)
-3. [Deployment Environments](#deployment-environments)
-4. [Pipeline Triggers](#pipeline-triggers)
-5. [Pipeline Stages](#pipeline-stages)
-6. [Workflow Examples](#workflow-examples)
-7. [Cost Management](#cost-management)
-8. [Required Secrets](#required-secrets)
-9. [Troubleshooting](#troubleshooting)
+2. [Workflow Architecture](#workflow-architecture)
+3. [Planned Changes](#planned-changes)
+4. [Deployment Environments](#deployment-environments)
+5. [Pipeline Triggers](#pipeline-triggers)
+6. [Pipeline Stages](#pipeline-stages)
+7. [Workflow Examples](#workflow-examples)
+8. [Cost Management](#cost-management)
+9. [Required Secrets](#required-secrets)
+10. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -30,30 +36,64 @@
 
 This pipeline automates the entire software delivery process from code commit to production deployment with maximum parallelization for speed and efficiency.
 
+### Workflow Architecture
+
+The CI/CD pipeline is split into **4 reusable workflows** orchestrated by the **Main Flow**:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         MAIN FLOW                                    │
+│                    (main-flow.yml)                                   │
+│                                                                      │
+│  ┌───────────────┐    ┌───────────────┐    ┌────────────────────┐  │
+│  │   PRE-DEPLOY  │ -> │    DEPLOY     │ -> │    POST-DEPLOY     │  │
+│  │               │    │               │    │                    │  │
+│  │ • Static      │    │ • Setup       │    │ • Integration      │  │
+│  │   Analysis    │    │ • Build Auth  │    │   Tests            │  │
+│  │ • Linting     │    │ • Build API   │    │ • Smoke Tests      │  │
+│  │ • TypeCheck   │    │ • Build Front │    │                    │  │
+│  │ • Security    │    │ • Deploy      │    │                    │  │
+│  │ • Unit Tests  │    │   to Cloud    │    │                    │  │
+│  │ • Coverage    │    │   Run         │    │                    │  │
+│  └───────────────┘    └───────────────┘    └────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+| Workflow              | File              | Purpose                                                                       | Standalone Trigger   |
+| --------------------- | ----------------- | ----------------------------------------------------------------------------- | -------------------- |
+| **Main Flow**         | `main-flow.yml`   | Orchestrates all phases                                                       | ✅ Yes               |
+| **Pre-Deploy**        | `pre-deploy.yml`  | Static analysis, linting, type checking, security scans, unit tests, coverage | ✅ Yes (branch)      |
+| **Deploy**            | `deploy-flow.yml` | Setup environment, build Docker images (parallel), deploy to Cloud Run        | Called by Main       |
+| **Post-Deploy**       | `post-deploy.yml` | Integration tests, smoke tests                                                | ✅ Yes (environment) |
+| **Standalone Deploy** | `deploy.yml`      | Manual deployment without running tests                                       | ✅ Yes               |
+| **Clean Up**          | `cleanup-pr.yml`  | Delete deployed environment resources                                         | ✅ Yes (environment) |
+
 ### Deployment Strategy Summary
 
-| Environment     | Trigger                       | Integration Tests | Smoke Tests | Purpose                       |
-| --------------- | ----------------------------- | ----------------- | ----------- | ----------------------------- |
-| **PR-{number}** | Automatic (PR opened/updated) | ⏭️ Skipped        | ⏭️ Skipped  | Isolated testing before merge |
-| **Develop**     | Automatic (push to main)      | ⏭️ Skipped        | ⏭️ Skipped  | Continuous development        |
-| **Staging**     | Manual only                   | ⚙️ Optional       | ⚙️ Optional | Release candidate testing     |
-| **Production**  | Manual only                   | ⚙️ Optional       | ⚙️ Optional | Live environment              |
+| Environment     | Trigger                  | Integration Tests | Smoke Tests | Purpose                       |
+| --------------- | ------------------------ | ----------------- | ----------- | ----------------------------- |
+| **PR-{number}** | Manual workflow_dispatch | ⏭️ Skipped        | ⏭️ Skipped  | Isolated testing before merge |
+| **Develop**     | Manual via deploy.yml    | ⏭️ Skipped        | ⏭️ Skipped  | Continuous development        |
+| **Staging**     | Auto (push to main)      | ⚙️ Optional       | ⚙️ Optional | Release candidate testing     |
+| **Production**  | Manual only              | ⚙️ Optional       | ⚙️ Optional | Live environment              |
 
 **Key Features:**
 
-- ✅ Push to main deploys to **develop** automatically
-- ✅ Staging and production require **manual deployment**
+- ✅ Push to main deploys to **staging** automatically
+- ✅ PRs require **manual trigger** via workflow_dispatch
+- ✅ Production requires **manual deployment** via deploy.yml
 - ✅ Integration and smoke tests **skipped by default** for faster deployments
-- ✅ Tests can be **enabled on-demand** via workflow_dispatch inputs
+- ✅ Tests can be **enabled on-demand** via workflow inputs
 - ✅ Documentation-only changes skip CI automatically
+- ✅ **Parallel builds** for faster execution (auth, api, frontend build simultaneously)
 
 ### Pipeline Execution Times
 
-- **Stage 1 (Parallel)**: ~2-3 minutes (Code Quality + Security + Unit Tests)
-- **Build Stage (Parallel)**: ~5-8 minutes (Auth, API, Frontend, Test Runner)
-- **Deploy**: ~3-5 minutes
-- **Integration + E2E (optional)**: ~5-7 minutes
-- **Total (optimized)**: ~10-16 minutes without tests, ~15-23 minutes with tests
+- **Pre-Deploy (Parallel)**: ~3-5 minutes (Code Quality + Security + Unit Tests + Coverage)
+- **Deploy - Build (Parallel)**: ~5-8 minutes (Auth, API, Frontend built simultaneously)
+- **Deploy - Cloud Run**: ~3-5 minutes (parallel deployments)
+- **Post-Deploy (optional)**: ~5-7 minutes (Integration + Smoke Tests)
+- **Total (optimized)**: ~11-18 minutes without post-deploy tests, ~16-25 minutes with tests
 
 ---
 
@@ -81,16 +121,63 @@ The CI/CD pipeline has been restructured to:
 
 ### Workflows
 
-#### ci-cd.yml (Main Pipeline)
+#### main-flow.yml (Main Pipeline)
+
+**Orchestrates the full CI/CD pipeline by calling reusable workflows:**
+
+1. **Pre-Deploy** (`pre-deploy.yml`) - Static analysis, unit tests, coverage
+2. **Deploy** (`deploy-flow.yml`) - Build and deploy services
+3. **Post-Deploy** (`post-deploy.yml`) - Integration and smoke tests
 
 **Triggers**:
 
-- `push` to main → runs tests → deploys to **staging**
+- `push` to main → runs all phases → deploys to **staging**
 - `workflow_dispatch` → manual trigger with environment selection (pr/develop/staging/production)
 
 **No automatic trigger on pull_request** - PRs require manual trigger.
 
-#### deploy.yml (Deployment Only)
+#### pre-deploy.yml (Standalone + Reusable)
+
+**Purpose**: Run all quality checks before deployment
+
+**Standalone Trigger**: Select any branch to run checks on
+
+**Jobs**:
+
+- `generate-timestamp` - Create unique run ID
+- `code-quality` / `security-checks` - Gateway jobs
+- `prettier`, `eslint`, `typecheck` - Code quality (parallel)
+- `npm-audit`, `snyk` - Security scans (parallel)
+- `unit-tests` - Jest tests
+- `coverage` - Code coverage report
+- `static-analysis-gate` - Verify all checks passed
+
+#### deploy-flow.yml (Reusable Only)
+
+**Purpose**: Build and deploy services to target environment
+
+**Not standalone** - Called by Main Flow only
+
+**Jobs**:
+
+- `setup` - Configure environment variables
+- `build-auth`, `build-api`, `build-frontend` - Parallel Docker builds
+- `deploy` - Deploy to Cloud Run with parallel background processes
+
+#### post-deploy.yml (Standalone + Reusable)
+
+**Purpose**: Verify deployment with tests
+
+**Standalone Trigger**: Select deployed environment (develop/staging/production) to test
+
+**Jobs**:
+
+- `resolve-urls` - Determine API and frontend URLs for environment
+- `integration-tests` - API integration tests
+- `smoke-tests` - Basic functionality tests
+- `post-deploy-gate` - Summary of results
+
+#### deploy.yml (Standalone Deployment)
 
 **Triggers**:
 
@@ -101,6 +188,41 @@ The CI/CD pipeline has been restructured to:
 
 - Select environment: develop, staging, production
 - Build new images or deploy existing `latest` images
+
+#### cleanup-pr.yml (Clean Up)
+
+**Purpose**: Delete deployed environment resources (Cloud Run services, storage buckets)
+
+**Triggers**:
+
+- `pull_request` closed → auto-cleanup PR environments
+- `workflow_dispatch` → manual cleanup of any environment
+
+**Standalone Options**:
+
+- Select environment: pr, develop, staging
+- For PR environments: provide PR number
+
+**Note**: Production cannot be cleaned up via this workflow for safety.
+
+---
+
+## Standalone Workflow Triggers
+
+Each workflow can be triggered independently from the GitHub Actions UI:
+
+| Workflow        | How to Trigger                       | Input Required                                  |
+| --------------- | ------------------------------------ | ----------------------------------------------- |
+| **Pre-Deploy**  | Actions → Pre-Deploy → Run workflow  | Select branch                                   |
+| **Post-Deploy** | Actions → Post-Deploy → Run workflow | Select environment (develop/staging/production) |
+| **Deploy**      | Actions → Deploy → Run workflow      | Select branch + environment                     |
+| **Clean Up**    | Actions → Clean Up → Run workflow    | Select environment (+ PR number if PR)          |
+
+### Use Cases
+
+- **Pre-Deploy standalone**: Run quality checks on any branch without deploying
+- **Post-Deploy standalone**: Run integration/smoke tests against an already deployed environment
+- **Clean Up standalone**: Manually clean up environments that weren't auto-cleaned
 
 ### Branch Protection (Required Setup)
 

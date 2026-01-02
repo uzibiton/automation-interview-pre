@@ -1,0 +1,325 @@
+name: Deploy
+
+# Reusable workflow for deployment (setup, build, deploy)
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+        description: 'Target environment (pr, develop, staging, production)'
+      pr_number:
+        type: string
+        required: false
+        description: 'PR number for PR environments'
+      timestamp:
+        type: string
+        required: true
+        description: 'CI run timestamp for artifact naming'
+      skip_build:
+        type: boolean
+        default: false
+      skip_deploy:
+        type: boolean
+        default: false
+    secrets:
+      GCP_SA_KEY:
+        required: true
+      GCP_PROJECT:
+        required: true
+      DOCKERHUB_USERNAME:
+        required: false
+      DOCKERHUB_TOKEN:
+        required: false
+    outputs:
+      frontend_url:
+        description: 'Deployed frontend URL'
+        value: ${{ jobs.deploy.outputs.frontend_url }}
+      api_url:
+        description: 'Deployed API URL'
+        value: ${{ jobs.deploy.outputs.api_url }}
+
+jobs:
+  # ============================================================================
+  # STAGE 3: Setup and Build (parallel builds)
+  # ============================================================================
+
+  setup:
+    name: 📦 Setup Environment
+    runs-on: ubuntu-latest
+    outputs:
+      deploy_env: ${{ steps.set-env.outputs.deploy_env }}
+      service_suffix: ${{ steps.set-env.outputs.service_suffix }}
+      project_id: ${{ steps.set-env.outputs.project_id }}
+      region: ${{ steps.set-env.outputs.region }}
+      registry: ${{ steps.set-env.outputs.registry }}
+      frontend_bucket: ${{ steps.set-env.outputs.frontend_bucket }}
+      api_url: ${{ steps.set-env.outputs.api_url }}
+      auth_url: ${{ steps.set-env.outputs.auth_url }}
+      database_host: ${{ steps.set-env.outputs.database_host }}
+
+    steps:
+      - name: Set environment variables
+        id: set-env
+        run: |
+          ENV="${{ inputs.environment }}"
+          PR_NUM="${{ inputs.pr_number }}"
+          PROJECT="${{ secrets.GCP_PROJECT }}"
+          REGION="us-central1"
+          REGISTRY="${REGION}-docker.pkg.dev/${PROJECT}/expense-tracker"
+
+          # Set environment-specific variables
+          case $ENV in
+            production)
+              SUFFIX=""
+              BUCKET="expense-tracker-frontend-prod"
+              API_URL="https://api-service-${PROJECT}.${REGION}.run.app"
+              AUTH_URL="https://auth-service-${PROJECT}.${REGION}.run.app"
+              DB_HOST="/cloudsql/${PROJECT}:${REGION}:expense-tracker-db"
+              ;;
+            staging)
+              SUFFIX="-staging"
+              BUCKET="expense-tracker-frontend-staging"
+              API_URL="https://api-service-staging-${PROJECT}.${REGION}.run.app"
+              AUTH_URL="https://auth-service-staging-${PROJECT}.${REGION}.run.app"
+              DB_HOST="/cloudsql/${PROJECT}:${REGION}:expense-tracker-db-staging"
+              ;;
+            develop)
+              SUFFIX="-dev"
+              BUCKET="expense-tracker-frontend-dev"
+              API_URL="https://api-service-dev-${PROJECT}.${REGION}.run.app"
+              AUTH_URL="https://auth-service-dev-${PROJECT}.${REGION}.run.app"
+              DB_HOST="/cloudsql/${PROJECT}:${REGION}:expense-tracker-db-dev"
+              ;;
+            pr)
+              SUFFIX="-pr-${PR_NUM}"
+              BUCKET="expense-tracker-frontend-pr-${PR_NUM}"
+              API_URL="https://api-service-pr-${PR_NUM}-${PROJECT}.${REGION}.run.app"
+              AUTH_URL="https://auth-service-pr-${PR_NUM}-${PROJECT}.${REGION}.run.app"
+              DB_HOST="/cloudsql/${PROJECT}:${REGION}:expense-tracker-db-dev"
+              ;;
+          esac
+
+          echo "deploy_env=${ENV}" >> $GITHUB_OUTPUT
+          echo "service_suffix=${SUFFIX}" >> $GITHUB_OUTPUT
+          echo "project_id=${PROJECT}" >> $GITHUB_OUTPUT
+          echo "region=${REGION}" >> $GITHUB_OUTPUT
+          echo "registry=${REGISTRY}" >> $GITHUB_OUTPUT
+          echo "frontend_bucket=${BUCKET}" >> $GITHUB_OUTPUT
+          echo "api_url=${API_URL}" >> $GITHUB_OUTPUT
+          echo "auth_url=${AUTH_URL}" >> $GITHUB_OUTPUT
+          echo "database_host=${DB_HOST}" >> $GITHUB_OUTPUT
+
+          echo "🎯 Deploying to ${ENV} environment"
+          echo "  - Service suffix: ${SUFFIX}"
+          echo "  - Registry: ${REGISTRY}"
+          echo "  - Frontend bucket: ${BUCKET}"
+
+  # Parallel build jobs for faster execution
+  build-auth:
+    name: 🔐 Build Auth Service
+    needs: [setup]
+    if: ${{ !inputs.skip_build }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ needs.setup.outputs.project_id }}
+
+      - name: Configure Docker for GCP
+        run: gcloud auth configure-docker ${{ needs.setup.outputs.region }}-docker.pkg.dev --quiet
+
+      - name: Build and push auth-service
+        run: |
+          docker build -t ${{ needs.setup.outputs.registry }}/auth-service:${{ inputs.timestamp }} \
+            -t ${{ needs.setup.outputs.registry }}/auth-service:latest \
+            ./app/services/auth-service
+          docker push ${{ needs.setup.outputs.registry }}/auth-service:${{ inputs.timestamp }}
+          docker push ${{ needs.setup.outputs.registry }}/auth-service:latest
+
+  build-api:
+    name: 🚀 Build API Service
+    needs: [setup]
+    if: ${{ !inputs.skip_build }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ needs.setup.outputs.project_id }}
+
+      - name: Configure Docker for GCP
+        run: gcloud auth configure-docker ${{ needs.setup.outputs.region }}-docker.pkg.dev --quiet
+
+      - name: Build and push api-service
+        run: |
+          docker build -t ${{ needs.setup.outputs.registry }}/api-service:${{ inputs.timestamp }} \
+            -t ${{ needs.setup.outputs.registry }}/api-service:latest \
+            ./app/services/api-service
+          docker push ${{ needs.setup.outputs.registry }}/api-service:${{ inputs.timestamp }}
+          docker push ${{ needs.setup.outputs.registry }}/api-service:latest
+
+  build-frontend:
+    name: 🎨 Build Frontend
+    needs: [setup]
+    if: ${{ !inputs.skip_build }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: app/frontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: app/frontend
+        env:
+          VITE_API_URL: ${{ needs.setup.outputs.api_url }}
+          VITE_AUTH_URL: ${{ needs.setup.outputs.auth_url }}
+
+      - name: Upload frontend build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build-${{ inputs.timestamp }}
+          path: app/frontend/dist
+          retention-days: 7
+
+  # ============================================================================
+  # STAGE 4: Deploy to Cloud Run
+  # ============================================================================
+
+  deploy:
+    name: 🚢 Deploy to ${{ inputs.environment }}
+    needs: [setup, build-auth, build-api, build-frontend]
+    if: ${{ !inputs.skip_deploy && always() && needs.setup.result == 'success' }}
+    runs-on: ubuntu-latest
+    outputs:
+      frontend_url: ${{ steps.deploy-frontend.outputs.url }}
+      api_url: ${{ needs.setup.outputs.api_url }}
+    environment:
+      name: ${{ inputs.environment == 'pr' && format('pr-{0}', inputs.pr_number) || inputs.environment }}
+      url: ${{ steps.deploy-frontend.outputs.url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ needs.setup.outputs.project_id }}
+
+      - name: Deploy auth-service to Cloud Run (background)
+        run: |
+          gcloud run deploy auth-service${{ needs.setup.outputs.service_suffix }} \
+            --image=${{ needs.setup.outputs.registry }}/auth-service:${{ inputs.timestamp }} \
+            --platform=managed \
+            --region=${{ needs.setup.outputs.region }} \
+            --allow-unauthenticated \
+            --set-env-vars="NODE_ENV=${{ inputs.environment }}" &
+          AUTH_PID=$!
+
+          # Store PID for later waiting
+          echo "AUTH_PID=$AUTH_PID" >> $GITHUB_ENV
+
+      - name: Deploy api-service to Cloud Run (background)
+        run: |
+          gcloud run deploy api-service${{ needs.setup.outputs.service_suffix }} \
+            --image=${{ needs.setup.outputs.registry }}/api-service:${{ inputs.timestamp }} \
+            --platform=managed \
+            --region=${{ needs.setup.outputs.region }} \
+            --allow-unauthenticated \
+            --add-cloudsql-instances=${{ needs.setup.outputs.project_id }}:${{ needs.setup.outputs.region }}:expense-tracker-db${{ needs.setup.outputs.service_suffix != '' && needs.setup.outputs.service_suffix || '' }} \
+            --set-env-vars="NODE_ENV=${{ inputs.environment }},DATABASE_HOST=${{ needs.setup.outputs.database_host }}" &
+          API_PID=$!
+
+          # Store PID for later waiting
+          echo "API_PID=$API_PID" >> $GITHUB_ENV
+
+      - name: Download frontend build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build-${{ inputs.timestamp }}
+          path: frontend-dist
+
+      - name: Deploy frontend to Cloud Storage
+        id: deploy-frontend
+        run: |
+          # Create bucket if it doesn't exist
+          gsutil ls gs://${{ needs.setup.outputs.frontend_bucket }} 2>/dev/null || \
+            gsutil mb -l ${{ needs.setup.outputs.region }} gs://${{ needs.setup.outputs.frontend_bucket }}
+
+          # Upload frontend files
+          gsutil -m rsync -r -d frontend-dist gs://${{ needs.setup.outputs.frontend_bucket }}
+
+          # Set public access
+          gsutil iam ch allUsers:objectViewer gs://${{ needs.setup.outputs.frontend_bucket }}
+
+          # Configure for SPA routing
+          gsutil web set -m index.html -e index.html gs://${{ needs.setup.outputs.frontend_bucket }}
+
+          URL="https://storage.googleapis.com/${{ needs.setup.outputs.frontend_bucket }}/index.html"
+          echo "url=${URL}" >> $GITHUB_OUTPUT
+          echo "🌐 Frontend deployed to: ${URL}"
+
+      - name: Wait for Cloud Run deployments
+        run: |
+          echo "⏳ Waiting for Cloud Run deployments to complete..."
+          wait $AUTH_PID || echo "Auth service deployment completed with status $?"
+          wait $API_PID || echo "API service deployment completed with status $?"
+          echo "✅ All Cloud Run deployments completed"
+
+      - name: Verify deployments
+        run: |
+          echo "🔍 Verifying deployments..."
+
+          # Check auth-service
+          AUTH_STATUS=$(gcloud run services describe auth-service${{ needs.setup.outputs.service_suffix }} \
+            --region=${{ needs.setup.outputs.region }} \
+            --format='value(status.conditions[0].status)' 2>/dev/null || echo "UNKNOWN")
+          echo "Auth service status: $AUTH_STATUS"
+
+          # Check api-service
+          API_STATUS=$(gcloud run services describe api-service${{ needs.setup.outputs.service_suffix }} \
+            --region=${{ needs.setup.outputs.region }} \
+            --format='value(status.conditions[0].status)' 2>/dev/null || echo "UNKNOWN")
+          echo "API service status: $API_STATUS"
+
+          if [[ "$AUTH_STATUS" != "True" ]] || [[ "$API_STATUS" != "True" ]]; then
+            echo "⚠️ Some services may not be fully ready yet"
+          else
+            echo "✅ All services are ready"
+          fi

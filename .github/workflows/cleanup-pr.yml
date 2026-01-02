@@ -1,4 +1,4 @@
-name: Cleanup PR Environment
+name: Clean Up
 
 on:
   pull_request:
@@ -6,19 +6,28 @@ on:
     branches:
       - main
 
-  # Manual trigger to cleanup any PR environment
+  # Manual trigger to cleanup any deployed environment
   workflow_dispatch:
     inputs:
-      pr_number:
-        description: 'PR number to cleanup'
+      environment:
+        description: 'Environment to clean up'
         required: true
+        type: choice
+        options:
+          - pr
+          - develop
+          - staging
+        default: pr
+      pr_number:
+        description: 'PR number (required for PR environments)'
+        required: false
         type: string
 
 jobs:
   cleanup:
-    name: Cleanup PR-${{ github.event.pull_request.number || github.event.inputs.pr_number }} Environment
+    name: Clean Up ${{ github.event.pull_request.number && format('PR-{0}', github.event.pull_request.number) || inputs.environment == 'pr' && format('PR-{0}', inputs.pr_number) || inputs.environment }}
     runs-on: ubuntu-latest
-    # Only run cleanup if services were likely deployed (skip for manual trigger)
+    # Only run cleanup if services were likely deployed
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
@@ -30,13 +39,45 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Delete PR services
+      - name: Determine environment suffix
+        id: env
         run: |
-          PR_NUMBER="${{ github.event.pull_request.number || github.event.inputs.pr_number }}"
-          SUFFIX="-pr-${PR_NUMBER}"
+          ENV="${{ inputs.environment }}"
+          PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
+
+          # Determine suffix based on environment type
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            SUFFIX="-pr-${PR_NUMBER}"
+            ENV_NAME="pr-${PR_NUMBER}"
+          elif [[ "$ENV" == "pr" ]]; then
+            if [[ -z "$PR_NUMBER" ]]; then
+              echo "❌ PR number required for PR environments"
+              exit 1
+            fi
+            SUFFIX="-pr-${PR_NUMBER}"
+            ENV_NAME="pr-${PR_NUMBER}"
+          elif [[ "$ENV" == "develop" ]]; then
+            SUFFIX="-dev"
+            ENV_NAME="develop"
+          elif [[ "$ENV" == "staging" ]]; then
+            SUFFIX="-staging"
+            ENV_NAME="staging"
+          else
+            echo "❌ Unknown environment: $ENV"
+            exit 1
+          fi
+
+          echo "suffix=${SUFFIX}" >> $GITHUB_OUTPUT
+          echo "env_name=${ENV_NAME}" >> $GITHUB_OUTPUT
+          echo "🎯 Target environment: ${ENV_NAME} (suffix: ${SUFFIX})"
+
+      - name: Delete Cloud Run services
+        run: |
+          SUFFIX="${{ steps.env.outputs.suffix }}"
+          ENV_NAME="${{ steps.env.outputs.env_name }}"
           REGION="us-central1"
 
-          echo "🧹 Cleaning up PR environment: pr-${PR_NUMBER}"
+          echo "🧹 Cleaning up environment: ${ENV_NAME}"
 
           # Delete services if they exist
           for service in expense-tracker api-service auth-service frontend; do
@@ -47,6 +88,16 @@ jobs:
               echo "${service}${SUFFIX} not found, skipping..."
             fi
           done
+
+          # Delete frontend bucket for PR environments
+          if [[ "${{ inputs.environment || 'pr' }}" == "pr" ]]; then
+            PR_NUMBER="${{ github.event.pull_request.number || inputs.pr_number }}"
+            BUCKET="expense-tracker-frontend-pr-${PR_NUMBER}"
+            if gsutil ls gs://${BUCKET} 2>/dev/null; then
+              echo "Deleting bucket: ${BUCKET}"
+              gsutil -m rm -r gs://${BUCKET} || true
+            fi
+          fi
 
           echo "✅ Cleanup complete!"
 

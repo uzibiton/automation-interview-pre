@@ -1,0 +1,210 @@
+name: Main Flow
+
+run-name: "${{ github.event_name == 'push' && format('main → staging') || format('{0} → {1}', github.ref_name, inputs.environment || 'manual') }}"
+
+# Main CI/CD orchestration workflow that calls reusable workflows:
+# 1. Pre-Deploy: Static analysis, linting, type checking, unit tests, coverage
+# 2. Deploy: Build and deploy services to target environment
+# 3. Post-Deploy: Integration tests, smoke tests
+
+on:
+  # Trigger on push to main branch - runs tests, deploys to staging if pass
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '**/*.pdf'
+      - '.github/ISSUE_TEMPLATE/**'
+
+  # NO automatic trigger on pull_request
+  # PRs require manual trigger via workflow_dispatch below
+
+  # Manual trigger for PR validation or any environment
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - pr
+          - develop
+          - staging
+          - production
+        default: pr
+      skip_static_analysis:
+        description: 'Skip static analysis'
+        required: false
+        type: boolean
+        default: false
+      skip_unit_tests:
+        description: 'Skip unit tests'
+        required: false
+        type: boolean
+        default: false
+      skip_coverage:
+        description: 'Skip coverage report'
+        required: false
+        type: boolean
+        default: false
+      skip_prettier:
+        description: 'Skip Prettier check'
+        required: false
+        type: boolean
+        default: false
+      skip_eslint:
+        description: 'Skip ESLint'
+        required: false
+        type: boolean
+        default: false
+      skip_typecheck:
+        description: 'Skip TypeScript check'
+        required: false
+        type: boolean
+        default: false
+      skip_audit:
+        description: 'Skip npm audit'
+        required: false
+        type: boolean
+        default: false
+      skip_snyk:
+        description: 'Skip Snyk scan'
+        required: false
+        type: boolean
+        default: false
+      skip_integration_tests:
+        description: 'Skip integration tests'
+        required: false
+        type: boolean
+        default: true
+      skip_smoke_tests:
+        description: 'Skip smoke tests'
+        required: false
+        type: boolean
+        default: true
+      skip_deployment:
+        description: 'Skip environment setup and deployment'
+        required: false
+        type: boolean
+        default: false
+      skip_build:
+        description: 'Skip build (use existing images)'
+        required: false
+        type: boolean
+        default: false
+      custom_env_name:
+        description: 'Custom name for temp environment (e.g., "feature-auth"). Leave empty for auto-generated name'
+        required: false
+        type: string
+        default: ''
+
+# Prevent concurrent deployments to the same environment
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ============================================================================
+  # PHASE 1: PRE-DEPLOY
+  # Static analysis, linting, type checking, security scans, unit tests
+  # ============================================================================
+
+  pre-deploy:
+    name: 🔍 Pre-Deploy
+    uses: ./.github/workflows/pre-deploy.yml
+    with:
+      skip_static_analysis: ${{ inputs.skip_static_analysis || false }}
+      skip_unit_tests: ${{ inputs.skip_unit_tests || false }}
+      skip_coverage: ${{ inputs.skip_coverage || false }}
+      skip_prettier: ${{ inputs.skip_prettier || false }}
+      skip_eslint: ${{ inputs.skip_eslint || false }}
+      skip_typecheck: ${{ inputs.skip_typecheck || false }}
+      skip_audit: ${{ inputs.skip_audit || false }}
+      skip_snyk: ${{ inputs.skip_snyk || false }}
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  # ============================================================================
+  # PHASE 2: DEPLOY
+  # Build services and deploy to target environment
+  # ============================================================================
+
+  deploy:
+    name: 🚀 Deploy
+    needs: [pre-deploy]
+    if: ${{ !inputs.skip_deployment && (success() || (github.event_name == 'push' && vars.CI_CD_ENABLED == 'true')) }}
+    uses: ./.github/workflows/deploy-flow.yml
+    with:
+      environment: ${{ github.event_name == 'push' && 'staging' || inputs.environment }}
+      pr_number: ${{ github.event.pull_request.number || '' }}
+      timestamp: ${{ needs.pre-deploy.outputs.timestamp }}
+      skip_build: ${{ inputs.skip_build || false }}
+      skip_deploy: ${{ inputs.skip_deployment || false }}
+    secrets:
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+      GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  # ============================================================================
+  # PHASE 3: POST-DEPLOY
+  # Integration tests and smoke tests against deployed environment
+  # ============================================================================
+
+  post-deploy:
+    name: ✅ Post-Deploy
+    needs: [pre-deploy, deploy]
+    if: ${{ !inputs.skip_deployment && success() }}
+    uses: ./.github/workflows/post-deploy.yml
+    with:
+      environment: ${{ github.event_name == 'push' && 'staging' || inputs.environment }}
+      pr_number: ${{ github.event.pull_request.number || '' }}
+      timestamp: ${{ needs.pre-deploy.outputs.timestamp }}
+      api_url: ${{ needs.deploy.outputs.api_url }}
+      frontend_url: ${{ needs.deploy.outputs.frontend_url }}
+      skip_integration_tests: ${{ inputs.skip_integration_tests || true }}
+      skip_smoke_tests: ${{ inputs.skip_smoke_tests || true }}
+    secrets:
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+  # ============================================================================
+  # Summary Job
+  # ============================================================================
+
+  summary:
+    name: 📋 Pipeline Summary
+    needs: [pre-deploy, deploy, post-deploy]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "## 🎯 Main Flow Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Pipeline Phases" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Phase | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔍 Pre-Deploy | ${{ needs.pre-deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🚀 Deploy | ${{ needs.deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| ✅ Post-Deploy | ${{ needs.post-deploy.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Determine overall status
+          if [[ "${{ needs.pre-deploy.result }}" == "success" ]] && \
+             [[ "${{ needs.deploy.result }}" =~ ^(success|skipped)$ ]] && \
+             [[ "${{ needs.post-deploy.result }}" =~ ^(success|skipped)$ ]]; then
+            echo "### ✅ Pipeline Completed Successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ⚠️ Pipeline Completed with Issues" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ github.event_name == 'push' && 'staging' || inputs.environment || 'N/A' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Run ID:** ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
