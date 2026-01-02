@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Firestore, CollectionReference } from '@google-cloud/firestore';
 import {
   IExpenseRepository,
@@ -9,6 +9,8 @@ import {
   Category,
   SubCategory,
 } from './database.interface';
+
+const UNKNOWN_CREATOR_NAME = 'Unknown';
 
 @Injectable()
 export class FirestoreRepository implements IExpenseRepository {
@@ -48,11 +50,10 @@ export class FirestoreRepository implements IExpenseRepository {
     };
   }
 
-  async findAll(userId: number | string, filters?: ExpenseFilters): Promise<Expense[]> {
-    let query: any = this.expenses.where('userId', '==', String(userId));
+  private applyExpenseFilters(baseQuery: any, filters?: ExpenseFilters): any {
+    let query = baseQuery;
 
     if (filters?.startDate && filters?.endDate) {
-      // Convert Date objects to YYYY-MM-DD string format for comparison
       const startDateStr =
         filters.startDate instanceof Date
           ? filters.startDate.toISOString().split('T')[0]
@@ -76,6 +77,83 @@ export class FirestoreRepository implements IExpenseRepository {
       query = query.where('amount', '<=', filters.maxAmount);
     }
 
+    return query;
+  }
+
+  private getMemberId(member: any): string {
+    // Normalize member ID access - prefer userId, fallback to id
+    return member.userId || member.id;
+  }
+
+  async findAll(userId: number | string, filters?: ExpenseFilters): Promise<Expense[]> {
+    // If groupId is provided, fetch expenses for all group members
+    if (filters?.groupId) {
+      const group = await this.findGroupById(filters.groupId);
+      if (!group) {
+        return [];
+      }
+
+      // Security check: Verify the requesting user is a member of the group
+      const memberIds = group.members || [];
+      if (!memberIds.includes(String(userId))) {
+        throw new HttpException(
+          'Unauthorized: User is not a member of this group',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+
+      // Fetch expenses for all members in parallel for better performance
+      const expensePromises = memberIds.map(async (memberId) => {
+        let query: any = this.expenses.where('userId', '==', String(memberId));
+        query = this.applyExpenseFilters(query, filters);
+
+        try {
+          const snapshot = await query.get();
+          return snapshot.docs.map((doc: any) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+        } catch (error: any) {
+          // Log error but don't fail entire request (don't log sensitive user IDs)
+          console.error(
+            '[FirestoreRepository] Error fetching expenses for a group member:',
+            error.message || error,
+          );
+          return []; // Return empty array for this member
+        }
+      });
+
+      // Wait for all queries to complete
+      const expenseResults = await Promise.all(expensePromises);
+      const allExpenses = expenseResults.flat();
+
+      // Create a lookup map for O(n+m) complexity instead of O(n*m)
+      const memberDetails = group.memberDetails || [];
+      const memberDetailsMap = new Map(memberDetails.map((m: any) => [this.getMemberId(m), m]));
+
+      // Add creator attribution by looking up member details
+      const expensesWithCreator = allExpenses.map((expense) => {
+        const creator = memberDetailsMap.get(String(expense.userId));
+        return {
+          ...expense,
+          createdBy: creator
+            ? { id: this.getMemberId(creator), name: (creator as any).name || UNKNOWN_CREATOR_NAME }
+            : { id: String(expense.userId), name: UNKNOWN_CREATOR_NAME },
+        };
+      });
+
+      // Sort by date descending
+      return expensesWithCreator.sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA;
+      });
+    }
+
+    // Original single-user filtering logic
+    let query: any = this.expenses.where('userId', '==', String(userId));
+    query = this.applyExpenseFilters(query, filters);
+
     // Try with orderBy, but catch index errors and retry without it
     try {
       const snapshot = await query.orderBy('date', 'desc').get();
@@ -86,7 +164,7 @@ export class FirestoreRepository implements IExpenseRepository {
     } catch (error: any) {
       // If index is missing, fetch without orderBy and sort in memory
       if (error.code === 9) {
-        console.log('Index not available, sorting in memory');
+        console.log('[FirestoreRepository] Index not available, sorting in memory');
         const snapshot = await query.get();
         const docs = snapshot.docs.map((doc: any) => ({
           id: doc.id,

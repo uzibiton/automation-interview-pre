@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Optional } from '@nestjs/common';
+import { Injectable, NotFoundException, Optional, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Expense } from './expense.entity';
@@ -31,10 +31,18 @@ export class ExpensesService {
 
   async findAll(
     userId: number | string,
-    filters?: { startDate?: string; endDate?: string; categoryId?: number },
+    filters?: { startDate?: string; endDate?: string; categoryId?: number; groupId?: string },
   ): Promise<Expense[]> {
     if (this.useFirestore) {
       return this.firestoreRepo.findAll(userId, filters) as any;
+    }
+
+    // Group filtering is only supported with Firestore
+    if (filters?.groupId) {
+      throw new HttpException(
+        'Group filtering is not supported with PostgreSQL. Please use Firestore for group features.',
+        HttpStatus.NOT_IMPLEMENTED,
+      );
     }
 
     const query = this.expensesRepository

@@ -103,7 +103,9 @@ describe('ExpenseListItem', () => {
         </table>,
       );
 
-      const dateElement = screen.getByText(/1\/15\/2024/);
+      // Date formatting is locale-dependent, so we check for the expected formatted output
+      const expectedDate = new Date('2024-01-15').toLocaleDateString();
+      const dateElement = screen.getByText(expectedDate);
       expect(dateElement).toBeInTheDocument();
     });
 

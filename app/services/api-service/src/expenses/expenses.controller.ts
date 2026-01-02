@@ -30,11 +30,13 @@ export class ExpensesController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
     @Query('categoryId') categoryId?: string,
+    @Query('groupId') groupId?: string,
   ) {
     const filters = {
       startDate,
       endDate,
       categoryId: categoryId ? parseInt(categoryId) : undefined,
+      groupId,
     };
 
     return this.expensesService.findAll(this.getUserId(req), filters);

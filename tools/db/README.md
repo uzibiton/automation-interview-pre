@@ -31,10 +31,10 @@ node tools/db/seed-develop.js
 
 ## Test Users
 
-| Email | Auth Type | Password | Name |
-|-------|-----------|----------|------|
-| test@expenses.local | Local | Test123! | Test User |
-| uzibdocs@gmail.com | Google OAuth | N/A | Uzi Bdocs |
+| Email               | Auth Type    | Password | Name      |
+| ------------------- | ------------ | -------- | --------- |
+| test@expenses.local | Local        | Test123! | Test User |
+| uzibdocs@gmail.com  | Google OAuth | N/A      | Uzi Bdocs |
 
 ## Future Improvements
 
