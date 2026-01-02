@@ -1,8 +1,36 @@
 name: 'Main2: Deploy'
 
 # Reusable workflow for deployment (setup, build, deploy)
+# Can be triggered standalone or called by Main0: ALL
 
 on:
+  # Standalone trigger - select environment and branch
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - develop
+          - staging
+          - production
+          - pr
+        default: develop
+      pr_number:
+        description: 'PR number (only for PR environments)'
+        required: false
+        type: string
+      skip_build:
+        description: 'Skip build (use existing images)'
+        type: boolean
+        default: false
+      skip_deploy:
+        description: 'Skip deployment'
+        type: boolean
+        default: false
+
+  # Called by Main0: ALL
   workflow_call:
     inputs:
       environment:
@@ -42,11 +70,33 @@ on:
 
 jobs:
   # ============================================================================
+  # Generate timestamp for standalone trigger
+  # ============================================================================
+
+  generate-timestamp:
+    name: 🕐 Generate Timestamp
+    runs-on: ubuntu-latest
+    outputs:
+      timestamp: ${{ steps.timestamp.outputs.value }}
+    steps:
+      - name: Generate timestamp
+        id: timestamp
+        run: |
+          # Use provided timestamp (from workflow_call) or generate new one
+          TIMESTAMP="${{ inputs.timestamp }}"
+          if [[ -z "$TIMESTAMP" ]]; then
+            TIMESTAMP=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)
+          fi
+          echo "value=${TIMESTAMP}" >> $GITHUB_OUTPUT
+          echo "📅 Timestamp: ${TIMESTAMP}"
+
+  # ============================================================================
   # STAGE 3: Setup and Build (parallel builds)
   # ============================================================================
 
   setup:
     name: 📦 Setup Environment
+    needs: [generate-timestamp]
     runs-on: ubuntu-latest
     outputs:
       deploy_env: ${{ steps.set-env.outputs.deploy_env }}
@@ -58,6 +108,7 @@ jobs:
       api_url: ${{ steps.set-env.outputs.api_url }}
       auth_url: ${{ steps.set-env.outputs.auth_url }}
       database_host: ${{ steps.set-env.outputs.database_host }}
+      timestamp: ${{ needs.generate-timestamp.outputs.timestamp }}
 
     steps:
       - name: Set environment variables
@@ -142,10 +193,10 @@ jobs:
 
       - name: Build and push auth-service
         run: |
-          docker build -t ${{ needs.setup.outputs.registry }}/auth-service:${{ inputs.timestamp }} \
+          docker build -t ${{ needs.setup.outputs.registry }}/auth-service:${{ needs.setup.outputs.timestamp }} \
             -t ${{ needs.setup.outputs.registry }}/auth-service:latest \
             ./app/services/auth-service
-          docker push ${{ needs.setup.outputs.registry }}/auth-service:${{ inputs.timestamp }}
+          docker push ${{ needs.setup.outputs.registry }}/auth-service:${{ needs.setup.outputs.timestamp }}
           docker push ${{ needs.setup.outputs.registry }}/auth-service:latest
 
   build-api:
@@ -173,10 +224,10 @@ jobs:
 
       - name: Build and push api-service
         run: |
-          docker build -t ${{ needs.setup.outputs.registry }}/api-service:${{ inputs.timestamp }} \
+          docker build -t ${{ needs.setup.outputs.registry }}/api-service:${{ needs.setup.outputs.timestamp }} \
             -t ${{ needs.setup.outputs.registry }}/api-service:latest \
             ./app/services/api-service
-          docker push ${{ needs.setup.outputs.registry }}/api-service:${{ inputs.timestamp }}
+          docker push ${{ needs.setup.outputs.registry }}/api-service:${{ needs.setup.outputs.timestamp }}
           docker push ${{ needs.setup.outputs.registry }}/api-service:latest
 
   build-frontend:
@@ -208,7 +259,7 @@ jobs:
       - name: Upload frontend build
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-build-${{ inputs.timestamp }}
+          name: frontend-build-${{ needs.setup.outputs.timestamp }}
           path: app/frontend/dist
           retention-days: 7
 
@@ -245,7 +296,7 @@ jobs:
       - name: Deploy auth-service to Cloud Run (background)
         run: |
           gcloud run deploy auth-service${{ needs.setup.outputs.service_suffix }} \
-            --image=${{ needs.setup.outputs.registry }}/auth-service:${{ inputs.timestamp }} \
+            --image=${{ needs.setup.outputs.registry }}/auth-service:${{ needs.setup.outputs.timestamp }} \
             --platform=managed \
             --region=${{ needs.setup.outputs.region }} \
             --allow-unauthenticated \
@@ -258,7 +309,7 @@ jobs:
       - name: Deploy api-service to Cloud Run (background)
         run: |
           gcloud run deploy api-service${{ needs.setup.outputs.service_suffix }} \
-            --image=${{ needs.setup.outputs.registry }}/api-service:${{ inputs.timestamp }} \
+            --image=${{ needs.setup.outputs.registry }}/api-service:${{ needs.setup.outputs.timestamp }} \
             --platform=managed \
             --region=${{ needs.setup.outputs.region }} \
             --allow-unauthenticated \
@@ -272,7 +323,7 @@ jobs:
       - name: Download frontend build
         uses: actions/download-artifact@v4
         with:
-          name: frontend-build-${{ inputs.timestamp }}
+          name: frontend-build-${{ needs.setup.outputs.timestamp }}
           path: frontend-dist
 
       - name: Deploy frontend to Cloud Storage

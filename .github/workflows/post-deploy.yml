@@ -1,10 +1,10 @@
 name: 'Main3: Post-Deploy'
 
 # Reusable workflow for post-deployment verification (integration tests, smoke tests)
-# Can be triggered standalone against a deployed environment or called by ALL workflow
+# Can be triggered standalone against a deployed environment or called by Main0: ALL
 
 on:
-  # Standalone trigger - select deployed environment to test
+  # Standalone trigger - select deployed environment to test (no branch needed)
   workflow_dispatch:
     inputs:
       environment:
@@ -15,7 +15,7 @@ on:
           - develop
           - staging
           - production
-        default: staging
+        default: develop
       pr_number:
         description: 'PR number (only for PR environments)'
         required: false
@@ -29,7 +29,7 @@ on:
         type: boolean
         default: false
 
-  # Called by Main Flow
+  # Called by Main0: ALL
   workflow_call:
     inputs:
       environment:

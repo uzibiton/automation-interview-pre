@@ -1,12 +1,15 @@
 name: 'Main4: Cleanup'
 
+# Cleanup workflow - deletes deployed environment resources
+# No branch selection needed - just select environment to clean up
+
 on:
   pull_request:
     types: [closed]
     branches:
       - main
 
-  # Manual trigger to cleanup any deployed environment
+  # Manual trigger to cleanup any deployed environment (no branch needed)
   workflow_dispatch:
     inputs:
       environment:
@@ -14,10 +17,10 @@ on:
         required: true
         type: choice
         options:
-          - pr
           - develop
           - staging
-        default: pr
+          - pr
+        default: develop
       pr_number:
         description: 'PR number (required for PR environments)'
         required: false

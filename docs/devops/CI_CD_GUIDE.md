@@ -64,30 +64,30 @@ The CI/CD pipeline is split into **4 reusable workflows** orchestrated by **Main
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-| Workflow               | File              | Purpose                                                                       | Standalone Trigger   |
-| ---------------------- | ----------------- | ----------------------------------------------------------------------------- | -------------------- |
-| **Main0: ALL**         | `main-flow.yml`   | Orchestrates all phases                                                       | ✅ Yes               |
-| **Main1: Pre-Deploy**  | `pre-deploy.yml`  | Static analysis, linting, type checking, security scans, unit tests, coverage | ✅ Yes (branch)      |
-| **Main2: Deploy**      | `deploy-flow.yml` | Setup environment, build Docker images (parallel), deploy to Cloud Run        | Called by Main0      |
-| **Main3: Post-Deploy** | `post-deploy.yml` | Integration tests, smoke tests                                                | ✅ Yes (environment) |
-| **Main4: Cleanup**     | `cleanup-pr.yml`  | Delete deployed environment resources                                         | ✅ Yes (environment) |
+| Workflow               | File              | Purpose                                                                       | Standalone Trigger        |
+| ---------------------- | ----------------- | ----------------------------------------------------------------------------- | ------------------------- |
+| **Main0: ALL**         | `main-flow.yml`   | Orchestrates all phases                                                       | ✅ Yes (branch + env)     |
+| **Main1: Pre-Deploy**  | `pre-deploy.yml`  | Static analysis, linting, type checking, security scans, unit tests, coverage | ✅ Yes (branch)           |
+| **Main2: Deploy**      | `deploy-flow.yml` | Setup environment, build Docker images (parallel), deploy to Cloud Run        | ✅ Yes (branch + env)     |
+| **Main3: Post-Deploy** | `post-deploy.yml` | Integration tests, smoke tests                                                | ✅ Yes (environment only) |
+| **Main4: Cleanup**     | `cleanup-pr.yml`  | Delete deployed environment resources                                         | ✅ Yes (environment only) |
 
 ### Deployment Strategy Summary
 
 | Environment     | Trigger                  | Integration Tests | Smoke Tests | Purpose                       |
 | --------------- | ------------------------ | ----------------- | ----------- | ----------------------------- |
-| **PR-{number}** | Manual workflow_dispatch | ⏭️ Skipped        | ⏭️ Skipped  | Isolated testing before merge |
-| **Develop**     | Manual via deploy.yml    | ⏭️ Skipped        | ⏭️ Skipped  | Continuous development        |
-| **Staging**     | Auto (push to main)      | ⚙️ Optional       | ⚙️ Optional | Release candidate testing     |
-| **Production**  | Manual only              | ⚙️ Optional       | ⚙️ Optional | Live environment              |
+| **Develop**     | Manual (default)         | ✅ Run            | ✅ Run      | Default development target    |
+| **Staging**     | Auto (push to main)      | ✅ Run            | ✅ Run      | Release candidate testing     |
+| **Production**  | Manual only              | ✅ Run            | ✅ Run      | Live environment              |
+| **PR-{number}** | Manual workflow_dispatch | ✅ Run            | ✅ Run      | Isolated testing before merge |
 
 **Key Features:**
 
 - ✅ Push to main deploys to **staging** automatically
-- ✅ PRs require **manual trigger** via workflow_dispatch
-- ✅ Production requires **manual deployment** via deploy.yml
-- ✅ Integration and smoke tests **skipped by default** for faster deployments
-- ✅ Tests can be **enabled on-demand** via workflow inputs
+- ✅ Default environment is **develop** (not pr)
+- ✅ **No tests skipped by default** - full pipeline runs
+- ✅ All workflows can be triggered standalone
+- ✅ Main3/Main4 only need environment selection (no branch)
 - ✅ Documentation-only changes skip CI automatically
 - ✅ **Parallel builds** for faster execution (auth, api, frontend build simultaneously)
 
@@ -202,17 +202,19 @@ The CI/CD pipeline has been restructured to:
 
 Each workflow can be triggered independently from the GitHub Actions UI:
 
-| Workflow               | How to Trigger                              | Input Required                                  |
-| ---------------------- | ------------------------------------------- | ----------------------------------------------- |
-| **Main0: ALL**         | Actions → Main0: ALL → Run workflow         | Select branch + environment                     |
-| **Main1: Pre-Deploy**  | Actions → Main1: Pre-Deploy → Run workflow  | Select branch                                   |
-| **Main3: Post-Deploy** | Actions → Main3: Post-Deploy → Run workflow | Select environment (develop/staging/production) |
-| **Main4: Cleanup**     | Actions → Main4: Cleanup → Run workflow     | Select environment (+ PR number if PR)          |
+| Workflow               | How to Trigger                              | Input Required                                    |
+| ---------------------- | ------------------------------------------- | ------------------------------------------------- |
+| **Main0: ALL**         | Actions → Main0: ALL → Run workflow         | Branch + environment (default: develop)           |
+| **Main1: Pre-Deploy**  | Actions → Main1: Pre-Deploy → Run workflow  | Branch only                                       |
+| **Main2: Deploy**      | Actions → Main2: Deploy → Run workflow      | Branch + environment (default: develop)           |
+| **Main3: Post-Deploy** | Actions → Main3: Post-Deploy → Run workflow | Environment only (default: develop)               |
+| **Main4: Cleanup**     | Actions → Main4: Cleanup → Run workflow     | Environment only (default: develop, + PR# for PR) |
 
 ### Use Cases
 
 - **Main0: ALL**: Run full pipeline (pre-deploy → deploy → post-deploy)
 - **Main1: Pre-Deploy standalone**: Run quality checks on any branch without deploying
+- **Main2: Deploy standalone**: Deploy any branch to any environment (skip tests)
 - **Main3: Post-Deploy standalone**: Run integration/smoke tests against an already deployed environment
 - **Main4: Cleanup standalone**: Manually clean up environments that weren't auto-cleaned
 
