@@ -1,6 +1,6 @@
 name: 'Main0: ALL'
 
-run-name: "${{ github.event_name == 'push' && format('main → staging') || format('{0} → {1}', github.ref_name, inputs.environment || 'manual') }}"
+run-name: "Main0 CI/CD"
 
 # Main CI/CD orchestration workflow that calls reusable workflows:
 # 1. Pre-Deploy: Static analysis, linting, type checking, unit tests, coverage
