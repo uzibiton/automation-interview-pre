@@ -70,33 +70,11 @@ on:
 
 jobs:
   # ============================================================================
-  # Generate timestamp for standalone trigger
-  # ============================================================================
-
-  generate-timestamp:
-    name: Generate Timestamp
-    runs-on: ubuntu-latest
-    outputs:
-      timestamp: ${{ steps.timestamp.outputs.value }}
-    steps:
-      - name: Generate timestamp
-        id: timestamp
-        run: |
-          # Use provided timestamp (from workflow_call) or generate new one
-          TIMESTAMP="${{ inputs.timestamp }}"
-          if [[ -z "$TIMESTAMP" ]]; then
-            TIMESTAMP=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)
-          fi
-          echo "value=${TIMESTAMP}" >> $GITHUB_OUTPUT
-          echo "Timestamp: ${TIMESTAMP}"
-
-  # ============================================================================
   # STAGE 3: Setup and Build (parallel builds)
   # ============================================================================
 
   setup:
     name: Setup Environment
-    needs: [generate-timestamp]
     runs-on: ubuntu-latest
     outputs:
       deploy_env: ${{ steps.set-env.outputs.deploy_env }}
@@ -109,9 +87,20 @@ jobs:
       api_url: ${{ steps.set-env.outputs.api_url }}
       auth_url: ${{ steps.set-env.outputs.auth_url }}
       database_host: ${{ steps.set-env.outputs.database_host }}
-      timestamp: ${{ needs.generate-timestamp.outputs.timestamp }}
+      timestamp: ${{ steps.timestamp.outputs.value }}
 
     steps:
+      - name: Generate timestamp
+        id: timestamp
+        run: |
+          # Use provided timestamp (from workflow_call) or generate new one
+          TIMESTAMP="${{ inputs.timestamp }}"
+          if [[ -z "$TIMESTAMP" ]]; then
+            TIMESTAMP=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)
+          fi
+          echo "value=${TIMESTAMP}" >> $GITHUB_OUTPUT
+          echo "Timestamp: ${TIMESTAMP}"
+
       - name: Set environment variables
         id: set-env
         run: |
