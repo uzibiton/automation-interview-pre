@@ -91,27 +91,33 @@ export class FirestoreRepository implements IExpenseRepository {
         return [];
       }
 
-      // Get all member IDs from the group
+      // Security check: Verify the requesting user is a member of the group
       const memberIds = group.members || [];
+      if (!memberIds.includes(String(userId))) {
+        throw new Error('Unauthorized: User is not a member of this group');
+      }
       
-      // Fetch expenses for all members
-      const allExpenses: Expense[] = [];
-      for (const memberId of memberIds) {
+      // Fetch expenses for all members in parallel for better performance
+      const expensePromises = memberIds.map(async (memberId) => {
         let query: any = this.expenses.where('userId', '==', String(memberId));
         query = this.applyExpenseFilters(query, filters);
 
         try {
           const snapshot = await query.get();
-          const expenses = snapshot.docs.map((doc: any) => ({
+          return snapshot.docs.map((doc: any) => ({
             id: doc.id,
             ...doc.data(),
           }));
-          allExpenses.push(...expenses);
         } catch (error: any) {
-          // Log error but continue processing other members
+          // Log error but don't fail entire request
           console.error(`[FirestoreRepository] Error fetching expenses for member ${memberId}:`, error.message || error);
+          return []; // Return empty array for this member
         }
-      }
+      });
+
+      // Wait for all queries to complete
+      const expenseResults = await Promise.all(expensePromises);
+      const allExpenses = expenseResults.flat();
 
       // Add creator attribution by looking up member details
       const memberDetails = group.memberDetails || [];
