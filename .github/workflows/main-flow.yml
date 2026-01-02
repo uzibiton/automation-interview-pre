@@ -112,7 +112,7 @@ jobs:
   # ============================================================================
 
   pre-deploy:
-    uses: ./.github/workflows/test-predeploy.yml
+    uses: ./.github/workflows/pre-deploy.yml
     with:
       skip_static_analysis: ${{ inputs.skip_static_analysis || false }}
       skip_unit_tests: ${{ inputs.skip_unit_tests || false }}
