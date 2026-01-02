@@ -15,13 +15,14 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Deployment Environments](#deployment-environments)
-3. [Pipeline Triggers](#pipeline-triggers)
-4. [Pipeline Stages](#pipeline-stages)
-5. [Workflow Examples](#workflow-examples)
-6. [Cost Management](#cost-management)
-7. [Required Secrets](#required-secrets)
-8. [Troubleshooting](#troubleshooting)
+2. [Planned Changes](#planned-changes)
+3. [Deployment Environments](#deployment-environments)
+4. [Pipeline Triggers](#pipeline-triggers)
+5. [Pipeline Stages](#pipeline-stages)
+6. [Workflow Examples](#workflow-examples)
+7. [Cost Management](#cost-management)
+8. [Required Secrets](#required-secrets)
+9. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -56,13 +57,76 @@ This pipeline automates the entire software delivery process from code commit to
 
 ---
 
+## CI/CD Flow (Updated)
+
+> ✅ **STATUS: IMPLEMENTED** - See [#162](https://github.com/uzibiton/automation-interview-pre/issues/162)
+> 📋 **Open Decisions**: See [#163](https://github.com/uzibiton/automation-interview-pre/issues/163)
+
+### Summary
+
+The CI/CD pipeline has been restructured to:
+
+1. **Require manual trigger for PR validation** (no auto-run on PR open/update)
+2. **Auto-deploy to staging after merge to main** (not develop)
+3. **Separate deploy workflow** ([deploy.yml](../../.github/workflows/deploy.yml)) for manual deployments
+
+### Flow
+
+| Event                | Tests      | Deploy To                  | Notes                                         |
+| -------------------- | ---------- | -------------------------- | --------------------------------------------- |
+| PR opened/commit     | ❌ None    | -                          | Manual trigger required via workflow_dispatch |
+| Manual trigger on PR | ✅ Run all | PR temp env (if pass)      | Select "pr" environment, required for merge   |
+| Push/Merge to main   | ✅ Run all | Staging (if pass)          | Automatic                                     |
+| Manual `deploy.yml`  | Optional   | develop/staging/production | Branch + env selection, standalone workflow   |
+
+### Workflows
+
+#### ci-cd.yml (Main Pipeline)
+
+**Triggers**:
+
+- `push` to main → runs tests → deploys to **staging**
+- `workflow_dispatch` → manual trigger with environment selection (pr/develop/staging/production)
+
+**No automatic trigger on pull_request** - PRs require manual trigger.
+
+#### deploy.yml (Deployment Only)
+
+**Triggers**:
+
+- `workflow_dispatch` → manual deployment of any branch to any environment
+- `workflow_call` → can be called by other workflows (future use)
+
+**Options**:
+
+- Select environment: develop, staging, production
+- Build new images or deploy existing `latest` images
+
+### Branch Protection (Required Setup)
+
+To enforce the manual trigger requirement:
+
+1. Go to **Settings** → **Branches** → **Branch protection rules** for `main`
+2. Enable **"Require status checks to pass before merging"**
+3. Select required checks: `unit-tests`, `deploy` (or other key jobs)
+4. PR will show "Waiting for status" until manually triggered
+5. Merge button disabled until checks pass
+
+### Open Decisions (Issue #163)
+
+1. **Develop environment**: Permanent shared env vs PR-specific only?
+2. **Production restrictions**: Any branch can deploy, or main-only?
+3. **Skip toggles**: Keep all current `skip_*` options?
+
+---
+
 ## Deployment Environments
 
 ### 1. PR Environments (Temporary)
 
-**Trigger**: Opening/updating a Pull Request
+**Trigger**: Manual workflow_dispatch with "pr" environment selected
 
-**Naming**: `pr-{number}` (e.g., pr-42)
+**Naming**: `pr-{number}` or sanitized branch name (e.g., pr-42, feature-auth)
 
 **Services**:
 
@@ -70,7 +134,7 @@ This pipeline automates the entire software delivery process from code commit to
 - `api-service-pr-{number}`
 - `auth-service-pr-{number}`
 
-**Lifecycle**: Automatically deleted when PR is closed/merged
+**Lifecycle**: Automatically deleted when PR is closed/merged (via [cleanup-pr.yml](../../.github/workflows/cleanup-pr.yml))
 
 **Purpose**: Test changes in isolation before merging
 
@@ -80,7 +144,7 @@ This pipeline automates the entire software delivery process from code commit to
 
 ### 2. Develop Environment (Persistent)
 
-**Trigger**: Push to `main` branch (automatic)
+**Trigger**: Manual via `deploy.yml` or ci-cd.yml workflow_dispatch
 
 **Naming**: `develop`
 
@@ -90,7 +154,7 @@ This pipeline automates the entire software delivery process from code commit to
 - `api-service-develop`
 - `auth-service-develop`
 
-**Purpose**: Continuous development environment, latest merged changes
+**Purpose**: Shared development environment for integration testing
 
 **E2E Tests**: SKIPPED by default (can be enabled manually)
 
@@ -98,7 +162,7 @@ This pipeline automates the entire software delivery process from code commit to
 
 ### 3. Staging Environment (Persistent)
 
-**Trigger**: Manual workflow dispatch only
+**Trigger**: Automatic on push/merge to `main` (after tests pass), or manual via `deploy.yml`
 
 **Naming**: `staging`
 
@@ -108,7 +172,7 @@ This pipeline automates the entire software delivery process from code commit to
 - `api-service-staging`
 - `auth-service-staging`
 
-**Purpose**: Pre-production validation, release candidate testing
+**Purpose**: Pre-production validation, release candidate testing. Auto-deployed after merge to main.
 
 **E2E Tests**: SKIPPED by default (can be enabled manually for thorough validation)
 
@@ -116,7 +180,7 @@ This pipeline automates the entire software delivery process from code commit to
 
 ### 4. Production Environment (Manual)
 
-**Trigger**: Manual workflow dispatch only
+**Trigger**: Manual via `deploy.yml` only
 
 **Naming**: No suffix (production services)
 
@@ -148,9 +212,9 @@ on:
       - '.github/ISSUE_TEMPLATE/**'
 ```
 
-**What happens**: Full pipeline (Test → Build → Deploy to Develop)
+**What happens**: Full pipeline (Test → Build → Deploy to **Staging**)
 
-**Use case**: After merging a PR, automatically deploy to develop environment
+**Use case**: After merging a PR, automatically deploy to staging environment
 
 **Documentation-only changes**: CI is skipped to save resources when only documentation files are modified
 
@@ -158,23 +222,20 @@ on:
 
 ### 2. Pull Request to Main
 
-```yaml
-on:
-  pull_request:
-    branches:
-      - main
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '**/*.pdf'
-      - '.github/ISSUE_TEMPLATE/**'
-```
+> ⚠️ **NO AUTOMATIC TRIGGER** - PRs require manual trigger via workflow_dispatch
 
-**What happens**: Full pipeline (Test → Build → Deploy to PR environment)
+PRs no longer automatically trigger the pipeline. This saves resources and ensures intentional runs.
 
-**Use case**: Validate changes in isolated environment before merging
+**To run CI on a PR**:
 
-**Documentation-only changes**: CI is skipped to save resources
+1. Go to GitHub → Actions tab
+2. Click "CI/CD Pipeline"
+3. Click "Run workflow"
+4. Select the PR branch
+5. Select "pr" as environment
+6. Click "Run workflow"
+
+The pipeline will run tests and deploy to a PR-specific temporary environment.
 
 ---
 
@@ -185,6 +246,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
+        - pr # NEW: For PR validation
         - develop
         - staging
         - production
@@ -197,6 +259,8 @@ on:
 
 **Use cases**:
 
+- **PR validation**: Run tests and deploy to PR temp env (required for merge)
+- Deploy to develop for integration testing
 - Deploy to staging for release candidate testing
 - Deploy to production for releases
 - Re-deploy after fixing secrets
@@ -209,9 +273,40 @@ on:
 1. Go to GitHub → Actions tab
 2. Click "CI/CD Pipeline"
 3. Click "Run workflow"
-4. Select environment (develop/staging/production)
-5. Optional: Toggle skip options for tests
-6. Click "Run workflow" button
+4. Select branch (e.g., your PR branch)
+5. Select environment (pr/develop/staging/production)
+6. Optional: Toggle skip options for tests
+7. Click "Run workflow" button
+
+---
+
+### 4. Manual Deployment (deploy.yml)
+
+```yaml
+# Separate workflow for deployment only
+on:
+  workflow_dispatch:
+    inputs:
+      environment: [develop, staging, production]
+      build_and_push: true/false
+```
+
+**What happens**: Builds images (optional) and deploys to selected environment
+
+**Use cases**:
+
+- Deploy existing images without running tests
+- Quick redeploy after config changes
+- Production deployments
+
+**How to trigger**:
+
+1. Go to GitHub → Actions tab
+2. Click "Deploy"
+3. Click "Run workflow"
+4. Select branch and environment
+5. Choose whether to build new images
+6. Click "Run workflow"
 
 ---
 
