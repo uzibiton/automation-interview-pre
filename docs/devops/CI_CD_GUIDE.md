@@ -524,13 +524,14 @@ Configure these in GitHub Settings → Secrets and variables → Actions:
 
 ### Repository Variables
 
-| Variable         | Description                              | Values        |
-| ---------------- | ---------------------------------------- | ------------- |
-| `CI_CD_ENABLED`  | Enable/disable automatic pipeline runs   | `true`/`false`|
+| Variable        | Description                            | Values         |
+| --------------- | -------------------------------------- | -------------- |
+| `CI_CD_ENABLED` | Enable/disable automatic pipeline runs | `true`/`false` |
 
 **Note**: When `CI_CD_ENABLED` is `false`, push/PR events skip the pipeline. Manual triggers (`workflow_dispatch`) always work regardless of this setting.
 
 To toggle via CLI:
+
 ```bash
 gh variable set CI_CD_ENABLED --body "true"   # Enable auto-trigger
 gh variable set CI_CD_ENABLED --body "false"  # Disable auto-trigger

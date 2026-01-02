@@ -1,11 +1,26 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Optional } from '@nestjs/common';
 import { FirestoreRepository } from '../database/firestore.repository';
 
 @Injectable()
 export class InvitationsService {
-  constructor(private readonly firestore: FirestoreRepository) {}
+  private useFirestore: boolean;
+
+  constructor(@Optional() private readonly firestore: FirestoreRepository) {
+    this.useFirestore = process.env.DATABASE_TYPE === 'firestore';
+  }
+
+  private checkFirestoreRequired() {
+    if (!this.useFirestore) {
+      throw new HttpException(
+        'Invitations feature requires Firestore. Not available in PostgreSQL mode.',
+        HttpStatus.NOT_IMPLEMENTED,
+      );
+    }
+  }
 
   async getInvitationsByGroupId(groupId: string, requestingUserId: string) {
+    this.checkFirestoreRequired();
+
     // Verify the requesting user is a member of the group
     const group = await this.firestore.findGroupById(groupId);
 
@@ -21,6 +36,8 @@ export class InvitationsService {
   }
 
   async createInvitation(groupId: string, email: string, role: string, requestingUserId: string) {
+    this.checkFirestoreRequired();
+
     // Verify the requesting user is an admin/owner of the group
     const group = await this.firestore.findGroupById(groupId);
     if (!group) {
@@ -41,6 +58,8 @@ export class InvitationsService {
   }
 
   async getInvitationByToken(token: string) {
+    this.checkFirestoreRequired();
+
     const invitation = await this.firestore.getInvitationByToken(token);
     if (!invitation) {
       throw new HttpException('Invitation not found', HttpStatus.NOT_FOUND);
@@ -65,6 +84,8 @@ export class InvitationsService {
   }
 
   async acceptInvitation(token: string, userId: string) {
+    this.checkFirestoreRequired();
+
     const invitation = await this.firestore.getInvitationByToken(token);
     if (!invitation) {
       throw new HttpException('Invitation not found', HttpStatus.NOT_FOUND);
@@ -82,6 +103,8 @@ export class InvitationsService {
   }
 
   async declineInvitation(token: string) {
+    this.checkFirestoreRequired();
+
     const invitation = await this.firestore.getInvitationByToken(token);
     if (!invitation) {
       throw new HttpException('Invitation not found', HttpStatus.NOT_FOUND);

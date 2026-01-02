@@ -247,6 +247,7 @@ Remove `PORT` from `--set-env-vars`. Only use the `--port 8080` flag. Cloud Run 
 **Symptom**: Container starts but immediately crashes with file system errors.
 
 **Cause**: Cloud Run has a read-only filesystem. Common issues:
+
 - Winston logger trying to create log files
 - dotenv trying to load from non-existent paths
 
@@ -277,6 +278,7 @@ if (!isCloudRun) {
 **Solution**:
 
 1. Ensure secrets are loaded before deploying:
+
    ```bash
    export $(grep -v '^#' .env | xargs)
    ./scripts/deploy.sh develop
@@ -326,6 +328,7 @@ const allowedOrigins = isCloudRun
 **Solution**:
 
 1. Get your actual Cloud Run URL:
+
    ```bash
    gcloud run services describe auth-service-develop --region=us-central1 \
      --format='value(status.url)'
@@ -336,6 +339,7 @@ const allowedOrigins = isCloudRun
 3. Edit your OAuth 2.0 Client ID
 
 4. Add the callback URL to **Authorized redirect URIs**:
+
    ```
    https://auth-service-develop-XXXXX-uc.a.run.app/auth/google/callback
    ```

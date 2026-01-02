@@ -31,7 +31,8 @@ const USERS = [
     name: 'uzi biton',
     authProvider: 'google',
     googleId: '100605233431935371506',
-    avatarUrl: 'https://lh3.googleusercontent.com/a/ACg8ocK6eW0NcGoUq5IIrsR4jmBS9_GmOmiRCOKXhH9FSmRHWVjcwg=s96-c',
+    avatarUrl:
+      'https://lh3.googleusercontent.com/a/ACg8ocK6eW0NcGoUq5IIrsR4jmBS9_GmOmiRCOKXhH9FSmRHWVjcwg=s96-c',
     // No password - Google OAuth user
   },
 ];

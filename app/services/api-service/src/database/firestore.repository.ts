@@ -101,7 +101,7 @@ export class FirestoreRepository implements IExpenseRepository {
           HttpStatus.FORBIDDEN,
         );
       }
-      
+
       // Fetch expenses for all members in parallel for better performance
       const expensePromises = memberIds.map(async (memberId) => {
         let query: any = this.expenses.where('userId', '==', String(memberId));
@@ -115,7 +115,10 @@ export class FirestoreRepository implements IExpenseRepository {
           }));
         } catch (error: any) {
           // Log error but don't fail entire request (don't log sensitive user IDs)
-          console.error('[FirestoreRepository] Error fetching expenses for a group member:', error.message || error);
+          console.error(
+            '[FirestoreRepository] Error fetching expenses for a group member:',
+            error.message || error,
+          );
           return []; // Return empty array for this member
         }
       });
@@ -126,17 +129,15 @@ export class FirestoreRepository implements IExpenseRepository {
 
       // Create a lookup map for O(n+m) complexity instead of O(n*m)
       const memberDetails = group.memberDetails || [];
-      const memberDetailsMap = new Map(
-        memberDetails.map((m: any) => [this.getMemberId(m), m])
-      );
+      const memberDetailsMap = new Map(memberDetails.map((m: any) => [this.getMemberId(m), m]));
 
       // Add creator attribution by looking up member details
       const expensesWithCreator = allExpenses.map((expense) => {
         const creator = memberDetailsMap.get(String(expense.userId));
         return {
           ...expense,
-          createdBy: creator 
-            ? { id: this.getMemberId(creator), name: (creator as any).name || UNKNOWN_CREATOR_NAME } 
+          createdBy: creator
+            ? { id: this.getMemberId(creator), name: (creator as any).name || UNKNOWN_CREATOR_NAME }
             : { id: String(expense.userId), name: UNKNOWN_CREATOR_NAME },
         };
       });

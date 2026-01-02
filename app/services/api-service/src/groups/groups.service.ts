@@ -1,11 +1,26 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Optional } from '@nestjs/common';
 import { FirestoreRepository } from '../database/firestore.repository';
 
 @Injectable()
 export class GroupsService {
-  constructor(private readonly firestore: FirestoreRepository) {}
+  private useFirestore: boolean;
+
+  constructor(@Optional() private readonly firestore: FirestoreRepository) {
+    this.useFirestore = process.env.DATABASE_TYPE === 'firestore';
+  }
+
+  private checkFirestoreRequired() {
+    if (!this.useFirestore) {
+      throw new HttpException(
+        'Groups feature requires Firestore. Not available in PostgreSQL mode.',
+        HttpStatus.NOT_IMPLEMENTED,
+      );
+    }
+  }
 
   async getCurrentGroupForUser(userId: string) {
+    this.checkFirestoreRequired();
+
     console.log('[GroupsService] getCurrentGroupForUser called with userId:', userId);
     // Query Firestore for the group associated with the user
     let group = await this.firestore.findGroupByUserId(userId);
@@ -20,6 +35,8 @@ export class GroupsService {
   }
 
   async getGroupMembers(groupId: string, requestingUserId: string) {
+    this.checkFirestoreRequired();
+
     // Verify the requesting user is a member of the group
     const group = await this.firestore.findGroupById(groupId);
     if (!group) {
@@ -39,6 +56,8 @@ export class GroupsService {
     role: string,
     requestingUserId: string,
   ) {
+    this.checkFirestoreRequired();
+
     // Verify the requesting user is an admin/owner of the group
     const group = await this.firestore.findGroupById(groupId);
     if (!group) {
@@ -54,6 +73,8 @@ export class GroupsService {
   }
 
   async removeMember(groupId: string, memberId: string, requestingUserId: string) {
+    this.checkFirestoreRequired();
+
     const group = await this.firestore.findGroupById(groupId);
     if (!group) {
       throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
