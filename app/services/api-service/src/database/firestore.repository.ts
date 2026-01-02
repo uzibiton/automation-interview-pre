@@ -48,81 +48,10 @@ export class FirestoreRepository implements IExpenseRepository {
     };
   }
 
-  async findAll(userId: number | string, filters?: ExpenseFilters): Promise<Expense[]> {
-    // If groupId is provided, fetch expenses for all group members
-    if (filters?.groupId) {
-      const group = await this.findGroupById(filters.groupId);
-      if (!group) {
-        return [];
-      }
-
-      // Get all member IDs from the group
-      const memberIds = group.members || [];
-      
-      // Fetch expenses for all members
-      const allExpenses: Expense[] = [];
-      for (const memberId of memberIds) {
-        let query: any = this.expenses.where('userId', '==', String(memberId));
-
-        if (filters?.startDate && filters?.endDate) {
-          const startDateStr =
-            filters.startDate instanceof Date
-              ? filters.startDate.toISOString().split('T')[0]
-              : filters.startDate;
-          const endDateStr =
-            filters.endDate instanceof Date
-              ? filters.endDate.toISOString().split('T')[0]
-              : filters.endDate;
-          query = query.where('date', '>=', startDateStr).where('date', '<=', endDateStr);
-        }
-
-        if (filters?.categoryId) {
-          query = query.where('categoryId', '==', filters.categoryId);
-        }
-
-        if (filters?.minAmount) {
-          query = query.where('amount', '>=', filters.minAmount);
-        }
-
-        if (filters?.maxAmount) {
-          query = query.where('amount', '<=', filters.maxAmount);
-        }
-
-        try {
-          const snapshot = await query.get();
-          const expenses = snapshot.docs.map((doc: any) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          allExpenses.push(...expenses);
-        } catch (error: any) {
-          console.log(`Error fetching expenses for member ${memberId}:`, error);
-        }
-      }
-
-      // Add creator attribution by looking up member details
-      const memberDetails = group.memberDetails || [];
-      const expensesWithCreator = allExpenses.map((expense) => {
-        const creator = memberDetails.find((m: any) => m.id === expense.userId || m.userId === expense.userId);
-        return {
-          ...expense,
-          createdBy: creator ? { id: creator.id || creator.userId, name: creator.name || 'Unknown' } : { id: expense.userId, name: 'Unknown' },
-        };
-      });
-
-      // Sort by date descending
-      return expensesWithCreator.sort((a, b) => {
-        const dateA = new Date(a.date).getTime();
-        const dateB = new Date(b.date).getTime();
-        return dateB - dateA;
-      });
-    }
-
-    // Original single-user filtering logic
-    let query: any = this.expenses.where('userId', '==', String(userId));
+  private applyExpenseFilters(baseQuery: any, filters?: ExpenseFilters): any {
+    let query = baseQuery;
 
     if (filters?.startDate && filters?.endDate) {
-      // Convert Date objects to YYYY-MM-DD string format for comparison
       const startDateStr =
         filters.startDate instanceof Date
           ? filters.startDate.toISOString().split('T')[0]
@@ -146,6 +75,68 @@ export class FirestoreRepository implements IExpenseRepository {
       query = query.where('amount', '<=', filters.maxAmount);
     }
 
+    return query;
+  }
+
+  private getMemberId(member: any): string {
+    // Normalize member ID access - prefer userId, fallback to id
+    return member.userId || member.id;
+  }
+
+  async findAll(userId: number | string, filters?: ExpenseFilters): Promise<Expense[]> {
+    // If groupId is provided, fetch expenses for all group members
+    if (filters?.groupId) {
+      const group = await this.findGroupById(filters.groupId);
+      if (!group) {
+        return [];
+      }
+
+      // Get all member IDs from the group
+      const memberIds = group.members || [];
+      
+      // Fetch expenses for all members
+      const allExpenses: Expense[] = [];
+      for (const memberId of memberIds) {
+        let query: any = this.expenses.where('userId', '==', String(memberId));
+        query = this.applyExpenseFilters(query, filters);
+
+        try {
+          const snapshot = await query.get();
+          const expenses = snapshot.docs.map((doc: any) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          allExpenses.push(...expenses);
+        } catch (error: any) {
+          // Log error but continue processing other members
+          console.error(`[FirestoreRepository] Error fetching expenses for member ${memberId}:`, error.message || error);
+        }
+      }
+
+      // Add creator attribution by looking up member details
+      const memberDetails = group.memberDetails || [];
+      const expensesWithCreator = allExpenses.map((expense) => {
+        const creator = memberDetails.find((m: any) => this.getMemberId(m) === expense.userId);
+        return {
+          ...expense,
+          createdBy: creator 
+            ? { id: this.getMemberId(creator), name: creator.name || 'Unknown' } 
+            : { id: String(expense.userId), name: 'Unknown' },
+        };
+      });
+
+      // Sort by date descending
+      return expensesWithCreator.sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA;
+      });
+    }
+
+    // Original single-user filtering logic
+    let query: any = this.expenses.where('userId', '==', String(userId));
+    query = this.applyExpenseFilters(query, filters);
+
     // Try with orderBy, but catch index errors and retry without it
     try {
       const snapshot = await query.orderBy('date', 'desc').get();
@@ -156,7 +147,7 @@ export class FirestoreRepository implements IExpenseRepository {
     } catch (error: any) {
       // If index is missing, fetch without orderBy and sort in memory
       if (error.code === 9) {
-        console.log('Index not available, sorting in memory');
+        console.log('[FirestoreRepository] Index not available, sorting in memory');
         const snapshot = await query.get();
         const docs = snapshot.docs.map((doc: any) => ({
           id: doc.id,
