@@ -205,13 +205,17 @@ jobs:
 
   snyk:
     name: Security Scan
-    needs: [security-checks, generate-timestamp]
+    needs: [security-checks]
     runs-on: ubuntu-latest
     if: ${{ !inputs.skip_snyk }}
     # NOTE: permissions removed - job-level permissions not allowed in reusable workflows
     # The calling workflow must grant: contents: read, security-events: write, actions: read
 
     steps:
+      - name: Generate timestamp
+        id: timestamp
+        run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -237,15 +241,15 @@ jobs:
       - name: Organize security results
         if: always() && hashFiles('snyk.sarif') != ''
         run: |
-          mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan
-          mv snyk.sarif reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan/
+          mkdir -p reports/${{ steps.timestamp.outputs.value }}/security-scan
+          mv snyk.sarif reports/${{ steps.timestamp.outputs.value }}/security-scan/
 
       - name: Upload SARIF as artifact
         if: always() && steps.snyk.outcome != 'skipped'
         uses: actions/upload-artifact@v4
         with:
-          name: security-scan-${{ needs.generate-timestamp.outputs.timestamp }}
-          path: reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan/
+          name: security-scan-${{ steps.timestamp.outputs.value }}
+          path: reports/${{ steps.timestamp.outputs.value }}/security-scan/
           retention-days: 30
 
       - name: Upload results to GitHub Security
@@ -253,7 +257,7 @@ jobs:
         continue-on-error: true
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: reports/${{ needs.generate-timestamp.outputs.timestamp }}/security-scan/snyk.sarif
+          sarif_file: reports/${{ steps.timestamp.outputs.value }}/security-scan/snyk.sarif
           category: snyk-security-scan
 
       - name: Fail on vulnerabilities (non-blocking)

@@ -176,10 +176,11 @@ jobs:
 
   # ============================================================================
   # Summary Job
+  # Note: Phase 4 (PR Cleanup) is handled by cleanup-pr.yml
   # ============================================================================
 
   summary:
-    name: phase4
+    name: Summary
     needs: [pre-deploy, deploy, post-deploy]
     if: always()
     runs-on: ubuntu-latest
