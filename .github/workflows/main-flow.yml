@@ -112,7 +112,7 @@ jobs:
   # ============================================================================
 
   pre-deploy:
-    uses: ./.github/workflows/pre-deploy.yml
+    uses: ./.github/workflows/test-predeploy.yml
     with:
       skip_static_analysis: ${{ inputs.skip_static_analysis || false }}
       skip_unit_tests: ${{ inputs.skip_unit_tests || false }}
@@ -122,8 +122,6 @@ jobs:
       skip_typecheck: ${{ inputs.skip_typecheck || false }}
       skip_audit: ${{ inputs.skip_audit || false }}
       skip_snyk: ${{ inputs.skip_snyk || false }}
-    secrets:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   # ============================================================================
   # PHASE 2: DEPLOY
