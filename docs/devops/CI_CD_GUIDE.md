@@ -15,13 +15,14 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Deployment Environments](#deployment-environments)
-3. [Pipeline Triggers](#pipeline-triggers)
-4. [Pipeline Stages](#pipeline-stages)
-5. [Workflow Examples](#workflow-examples)
-6. [Cost Management](#cost-management)
-7. [Required Secrets](#required-secrets)
-8. [Troubleshooting](#troubleshooting)
+2. [Planned Changes](#planned-changes)
+3. [Deployment Environments](#deployment-environments)
+4. [Pipeline Triggers](#pipeline-triggers)
+5. [Pipeline Stages](#pipeline-stages)
+6. [Workflow Examples](#workflow-examples)
+7. [Cost Management](#cost-management)
+8. [Required Secrets](#required-secrets)
+9. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -53,6 +54,58 @@ This pipeline automates the entire software delivery process from code commit to
 - **Deploy**: ~3-5 minutes
 - **Integration + E2E (optional)**: ~5-7 minutes
 - **Total (optimized)**: ~10-16 minutes without tests, ~15-23 minutes with tests
+
+---
+
+## Planned Changes
+
+> ⚠️ **STATUS: PLANNED** - The changes below are planned but not yet implemented.
+> See GitHub issues [#162](https://github.com/uzibiton/automation-interview-pre/issues/162) and [#163](https://github.com/uzibiton/automation-interview-pre/issues/163)
+
+### Summary
+
+Restructuring the CI/CD pipeline to:
+
+1. **Require manual trigger for PR validation** (no auto-run on PR open/update)
+2. **Auto-deploy to staging after merge to main** (not develop)
+3. **Create a separate reusable deploy workflow** for manual deployments
+
+### Proposed Flow
+
+| Event                | Tests      | Deploy To                  | Notes                   |
+| -------------------- | ---------- | -------------------------- | ----------------------- |
+| PR opened/commit     | ❌ None    | -                          | Manual trigger required |
+| Manual trigger on PR | ✅ Run all | PR temp env (if pass)      | Required for merge      |
+| Merge to main        | ✅ Run all | Staging (if pass)          | Automatic               |
+| Manual `deploy.yml`  | Optional   | develop/staging/production | Branch + env selection  |
+
+### Key Changes
+
+#### 1. ci-cd.yml Modifications
+
+- Remove `pull_request` auto-trigger
+- Keep `workflow_dispatch` for manual PR runs
+- Change push-to-main deploy target: develop → **staging**
+- Call `deploy.yml` instead of inline deploy job
+
+#### 2. New deploy.yml Workflow
+
+- **Inputs**: branch, environment (develop/staging/production)
+- **Usage**: Called by ci-cd.yml OR triggered manually
+- **No approval gates**
+- Production only via manual trigger
+
+#### 3. Branch Protection (GitHub Settings)
+
+- Require status checks to pass before merge
+- PR shows "Waiting for status" until manual trigger
+- GitHub enforces - merge button disabled until checks pass
+
+### Open Decisions (Issue #163)
+
+1. **Develop environment**: Permanent shared env vs PR-specific only?
+2. **Production restrictions**: Any branch can deploy, or main-only?
+3. **Skip toggles**: Keep all current `skip_*` options?
 
 ---
 
