@@ -40,28 +40,42 @@ This pipeline automates the entire software delivery process from code commit to
 The CI/CD pipeline is split into **4 reusable workflows** orchestrated by **Main0: ALL**:
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        Main0: ALL                                    │
-│                    (main-flow.yml)                                   │
-│                                                                      │
-│  ┌───────────────┐    ┌───────────────┐    ┌────────────────────┐  │
-│  │    Main1:     │    │    Main2:     │    │      Main3:        │  │
-│  │  PRE-DEPLOY   │ -> │    DEPLOY     │ -> │    POST-DEPLOY     │  │
-│  │               │    │               │    │                    │  │
-│  │ • Static      │    │ • Setup       │    │ • Integration      │  │
-│  │   Analysis    │    │ • Build Auth  │    │   Tests            │  │
-│  │ • Linting     │    │ • Build API   │    │ • Smoke Tests      │  │
-│  │ • TypeCheck   │    │ • Build Front │    │                    │  │
-│  │ • Security    │    │ • Deploy      │    │                    │  │
-│  │ • Unit Tests  │    │   to Cloud    │    │                    │  │
-│  │ • Coverage    │    │   Run         │    │                    │  │
-│  └───────────────┘    └───────────────┘    └────────────────────┘  │
-│                                                                      │
-│                       ┌────────────────────┐                        │
-│                       │      Main4:        │                        │
-│                       │     CLEANUP        │  (on PR close)         │
-│                       └────────────────────┘                        │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                              Main0: ALL                                       │
+│                          (main-flow.yml)                                      │
+│                                                                               │
+│  ┌────────────────────────┐  ┌───────────────────┐  ┌─────────────────────┐  │
+│  │      Main1:            │  │     Main2:        │  │     Main3:          │  │
+│  │    PRE-DEPLOY          │->│     DEPLOY        │->│   POST-DEPLOY       │  │
+│  │                        │  │                   │  │                     │  │
+│  │ ┌──────────────────┐   │  │ ┌─────────────┐   │  │ ┌─────────────────┐ │  │
+│  │ │ generate-timestamp│   │  │ │ setup       │   │  │ │ health-check    │ │  │
+│  │ └────────┬─────────┘   │  │ └──────┬──────┘   │  │ └────────┬────────┘ │  │
+│  │          │             │  │        │          │  │          │          │  │
+│  │   ┌──────┼──────┐      │  │ ┌──────┼──────┐   │  │          ▼          │  │
+│  │   ▼      ▼      ▼      │  │ ▼      ▼      ▼   │  │ ┌─────────────────┐ │  │
+│  │ ┌────┐ ┌────┐ ┌────┐   │  │build  build build │  │ │integration-tests│ │  │
+│  │ │code│ │sec │ │unit│   │  │-auth  -api  -fe   │  │ └────────┬────────┘ │  │
+│  │ │qual│ │chk │ │test│   │  │   (parallel)      │  │          │          │  │
+│  │ └─┬──┘ └─┬──┘ └─┬──┘   │  │ └──────┬──────┘   │  │          ▼          │  │
+│  │   │      │      │      │  │        │          │  │ ┌─────────────────┐ │  │
+│  │   │      │      ▼      │  │        ▼          │  │ │   smoke-tests   │ │  │
+│  │   │      │  coverage   │  │    deploy         │  │ └────────┬────────┘ │  │
+│  │   ▼      ▼      ▼      │  │ (sequential)      │  │          │          │  │
+│  │ prettier npm-   │      │  │                   │  │          ▼          │  │
+│  │ eslint   audit  │      │  │                   │  │ ┌─────────────────┐ │  │
+│  │ typecheck snyk  │      │  │                   │  │ │post-deploy-gate │ │  │
+│  │          │      │      │  │                   │  │ └─────────────────┘ │  │
+│  │   └──────┴──────┘      │  │                   │  │                     │  │
+│  │          ▼             │  │                   │  │                     │  │
+│  │ static-analysis-gate   │  │                   │  │                     │  │
+│  └────────────────────────┘  └───────────────────┘  └─────────────────────┘  │
+│                                                                               │
+│                         ┌────────────────────┐                               │
+│                         │      Main4:        │                               │
+│                         │     CLEANUP        │  (on PR close)                │
+│                         └────────────────────┘                               │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 | Workflow               | File              | Purpose                                                                       | Standalone Trigger        |
@@ -145,14 +159,31 @@ The CI/CD pipeline has been restructured to:
 
 **Standalone Trigger**: Select any branch to run checks on
 
-**Jobs**:
+**Jobs (Parallel Execution)**:
+
+```
+generate-timestamp
+      │
+      ├──────────┬──────────┐
+      ▼          ▼          ▼
+ code-quality  security   unit-tests
+      │          │          │
+  ┌───┴───┐   ┌──┴──┐       │
+  ▼   ▼   ▼   ▼     ▼       ▼
+prettier npm-audit         coverage
+eslint   snyk                 │
+typecheck                     │
+      │       │               │
+      └───────┴───────────────┘
+                  ▼
+       static-analysis-gate
+```
 
 - `generate-timestamp` - Create unique run ID
-- `code-quality` / `security-checks` - Gateway jobs
-- `prettier`, `eslint`, `typecheck` - Code quality (parallel)
-- `npm-audit`, `snyk` - Security scans (parallel)
-- `unit-tests` - Jest tests
-- `coverage` - Code coverage report
+- `code-quality` - Gateway job that spawns prettier/eslint/typecheck
+- `security-checks` - Gateway job that spawns npm-audit/snyk
+- `unit-tests` - Jest tests (parallel with code-quality and security)
+- `coverage` - Code coverage (runs after unit-tests)
 - `static-analysis-gate` - Verify all checks passed
 
 #### deploy-flow.yml (Main2: Deploy)
@@ -161,11 +192,23 @@ The CI/CD pipeline has been restructured to:
 
 **Not standalone** - Called by Main0: ALL workflow only
 
-**Jobs**:
+**Jobs (Parallel Builds, Sequential Deploy)**:
+
+```
+      setup
+        │
+   ┌────┴────┐────┐
+   ▼         ▼    ▼
+build-auth build-api build-frontend  (parallel)
+   │         │    │
+   └────┬────┘────┘
+        ▼
+     deploy  (sequential - all services)
+```
 
 - `setup` - Configure environment variables
 - `build-auth`, `build-api`, `build-frontend` - Parallel Docker builds
-- `deploy` - Deploy to Cloud Run with parallel background processes
+- `deploy` - Deploy all services to Cloud Run (sequential order)
 
 #### post-deploy.yml (Main3: Post-Deploy)
 
@@ -173,12 +216,16 @@ The CI/CD pipeline has been restructured to:
 
 **Standalone Trigger**: Select deployed environment (develop/staging/production) to test
 
-**Jobs**:
+**Jobs (Sequential Execution)**:
 
-- `resolve-urls` - Determine API and frontend URLs for environment
-- `integration-tests` - API integration tests
-- `smoke-tests` - Basic functionality tests
-- `post-deploy-gate` - Summary of results
+```
+health-check  ──▶  integration-tests  ──▶  smoke-tests  ──▶  post-deploy-gate
+```
+
+- `health-check` - Verify services are up and responding
+- `integration-tests` - API integration tests (after health check passes)
+- `smoke-tests` - Basic functionality tests (after integration tests)
+- `post-deploy-gate` - Summary of all post-deploy results
 
 #### cleanup-pr.yml (Main4: Cleanup)
 
@@ -951,5 +998,5 @@ Check GitHub Actions logs regularly to identify and fix issues early.
 
 ---
 
-**Last Updated**: December 2024  
+**Last Updated**: January 2026  
 **Maintainer**: DevOps Team
