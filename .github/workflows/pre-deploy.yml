@@ -115,7 +115,7 @@ jobs:
 
   prettier:
     name: Code Formatting
-    needs: code-quality
+    needs: [code-quality]
     runs-on: ubuntu-latest
     if: ${{ !inputs.skip_prettier }}
     continue-on-error: true
@@ -137,7 +137,7 @@ jobs:
 
   eslint:
     name: Linting
-    needs: code-quality
+    needs: [code-quality]
     runs-on: ubuntu-latest
     if: ${{ !inputs.skip_eslint }}
     continue-on-error: true
@@ -159,7 +159,7 @@ jobs:
 
   typecheck:
     name: Type Check
-    needs: code-quality
+    needs: [code-quality]
     runs-on: ubuntu-latest
     if: ${{ !inputs.skip_typecheck }}
     continue-on-error: true
@@ -181,7 +181,7 @@ jobs:
 
   npm-audit:
     name: Dependency Audit
-    needs: security-checks
+    needs: [security-checks]
     runs-on: ubuntu-latest
     if: ${{ !inputs.skip_audit }}
     continue-on-error: true
@@ -205,7 +205,7 @@ jobs:
 
   snyk:
     name: Security Scan
-    needs: security-checks
+    needs: [security-checks]
     runs-on: ubuntu-latest
     if: ${{ !inputs.skip_snyk }}
     permissions:
