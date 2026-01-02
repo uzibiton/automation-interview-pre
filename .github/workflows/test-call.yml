@@ -5,7 +5,7 @@ on:
 
 jobs:
   call-pre:
-    uses: ./.github/workflows/test-predeploy.yml
+    uses: ./.github/workflows/pre-deploy.yml
     with:
       skip_static_analysis: true
       skip_unit_tests: true
