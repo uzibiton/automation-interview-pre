@@ -59,6 +59,8 @@ on:
         type: boolean
         default: false
     secrets:
+      GCP_PROJECT_ID:
+        required: false
       TEST_USER_EMAIL:
         required: false
       TEST_USER_PASSWORD:
