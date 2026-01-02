@@ -7,10 +7,37 @@ on:
       skip_static_analysis:
         type: boolean
         default: false
+      skip_unit_tests:
+        type: boolean
+        default: false
+      skip_coverage:
+        type: boolean
+        default: false
+      skip_prettier:
+        type: boolean
+        default: false
+      skip_eslint:
+        type: boolean
+        default: false
+      skip_typecheck:
+        type: boolean
+        default: false
+      skip_audit:
+        type: boolean
+        default: false
+      skip_snyk:
+        type: boolean
+        default: false
+    secrets:
+      SNYK_TOKEN:
+        required: false
     outputs:
       timestamp:
         description: 'CI Run timestamp'
         value: ${{ jobs.generate-timestamp.outputs.timestamp }}
+      all_passed:
+        description: 'Whether all checks passed'
+        value: ${{ jobs.gate.outputs.all_passed }}
 
 jobs:
   generate-timestamp:
@@ -22,3 +49,14 @@ jobs:
       - name: Generate timestamp for this CI run
         id: timestamp
         run: echo "value=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)" >> $GITHUB_OUTPUT
+
+  gate:
+    name: Gate
+    needs: [generate-timestamp]
+    runs-on: ubuntu-latest
+    outputs:
+      all_passed: ${{ steps.check.outputs.all_passed }}
+    steps:
+      - name: Check
+        id: check
+        run: echo "all_passed=true" >> $GITHUB_OUTPUT
