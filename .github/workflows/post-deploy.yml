@@ -1,7 +1,7 @@
-name: Post-Deploy
+name: 'Main3: Post-Deploy'
 
 # Reusable workflow for post-deployment verification (integration tests, smoke tests)
-# Can be triggered standalone against a deployed environment or called by Main Flow
+# Can be triggered standalone against a deployed environment or called by ALL workflow
 
 on:
   # Standalone trigger - select deployed environment to test

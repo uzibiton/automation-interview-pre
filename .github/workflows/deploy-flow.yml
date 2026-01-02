@@ -1,4 +1,4 @@
-name: Deploy
+name: 'Main2: Deploy'
 
 # Reusable workflow for deployment (setup, build, deploy)
 

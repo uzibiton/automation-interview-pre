@@ -1,7 +1,7 @@
-name: Pre-Deploy
+name: 'Main1: Pre-Deploy'
 
 # Reusable workflow for pre-deployment checks (static analysis, tests)
-# Can be triggered standalone or called by Main Flow
+# Can be triggered standalone or called by ALL workflow
 
 on:
   # Standalone trigger - select branch to run checks on
