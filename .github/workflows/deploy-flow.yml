@@ -67,6 +67,9 @@ on:
       api_url:
         description: 'Deployed API URL'
         value: ${{ jobs.deploy.outputs.api_url }}
+      auth_url:
+        description: 'Deployed Auth URL'
+        value: ${{ jobs.deploy.outputs.auth_url }}
 
 jobs:
   # ============================================================================
@@ -295,7 +298,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       frontend_url: ${{ steps.deploy-frontend.outputs.url }}
-      api_url: ${{ needs.setup.outputs.api_url }}
+      api_url: ${{ steps.verify.outputs.api_url }}
+      auth_url: ${{ steps.verify.outputs.auth_url }}
     environment:
       name: ${{ inputs.environment == 'pr' && format('pr-{0}', inputs.pr_number) || inputs.environment }}
       url: ${{ steps.deploy-frontend.outputs.url }}
@@ -317,13 +321,14 @@ jobs:
       - name: Deploy auth-service to Cloud Run (background)
         env:
           REGISTRY: ${{ needs.setup.outputs.region }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/expense-tracker
+          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
         run: |
           gcloud run deploy auth-service${{ needs.setup.outputs.service_suffix }} \
             --image=${REGISTRY}/auth-service:${{ needs.setup.outputs.timestamp }} \
             --platform=managed \
             --region=${{ needs.setup.outputs.region }} \
             --allow-unauthenticated \
-            --set-env-vars="NODE_ENV=${{ inputs.environment }}" &
+            --set-env-vars="NODE_ENV=production,DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${PROJECT_ID}" &
           AUTH_PID=$!
 
           # Store PID for later waiting
@@ -339,8 +344,7 @@ jobs:
             --platform=managed \
             --region=${{ needs.setup.outputs.region }} \
             --allow-unauthenticated \
-            --add-cloudsql-instances=${PROJECT_ID}:${{ needs.setup.outputs.region }}:expense-tracker-db${{ needs.setup.outputs.service_suffix != '' && needs.setup.outputs.service_suffix || '' }} \
-            --set-env-vars="NODE_ENV=${{ inputs.environment }},DATABASE_HOST=${{ needs.setup.outputs.database_host }}" &
+            --set-env-vars="NODE_ENV=production,DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${PROJECT_ID},AUTH_SERVICE_URL=${{ needs.setup.outputs.auth_url }}" &
           API_PID=$!
 
           # Store PID for later waiting
@@ -379,17 +383,30 @@ jobs:
           wait $API_PID || echo "API service deployment completed with status $?"
           echo "All Cloud Run deployments completed"
 
-      - name: Verify deployments
+      - name: Verify deployments and get URLs
+        id: verify
         run: |
           echo "Verifying deployments..."
 
-          # Check auth-service
+          # Get actual URLs from Cloud Run services
+          API_URL=$(gcloud run services describe api-service${{ needs.setup.outputs.service_suffix }} \
+            --region=${{ needs.setup.outputs.region }} \
+            --format='value(status.url)' 2>/dev/null || echo "")
+          AUTH_URL=$(gcloud run services describe auth-service${{ needs.setup.outputs.service_suffix }} \
+            --region=${{ needs.setup.outputs.region }} \
+            --format='value(status.url)' 2>/dev/null || echo "")
+
+          echo "API URL: $API_URL"
+          echo "Auth URL: $AUTH_URL"
+          echo "api_url=${API_URL}" >> $GITHUB_OUTPUT
+          echo "auth_url=${AUTH_URL}" >> $GITHUB_OUTPUT
+
+          # Check service status
           AUTH_STATUS=$(gcloud run services describe auth-service${{ needs.setup.outputs.service_suffix }} \
             --region=${{ needs.setup.outputs.region }} \
             --format='value(status.conditions[0].status)' 2>/dev/null || echo "UNKNOWN")
           echo "Auth service status: $AUTH_STATUS"
 
-          # Check api-service
           API_STATUS=$(gcloud run services describe api-service${{ needs.setup.outputs.service_suffix }} \
             --region=${{ needs.setup.outputs.region }} \
             --format='value(status.conditions[0].status)' 2>/dev/null || echo "UNKNOWN")

@@ -166,6 +166,7 @@ jobs:
       pr_number: ${{ github.event.pull_request.number || '' }}
       timestamp: ${{ needs.pre-deploy.outputs.timestamp }}
       api_url: ${{ needs.deploy.outputs.api_url }}
+      auth_url: ${{ needs.deploy.outputs.auth_url }}
       frontend_url: ${{ needs.deploy.outputs.frontend_url }}
       skip_integration_tests: ${{ inputs.skip_integration_tests || true }}
       skip_smoke_tests: ${{ inputs.skip_smoke_tests || true }}

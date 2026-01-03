@@ -48,6 +48,10 @@ on:
         type: string
         required: true
         description: 'Deployed API URL'
+      auth_url:
+        type: string
+        required: false
+        description: 'Deployed Auth URL'
       frontend_url:
         type: string
         required: true
@@ -96,6 +100,7 @@ jobs:
           # Use provided URLs for workflow_call, resolve for workflow_dispatch
           if [[ -n "${{ inputs.api_url }}" ]]; then
             API_URL="${{ inputs.api_url }}"
+            AUTH_URL="${{ inputs.auth_url }}"
             FRONTEND_URL="${{ inputs.frontend_url }}"
           else
             # Resolve based on environment
