@@ -148,59 +148,65 @@ jobs:
           echo "Waiting for services to stabilize..."
           sleep 30
 
-      - name: Health check - API Service
+      - name: Health check - All Services (parallel)
         run: |
           API_URL="${{ steps.urls.outputs.api_url }}"
-          echo "Checking API service at ${API_URL}/health..."
-
-          for i in {1..5}; do
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${API_URL}/health" || echo "000")
-            if [[ "$HTTP_CODE" == "200" ]]; then
-              echo "API service is healthy (HTTP $HTTP_CODE)"
-              exit 0
-            fi
-            echo "Attempt $i/5 - API returned HTTP $HTTP_CODE, waiting..."
-            sleep 10
-          done
-
-          echo "WARNING: API service health check failed after 5 attempts"
-          exit 1
-
-      - name: Health check - Auth Service
-        run: |
           AUTH_URL="${{ steps.urls.outputs.auth_url }}"
-          echo "Checking Auth service at ${AUTH_URL}/health..."
-
-          for i in {1..5}; do
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${AUTH_URL}/health" || echo "000")
-            if [[ "$HTTP_CODE" == "200" ]]; then
-              echo "Auth service is healthy (HTTP $HTTP_CODE)"
-              exit 0
-            fi
-            echo "Attempt $i/5 - Auth returned HTTP $HTTP_CODE, waiting..."
-            sleep 10
-          done
-
-          echo "WARNING: Auth service health check failed after 5 attempts"
-          exit 1
-
-      - name: Health check - Frontend
-        run: |
           FRONTEND_URL="${{ steps.urls.outputs.frontend_url }}"
-          echo "Checking Frontend at ${FRONTEND_URL}..."
 
-          for i in {1..3}; do
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${FRONTEND_URL}" || echo "000")
-            if [[ "$HTTP_CODE" == "200" ]]; then
-              echo "Frontend is accessible (HTTP $HTTP_CODE)"
-              exit 0
-            fi
-            echo "Attempt $i/3 - Frontend returned HTTP $HTTP_CODE, waiting..."
-            sleep 5
-          done
+          # Health check function
+          check_health() {
+            local name=$1
+            local url=$2
+            local max_attempts=$3
 
-          echo "WARNING: Frontend health check failed after 3 attempts"
-          exit 1
+            echo "[$name] Checking health at ${url}..."
+            for i in $(seq 1 $max_attempts); do
+              HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${url}" || echo "000")
+              if [[ "$HTTP_CODE" == "200" ]]; then
+                echo "[$name] Healthy (HTTP $HTTP_CODE)"
+                return 0
+              fi
+              echo "[$name] Attempt $i/$max_attempts - HTTP $HTTP_CODE, waiting..."
+              sleep 10
+            done
+            echo "[$name] Health check failed after $max_attempts attempts"
+            return 1
+          }
+
+          # Run health checks in parallel
+          check_health "API" "${API_URL}/health" 5 &
+          API_PID=$!
+
+          check_health "Auth" "${AUTH_URL}/health" 5 &
+          AUTH_PID=$!
+
+          check_health "Frontend" "${FRONTEND_URL}" 3 &
+          FRONTEND_PID=$!
+
+          # Wait for all and collect results
+          API_RESULT=0
+          AUTH_RESULT=0
+          FRONTEND_RESULT=0
+
+          wait $API_PID || API_RESULT=1
+          wait $AUTH_PID || AUTH_RESULT=1
+          wait $FRONTEND_PID || FRONTEND_RESULT=1
+
+          # Report results
+          echo ""
+          echo "=== Health Check Results ==="
+          [[ $API_RESULT -eq 0 ]] && echo "API: ✅ Healthy" || echo "API: ❌ Failed"
+          [[ $AUTH_RESULT -eq 0 ]] && echo "Auth: ✅ Healthy" || echo "Auth: ❌ Failed"
+          [[ $FRONTEND_RESULT -eq 0 ]] && echo "Frontend: ✅ Healthy" || echo "Frontend: ❌ Failed"
+
+          # Exit with error if any failed
+          if [[ $API_RESULT -ne 0 ]] || [[ $AUTH_RESULT -ne 0 ]] || [[ $FRONTEND_RESULT -ne 0 ]]; then
+            echo "Some health checks failed"
+            exit 1
+          fi
+
+          echo "All health checks passed"
 
       - name: Health check summary
         if: always()
