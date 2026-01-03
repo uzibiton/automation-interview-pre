@@ -76,16 +76,16 @@ on:
 
 jobs:
   # ============================================================================
-  # Health Check - Resolve URLs and verify services are running
+  # Resolve URLs - shared setup for health checks
   # ============================================================================
 
-  health-check:
-    name: Health Check
+  resolve-urls:
+    name: Resolve URLs
     runs-on: ubuntu-latest
     outputs:
       api_url: ${{ steps.urls.outputs.api_url }}
-      frontend_url: ${{ steps.urls.outputs.frontend_url }}
       auth_url: ${{ steps.urls.outputs.auth_url }}
+      frontend_url: ${{ steps.urls.outputs.frontend_url }}
       timestamp: ${{ steps.urls.outputs.timestamp }}
 
     steps:
@@ -148,76 +148,120 @@ jobs:
           echo "Waiting for services to stabilize..."
           sleep 30
 
-      - name: Health check - All Services (parallel)
+  # ============================================================================
+  # Health Checks - Run in parallel as separate jobs
+  # ============================================================================
+
+  health-api:
+    name: Health Check - API
+    needs: [resolve-urls]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check API health
         run: |
-          API_URL="${{ steps.urls.outputs.api_url }}"
-          AUTH_URL="${{ steps.urls.outputs.auth_url }}"
-          FRONTEND_URL="${{ steps.urls.outputs.frontend_url }}"
+          API_URL="${{ needs.resolve-urls.outputs.api_url }}"
+          echo "Checking API service at ${API_URL}/health..."
 
-          # Health check function
-          check_health() {
-            local name=$1
-            local url=$2
-            local max_attempts=$3
+          for i in {1..5}; do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${API_URL}/health" || echo "000")
+            if [[ "$HTTP_CODE" == "200" ]]; then
+              echo "API service is healthy (HTTP $HTTP_CODE)"
+              exit 0
+            fi
+            echo "Attempt $i/5 - API returned HTTP $HTTP_CODE, waiting..."
+            sleep 10
+          done
 
-            echo "[$name] Checking health at ${url}..."
-            for i in $(seq 1 $max_attempts); do
-              HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${url}" || echo "000")
-              if [[ "$HTTP_CODE" == "200" ]]; then
-                echo "[$name] Healthy (HTTP $HTTP_CODE)"
-                return 0
-              fi
-              echo "[$name] Attempt $i/$max_attempts - HTTP $HTTP_CODE, waiting..."
-              sleep 10
-            done
-            echo "[$name] Health check failed after $max_attempts attempts"
-            return 1
-          }
+          echo "API service health check failed after 5 attempts"
+          exit 1
 
-          # Run health checks in parallel
-          check_health "API" "${API_URL}/health" 5 &
-          API_PID=$!
+  health-auth:
+    name: Health Check - Auth
+    needs: [resolve-urls]
+    runs-on: ubuntu-latest
 
-          check_health "Auth" "${AUTH_URL}/health" 5 &
-          AUTH_PID=$!
+    steps:
+      - name: Check Auth health
+        run: |
+          AUTH_URL="${{ needs.resolve-urls.outputs.auth_url }}"
+          echo "Checking Auth service at ${AUTH_URL}/health..."
 
-          check_health "Frontend" "${FRONTEND_URL}" 3 &
-          FRONTEND_PID=$!
+          for i in {1..5}; do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${AUTH_URL}/health" || echo "000")
+            if [[ "$HTTP_CODE" == "200" ]]; then
+              echo "Auth service is healthy (HTTP $HTTP_CODE)"
+              exit 0
+            fi
+            echo "Attempt $i/5 - Auth returned HTTP $HTTP_CODE, waiting..."
+            sleep 10
+          done
 
-          # Wait for all and collect results
-          API_RESULT=0
-          AUTH_RESULT=0
-          FRONTEND_RESULT=0
+          echo "Auth service health check failed after 5 attempts"
+          exit 1
 
-          wait $API_PID || API_RESULT=1
-          wait $AUTH_PID || AUTH_RESULT=1
-          wait $FRONTEND_PID || FRONTEND_RESULT=1
+  health-frontend:
+    name: Health Check - Frontend
+    needs: [resolve-urls]
+    runs-on: ubuntu-latest
 
-          # Report results
-          echo ""
-          echo "=== Health Check Results ==="
-          [[ $API_RESULT -eq 0 ]] && echo "API: ✅ Healthy" || echo "API: ❌ Failed"
-          [[ $AUTH_RESULT -eq 0 ]] && echo "Auth: ✅ Healthy" || echo "Auth: ❌ Failed"
-          [[ $FRONTEND_RESULT -eq 0 ]] && echo "Frontend: ✅ Healthy" || echo "Frontend: ❌ Failed"
+    steps:
+      - name: Check Frontend health
+        run: |
+          FRONTEND_URL="${{ needs.resolve-urls.outputs.frontend_url }}"
+          echo "Checking Frontend at ${FRONTEND_URL}..."
 
-          # Exit with error if any failed
-          if [[ $API_RESULT -ne 0 ]] || [[ $AUTH_RESULT -ne 0 ]] || [[ $FRONTEND_RESULT -ne 0 ]]; then
+          for i in {1..3}; do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${FRONTEND_URL}" || echo "000")
+            if [[ "$HTTP_CODE" == "200" ]]; then
+              echo "Frontend is accessible (HTTP $HTTP_CODE)"
+              exit 0
+            fi
+            echo "Attempt $i/3 - Frontend returned HTTP $HTTP_CODE, waiting..."
+            sleep 5
+          done
+
+          echo "Frontend health check failed after 3 attempts"
+          exit 1
+
+  health-check:
+    name: Health Check Summary
+    needs: [resolve-urls, health-api, health-auth, health-frontend]
+    if: always()
+    runs-on: ubuntu-latest
+    outputs:
+      api_url: ${{ needs.resolve-urls.outputs.api_url }}
+      frontend_url: ${{ needs.resolve-urls.outputs.frontend_url }}
+      auth_url: ${{ needs.resolve-urls.outputs.auth_url }}
+      timestamp: ${{ needs.resolve-urls.outputs.timestamp }}
+
+    steps:
+      - name: Health check summary
+        run: |
+          echo "## Health Check Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | Status | URL |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| API | ${{ needs.health-api.result }} | ${{ needs.resolve-urls.outputs.api_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Auth | ${{ needs.health-auth.result }} | ${{ needs.resolve-urls.outputs.auth_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend | ${{ needs.health-frontend.result }} | ${{ needs.resolve-urls.outputs.frontend_url }} |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check results
+        run: |
+          API="${{ needs.health-api.result }}"
+          AUTH="${{ needs.health-auth.result }}"
+          FRONTEND="${{ needs.health-frontend.result }}"
+
+          echo "API: $API"
+          echo "Auth: $AUTH"
+          echo "Frontend: $FRONTEND"
+
+          if [[ "$API" != "success" ]] || [[ "$AUTH" != "success" ]] || [[ "$FRONTEND" != "success" ]]; then
             echo "Some health checks failed"
             exit 1
           fi
 
           echo "All health checks passed"
-
-      - name: Health check summary
-        if: always()
-        run: |
-          echo "## Health Check Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Service | URL |" >> $GITHUB_STEP_SUMMARY
-          echo "|---------|-----|" >> $GITHUB_STEP_SUMMARY
-          echo "| API | ${{ steps.urls.outputs.api_url }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Auth | ${{ steps.urls.outputs.auth_url }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Frontend | ${{ steps.urls.outputs.frontend_url }} |" >> $GITHUB_STEP_SUMMARY
 
   # ============================================================================
   # STAGE 5: Integration Tests
