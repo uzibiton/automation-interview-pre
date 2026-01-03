@@ -216,14 +216,33 @@ build-auth build-api build-frontend  (parallel)
 
 **Standalone Trigger**: Select deployed environment (develop/staging/production) to test
 
-**Jobs (Sequential Execution)**:
+**Jobs (Parallel Health Checks, Sequential Tests)**:
 
 ```
-health-check  ──▶  integration-tests  ──▶  smoke-tests  ──▶  post-deploy-gate
+resolve-urls
+     │
+     ├──────────────┬──────────────┐
+     ▼              ▼              ▼
+health-api    health-auth    health-frontend  (parallel)
+     │              │              │
+     └──────────────┴──────────────┘
+                    ▼
+             health-check (summary)
+                    │
+                    ▼
+           integration-tests
+                    │
+                    ▼
+             smoke-tests
+                    │
+                    ▼
+          post-deploy-gate
 ```
 
-- `health-check` - Verify services are up and responding
-- `integration-tests` - API integration tests (after health check passes)
+- `resolve-urls` - Determine service URLs for the environment
+- `health-api`, `health-auth`, `health-frontend` - **Parallel** health checks for each service
+- `health-check` - Summary job that waits for all health checks
+- `integration-tests` - API integration tests (after health checks pass)
 - `smoke-tests` - Basic functionality tests (after integration tests)
 - `post-deploy-gate` - Summary of all post-deploy results
 
