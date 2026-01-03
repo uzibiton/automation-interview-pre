@@ -60,6 +60,12 @@ on:
         required: false
       DOCKERHUB_TOKEN:
         required: false
+      JWT_SECRET:
+        required: false
+      GOOGLE_CLIENT_ID:
+        required: false
+      GOOGLE_CLIENT_SECRET:
+        required: false
     outputs:
       frontend_url:
         description: 'Deployed frontend URL'
@@ -322,13 +328,18 @@ jobs:
         env:
           REGISTRY: ${{ needs.setup.outputs.region }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/expense-tracker
           PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         run: |
+          FRONTEND_URL="${{ needs.setup.outputs.frontend_url }}"
+
           gcloud run deploy auth-service${{ needs.setup.outputs.service_suffix }} \
             --image=${REGISTRY}/auth-service:${{ needs.setup.outputs.timestamp }} \
             --platform=managed \
             --region=${{ needs.setup.outputs.region }} \
             --allow-unauthenticated \
-            --set-env-vars="NODE_ENV=production,DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${PROJECT_ID}" &
+            --set-env-vars="NODE_ENV=production,DATABASE_TYPE=firestore,FIREBASE_PROJECT_ID=${PROJECT_ID},JWT_SECRET=${JWT_SECRET},GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID},GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET},FRONTEND_URL=${FRONTEND_URL}" &
           AUTH_PID=$!
 
           # Store PID for later waiting
@@ -416,4 +427,14 @@ jobs:
             echo "Some services may not be fully ready yet"
           else
             echo "All services are ready"
+          fi
+
+      - name: Update auth-service with correct callback URL
+        run: |
+          AUTH_URL="${{ steps.verify.outputs.auth_url }}"
+          if [[ -n "$AUTH_URL" ]]; then
+            echo "Updating auth-service with callback URL: ${AUTH_URL}/auth/google/callback"
+            gcloud run services update auth-service${{ needs.setup.outputs.service_suffix }} \
+              --region=${{ needs.setup.outputs.region }} \
+              --update-env-vars="GOOGLE_CALLBACK_URL=${AUTH_URL}/auth/google/callback"
           fi
