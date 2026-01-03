@@ -171,10 +171,11 @@ jobs:
       api_url: ${{ needs.deploy.outputs.api_url }}
       auth_url: ${{ needs.deploy.outputs.auth_url }}
       frontend_url: ${{ needs.deploy.outputs.frontend_url }}
-      skip_integration_tests: ${{ inputs.skip_integration_tests || true }}
-      skip_smoke_tests: ${{ inputs.skip_smoke_tests || true }}
+      skip_integration_tests: ${{ inputs.skip_integration_tests || false }}
+      skip_smoke_tests: ${{ inputs.skip_smoke_tests || false }}
     secrets:
       GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
       TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
 

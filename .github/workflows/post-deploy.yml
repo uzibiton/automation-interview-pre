@@ -65,6 +65,8 @@ on:
     secrets:
       GCP_PROJECT_ID:
         required: false
+      GCP_SA_KEY:
+        required: false
       TEST_USER_EMAIL:
         required: false
       TEST_USER_PASSWORD:
@@ -89,46 +91,74 @@ jobs:
       timestamp: ${{ steps.urls.outputs.timestamp }}
 
     steps:
+      - name: Authenticate to Google Cloud
+        if: ${{ !inputs.api_url }}
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        if: ${{ !inputs.api_url }}
+        uses: google-github-actions/setup-gcloud@v2
+
       - name: Resolve URLs
         id: urls
+        env:
+          ENV: ${{ inputs.environment }}
+          PR_NUM: ${{ inputs.pr_number }}
+          INPUT_API_URL: ${{ inputs.api_url }}
+          INPUT_AUTH_URL: ${{ inputs.auth_url }}
+          INPUT_FRONTEND_URL: ${{ inputs.frontend_url }}
+          INPUT_TIMESTAMP: ${{ inputs.timestamp }}
         run: |
-          ENV="${{ inputs.environment }}"
-          PR_NUM="${{ inputs.pr_number }}"
-          PROJECT="${{ secrets.GCP_PROJECT_ID || 'expense-tracker-project' }}"
           REGION="us-central1"
 
-          # Use provided URLs for workflow_call, resolve for workflow_dispatch
-          if [[ -n "${{ inputs.api_url }}" ]]; then
-            API_URL="${{ inputs.api_url }}"
-            AUTH_URL="${{ inputs.auth_url }}"
-            FRONTEND_URL="${{ inputs.frontend_url }}"
+          # Use provided URLs for workflow_call, resolve via gcloud for workflow_dispatch
+          if [[ -n "${INPUT_API_URL}" ]]; then
+            API_URL="${INPUT_API_URL}"
+            AUTH_URL="${INPUT_AUTH_URL}"
+            FRONTEND_URL="${INPUT_FRONTEND_URL}"
           else
-            # Resolve based on environment
+            # Determine service suffix based on environment
             case $ENV in
               production)
-                API_URL="https://api-service-${PROJECT}.${REGION}.run.app"
-                AUTH_URL="https://auth-service-${PROJECT}.${REGION}.run.app"
-                FRONTEND_URL="https://storage.googleapis.com/expense-tracker-frontend-prod/index.html"
+                API_SERVICE="api-service"
+                AUTH_SERVICE="auth-service"
+                FRONTEND_BUCKET="expense-tracker-frontend-prod"
                 ;;
               staging)
-                API_URL="https://api-service-staging-${PROJECT}.${REGION}.run.app"
-                AUTH_URL="https://auth-service-staging-${PROJECT}.${REGION}.run.app"
-                FRONTEND_URL="https://storage.googleapis.com/expense-tracker-frontend-staging/index.html"
+                API_SERVICE="api-service-staging"
+                AUTH_SERVICE="auth-service-staging"
+                FRONTEND_BUCKET="expense-tracker-frontend-staging"
                 ;;
               develop)
-                API_URL="https://api-service-dev-${PROJECT}.${REGION}.run.app"
-                AUTH_URL="https://auth-service-dev-${PROJECT}.${REGION}.run.app"
-                FRONTEND_URL="https://storage.googleapis.com/expense-tracker-frontend-dev/index.html"
+                API_SERVICE="api-service-develop"
+                AUTH_SERVICE="auth-service-develop"
+                FRONTEND_BUCKET="expense-tracker-frontend-dev"
                 ;;
               pr)
-                API_URL="https://api-service-pr-${PR_NUM}-${PROJECT}.${REGION}.run.app"
-                AUTH_URL="https://auth-service-pr-${PR_NUM}-${PROJECT}.${REGION}.run.app"
-                FRONTEND_URL="https://storage.googleapis.com/expense-tracker-frontend-pr-${PR_NUM}/index.html"
+                API_SERVICE="api-service-pr-${PR_NUM}"
+                AUTH_SERVICE="auth-service-pr-${PR_NUM}"
+                FRONTEND_BUCKET="expense-tracker-frontend-pr-${PR_NUM}"
                 ;;
             esac
+
+            # Fetch actual URLs from Cloud Run (avoids secret masking issue)
+            API_URL=$(gcloud run services describe ${API_SERVICE} --region=${REGION} --format='value(status.url)' 2>/dev/null || echo "")
+            AUTH_URL=$(gcloud run services describe ${AUTH_SERVICE} --region=${REGION} --format='value(status.url)' 2>/dev/null || echo "")
+            FRONTEND_URL="https://storage.googleapis.com/${FRONTEND_BUCKET}/index.html"
+
+            if [[ -z "$API_URL" ]]; then
+              echo "::error::Failed to get API service URL for ${API_SERVICE}"
+              exit 1
+            fi
+            if [[ -z "$AUTH_URL" ]]; then
+              echo "::error::Failed to get Auth service URL for ${AUTH_SERVICE}"
+              exit 1
+            fi
           fi
 
-          TIMESTAMP="${{ inputs.timestamp || '' }}"
+          TIMESTAMP="${INPUT_TIMESTAMP}"
           if [[ -z "$TIMESTAMP" ]]; then
             TIMESTAMP=$(date -u +%Y-%m-%dT%H-%M-%S-%3NZ)
           fi
