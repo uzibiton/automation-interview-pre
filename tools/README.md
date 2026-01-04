@@ -1,60 +1,54 @@
-# Database Tools
+# Tools
 
-Scripts for seeding and managing test data.
+Utility scripts for development and maintenance.
 
-## Test User Constants
+## Directory Structure
 
-All tools use a standardized test user for consistency across development and testing.
-
-**Login Credentials:**
-
-- Email: `test@expenses.local`
-- Password: `Test123!`
-- Name: `Test User`
-
-This user is automatically created by the seeding tools and is used in all E2E tests.
-
-## seed-test-data.js
-
-Populates the database with sample expenses for the test user.
-
-### Usage
-
-```bash
-# From project root (uses env variables from .env)
-node tools/seed-test-data.js
-
-# With custom database connection
-DB_HOST=localhost DB_PORT=5432 DB_NAME=testdb DB_USER=testuser DB_PASSWORD=testpass node tools/seed-test-data.js
+```
+tools/
+├── db/                    # Database seeding and management
+│   ├── lib/              # Shared libraries
+│   │   └── faker-generators.js
+│   ├── seed-enhanced.js  # Recommended - Faker.js + CLI
+│   ├── seed-develop.js   # Develop environment seeder
+│   ├── seed-postgres-test-data.js
+│   ├── seed-firestore-test-data.js
+│   ├── seed-all-environments.js
+│   └── README.md
+├── arc/                   # Archived one-time scripts
+│   ├── create-task-issues.js
+│   ├── create-task-002-issues.js
+│   ├── retrofit-task-003-issues.js
+│   └── setup-github-labels.js
+└── README.md
 ```
 
-### What it does
+## Database Tools
 
-- Ensures test user exists (test@expenses.local)
-- Generates 50 random expenses across all categories
-- Spreads expenses over the last 90 days
-- Uses realistic descriptions and amounts ($10-$210)
-- Shows summary statistics after seeding
+See [db/README.md](db/README.md) for detailed documentation.
 
-### Prerequisites
+### Quick Start
 
 ```bash
-# Install required packages
-npm install pg bcrypt
+# Recommended - enhanced seeder with Faker.js
+npm run seed:enhanced
 
-# Ensure categories are seeded first (automatic with Docker)
-# Or manually: psql "host=localhost dbname=testdb user=testuser" -f app/database/seed-categories.sql
+# With options
+npm run seed:enhanced -- --target firestore --expenses 50
+
+# Legacy seeders
+npm run seed:postgres
+npm run seed:firestore
+npm run seed:all
 ```
 
-### Environment Variables
+## Archived Scripts
 
-Configure in `.env` file:
+The `arc/` folder contains one-time utility scripts that were used during project setup:
 
-- `DB_HOST` - Database host (default: localhost)
-- `DB_PORT` - Database port (default: 5432)
-- `DB_NAME` - Database name (default: expenses)
-- `DB_USER` - Database user (default: postgres)
-- `DB_PASSWORD` - Database password (default: postgres123)
-- `TEST_USER_EMAIL` - Test user email (default: test@expenses.local)
-- `TEST_USER_PASSWORD` - Test user password (default: Test123!)
-- `TEST_USER_NAME` - Test user name (default: Test User)
+- `create-task-issues.js` - GitHub issue creation for TASK-002
+- `create-task-002-issues.js` - Additional TASK-002 issues
+- `retrofit-task-003-issues.js` - TASK-003 issue retrofitting
+- `setup-github-labels.js` - GitHub label setup
+
+These scripts are kept for reference but are not part of the regular workflow.
