@@ -63,12 +63,11 @@ module.exports = {
               module: 'esnext',
               moduleResolution: 'node',
               resolveJsonModule: true,
-              baseUrl: '.',
+              skipLibCheck: true,
+              baseUrl: path.resolve(__dirname, '../../'),
               paths: {
-                '*': [
-                  path.resolve(__dirname, '../node_modules/*'),
-                  path.resolve(__dirname, '../../app/frontend/node_modules/*'),
-                ],
+                bcrypt: [path.resolve(__dirname, '../node_modules/bcrypt')],
+                '*': [path.resolve(__dirname, '../node_modules/*')],
               },
             },
           },
