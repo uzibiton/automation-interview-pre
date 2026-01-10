@@ -197,6 +197,8 @@ module.exports = {
     '^@services/(.*)$': '<rootDir>/app/services/$1',
     '^@frontend/(.*)$': '<rootDir>/app/frontend/src/$1',
     '^@fixtures/(.*)$': '<rootDir>/tests/fixtures/$1',
+    // bcrypt mock for all projects
+    '^bcrypt$': '<rootDir>/tests/unit/__mocks__/bcrypt.js',
   },
 
   // Coverage configuration
