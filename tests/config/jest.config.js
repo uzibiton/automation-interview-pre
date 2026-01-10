@@ -117,6 +117,11 @@ module.exports = {
       moduleNameMapper: {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
         '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/tests/__mocks__/fileMock.js',
+        // Ensure single React instance for context to work
+        '^react$': '<rootDir>/tests/node_modules/react',
+        '^react-dom$': '<rootDir>/tests/node_modules/react-dom',
+        '^react-dom/client$': '<rootDir>/tests/node_modules/react-dom/client',
+        '^react-i18next$': '<rootDir>/tests/node_modules/react-i18next',
       },
     },
     {
