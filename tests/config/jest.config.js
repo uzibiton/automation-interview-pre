@@ -115,6 +115,16 @@ module.exports = {
               allowSyntheticDefaultImports: true,
               module: 'esnext',
               moduleResolution: 'node',
+              baseUrl: '.',
+              typeRoots: [
+                path.resolve(__dirname, '../node_modules/@types'),
+                path.resolve(__dirname, '../node_modules'),
+              ],
+              paths: {
+                react: [path.resolve(__dirname, '../node_modules/react')],
+                'react-dom': [path.resolve(__dirname, '../node_modules/react-dom')],
+                'react-i18next': [path.resolve(__dirname, '../node_modules/react-i18next')],
+              },
             },
           },
         ],
