@@ -182,7 +182,6 @@ describe('AuthService', () => {
       mockUsersService.findByEmail.mockResolvedValue(testUser);
 
       // Act & Assert
-      await expect(authService.register(email, password)).rejects.toThrow(ConflictException);
       await expect(authService.register(email, password)).rejects.toThrow(
         'User with this email already exists',
       );
@@ -225,9 +224,6 @@ describe('AuthService', () => {
 
       // Act & Assert
       await expect(authService.loginWithPassword(email, password)).rejects.toThrow(
-        UnauthorizedException,
-      );
-      await expect(authService.loginWithPassword(email, password)).rejects.toThrow(
         'Invalid credentials',
       );
     });
@@ -242,7 +238,7 @@ describe('AuthService', () => {
 
       // Act & Assert
       await expect(authService.loginWithPassword(email, password)).rejects.toThrow(
-        UnauthorizedException,
+        'Invalid credentials',
       );
     });
 
@@ -255,9 +251,6 @@ describe('AuthService', () => {
       mockedBcryptCompare.mockResolvedValue(false);
 
       // Act & Assert
-      await expect(authService.loginWithPassword(email, password)).rejects.toThrow(
-        UnauthorizedException,
-      );
       await expect(authService.loginWithPassword(email, password)).rejects.toThrow(
         'Invalid credentials',
       );

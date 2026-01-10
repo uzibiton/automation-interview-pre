@@ -105,9 +105,11 @@ module.exports = {
           require.resolve('ts-jest'),
           {
             tsconfig: {
-              jsx: 'react',
+              jsx: 'react-jsx',
               esModuleInterop: true,
               allowSyntheticDefaultImports: true,
+              module: 'esnext',
+              moduleResolution: 'node',
             },
           },
         ],
@@ -176,19 +178,9 @@ module.exports = {
   collectCoverage: false, // Enable with --coverage flag
   coverageDirectory: '<rootDir>/tests/reports/coverage',
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
-  // Use paths relative to rootDir (repo root)
-  collectCoverageFrom: [
-    '<rootDir>/app/services/**/*.ts',
-    '<rootDir>/app/frontend/src/**/*.ts',
-    '<rootDir>/app/frontend/src/**/*.tsx',
-    '!**/*.d.ts',
-    '!**/node_modules/**',
-    '!**/*.module.ts',
-    '!**/main.ts',
-    '!**/main.tsx',
-    '!**/dist/**',
-    '!**/build/**',
-  ],
+  // Note: Each project defines its own collectCoverageFrom
+  // Root-level is fallback only - keep minimal to avoid transform conflicts
+  collectCoverageFrom: [],
   coverageThreshold: {
     global: {
       branches: 70,

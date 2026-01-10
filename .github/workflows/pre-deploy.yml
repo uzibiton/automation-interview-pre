@@ -280,7 +280,8 @@ jobs:
   unit-tests:
     name: Unit Tests
     needs: [generate-timestamp]
-    if: ${{ !inputs.skip_unit_tests }}
+    # Skipped by default - coverage job runs unit tests with instrumentation
+    if: ${{ inputs.skip_coverage && !inputs.skip_unit_tests }}
     runs-on: ubuntu-latest
 
     steps:
@@ -337,8 +338,8 @@ jobs:
 
   coverage:
     name: Code Coverage
-    needs: [generate-timestamp, unit-tests]
-    if: ${{ !inputs.skip_coverage && !inputs.skip_unit_tests }}
+    needs: [generate-timestamp]
+    if: ${{ !inputs.skip_coverage }}
     runs-on: ubuntu-latest
     continue-on-error: true
 
@@ -393,7 +394,7 @@ jobs:
   # ============================================================================
   static-analysis-gate:
     name: Static Analysis Gate
-    needs: [prettier, eslint, typecheck, npm-audit, snyk, unit-tests, coverage]
+    needs: [prettier, eslint, typecheck, npm-audit, snyk, coverage]
     if: always()
     runs-on: ubuntu-latest
     outputs:
@@ -408,7 +409,6 @@ jobs:
           echo "TypeCheck: ${{ needs.typecheck.result }}"
           echo "npm audit: ${{ needs.npm-audit.result }}"
           echo "Snyk: ${{ needs.snyk.result }}"
-          echo "Unit Tests: ${{ needs.unit-tests.result }}"
           echo "Coverage: ${{ needs.coverage.result }}"
 
           # Check for success or skipped (skipped is ok if intentionally skipped)
@@ -417,7 +417,6 @@ jobs:
           TYPECHECK="${{ needs.typecheck.result }}"
           AUDIT="${{ needs.npm-audit.result }}"
           SNYK="${{ needs.snyk.result }}"
-          UNIT="${{ needs.unit-tests.result }}"
           COVERAGE="${{ needs.coverage.result }}"
 
           # All must be success or skipped
@@ -426,7 +425,6 @@ jobs:
              [[ "$TYPECHECK" =~ ^(success|skipped)$ ]] && \
              [[ "$AUDIT" =~ ^(success|skipped)$ ]] && \
              [[ "$SNYK" =~ ^(success|skipped)$ ]] && \
-             [[ "$UNIT" =~ ^(success|skipped)$ ]] && \
              [[ "$COVERAGE" =~ ^(success|skipped)$ ]]; then
             echo "All static analysis stages passed or skipped"
             echo "all_passed=true" >> $GITHUB_OUTPUT
