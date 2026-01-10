@@ -115,14 +115,17 @@ module.exports = {
               allowSyntheticDefaultImports: true,
               module: 'esnext',
               moduleResolution: 'node',
-              baseUrl: '.',
-              typeRoots: [
-                path.resolve(__dirname, '../node_modules/@types'),
-                path.resolve(__dirname, '../node_modules'),
-              ],
+              skipLibCheck: true,
+              // Use repo root as baseUrl so paths resolve correctly
+              baseUrl: path.resolve(__dirname, '../../'),
+              // Tell TypeScript where to find type definitions
+              typeRoots: [path.resolve(__dirname, '../node_modules/@types')],
+              // Map module imports to tests/node_modules for CI isolation
               paths: {
                 react: [path.resolve(__dirname, '../node_modules/react')],
+                'react/*': [path.resolve(__dirname, '../node_modules/react/*')],
                 'react-dom': [path.resolve(__dirname, '../node_modules/react-dom')],
+                'react-dom/*': [path.resolve(__dirname, '../node_modules/react-dom/*')],
                 'react-i18next': [path.resolve(__dirname, '../node_modules/react-i18next')],
               },
             },
