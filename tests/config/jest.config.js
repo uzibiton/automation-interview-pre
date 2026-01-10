@@ -78,6 +78,8 @@ module.exports = {
       moduleNameMapper: {
         // Ensure modules resolve from tests/node_modules
         '^zustand$': '<rootDir>/tests/node_modules/zustand',
+        // Mock bcrypt for faster, deterministic tests
+        '^bcrypt$': '<rootDir>/tests/__mocks__/bcrypt.js',
       },
       globals: {
         'import.meta': {
