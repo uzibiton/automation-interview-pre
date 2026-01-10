@@ -124,6 +124,8 @@ module.exports = {
         '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/tests/__mocks__/fileMock.js',
         // Ensure single React instance for context to work
         '^react$': '<rootDir>/tests/node_modules/react',
+        '^react/jsx-runtime$': '<rootDir>/tests/node_modules/react/jsx-runtime',
+        '^react/jsx-dev-runtime$': '<rootDir>/tests/node_modules/react/jsx-dev-runtime',
         '^react-dom$': '<rootDir>/tests/node_modules/react-dom',
         '^react-dom/client$': '<rootDir>/tests/node_modules/react-dom/client',
         '^react-i18next$': '<rootDir>/tests/node_modules/react-i18next',
