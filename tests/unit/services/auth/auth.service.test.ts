@@ -13,8 +13,6 @@
 // bcrypt is mocked via moduleNameMapper -> __mocks__/bcrypt.js
 import * as bcrypt from 'bcrypt';
 
-import { UnauthorizedException, ConflictException } from '@nestjs/common';
-
 // Types for mocks
 interface MockUser {
   id: number;
