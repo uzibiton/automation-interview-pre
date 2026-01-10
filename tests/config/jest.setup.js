@@ -8,15 +8,7 @@
  * - Test environment configuration
  */
 
-// Mock bcrypt globally - this runs before any test imports
-jest.mock('bcrypt', () => ({
-  hash: jest.fn().mockResolvedValue('hashed_password_123'),
-  compare: jest.fn().mockResolvedValue(true),
-  hashSync: jest.fn().mockReturnValue('hashed_password_123'),
-  compareSync: jest.fn().mockReturnValue(true),
-  genSaltSync: jest.fn().mockReturnValue('$2b$10$salt'),
-  genSalt: jest.fn().mockResolvedValue('$2b$10$salt'),
-}));
+// bcrypt is mocked via __mocks__/bcrypt.js + moduleNameMapper in jest.config.js
 
 // Extend Jest matchers (optional)
 // import '@testing-library/jest-dom';
