@@ -274,20 +274,20 @@ jobs:
           exit 1
 
   # ============================================================================
-  # STAGE 2: Tests (parallel with static analysis)
+  # STAGE 2: Test Quality (parallel with code quality and security)
   # ============================================================================
 
-  test-checks:
-    name: Test Checks
+  test-quality:
+    name: Test Quality
     runs-on: ubuntu-latest
     needs: [generate-timestamp]
     steps:
-      - name: Start Test Checks
-        run: echo "Starting test checks"
+      - name: Start Test Quality Checks
+        run: echo "Starting test quality checks"
 
   unit-tests:
     name: Unit Tests
-    needs: [test-checks, generate-timestamp]
+    needs: [test-quality, generate-timestamp]
     if: ${{ !inputs.skip_unit_tests }}
     runs-on: ubuntu-latest
 
@@ -345,7 +345,7 @@ jobs:
 
   coverage:
     name: Code Coverage
-    needs: [test-checks, generate-timestamp]
+    needs: [test-quality, generate-timestamp]
     if: ${{ !inputs.skip_coverage }}
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -401,7 +401,7 @@ jobs:
   # ============================================================================
   static-analysis-gate:
     name: Static Analysis Gate
-    needs: [prettier, eslint, typecheck, npm-audit, snyk, coverage]
+    needs: [prettier, eslint, typecheck, npm-audit, snyk, unit-tests, coverage]
     if: always()
     runs-on: ubuntu-latest
     outputs:
@@ -416,6 +416,7 @@ jobs:
           echo "TypeCheck: ${{ needs.typecheck.result }}"
           echo "npm audit: ${{ needs.npm-audit.result }}"
           echo "Snyk: ${{ needs.snyk.result }}"
+          echo "Unit Tests: ${{ needs.unit-tests.result }}"
           echo "Coverage: ${{ needs.coverage.result }}"
 
           # Check for success or skipped (skipped is ok if intentionally skipped)
@@ -424,6 +425,7 @@ jobs:
           TYPECHECK="${{ needs.typecheck.result }}"
           AUDIT="${{ needs.npm-audit.result }}"
           SNYK="${{ needs.snyk.result }}"
+          UNIT_TESTS="${{ needs.unit-tests.result }}"
           COVERAGE="${{ needs.coverage.result }}"
 
           # All must be success or skipped
@@ -432,6 +434,7 @@ jobs:
              [[ "$TYPECHECK" =~ ^(success|skipped)$ ]] && \
              [[ "$AUDIT" =~ ^(success|skipped)$ ]] && \
              [[ "$SNYK" =~ ^(success|skipped)$ ]] && \
+             [[ "$UNIT_TESTS" =~ ^(success|skipped)$ ]] && \
              [[ "$COVERAGE" =~ ^(success|skipped)$ ]]; then
             echo "All static analysis stages passed or skipped"
             echo "all_passed=true" >> $GITHUB_OUTPUT

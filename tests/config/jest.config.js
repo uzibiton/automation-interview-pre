@@ -74,6 +74,11 @@ module.exports = {
           },
         ],
       },
+      moduleNameMapper: {
+        // Ensure modules resolve from tests/node_modules
+        '^zustand$': '<rootDir>/tests/node_modules/zustand',
+        '^bcrypt$': '<rootDir>/tests/node_modules/bcrypt',
+      },
       globals: {
         'import.meta': {
           env: {
