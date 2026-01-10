@@ -3,6 +3,8 @@
  * Used by Jest when jest.mock('bcrypt') is called
  */
 
+console.log('[bcrypt mock] Loading bcrypt mock from tests/unit/__mocks__/bcrypt.js');
+
 const hash = jest.fn().mockResolvedValue('hashed_password_123');
 const compare = jest.fn().mockResolvedValue(true);
 
