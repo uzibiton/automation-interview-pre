@@ -77,7 +77,8 @@ module.exports = {
       moduleNameMapper: {
         // Ensure modules resolve from tests/node_modules
         '^zustand$': '<rootDir>/tests/node_modules/zustand',
-        '^bcrypt$': '<rootDir>/tests/node_modules/bcrypt',
+        // bcrypt uses manual mock from __mocks__ folder (jest.mock('bcrypt') in tests)
+        '^bcrypt$': '<rootDir>/tests/unit/__mocks__/bcrypt.ts',
       },
       globals: {
         'import.meta': {
