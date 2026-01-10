@@ -1,6 +1,6 @@
 /**
  * Mock bcrypt module for unit tests
- * 
+ *
  * This mock replaces the real bcrypt to:
  * 1. Speed up tests (real bcrypt hashing is intentionally slow)
  * 2. Provide predictable, controllable outputs
