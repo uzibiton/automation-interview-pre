@@ -45,6 +45,8 @@ module.exports = {
       testEnvironment: 'node',
       testMatch: ['<rootDir>/tests/unit/**/*.test.ts', '<rootDir>/tests/unit/**/*.spec.ts'],
       setupFilesAfterEnv: ['<rootDir>/tests/config/jest.setup.js'],
+      // Add tests/node_modules to module resolution path for source files
+      modulePaths: ['<rootDir>/tests/node_modules'],
       collectCoverageFrom: [
         '<rootDir>/app/services/**/*.ts',
         '!**/*.d.ts',

@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@nestjs/common": "^11.1.11",
+    "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@playwright/test": "^1.56.1",
     "@testing-library/jest-dom": "^6.1.5",
