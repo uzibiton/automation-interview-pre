@@ -1,17 +1,26 @@
 /**
- * Manual mock for bcrypt module
- * Used by Jest when jest.mock('bcrypt') is called
+ * Mock for bcrypt module
+ * Uses jest.fn() mocks that can be controlled in tests
  */
 
-console.log('[bcrypt mock] Loading bcrypt mock from tests/unit/__mocks__/bcrypt.js');
+const hash = jest.fn((password, saltRounds) => {
+  return Promise.resolve('hashed_password_123');
+});
 
-const hash = jest.fn().mockResolvedValue('hashed_password_123');
-const compare = jest.fn().mockResolvedValue(true);
+const compare = jest.fn((password, hash) => {
+  return Promise.resolve(true);
+});
 
-// Reset helpers for tests
-const __resetMocks = () => {
-  hash.mockReset().mockResolvedValue('hashed_password_123');
-  compare.mockReset().mockResolvedValue(true);
+const hashSync = jest.fn((password, saltRounds) => 'hashed_password_123');
+const compareSync = jest.fn((password, hash) => true);
+const genSaltSync = jest.fn((rounds) => '$2b$10$salt');
+const genSalt = jest.fn((rounds) => Promise.resolve('$2b$10$salt'));
+
+module.exports = {
+  hash,
+  compare,
+  hashSync,
+  compareSync,
+  genSaltSync,
+  genSalt,
 };
-
-module.exports = { hash, compare, __resetMocks };

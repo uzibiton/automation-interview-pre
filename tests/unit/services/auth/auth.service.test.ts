@@ -10,11 +10,10 @@
  *
  * @jest-environment node
  */
-// Mock bcrypt using manual mock in __mocks__ folder
-jest.mock('bcrypt');
+// bcrypt is mocked via moduleNameMapper -> __mocks__/bcrypt.js
+import * as bcrypt from 'bcrypt';
 
 import { UnauthorizedException, ConflictException } from '@nestjs/common';
-import { hash as mockBcryptHash, compare as mockBcryptCompare } from 'bcrypt';
 
 // Types for mocks
 interface MockUser {
@@ -83,9 +82,9 @@ interface GoogleProfile {
   photos: { value: string }[];
 }
 
-// Cast to jest.Mock for type safety
-const mockedBcryptHash = mockBcryptHash as jest.Mock;
-const mockedBcryptCompare = mockBcryptCompare as jest.Mock;
+// Get bcrypt mock functions (from __mocks__/bcrypt.js)
+const mockHash = bcrypt.hash as jest.Mock;
+const mockCompare = bcrypt.compare as jest.Mock;
 
 describe('AuthService', () => {
   let authService: IAuthService;
@@ -96,8 +95,8 @@ describe('AuthService', () => {
     jest.clearAllMocks();
 
     // Reset bcrypt mock implementations
-    mockedBcryptHash.mockResolvedValue('hashed_password_123');
-    mockedBcryptCompare.mockResolvedValue(true);
+    mockHash.mockResolvedValue('hashed_password_123');
+    mockCompare.mockResolvedValue(true);
 
     // Create mock services
     mockUsersService = {
@@ -143,7 +142,7 @@ describe('AuthService', () => {
 
       // Assert
       expect(mockUsersService.findByEmail).toHaveBeenCalledWith(email);
-      expect(mockedBcryptHash).toHaveBeenCalledWith(password, 10);
+      expect(mockHash).toHaveBeenCalledWith(password, 10);
       expect(mockUsersService.createUser).toHaveBeenCalledWith({
         email,
         name,
@@ -199,14 +198,14 @@ describe('AuthService', () => {
       const password = 'CorrectPassword123!';
 
       mockUsersService.findByEmailWithPassword.mockResolvedValue({ ...testUserWithPassword });
-      mockedBcryptCompare.mockResolvedValue(true);
+      mockCompare.mockResolvedValue(true);
 
       // Act
       const result = await authService.loginWithPassword(email, password);
 
       // Assert
       expect(mockUsersService.findByEmailWithPassword).toHaveBeenCalledWith(email);
-      expect(mockedBcryptCompare).toHaveBeenCalledWith(password, 'hashed_password_123');
+      expect(mockCompare).toHaveBeenCalledWith(password, 'hashed_password_123');
       expect(result).toHaveProperty('access_token', 'mock_jwt_token_123');
       expect(result.user).toMatchObject({
         id: testUser.id,
@@ -248,7 +247,7 @@ describe('AuthService', () => {
       const password = 'WrongPassword123!';
 
       mockUsersService.findByEmailWithPassword.mockResolvedValue({ ...testUserWithPassword });
-      mockedBcryptCompare.mockResolvedValue(false);
+      mockCompare.mockResolvedValue(false);
 
       // Act & Assert
       await expect(authService.loginWithPassword(email, password)).rejects.toThrow(
@@ -262,7 +261,7 @@ describe('AuthService', () => {
       const password = 'CorrectPassword123!';
 
       mockUsersService.findByEmailWithPassword.mockResolvedValue({ ...testUserWithPassword });
-      mockedBcryptCompare.mockResolvedValue(true);
+      mockCompare.mockResolvedValue(true);
 
       // Act
       const result = await authService.loginWithPassword(email, password);
