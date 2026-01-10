@@ -210,7 +210,9 @@ async function initializeFirestore(firestore) {
     });
     console.log(`   ✅ Created group: ${group.name} (${groupRef.id})`);
     console.log(`      Owner: ${actualOwnerId}`);
-    console.log(`      Members: ${actualMembers.length} (${group.memberDetails.map((m) => m.role).join(', ')})`);
+    console.log(
+      `      Members: ${actualMembers.length} (${group.memberDetails.map((m) => m.role).join(', ')})`,
+    );
   }
 
   // Create expenses for each user (3-5 per user) using actual Firestore IDs

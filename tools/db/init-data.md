@@ -10,27 +10,28 @@ The develop environment is seeded with a specific data structure for testing dif
 
 ### Owner Users (2)
 
-| Email | Auth Type | Password | Role |
-|-------|-----------|----------|------|
-| `test@expenses.local` | Local | `Test123!` | Owner |
-| `uzibdocs@gmail.com` | Google OAuth | N/A | Owner |
+| Email                 | Auth Type    | Password   | Role  |
+| --------------------- | ------------ | ---------- | ----- |
+| `test@expenses.local` | Local        | `Test123!` | Owner |
+| `uzibdocs@gmail.com`  | Google OAuth | N/A        | Owner |
 
 ### Role Test Users (4)
 
 Each role has a test user to verify permission levels:
 
-| Email | Auth Type | Password | Role |
-|-------|-----------|----------|------|
-| `admin@expenses.local` | Local | `Test123!` | Admin |
-| `member@expenses.local` | Local | `Test123!` | Member |
-| `viewer@expenses.local` | Local | `Test123!` | Viewer |
-| `solo@expenses.local` | Local | `Test123!` | Owner (no groups) |
+| Email                   | Auth Type | Password   | Role              |
+| ----------------------- | --------- | ---------- | ----------------- |
+| `admin@expenses.local`  | Local     | `Test123!` | Admin             |
+| `member@expenses.local` | Local     | `Test123!` | Member            |
+| `viewer@expenses.local` | Local     | `Test123!` | Viewer            |
+| `solo@expenses.local`   | Local     | `Test123!` | Owner (no groups) |
 
 ## Data Structure
 
 ### Per Owner User (test@expenses.local, uzibdocs@gmail.com)
 
 Each owner has:
+
 - **2 Groups** with different themes
 - **Group 1**: 4 members (owner + admin + member + viewer)
 - **Group 2**: 4 members (owner + admin + member + viewer)
@@ -84,16 +85,17 @@ node tools/db/seed-enhanced.js --env develop --init
 
 ### Permission Testing
 
-| User | Can View | Can Edit | Can Delete | Can Manage Members |
-|------|----------|----------|------------|-------------------|
-| Owner | ✅ | ✅ | ✅ | ✅ |
-| Admin | ✅ | ✅ | ✅ | ✅ |
-| Member | ✅ | ✅ | ❌ | ❌ |
-| Viewer | ✅ | ❌ | ❌ | ❌ |
+| User   | Can View | Can Edit | Can Delete | Can Manage Members |
+| ------ | -------- | -------- | ---------- | ------------------ |
+| Owner  | ✅       | ✅       | ✅         | ✅                 |
+| Admin  | ✅       | ✅       | ✅         | ✅                 |
+| Member | ✅       | ✅       | ❌         | ❌                 |
+| Viewer | ✅       | ❌       | ❌         | ❌                 |
 
 ### Solo User Testing
 
 `solo@expenses.local` has no groups - useful for testing:
+
 - Empty state UI
 - Group creation flow
 - Invitation acceptance
@@ -101,6 +103,7 @@ node tools/db/seed-enhanced.js --env develop --init
 ## Password Hash
 
 All local users use the same password hash for `Test123!`:
+
 ```
 $2b$10$deWzoV5fs/.zOkxXdeETueCRNaSVF.xuR/4K0TSgMes5xB.cmNhFu
 ```

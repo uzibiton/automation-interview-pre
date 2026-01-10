@@ -8,6 +8,8 @@
  * - Test environment configuration
  */
 
+// bcrypt is mocked via __mocks__/bcrypt.js + moduleNameMapper in jest.config.js
+
 // Extend Jest matchers (optional)
 // import '@testing-library/jest-dom';
 

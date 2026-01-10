@@ -78,6 +78,12 @@ on:
         description: 'Whether all checks passed'
         value: ${{ jobs.static-analysis-gate.outputs.all_passed }}
 
+# Required for Snyk SARIF upload to GitHub Security tab
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
   # ============================================================================
   # Generate CI Run Timestamp (shared across all jobs)
@@ -268,12 +274,20 @@ jobs:
           exit 1
 
   # ============================================================================
-  # STAGE 2: Unit Tests (runs in parallel with static analysis)
+  # STAGE 2: Test Quality (parallel with code quality and security)
   # ============================================================================
+
+  test-quality:
+    name: Test Quality
+    runs-on: ubuntu-latest
+    needs: [generate-timestamp]
+    steps:
+      - name: Start Test Quality Checks
+        run: echo "Starting test quality checks"
 
   unit-tests:
     name: Unit Tests
-    needs: [generate-timestamp]
+    needs: [test-quality, generate-timestamp]
     if: ${{ !inputs.skip_unit_tests }}
     runs-on: ubuntu-latest
 
@@ -326,13 +340,13 @@ jobs:
           path: tests/reports/${{ needs.generate-timestamp.outputs.timestamp }}/unit-tests/
 
   # ============================================================================
-  # STAGE 2.5: Code Coverage (runs after unit tests)
+  # STAGE 2.5: Code Coverage (grouped with tests)
   # ============================================================================
 
   coverage:
     name: Code Coverage
-    needs: [generate-timestamp, unit-tests]
-    if: ${{ !inputs.skip_coverage && !inputs.skip_unit_tests }}
+    needs: [test-quality, generate-timestamp]
+    if: ${{ !inputs.skip_coverage }}
     runs-on: ubuntu-latest
     continue-on-error: true
 
@@ -346,6 +360,9 @@ jobs:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: tests/package-lock.json
+
+      - name: Install workspace dependencies
+        run: npm ci
 
       - name: Cache node_modules
         id: cache-node-modules
@@ -362,7 +379,7 @@ jobs:
         working-directory: tests
 
       - name: Run tests with coverage
-        run: npm run test:coverage -- --maxWorkers=2 --forceExit
+        run: npm run test:coverage -- --maxWorkers=2 --forceExit --verbose --detectOpenHandles
         working-directory: tests
         timeout-minutes: 10
 
@@ -370,8 +387,8 @@ jobs:
         if: always()
         run: |
           mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/coverage
-          if [ -d "coverage" ]; then
-            mv coverage reports/${{ needs.generate-timestamp.outputs.timestamp }}/coverage/
+          if [ -d "reports/coverage" ]; then
+            mv reports/coverage/* reports/${{ needs.generate-timestamp.outputs.timestamp }}/coverage/
           fi
         working-directory: tests
 
@@ -411,7 +428,7 @@ jobs:
           TYPECHECK="${{ needs.typecheck.result }}"
           AUDIT="${{ needs.npm-audit.result }}"
           SNYK="${{ needs.snyk.result }}"
-          UNIT="${{ needs.unit-tests.result }}"
+          UNIT_TESTS="${{ needs.unit-tests.result }}"
           COVERAGE="${{ needs.coverage.result }}"
 
           # All must be success or skipped
@@ -420,7 +437,7 @@ jobs:
              [[ "$TYPECHECK" =~ ^(success|skipped)$ ]] && \
              [[ "$AUDIT" =~ ^(success|skipped)$ ]] && \
              [[ "$SNYK" =~ ^(success|skipped)$ ]] && \
-             [[ "$UNIT" =~ ^(success|skipped)$ ]] && \
+             [[ "$UNIT_TESTS" =~ ^(success|skipped)$ ]] && \
              [[ "$COVERAGE" =~ ^(success|skipped)$ ]]; then
             echo "All static analysis stages passed or skipped"
             echo "all_passed=true" >> $GITHUB_OUTPUT
