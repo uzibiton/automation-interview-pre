@@ -78,6 +78,12 @@ on:
         description: 'Whether all checks passed'
         value: ${{ jobs.static-analysis-gate.outputs.all_passed }}
 
+# Required for Snyk SARIF upload to GitHub Security tab
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
   # ============================================================================
   # Generate CI Run Timestamp (shared across all jobs)
@@ -370,8 +376,8 @@ jobs:
         if: always()
         run: |
           mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/coverage
-          if [ -d "coverage" ]; then
-            mv coverage reports/${{ needs.generate-timestamp.outputs.timestamp }}/coverage/
+          if [ -d "reports/coverage" ]; then
+            mv reports/coverage/* reports/${{ needs.generate-timestamp.outputs.timestamp }}/coverage/
           fi
         working-directory: tests
 

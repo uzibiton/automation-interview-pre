@@ -6,14 +6,14 @@ Scripts for managing database seeding and data operations.
 
 All seeding tools use standardized test users:
 
-| Email                 | Auth Type    | Password | Name        | Role  |
-| --------------------- | ------------ | -------- | ----------- | ----- |
-| test@expenses.local   | Local        | Test123! | Test User   | Owner |
-| uzibdocs@gmail.com    | Google OAuth | N/A      | Uzi Bdocs   | Owner |
-| admin@expenses.local  | Local        | Test123! | Admin User  | Admin |
-| member@expenses.local | Local        | Test123! | Member User | Member|
-| viewer@expenses.local | Local        | Test123! | Viewer User | Viewer|
-| solo@expenses.local   | Local        | Test123! | Solo User   | Solo  |
+| Email                 | Auth Type    | Password | Name        | Role   |
+| --------------------- | ------------ | -------- | ----------- | ------ |
+| test@expenses.local   | Local        | Test123! | Test User   | Owner  |
+| uzibdocs@gmail.com    | Google OAuth | N/A      | Uzi Bdocs   | Owner  |
+| admin@expenses.local  | Local        | Test123! | Admin User  | Admin  |
+| member@expenses.local | Local        | Test123! | Member User | Member |
+| viewer@expenses.local | Local        | Test123! | Viewer User | Viewer |
+| solo@expenses.local   | Local        | Test123! | Solo User   | Solo   |
 
 ## Scripts
 
@@ -45,15 +45,15 @@ node tools/db/seed-enhanced.js --target all --expenses 100 --groups 5 --members 
 
 **CLI Options:**
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `-t, --target <type>` | Database: `postgres`, `firestore`, or `all` | `all` |
-| `--env <name>` | Environment: `develop`, `staging`, `production` | - |
-| `--init` | Use predefined init data instead of random Faker data | `false` |
-| `-e, --expenses <n>` | Number of expenses to generate | `30` |
-| `-g, --groups <n>` | Number of groups to create | `2` |
-| `-m, --members <n>` | Members per group | `3` |
-| `--days <n>` | Days back for expense dates | `60` |
+| Option                | Description                                           | Default |
+| --------------------- | ----------------------------------------------------- | ------- |
+| `-t, --target <type>` | Database: `postgres`, `firestore`, or `all`           | `all`   |
+| `--env <name>`        | Environment: `develop`, `staging`, `production`       | -       |
+| `--init`              | Use predefined init data instead of random Faker data | `false` |
+| `-e, --expenses <n>`  | Number of expenses to generate                        | `30`    |
+| `-g, --groups <n>`    | Number of groups to create                            | `2`     |
+| `-m, --members <n>`   | Members per group                                     | `3`     |
+| `--days <n>`          | Days back for expense dates                           | `60`    |
 
 **Features:**
 
@@ -69,20 +69,24 @@ node tools/db/seed-enhanced.js --target all --expenses 100 --groups 5 --members 
 Creates a deterministic data set for testing:
 
 **Users Created:**
+
 - 2 owner users with 2 groups each
 - 4 role-based test users (admin, member, viewer, solo)
 
 **Groups Created:**
+
 - "Family Budget" and "Vacation Fund" (owned by test@expenses.local)
 - "Work Budget" and "Project Fund" (owned by uzibdocs@gmail.com)
 - Each group has admin, member, and viewer users
 
 **Expenses:**
+
 - 3-5 expenses per user with realistic amounts and descriptions
 - Uses existing categories from Firestore
 - Member name included in description for attribution
 
 **Data Structure:**
+
 ```
 groups/
   {auto-id}/
@@ -107,6 +111,7 @@ node tools/db/seed-develop.js
 ```
 
 **What it does:**
+
 1. Clears all existing data (users, groups, expenses, invitations)
 2. Creates two test users (local + Google OAuth)
 3. Creates two groups per user
@@ -147,14 +152,14 @@ npm run seed:all
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DB_HOST` | PostgreSQL host | `localhost` |
-| `DB_PORT` | PostgreSQL port | `5432` |
-| `DB_NAME` | PostgreSQL database | `testdb` |
-| `DB_USER` | PostgreSQL user | `testuser` |
-| `DB_PASSWORD` | PostgreSQL password | `testpass` |
-| `FIREBASE_PROJECT_ID` | Firestore project | `skillful-eon-477917-b7` |
+| Variable              | Description         | Default                  |
+| --------------------- | ------------------- | ------------------------ |
+| `DB_HOST`             | PostgreSQL host     | `localhost`              |
+| `DB_PORT`             | PostgreSQL port     | `5432`                   |
+| `DB_NAME`             | PostgreSQL database | `testdb`                 |
+| `DB_USER`             | PostgreSQL user     | `testuser`               |
+| `DB_PASSWORD`         | PostgreSQL password | `testpass`               |
+| `FIREBASE_PROJECT_ID` | Firestore project   | `skillful-eon-477917-b7` |
 
 ## Library Files
 

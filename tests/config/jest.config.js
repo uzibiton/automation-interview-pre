@@ -16,15 +16,22 @@
 
 const path = require('path');
 
+// Resolve source directories for coverage (relative to this config file)
+const appServicesDir = path.resolve(__dirname, '../../app/services');
+const appFrontendDir = path.resolve(__dirname, '../../app/frontend/src');
+
 module.exports = {
   // Root directory for tests (where test files are located)
-  rootDir: path.resolve(__dirname, '../'),
+  rootDir: path.resolve(__dirname, '../../'), // Changed to repo root for coverage
+
+  // Roots - where Jest looks for tests and coverage
+  roots: ['<rootDir>/tests', '<rootDir>/app'],
 
   // Tell Jest where to find node_modules - include both test and frontend dependencies
   moduleDirectories: [
     'node_modules',
-    '<rootDir>/node_modules',
-    '<rootDir>/../app/frontend/node_modules',
+    '<rootDir>/tests/node_modules',
+    '<rootDir>/app/frontend/node_modules',
   ],
 
   // Test environment setup
@@ -34,10 +41,18 @@ module.exports = {
   projects: [
     {
       displayName: 'unit',
-      rootDir: path.resolve(__dirname, '../'),
+      rootDir: path.resolve(__dirname, '../../'),
       testEnvironment: 'node',
-      testMatch: ['<rootDir>/unit/**/*.test.ts', '<rootDir>/unit/**/*.spec.ts'],
-      setupFilesAfterEnv: ['<rootDir>/config/jest.setup.js'],
+      testMatch: ['<rootDir>/tests/unit/**/*.test.ts', '<rootDir>/tests/unit/**/*.spec.ts'],
+      setupFilesAfterEnv: ['<rootDir>/tests/config/jest.setup.js'],
+      collectCoverageFrom: [
+        '<rootDir>/app/services/**/*.ts',
+        '!**/*.d.ts',
+        '!**/node_modules/**',
+        '!**/*.module.ts',
+        '!**/main.ts',
+        '!**/dist/**',
+      ],
       transform: {
         '^.+\\.tsx?$': [
           require.resolve('ts-jest'),
@@ -70,10 +85,21 @@ module.exports = {
     },
     {
       displayName: 'component',
-      rootDir: path.resolve(__dirname, '../'),
+      rootDir: path.resolve(__dirname, '../../'),
       testEnvironment: 'jsdom', // Browser-like environment for React components
-      testMatch: ['<rootDir>/component/**/*.test.tsx', '<rootDir>/component/**/*.spec.tsx'],
-      setupFilesAfterEnv: ['<rootDir>/config/jest.setup.js'],
+      testMatch: [
+        '<rootDir>/tests/component/**/*.test.tsx',
+        '<rootDir>/tests/component/**/*.spec.tsx',
+      ],
+      setupFilesAfterEnv: ['<rootDir>/tests/config/jest.setup.js'],
+      collectCoverageFrom: [
+        '<rootDir>/app/frontend/src/**/*.ts',
+        '<rootDir>/app/frontend/src/**/*.tsx',
+        '!**/*.d.ts',
+        '!**/node_modules/**',
+        '!**/main.tsx',
+        '!**/vite-env.d.ts',
+      ],
       transform: {
         '^.+\\.tsx?$': [
           require.resolve('ts-jest'),
@@ -88,15 +114,18 @@ module.exports = {
       },
       moduleNameMapper: {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-        '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/__mocks__/fileMock.js',
+        '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/tests/__mocks__/fileMock.js',
       },
     },
     {
       displayName: 'integration',
-      rootDir: path.resolve(__dirname, '../'),
+      rootDir: path.resolve(__dirname, '../../'),
       testEnvironment: 'node',
-      testMatch: ['<rootDir>/integration/**/*.test.ts', '<rootDir>/integration/**/*.spec.ts'],
-      setupFilesAfterEnv: ['<rootDir>/config/jest.setup.js'],
+      testMatch: [
+        '<rootDir>/tests/integration/**/*.test.ts',
+        '<rootDir>/tests/integration/**/*.spec.ts',
+      ],
+      setupFilesAfterEnv: ['<rootDir>/tests/config/jest.setup.js'],
       transform: {
         '^.+\\.tsx?$': [
           require.resolve('ts-jest'),
@@ -111,10 +140,10 @@ module.exports = {
     },
     {
       displayName: 'contract',
-      rootDir: path.resolve(__dirname, '../'),
+      rootDir: path.resolve(__dirname, '../../'),
       testEnvironment: 'node',
-      testMatch: ['<rootDir>/contract/**/*.pact.test.ts'],
-      setupFilesAfterEnv: ['<rootDir>/config/jest.setup.js'],
+      testMatch: ['<rootDir>/tests/contract/**/*.pact.test.ts'],
+      setupFilesAfterEnv: ['<rootDir>/tests/config/jest.setup.js'],
       transform: {
         '^.+\\.tsx?$': [
           require.resolve('ts-jest'),
@@ -133,26 +162,30 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 
   // Tell Jest where to find node_modules for frontend dependencies
-  modulePaths: ['<rootDir>/node_modules', '<rootDir>/../app/frontend/node_modules'],
+  modulePaths: ['<rootDir>/tests/node_modules', '<rootDir>/app/frontend/node_modules'],
 
   // Path aliases (matching tsconfig.json)
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/../app/src/$1',
-    '^@services/(.*)$': '<rootDir>/../app/services/$1',
-    '^@frontend/(.*)$': '<rootDir>/../app/frontend/src/$1',
-    '^@fixtures/(.*)$': '<rootDir>/fixtures/$1',
+    '^@/(.*)$': '<rootDir>/app/src/$1',
+    '^@services/(.*)$': '<rootDir>/app/services/$1',
+    '^@frontend/(.*)$': '<rootDir>/app/frontend/src/$1',
+    '^@fixtures/(.*)$': '<rootDir>/tests/fixtures/$1',
   },
 
   // Coverage configuration
   collectCoverage: false, // Enable with --coverage flag
-  coverageDirectory: '<rootDir>/../coverage',
+  coverageDirectory: '<rootDir>/tests/reports/coverage',
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
+  // Use paths relative to rootDir (repo root)
   collectCoverageFrom: [
-    '../app/services/**/*.{ts,tsx}',
-    '../app/frontend/src/**/*.{ts,tsx}',
+    '<rootDir>/app/services/**/*.ts',
+    '<rootDir>/app/frontend/src/**/*.ts',
+    '<rootDir>/app/frontend/src/**/*.tsx',
     '!**/*.d.ts',
     '!**/node_modules/**',
-    '!**/*.config.{ts,js}',
+    '!**/*.module.ts',
+    '!**/main.ts',
+    '!**/main.tsx',
     '!**/dist/**',
     '!**/build/**',
   ],

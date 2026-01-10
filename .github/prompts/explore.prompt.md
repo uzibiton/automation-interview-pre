@@ -1,5 +1,5 @@
 ---
-agent: ask
+agent: edit
 model: GPT-5 mini (copilot)
 ---
 

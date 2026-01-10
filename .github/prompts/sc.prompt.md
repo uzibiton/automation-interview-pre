@@ -1,5 +1,5 @@
 ---
-agent: ask
+agent: edit
 model: GPT-5 mini (copilot)
 ---
 
@@ -66,3 +66,5 @@ If no meaningful or reusable state was produced, reply exactly with:
 
 - Risks / assumptions:
 - Deferred items:
+
+**Action:** Create the file at `contexts/YYYYMMDD_HHMMSS_[topic].md` using the template above, replacing placeholders with actual session state.
