@@ -39,22 +39,29 @@ agent: developer
 # Developer Agent — [Project Name]
 
 ## Tech stack
+
 - [discovered frameworks, languages, tools]
 
 ## Project structure
+
 - [key folders and their purpose]
 
 ## Naming conventions
+
 - [files, components, variables]
 
 ## Code patterns
+
 - [imports, exports, state, API calls]
 
 ## Linting & formatting
+
 - [rules from config files]
 
 ## Rules (to be customized)
+
 <!-- Add manual rules here after generation -->
+
 - [ ] Always include data-testid on interactive elements
 - [ ] No file-level eslint-disable
 - [ ] [add more as needed]
@@ -63,6 +70,7 @@ agent: developer
 ## After generation
 
 Inform user:
+
 - File created at `.github/prompts/developer.agent.md`
 - Review and add manual rules in the "Rules" section
 - Reference `add-testids.prompt.md` for data-testid conventions

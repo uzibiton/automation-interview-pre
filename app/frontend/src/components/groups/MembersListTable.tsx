@@ -246,8 +246,16 @@ function MembersListTable({
 
       {/* Change Role Dialog */}
       {changingRoleMember && (
-        <div className="modal-overlay" onClick={() => setChangingRoleMember(null)} data-testid="role-change-dialog-overlay">
-          <div className="modal-content" onClick={(e) => e.stopPropagation()} data-testid="role-change-dialog">
+        <div
+          className="modal-overlay"
+          onClick={() => setChangingRoleMember(null)}
+          data-testid="role-change-dialog-overlay"
+        >
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+            data-testid="role-change-dialog"
+          >
             <div className="modal-header">
               <h3>{translation('groups.members.changeRole')}</h3>
               <button

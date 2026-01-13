@@ -32,10 +32,19 @@ function Navigation({ userName, userAvatar, onLogout }: NavigationProps) {
         </Link>
       </div>
       <nav className="main-nav">
-        <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} end data-testid="nav-dashboard-link">
+        <NavLink
+          to="/"
+          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          end
+          data-testid="nav-dashboard-link"
+        >
           {t('nav.dashboard')}
         </NavLink>
-        <NavLink to="/chat" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} data-testid="nav-chat-link">
+        <NavLink
+          to="/chat"
+          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          data-testid="nav-chat-link"
+        >
           {t('nav.chat')}
         </NavLink>
         <NavLink
@@ -52,10 +61,18 @@ function Navigation({ userName, userAvatar, onLogout }: NavigationProps) {
         >
           {t('nav.expenses')}
         </NavLink>
-        <NavLink to="/members" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} data-testid="nav-members-link">
+        <NavLink
+          to="/members"
+          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          data-testid="nav-members-link"
+        >
           {t('nav.members', 'Members')}
         </NavLink>
-        <NavLink to="/group" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} data-testid="nav-groups-link">
+        <NavLink
+          to="/group"
+          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+          data-testid="nav-groups-link"
+        >
           {t('nav.groups')}
         </NavLink>
       </nav>

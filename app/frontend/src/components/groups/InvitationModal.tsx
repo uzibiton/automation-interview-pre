@@ -322,7 +322,11 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
 
   return (
     <div className="modal-overlay" onClick={handleClose} data-testid="invitation-modal-overlay">
-      <div className="modal-content" onClick={(e) => e.stopPropagation()} data-testid="invitation-modal">
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
+        data-testid="invitation-modal"
+      >
         <div className="modal-header">
           <h3>{translation('groups.invitation.title')}</h3>
           <button
@@ -548,7 +552,10 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
 
               {/* Display generated link */}
               {generatedLink && (
-                <div className="link-display" data-testid="invitation-modal-generated-link-container">
+                <div
+                  className="link-display"
+                  data-testid="invitation-modal-generated-link-container"
+                >
                   <div className="link-display-header">
                     <h4>{translation('groups.invitation.linkGenerated')}</h4>
                   </div>
@@ -560,7 +567,12 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                       onClick={(e) => (e.target as HTMLInputElement).select()}
                       data-testid="invitation-modal-generated-link-input"
                     />
-                    <button type="button" className="btn btn-secondary" onClick={handleCopyLink} data-testid="invitation-modal-copy-link-button">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={handleCopyLink}
+                      data-testid="invitation-modal-copy-link-button"
+                    >
                       {translation('groups.invitation.copyLink')}
                     </button>
                   </div>

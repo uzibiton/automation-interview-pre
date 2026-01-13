@@ -61,7 +61,7 @@ function Login() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 data-testid="login-name-input"
-                style={
+                style={{
                   width: '100%',
                   padding: '12px',
                   border: '1px solid #ddd',
@@ -80,7 +80,7 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
               data-testid="login-email-input"
-              style={
+              style={{
                 width: '100%',
                 padding: '12px',
                 border: '1px solid #ddd',
@@ -99,7 +99,7 @@ function Login() {
               required
               minLength={6}
               data-testid="login-password-input"
-              style={
+              style={{
                 width: '100%',
                 padding: '12px',
                 border: '1px solid #ddd',

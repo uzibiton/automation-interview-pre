@@ -29,12 +29,12 @@ Add `data-testid` to:
 
 ## Tables (full granularity)
 
-| Element | Pattern | Example |
-|---------|---------|---------|
-| container | `{name}-table` | `users-table` |
-| header cell | `{name}-table-header-{column}` | `users-table-header-email` |
-| row | `{name}-table-row-{index}` | `users-table-row-0` |
-| cell | `{name}-table-row-{index}-cell-{column}` | `users-table-row-0-cell-email` |
+| Element     | Pattern                                  | Example                        |
+| ----------- | ---------------------------------------- | ------------------------------ |
+| container   | `{name}-table`                           | `users-table`                  |
+| header cell | `{name}-table-header-{column}`           | `users-table-header-email`     |
+| row         | `{name}-table-row-{index}`               | `users-table-row-0`            |
+| cell        | `{name}-table-row-{index}-cell-{column}` | `users-table-row-0-cell-email` |
 
 ## Modes
 

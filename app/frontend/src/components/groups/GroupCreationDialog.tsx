@@ -182,8 +182,16 @@ function GroupCreationDialog({ isOpen, onClose, onSuccess }: GroupCreationDialog
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={handleClose} data-testid="group-creation-dialog-overlay">
-      <div className="modal-content" onClick={(e) => e.stopPropagation()} data-testid="group-creation-dialog">
+    <div
+      className="modal-overlay"
+      onClick={handleClose}
+      data-testid="group-creation-dialog-overlay"
+    >
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
+        data-testid="group-creation-dialog"
+      >
         <div className="modal-header">
           <h3>{translation('groups.createGroupTitle')}</h3>
           <button

@@ -158,10 +158,19 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
 
   return (
     <div className="modal-overlay" onClick={handleClose} data-testid="expense-dialog-overlay">
-      <div className="modal-content" onClick={(e) => e.stopPropagation()} data-testid="expense-dialog">
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
+        data-testid="expense-dialog"
+      >
         <div className="modal-header">
           <h3>{isEditMode ? translation('expenses.edit') : translation('expenses.addNew')}</h3>
-          <button className="modal-close" onClick={handleClose} disabled={loading} data-testid="expense-dialog-close-button">
+          <button
+            className="modal-close"
+            onClick={handleClose}
+            disabled={loading}
+            data-testid="expense-dialog-close-button"
+          >
             ✕
           </button>
         </div>
@@ -271,7 +280,12 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
             >
               {translation('expenses.cancel')}
             </button>
-            <button type="submit" className="btn btn-primary" disabled={loading} data-testid="expense-dialog-submit-button">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={loading}
+              data-testid="expense-dialog-submit-button"
+            >
               {loading
                 ? translation('expenses.saving')
                 : isEditMode

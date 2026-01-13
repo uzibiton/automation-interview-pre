@@ -226,7 +226,12 @@ function ExpenseForm({ token, onSuccess }: ExpenseFormProps) {
         </div>
 
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button type="submit" className="btn btn-primary" disabled={loading} data-testid="expense-form-submit-button">
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={loading}
+            data-testid="expense-form-submit-button"
+          >
             {loading ? 'Saving...' : t('expenses.save')}
           </button>
         </div>

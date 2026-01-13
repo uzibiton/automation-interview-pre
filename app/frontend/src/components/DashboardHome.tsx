@@ -95,7 +95,11 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
               <p>{translation('dashboard.manageExpenses')}</p>
             </div>
           </Link>
-          <button className="quick-link-card" onClick={() => setShowGroupDialog(true)} data-testid="quick-link-groups">
+          <button
+            className="quick-link-card"
+            onClick={() => setShowGroupDialog(true)}
+            data-testid="quick-link-groups"
+          >
             <div className="quick-link-icon">👥</div>
             <div className="quick-link-content">
               <h4>Groups</h4>

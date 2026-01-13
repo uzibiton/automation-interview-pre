@@ -307,23 +307,43 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
       <table className="table" data-testid="expenses-table">
         <thead>
           <tr>
-            <th className="sortable-header" onClick={() => handleSort('date')} data-testid="expenses-table-header-date">
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('date')}
+              data-testid="expenses-table-header-date"
+            >
               {translation('expenses.date')}
               {getSortIcon('date')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('category')} data-testid="expenses-table-header-category">
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('category')}
+              data-testid="expenses-table-header-category"
+            >
               {translation('expenses.category')}
               {getSortIcon('category')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('description')} data-testid="expenses-table-header-description">
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('description')}
+              data-testid="expenses-table-header-description"
+            >
               {translation('expenses.description')}
               {getSortIcon('description')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('amount')} data-testid="expenses-table-header-amount">
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('amount')}
+              data-testid="expenses-table-header-amount"
+            >
               {translation('expenses.amount')}
               {getSortIcon('amount')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('paymentMethod')} data-testid="expenses-table-header-payment-method">
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('paymentMethod')}
+              data-testid="expenses-table-header-payment-method"
+            >
               {translation('expenses.paymentMethod')}
               {getSortIcon('paymentMethod')}
             </th>
