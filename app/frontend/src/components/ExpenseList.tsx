@@ -304,30 +304,30 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
         </label>
       </div>
 
-      <table className="table">
+      <table className="table" data-testid="expenses-table">
         <thead>
           <tr>
-            <th className="sortable-header" onClick={() => handleSort('date')}>
+            <th className="sortable-header" onClick={() => handleSort('date')} data-testid="expenses-table-header-date">
               {translation('expenses.date')}
               {getSortIcon('date')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('category')}>
+            <th className="sortable-header" onClick={() => handleSort('category')} data-testid="expenses-table-header-category">
               {translation('expenses.category')}
               {getSortIcon('category')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('description')}>
+            <th className="sortable-header" onClick={() => handleSort('description')} data-testid="expenses-table-header-description">
               {translation('expenses.description')}
               {getSortIcon('description')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('amount')}>
+            <th className="sortable-header" onClick={() => handleSort('amount')} data-testid="expenses-table-header-amount">
               {translation('expenses.amount')}
               {getSortIcon('amount')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('paymentMethod')}>
+            <th className="sortable-header" onClick={() => handleSort('paymentMethod')} data-testid="expenses-table-header-payment-method">
               {translation('expenses.paymentMethod')}
               {getSortIcon('paymentMethod')}
             </th>
-            <th>Actions</th>
+            <th data-testid="expenses-table-header-actions">Actions</th>
           </tr>
         </thead>
         <tbody>

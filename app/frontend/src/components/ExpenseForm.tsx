@@ -127,15 +127,16 @@ function ExpenseForm({ token, onSuccess }: ExpenseFormProps) {
   };
 
   return (
-    <div className="form-container">
+    <div className="form-container" data-testid="expense-form-container">
       <h3>{t('expenses.addNew')}</h3>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} data-testid="expense-form">
         <div className="form-group">
           <label>{t('expenses.category')}</label>
           <select
             value={formData.categoryId}
             onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
             required
+            data-testid="expense-form-category-select"
           >
             <option value="">{t('expenses.allCategories')}</option>
             {categories.map((category) => (
@@ -152,6 +153,7 @@ function ExpenseForm({ token, onSuccess }: ExpenseFormProps) {
             <select
               value={formData.subCategoryId}
               onChange={(e) => setFormData({ ...formData, subCategoryId: e.target.value })}
+              data-testid="expense-form-subcategory-select"
             >
               <option value="">-</option>
               {subCategories.map((subCategory) => (
@@ -173,11 +175,13 @@ function ExpenseForm({ token, onSuccess }: ExpenseFormProps) {
               onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               required
               style={{ flex: 1 }}
+              data-testid="expense-form-amount-input"
             />
             <select
               value={formData.currency}
               onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
               style={{ width: '100px' }}
+              data-testid="expense-form-currency-select"
             >
               <option value="USD">USD $</option>
               <option value="ILS">ILS ₪</option>
@@ -193,6 +197,7 @@ function ExpenseForm({ token, onSuccess }: ExpenseFormProps) {
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
             required
+            data-testid="expense-form-date-input"
           />
         </div>
 
@@ -201,6 +206,7 @@ function ExpenseForm({ token, onSuccess }: ExpenseFormProps) {
           <select
             value={formData.paymentMethod}
             onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
+            data-testid="expense-form-payment-method-select"
           >
             <option value="credit_card">{t('paymentMethods.credit_card')}</option>
             <option value="debit_card">{t('paymentMethods.debit_card')}</option>
@@ -215,11 +221,12 @@ function ExpenseForm({ token, onSuccess }: ExpenseFormProps) {
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             rows={3}
+            data-testid="expense-form-description-input"
           />
         </div>
 
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button type="submit" className="btn btn-primary" disabled={loading}>
+          <button type="submit" className="btn btn-primary" disabled={loading} data-testid="expense-form-submit-button">
             {loading ? 'Saving...' : t('expenses.save')}
           </button>
         </div>

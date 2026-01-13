@@ -52,7 +52,7 @@ function Login() {
         </p>
 
         {/* Email/Password Form */}
-        <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
+        <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }} data-testid="login-form">
           {isRegisterMode && (
             <div style={{ marginBottom: '15px' }}>
               <input
@@ -60,7 +60,8 @@ function Login() {
                 placeholder="Name (optional)"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                style={{
+                data-testid="login-name-input"
+                style={
                   width: '100%',
                   padding: '12px',
                   border: '1px solid #ddd',
@@ -78,7 +79,8 @@ function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              style={{
+              data-testid="login-email-input"
+              style={
                 width: '100%',
                 padding: '12px',
                 border: '1px solid #ddd',
@@ -96,7 +98,8 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              style={{
+              data-testid="login-password-input"
+              style={
                 width: '100%',
                 padding: '12px',
                 border: '1px solid #ddd',
@@ -123,6 +126,7 @@ function Login() {
             type="submit"
             className="btn btn-primary"
             disabled={loading}
+            data-testid="login-submit-button"
             style={{ width: '100%', padding: '12px', marginBottom: '10px' }}
           >
             {loading ? 'Please wait...' : isRegisterMode ? 'Register' : 'Sign In'}
@@ -134,6 +138,7 @@ function Login() {
               setIsRegisterMode(!isRegisterMode);
               setError('');
             }}
+            data-testid="login-toggle-mode-button"
             style={{
               width: '100%',
               padding: '8px',
@@ -170,6 +175,7 @@ function Login() {
             <button
               onClick={handleGoogleLogin}
               className="btn btn-primary"
+              data-testid="login-google-button"
               style={{
                 width: '100%',
                 padding: '12px',

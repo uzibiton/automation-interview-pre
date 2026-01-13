@@ -148,8 +148,8 @@ function MembersListTable({
   }
 
   return (
-    <div className="members-table-container">
-      <table className="members-table">
+    <div className="members-table-container" data-testid="members-list-container">
+      <table className="members-table" data-testid="members-table">
         <thead>
           <tr>
             <th>{translation('groups.members.avatar')}</th>
@@ -168,12 +168,13 @@ function MembersListTable({
             const isCurrentUser = member.userId === currentUserId;
 
             return (
-              <tr key={member.id}>
+              <tr key={member.id} data-testid={`members-table-row-${member.id}`}>
                 <td>
                   <img
                     src={getAvatarUrl(member.avatar, member.name)}
                     alt={`${member.name}'s avatar`}
                     className="member-avatar"
+                    data-testid={`member-avatar-${member.id}`}
                   />
                 </td>
                 <td className="member-name">
@@ -195,6 +196,7 @@ function MembersListTable({
                         className="btn-action btn-change-role"
                         onClick={() => handleChangeRoleClick(member)}
                         title={translation('groups.members.changeRole')}
+                        data-testid={`member-change-role-button-${member.id}`}
                       >
                         🔄
                       </button>
@@ -206,6 +208,7 @@ function MembersListTable({
                         className="btn-action btn-reset-password"
                         onClick={() => handleResetPassword(member)}
                         title={translation('groups.members.resetPassword')}
+                        data-testid={`member-reset-password-button-${member.id}`}
                       >
                         🔑
                       </button>
@@ -217,6 +220,7 @@ function MembersListTable({
                         className="btn-action btn-remove"
                         onClick={() => handleRemoveClick(member)}
                         title={translation('groups.members.removeMember')}
+                        data-testid={`member-remove-button-${member.id}`}
                       >
                         🗑️
                       </button>
@@ -242,14 +246,15 @@ function MembersListTable({
 
       {/* Change Role Dialog */}
       {changingRoleMember && (
-        <div className="modal-overlay" onClick={() => setChangingRoleMember(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay" onClick={() => setChangingRoleMember(null)} data-testid="role-change-dialog-overlay">
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} data-testid="role-change-dialog">
             <div className="modal-header">
               <h3>{translation('groups.members.changeRole')}</h3>
               <button
                 className="modal-close"
                 onClick={() => setChangingRoleMember(null)}
                 aria-label={translation('common.cancel')}
+                data-testid="role-change-dialog-close-button"
               >
                 ✕
               </button>
@@ -292,6 +297,7 @@ function MembersListTable({
                 type="button"
                 className="btn btn-secondary"
                 onClick={() => setChangingRoleMember(null)}
+                data-testid="role-change-dialog-cancel-button"
               >
                 {translation('common.cancel')}
               </button>
@@ -300,6 +306,7 @@ function MembersListTable({
                 className="btn btn-primary"
                 onClick={handleConfirmRoleChange}
                 disabled={!newRole || newRole === changingRoleMember.role}
+                data-testid="role-change-dialog-confirm-button"
               >
                 {translation('groups.members.changeRole')}
               </button>

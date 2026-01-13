@@ -321,8 +321,8 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={handleClose} data-testid="invitation-modal-overlay">
+      <div className="modal-content" onClick={(e) => e.stopPropagation()} data-testid="invitation-modal">
         <div className="modal-header">
           <h3>{translation('groups.invitation.title')}</h3>
           <button
@@ -330,6 +330,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
             onClick={handleClose}
             disabled={loading}
             aria-label={translation('common.cancel')}
+            data-testid="invitation-modal-close-button"
           >
             ✕
           </button>
@@ -341,6 +342,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
             className={`tab-button ${activeTab === 'email' ? 'active' : ''}`}
             onClick={() => handleTabChange('email')}
             type="button"
+            data-testid="invitation-modal-email-tab"
           >
             {translation('groups.invitation.emailTab')}
           </button>
@@ -348,6 +350,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
             className={`tab-button ${activeTab === 'link' ? 'active' : ''}`}
             onClick={() => handleTabChange('link')}
             type="button"
+            data-testid="invitation-modal-link-tab"
           >
             {translation('groups.invitation.linkTab')}
           </button>
@@ -370,7 +373,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
         {/* Email Invitation Tab */}
         {activeTab === 'email' && (
           <div className="tab-content">
-            <form onSubmit={handleSendInvitation}>
+            <form onSubmit={handleSendInvitation} data-testid="invitation-modal-email-form">
               {/* Email field */}
               <div className="form-group">
                 <label htmlFor="inviteEmail">
@@ -389,6 +392,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                   aria-required="true"
                   aria-invalid={!!errors.email && touched.email}
                   aria-describedby={errors.email && touched.email ? 'emailError' : undefined}
+                  data-testid="invitation-modal-email-input"
                 />
                 {errors.email && touched.email && (
                   <span id="emailError" className="error-message" role="alert">
@@ -413,6 +417,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                   aria-required="true"
                   aria-invalid={!!errors.role && touched.role}
                   aria-describedby={errors.role && touched.role ? 'roleError' : undefined}
+                  data-testid="invitation-modal-email-role-select"
                 >
                   <option value="">{translation('groups.invitation.rolePlaceholder')}</option>
                   <option value={GroupRole.ADMIN}>
@@ -446,6 +451,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                   disabled={loading}
                   placeholder={translation('groups.invitation.messagePlaceholder')}
                   rows={3}
+                  data-testid="invitation-modal-message-input"
                 />
               </div>
 
@@ -456,6 +462,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                   className="btn btn-secondary"
                   onClick={handleClose}
                   disabled={loading}
+                  data-testid="invitation-modal-email-cancel-button"
                 >
                   {translation('common.cancel')}
                 </button>
@@ -463,6 +470,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                   type="submit"
                   className="btn btn-primary"
                   disabled={loading || Object.keys(errors).length > 0}
+                  data-testid="invitation-modal-send-button"
                 >
                   {loading
                     ? translation('groups.invitation.sending')
@@ -476,7 +484,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
         {/* Shareable Link Tab */}
         {activeTab === 'link' && (
           <div className="tab-content">
-            <form onSubmit={handleGenerateLink}>
+            <form onSubmit={handleGenerateLink} data-testid="invitation-modal-link-form">
               {/* Role selector */}
               <div className="form-group">
                 <label htmlFor="linkRole">
@@ -493,6 +501,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                   aria-required="true"
                   aria-invalid={!!errors.role && touched.role}
                   aria-describedby={errors.role && touched.role ? 'linkRoleError' : undefined}
+                  data-testid="invitation-modal-link-role-select"
                 >
                   <option value="">{translation('groups.invitation.rolePlaceholder')}</option>
                   <option value={GroupRole.ADMIN}>
@@ -528,6 +537,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                   min="1"
                   aria-invalid={!!errors.maxUses && touched.maxUses}
                   aria-describedby={errors.maxUses && touched.maxUses ? 'maxUsesError' : undefined}
+                  data-testid="invitation-modal-max-uses-input"
                 />
                 {errors.maxUses && touched.maxUses && (
                   <span id="maxUsesError" className="error-message" role="alert">
@@ -538,7 +548,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
 
               {/* Display generated link */}
               {generatedLink && (
-                <div className="link-display">
+                <div className="link-display" data-testid="invitation-modal-generated-link-container">
                   <div className="link-display-header">
                     <h4>{translation('groups.invitation.linkGenerated')}</h4>
                   </div>
@@ -548,8 +558,9 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                       value={generatedLink}
                       readOnly
                       onClick={(e) => (e.target as HTMLInputElement).select()}
+                      data-testid="invitation-modal-generated-link-input"
                     />
-                    <button type="button" className="btn btn-secondary" onClick={handleCopyLink}>
+                    <button type="button" className="btn btn-secondary" onClick={handleCopyLink} data-testid="invitation-modal-copy-link-button">
                       {translation('groups.invitation.copyLink')}
                     </button>
                   </div>
@@ -563,6 +574,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                   className="btn btn-secondary"
                   onClick={handleClose}
                   disabled={loading}
+                  data-testid="invitation-modal-link-cancel-button"
                 >
                   {translation('common.cancel')}
                 </button>
@@ -570,6 +582,7 @@ function InvitationModal({ isOpen, onClose, groupId, onSuccess }: InvitationModa
                   type="submit"
                   className="btn btn-primary"
                   disabled={loading || Object.keys(errors).length > 0}
+                  data-testid="invitation-modal-generate-link-button"
                 >
                   {loading
                     ? translation('groups.invitation.generating')

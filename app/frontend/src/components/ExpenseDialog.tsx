@@ -157,21 +157,22 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={handleClose} data-testid="expense-dialog-overlay">
+      <div className="modal-content" onClick={(e) => e.stopPropagation()} data-testid="expense-dialog">
         <div className="modal-header">
           <h3>{isEditMode ? translation('expenses.edit') : translation('expenses.addNew')}</h3>
-          <button className="modal-close" onClick={handleClose} disabled={loading}>
+          <button className="modal-close" onClick={handleClose} disabled={loading} data-testid="expense-dialog-close-button">
             ✕
           </button>
         </div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} data-testid="expense-dialog-form">
           <div className="form-group">
             <label>{translation('expenses.category')}</label>
             <select
               value={formData.categoryId}
               onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
               required
+              data-testid="expense-dialog-category-select"
             >
               <option value="">{translation('expenses.allCategories')}</option>
               {categories.map((category) => (
@@ -188,6 +189,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
               <select
                 value={formData.subCategoryId}
                 onChange={(e) => setFormData({ ...formData, subCategoryId: e.target.value })}
+                data-testid="expense-dialog-subcategory-select"
               >
                 <option value="">-</option>
                 {subCategories.map((subCategory) => (
@@ -209,11 +211,13 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 required
                 style={{ flex: 1 }}
+                data-testid="expense-dialog-amount-input"
               />
               <select
                 value={formData.currency}
                 onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
                 style={{ width: '100px' }}
+                data-testid="expense-dialog-currency-select"
               >
                 <option value="USD">USD $</option>
                 <option value="ILS">ILS ₪</option>
@@ -229,6 +233,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               required
+              data-testid="expense-dialog-date-input"
             />
           </div>
 
@@ -237,6 +242,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
             <select
               value={formData.paymentMethod}
               onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
+              data-testid="expense-dialog-payment-method-select"
             >
               <option value="credit_card">{translation('paymentMethods.credit_card')}</option>
               <option value="debit_card">{translation('paymentMethods.debit_card')}</option>
@@ -251,6 +257,7 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={3}
+              data-testid="expense-dialog-description-input"
             />
           </div>
 
@@ -260,10 +267,11 @@ function ExpenseDialog({ token, isOpen, onClose, onSuccess, expense }: ExpenseDi
               className="btn btn-secondary"
               onClick={handleClose}
               disabled={loading}
+              data-testid="expense-dialog-cancel-button"
             >
               {translation('expenses.cancel')}
             </button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="btn btn-primary" disabled={loading} data-testid="expense-dialog-submit-button">
               {loading
                 ? translation('expenses.saving')
                 : isEditMode

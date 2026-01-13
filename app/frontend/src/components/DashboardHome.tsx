@@ -59,18 +59,18 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
         </div>
       </div>
 
-      <div className="stats">
-        <div className="stat-card">
+      <div className="stats" data-testid="dashboard-stats">
+        <div className="stat-card" data-testid="stat-card-this-month">
           <h3>{translation('expenses.thisMonth')}</h3>
           <div className="value">${stats.totalAmount?.toFixed(2) || '0.00'}</div>
         </div>
-        <div className="stat-card">
+        <div className="stat-card" data-testid="stat-card-count">
           <h3>{translation('stats.count')}</h3>
           <div className="value" style={{ color: '#2196f3' }}>
             {stats.count || 0}
           </div>
         </div>
-        <div className="stat-card">
+        <div className="stat-card" data-testid="stat-card-by-category">
           <h3>{translation('stats.byCategory')}</h3>
           <div className="value" style={{ fontSize: '14px' }}>
             {stats.byCategory?.length || 0} {translation('nav.categories')}
@@ -78,24 +78,24 @@ function DashboardHome({ stats, token, onUpdate }: DashboardHomeProps) {
         </div>
       </div>
 
-      <div className="quick-links">
+      <div className="quick-links" data-testid="dashboard-quick-links">
         <h3>{translation('dashboard.quickLinks')}</h3>
         <div className="quick-links-grid">
-          <Link to="/analytics" className="quick-link-card">
+          <Link to="/analytics" className="quick-link-card" data-testid="quick-link-analytics">
             <div className="quick-link-icon">📊</div>
             <div className="quick-link-content">
               <h4>{translation('nav.analytics')}</h4>
               <p>{translation('dashboard.viewCharts')}</p>
             </div>
           </Link>
-          <Link to="/expenses" className="quick-link-card">
+          <Link to="/expenses" className="quick-link-card" data-testid="quick-link-expenses">
             <div className="quick-link-icon">📝</div>
             <div className="quick-link-content">
               <h4>{translation('nav.expenses')}</h4>
               <p>{translation('dashboard.manageExpenses')}</p>
             </div>
           </Link>
-          <button className="quick-link-card" onClick={() => setShowGroupDialog(true)}>
+          <button className="quick-link-card" onClick={() => setShowGroupDialog(true)} data-testid="quick-link-groups">
             <div className="quick-link-icon">👥</div>
             <div className="quick-link-content">
               <h4>Groups</h4>

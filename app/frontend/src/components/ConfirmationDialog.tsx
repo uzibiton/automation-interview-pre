@@ -40,11 +40,11 @@ function ConfirmationDialog({
   };
 
   return (
-    <div className="modal-overlay" onClick={onCancel}>
-      <div className="modal-content confirmation-dialog" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={onCancel} data-testid="confirmation-dialog-overlay">
+      <div className="modal-content confirmation-dialog" onClick={(e) => e.stopPropagation()} data-testid="confirmation-dialog">
         <div className="modal-header">
           <h3>{title}</h3>
-          <button className="modal-close" onClick={onCancel}>
+          <button className="modal-close" onClick={onCancel} data-testid="confirmation-dialog-close-button">
             ✕
           </button>
         </div>
@@ -53,10 +53,10 @@ function ConfirmationDialog({
           {children}
         </div>
         <div className="modal-actions">
-          <button type="button" className="btn btn-secondary" onClick={onCancel}>
+          <button type="button" className="btn btn-secondary" onClick={onCancel} data-testid="confirmation-dialog-cancel-button">
             {cancelText || translation('common.cancel')}
           </button>
-          <button type="button" className={getConfirmButtonClass()} onClick={onConfirm}>
+          <button type="button" className={getConfirmButtonClass()} onClick={onConfirm} data-testid="confirmation-dialog-confirm-button">
             {confirmText || translation('common.confirm')}
           </button>
         </div>
