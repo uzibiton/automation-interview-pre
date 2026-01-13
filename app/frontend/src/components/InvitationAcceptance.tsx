@@ -139,6 +139,7 @@ function InvitationAcceptance() {
             <p style={{ color: '#666', marginBottom: '25px' }}>{errorMsg}</p>
             <button
               onClick={() => navigate('/login')}
+              data-testid="invitation-error-login-button"
               style={{
                 padding: '12px 24px',
                 backgroundColor: '#4285f4',
@@ -295,6 +296,7 @@ function InvitationAcceptance() {
             <button
               onClick={handleDecline}
               disabled={actionLoading}
+              data-testid="invitation-decline-button"
               style={{
                 padding: '12px 24px',
                 backgroundColor: 'white',
@@ -312,6 +314,7 @@ function InvitationAcceptance() {
             <button
               onClick={handleAccept}
               disabled={actionLoading}
+              data-testid="invitation-accept-button"
               style={{
                 padding: '12px 24px',
                 backgroundColor: '#4285f4',

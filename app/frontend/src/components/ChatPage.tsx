@@ -382,6 +382,7 @@ function ChatPage({ token }: ChatPageProps) {
             onClick={handleFileAttachment}
             aria-label={t('chat.attachFile')}
             title={t('chat.attachFile')}
+            data-testid="chat-attach-button"
           >
             📎
           </button>
@@ -396,6 +397,7 @@ function ChatPage({ token }: ChatPageProps) {
             onKeyPress={handleKeyPress}
             disabled={isRecording}
             aria-label={t('chat.inputPlaceholder')}
+            data-testid="chat-message-input"
           />
 
           <button
@@ -403,6 +405,7 @@ function ChatPage({ token }: ChatPageProps) {
             onClick={handleRecording}
             aria-label={isRecording ? t('chat.stopRecording') : t('chat.recording')}
             title={isRecording ? t('chat.stopRecording') : t('chat.recording')}
+            data-testid="chat-record-button"
           >
             {isRecording ? `🔴 ${recordingTime}s` : '🎤'}
           </button>
@@ -413,6 +416,7 @@ function ChatPage({ token }: ChatPageProps) {
             disabled={!inputText.trim() || isRecording}
             aria-label={t('chat.send')}
             title={t('chat.send')}
+            data-testid="chat-send-button"
           >
             ➤
           </button>

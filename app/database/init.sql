@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS expenses (
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     payment_method VARCHAR(50),
     labels TEXT[],
+    created_by VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

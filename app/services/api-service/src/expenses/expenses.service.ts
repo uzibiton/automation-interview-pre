@@ -172,7 +172,7 @@ export class ExpensesService {
     };
   }
 
-  async getCategories(language: string = 'en'): Promise<Category[]> {
+  async getCategories(_language: string = 'en'): Promise<Category[]> {
     if (this.useFirestore) {
       return this.firestoreRepo.getCategories() as any;
     }

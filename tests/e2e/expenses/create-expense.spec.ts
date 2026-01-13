@@ -164,7 +164,7 @@ test.describe.skip('Create Expense Workflow @e2e @smoke @critical', () => {
     await page.selectOption('[data-testid="category-filter"]', 'transport');
 
     // Verify our food expense doesn't appear
-    const transportExpenses = await page.locator('[data-testid="expense-item"]').count();
+    const _transportExpenses = await page.locator('[data-testid="expense-item"]').count();
     const hasOurExpense = await page
       .locator('[data-testid="expense-item"]:has-text("Coffee")')
       .count();

@@ -38,7 +38,7 @@ const USERS = [
 ];
 
 // Generate groups for a user
-const generateGroupsForUser = (user, startIndex) => [
+const generateGroupsForUser = (user, _startIndex) => [
   {
     id: `group-${user.id}-001`,
     name: `${user.name}'s Family Budget`,

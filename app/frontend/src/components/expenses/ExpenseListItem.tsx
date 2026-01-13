@@ -7,6 +7,7 @@ import { getAvatarUrl } from '../../utils/avatar.utils';
 
 interface ExpenseListItemProps {
   expense: Expense;
+  index: number;
   categories: Category[];
   onEdit: (expense: Expense) => void;
   onDelete: (id: number) => void;
@@ -16,6 +17,7 @@ interface ExpenseListItemProps {
 
 function ExpenseListItem({
   expense,
+  index,
   categories,
   onEdit,
   onDelete,
@@ -42,67 +44,42 @@ function ExpenseListItem({
       onClick={(e) => onRowClick(expense, e)}
       onKeyDown={(e) => onRowKeyDown(expense, e)}
       tabIndex={0}
-      data-testid={`expense-row-${expense.id}`}
+      data-testid={`expenses-table-row-${index}`}
     >
-      <td>{new Date(expense.date).toLocaleDateString()}</td>
-      <td>
+      <td data-testid={`expenses-table-row-${index}-cell-date`}>
+        {new Date(expense.date).toLocaleDateString()}
+      </td>
+      <td data-testid={`expenses-table-row-${index}-cell-category`}>
         <span style={{ fontSize: '1.5em', marginRight: '8px' }}>
           {getCategoryIcon(expense.categoryId)}
         </span>
         {getCategoryName(expense.categoryId)}
       </td>
-      <td>
-        <div>{expense.description}</div>
-        {expense.createdBy && (
-          <div
-            style={{
-              fontSize: '0.85em',
-              color: '#666',
-              marginTop: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-            data-testid={`creator-info-${expense.id}`}
-          >
-            <img
-              src={avatarUrl}
-              alt={expense.createdBy}
-              style={{
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                verticalAlign: 'middle',
-              }}
-              data-testid={`creator-avatar-${expense.id}`}
-            />
-            <span data-testid={`creator-name-${expense.id}`}>
-              {translation('expenses.createdBy')}: {expense.createdBy}
-            </span>
-          </div>
-        )}
-      </td>
-      <td style={{ fontWeight: 'bold' }}>
+      <td data-testid={`expenses-table-row-${index}-cell-description`}>{expense.description}</td>
+      <td style={{ fontWeight: 'bold' }} data-testid={`expenses-table-row-${index}-cell-amount`}>
         {expense.currency} {parseExpenseAmount(expense.amount).toFixed(2)}
       </td>
-      <td>
+      <td data-testid={`expenses-table-row-${index}-cell-payment-method`}>
         {expense.paymentMethod
           ? translation(`paymentMethods.${expense.paymentMethod.toLowerCase().replace(/ /g, '_')}`)
           : '-'}
       </td>
-      <td>
+      <td data-testid={`expenses-table-row-${index}-cell-created-by`}>
+        {expense.createdBy || '-'}
+      </td>
+      <td data-testid={`expenses-table-row-${index}-cell-actions`}>
         <button
           onClick={() => onEdit(expense)}
           className="btn btn-secondary btn-sm"
           style={{ marginRight: '8px' }}
-          data-testid={`edit-button-${expense.id}`}
+          data-testid={`expenses-table-row-${index}-edit-button`}
         >
           {translation('expenses.edit')}
         </button>
         <button
           onClick={() => onDelete(expense.id)}
           className="btn btn-danger btn-sm"
-          data-testid={`delete-button-${expense.id}`}
+          data-testid={`expenses-table-row-${index}-delete-button`}
         >
           {translation('expenses.delete')}
         </button>

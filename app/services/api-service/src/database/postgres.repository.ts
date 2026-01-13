@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Expense } from '../expenses/expense.entity';
 import { Category } from '../expenses/category.entity';
 import {
@@ -117,7 +117,7 @@ export class PostgresRepository implements IExpenseRepository {
     return await this.categoryRepository.find();
   }
 
-  async getSubCategories(categoryId: number): Promise<SubCategory[]> {
+  async getSubCategories(_categoryId: number): Promise<SubCategory[]> {
     // Implement based on your sub_categories table
     return [];
   }

@@ -18,15 +18,15 @@ import {
   generateExpense,
   generateGroup,
   generateMember,
-  generateUser,
+  generateUser as _generateUser,
   DEFAULT_CATEGORIES,
 } from './lib/faker-generators.js';
 import {
   INIT_USERS,
   INIT_GROUPS,
-  INIT_MEMBERS,
+  INIT_MEMBERS as _INIT_MEMBERS,
   getUsersForExpenses,
-  TEST_PASSWORD,
+  TEST_PASSWORD as _TEST_PASSWORD,
 } from './lib/init-data.js';
 
 // Test user constants (matching existing scripts)
@@ -231,13 +231,10 @@ async function initializeFirestore(firestore) {
         daysBack: options.days,
       });
 
-      // Add member name to description (temp fix until UI shows createdBy)
-      const descriptionWithMember = `[${user.name}] ${expense.description}`;
-
       const expenseRef = firestore.collection('expenses').doc();
       await expenseRef.set({
         ...expense,
-        description: descriptionWithMember,
+        createdBy: user.name,
         date: expense.date.toISOString(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

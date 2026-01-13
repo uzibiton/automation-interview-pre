@@ -394,9 +394,9 @@ const curlCommands = [];
 
 Object.entries(ISSUE_TO_TASK_MAPPING).forEach(([issueNum, taskNum]) => {
   const task = TASK_MAPPING[taskNum];
-  const oldTitle = EXISTING_ISSUES[issueNum];
+  const _oldTitle = EXISTING_ISSUES[issueNum];
   const newTitle = `[TASK-003-${taskNum}] ${task.title}`;
-  const labelsStr = task.labels.join(', ');
+  const _labelsStr = task.labels.join(', ');
 
   console.log(
     `| #${issueNum.padEnd(8)} | TASK-003-${taskNum.padEnd(3)} | ${task.title.substring(0, 45).padEnd(45)} | ${task.phase.padEnd(14)} | ${task.priority.split('-')[1].padEnd(8)} | ${task.labels.slice(0, 3).join(', ')} |`,

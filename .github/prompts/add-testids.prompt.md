@@ -58,4 +58,5 @@ When creating new components:
 
 - Do not add testids to purely presentational elements (decorative icons, layout divs)
 - Prefer semantic names derived from purpose, not implementation
-- For mapped/dynamic elements, include index or unique identifier in testid
+- **Tables**: Always use index-based patterns (not IDs) for consistent test targeting
+- **Other dynamic elements**: Use index when order matters, ID when targeting specific items

@@ -108,8 +108,12 @@ function RoleChangeDialog({ isOpen, member, onClose, onSuccess }: RoleChangeDial
   if (!isOpen || !member) return null;
 
   return (
-    <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay" onClick={handleClose} data-testid="role-change-dialog-overlay">
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
+        data-testid="role-change-dialog"
+      >
         <div className="modal-header">
           <h3>{translation('groups.changeRoleTitle')}</h3>
           <button
@@ -117,6 +121,7 @@ function RoleChangeDialog({ isOpen, member, onClose, onSuccess }: RoleChangeDial
             onClick={handleClose}
             disabled={loading}
             aria-label={translation('common.cancel')}
+            data-testid="role-change-dialog-close-button"
           >
             ✕
           </button>
@@ -192,6 +197,7 @@ function RoleChangeDialog({ isOpen, member, onClose, onSuccess }: RoleChangeDial
                       onChange={(e) => setSelectedRole(e.target.value as GroupRole)}
                       disabled={loading}
                       aria-describedby={`role-desc-${role}`}
+                      data-testid={`role-change-dialog-role-${role.toLowerCase()}`}
                     />
                     <div className="role-option-content">
                       <div className="role-option-header">
@@ -219,6 +225,7 @@ function RoleChangeDialog({ isOpen, member, onClose, onSuccess }: RoleChangeDial
                 className="btn btn-secondary"
                 onClick={handleClose}
                 disabled={loading}
+                data-testid="role-change-dialog-cancel-button"
               >
                 {translation('common.cancel')}
               </button>
@@ -226,6 +233,7 @@ function RoleChangeDialog({ isOpen, member, onClose, onSuccess }: RoleChangeDial
                 type="submit"
                 className="btn btn-primary"
                 disabled={loading || !isRoleChanged}
+                data-testid="role-change-dialog-submit-button"
               >
                 {loading ? translation('groups.changingRole') : translation('groups.changeRole')}
               </button>
