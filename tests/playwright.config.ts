@@ -23,7 +23,7 @@ import * as path from 'path';
 // Determine which environment to load
 const TEST_ENV = process.env.TEST_ENV || 'local';
 const envFile = `.env.${TEST_ENV}`;
-const envPath = path.resolve(__dirname, envFile);
+const envPath = path.resolve(__dirname, 'config', envFile);
 
 // Load environment-specific configuration
 dotenv.config({ path: envPath });
@@ -53,7 +53,7 @@ console.log(`🌐 Base URL: ${process.env.BASE_URL}`);
 
 export default defineConfig({
   // Test directory
-  testDir: '../e2e',
+  testDir: './e2e',
 
   // Test execution settings
   fullyParallel: true,
@@ -66,20 +66,20 @@ export default defineConfig({
     [
       'html',
       {
-        outputFolder: `../reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/html-report`,
+        outputFolder: `./reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/html-report`,
         open: 'never',
       },
     ],
     [
       'json',
       {
-        outputFile: `../reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/results.json`,
+        outputFile: `./reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/results.json`,
       },
     ],
     [
       'junit',
       {
-        outputFile: `../reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/junit.xml`,
+        outputFile: `./reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/junit.xml`,
       },
     ],
     ['list'], // Console output
@@ -202,7 +202,7 @@ export default defineConfig({
   // },
 
   // Output folder for test artifacts (screenshots, videos, traces)
-  outputDir: `../test-results/${new Date().toISOString().replace(/[:.]/g, '-')}/test-artifacts`,
+  outputDir: `./test-results/${new Date().toISOString().replace(/[:.]/g, '-')}/test-artifacts`,
 });
 
 /**
