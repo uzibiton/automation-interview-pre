@@ -1,7 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-import * as fs from 'fs';
 
 /**
  * =============================================================================
@@ -24,20 +23,10 @@ import * as fs from 'fs';
 // Determine which environment to load
 const TEST_ENV = process.env.TEST_ENV || 'local';
 const envFile = `.env.${TEST_ENV}`;
-const envPath = path.resolve(__dirname, 'test-envs', envFile);
+const envPath = path.resolve(__dirname, 'config', envFile);
 
-// Load shared + environment-specific configuration
-// Load `.env.common` first, then the env-specific file so the env-specific
-// values can override the common ones.
-const envFiles = [path.resolve(__dirname, 'test-envs', '.env.common'), envPath];
-for (let i = 0; i < envFiles.length; i++) {
-  const p = envFiles[i];
-  if (fs.existsSync(p)) {
-    // Allow the last file (env-specific) to override values from common
-    const override = i === envFiles.length - 1;
-    dotenv.config({ path: p, override });
-  }
-}
+// Load environment-specific configuration
+dotenv.config({ path: envPath });
 
 console.log(`🔧 Loading Playwright config for environment: ${TEST_ENV}`);
 console.log(`📄 Environment file: ${envFile}`);
