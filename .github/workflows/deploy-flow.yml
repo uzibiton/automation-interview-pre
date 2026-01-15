@@ -136,8 +136,8 @@ jobs:
       - name: Set environment variables
         id: set-env
         run: |
-          ENV="${{ inputs.environment }}"
-          PR_NUM="${{ inputs.pr_number }}"
+          ENV="${{ inputs.environment || (github.event_name == 'pull_request' && 'pr') }}"
+          PR_NUM="${{ inputs.pr_number || github.event.pull_request.number || '' }}"
           # For workflow_call, use passed secret. For workflow_dispatch, use repository secret directly
           PROJECT="${{ secrets.GCP_PROJECT_ID }}"
           REGION="us-central1"
