@@ -285,7 +285,7 @@ When you click a workflow run, you'll see:
 │                                                             │
 │ ▼ Run unit tests                                  89s      │
 │   npm test                                                  │
-│   PASS tests/config/jest.config.test.ts                    │
+│   PASS tests/jest.config.test.ts                    │
 │   ✓ should have correct testMatch patterns (3 ms)         │
 │   ✓ should set NODE_ENV to test (1 ms)                    │
 │                                                             │

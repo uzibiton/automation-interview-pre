@@ -16,8 +16,8 @@ echo "Purpose: Critical path validation"
 echo "================================"
 echo ""
 
-# Navigate to tests config directory
-cd "$(dirname "$0")/../config"
+# Navigate to tests environment directory
+cd "$(dirname "$0")/../test-envs"
 
 # Run unit tests with @smoke tag
 echo "📦 Unit tests (@smoke)..."

@@ -16,7 +16,7 @@ echo "Purpose: Basic functionality check"
 echo "================================"
 echo ""
 
-cd "$(dirname "$0")/../config"
+cd "$(dirname "$0")/../test-envs"
 
 # Component tests
 echo "⚛️  Component tests (@sanity)..."

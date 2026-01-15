@@ -76,7 +76,7 @@ tests/
 
 ### Configuration Files
 
-#### `tests/config/package.json`
+#### `tests/package.json`
 
 **Purpose**: Node.js testing dependencies and npm scripts
 **Includes**:
@@ -92,7 +92,7 @@ tests/
 
 > "All modern testing tools in one place. Scripts like `test:smoke` and `test:regression` provide clear execution paths."
 
-#### `tests/config/jest.config.js`
+#### `tests/jest.config.js`
 
 **Purpose**: Jest configuration for multiple test types
 **Features**:
@@ -107,7 +107,7 @@ tests/
 
 > "Single Jest config handles all non-E2E tests. The projects array allows different setups for different test types."
 
-#### `tests/config/playwright.config.ts`
+#### `tests/playwright.config.ts`
 
 **Purpose**: Playwright E2E and visual testing configuration
 **Features**:
@@ -122,7 +122,7 @@ tests/
 
 > "Playwright gives us true cross-browser testing. The project system allows different configs for desktop, mobile, and visual tests."
 
-#### `tests/config/requirements.txt`
+#### `tests/requirements.txt`
 
 **Purpose**: Python dependencies for specialized testing
 **Includes**:
@@ -350,7 +350,7 @@ test.describe('Expenses @smoke @critical', () => {
 
 ```bash
 # Install dependencies
-cd tests/config
+cd tests
 npm install
 pip install -r requirements.txt
 
@@ -493,7 +493,7 @@ jobs:
 1. **Install Dependencies**
 
    ```bash
-   cd tests/config
+   cd tests
    npm install
    ```
 

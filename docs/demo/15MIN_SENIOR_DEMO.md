@@ -139,7 +139,7 @@ Trigger: Push/PR -> Unit Tests (2min) -> Build (6min) -> Deploy (3min)
 
 **This is your differentiator - showcase senior architecture thinking**
 
-**Open**: `tests/config/playwright.config.ts` - scroll to environment loading section
+**Open**: `tests/playwright.config.ts` - scroll to environment loading section
 
 **Senior Talking Points**:
 
@@ -155,7 +155,7 @@ Trigger: Push/PR -> Unit Tests (2min) -> Build (6min) -> Deploy (3min)
 **Show Files** (15 sec):
 
 ```bash
-tests/config/
+tests/test-envs/
 ├── .env.local        # localhost:5173
 ├── .env.docker       # Docker service names (frontend:5173)
 ├── .env.staging      # Cloud Run staging (-staging suffix)
@@ -240,7 +240,7 @@ describe('ExpenseService', () => {
 **Run it live**:
 
 ```bash
-cd tests/config
+cd tests
 npm run test:unit
 ```
 
@@ -388,7 +388,7 @@ test('@smoke User can create an expense', async ({ page }) => {
   - `tests/unit/services/expenses.service.test.ts`
   - `tests/e2e/expenses/create-expense.spec.ts`
   - `docs/CI_CD_PIPELINE.md`
-- [ ] Have terminal ready in `tests/config/`
+- [ ] Have terminal ready in `tests/`
 - [ ] Close unnecessary applications
 - [ ] Test screen sharing quality
 

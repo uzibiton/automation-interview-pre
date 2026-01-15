@@ -247,11 +247,13 @@ gcloud projects add-iam-policy-binding automation-interview-pre \
 **Solution:**
 
 1. Run tests locally:
-   ```bash
-   cd tests/config
-   npm install
-   npm test
-   ```
+
+```bash
+cd tests
+npm install
+npm test
+```
+
 2. Fix failing tests
 3. Push changes
 

@@ -31,33 +31,33 @@ A comprehensive, production-ready E2E testing infrastructure that runs the same 
 
 ### Configuration Files
 
-1. **`tests/config/.env.local`** - Local development environment
+1. **`tests/test-envs/.env.local`** - Local development environment
    - `BASE_URL=http://localhost:5173`
    - For testing with `docker-compose up` or `npm run dev`
 
-2. **`tests/config/.env.docker`** - Docker container environment
+2. **`tests/test-envs/.env.docker`** - Docker container environment
    - `BASE_URL=http://frontend:5173` (Docker service names)
    - For testing inside Docker network
 
-3. **`tests/config/.env.staging`** - Cloud Run staging environment
+3. **`tests/test-envs/.env.staging`** - Cloud Run staging environment
    - `BASE_URL=https://frontend-staging-xxx.run.app`
    - For testing branch deployments
 
-4. **`tests/config/.env.production`** - Cloud Run production environment
+4. **`tests/test-envs/.env.production`** - Cloud Run production environment
    - `BASE_URL=https://frontend-xxx.run.app`
    - For post-deployment smoke tests
 
-5. **`tests/config/.env.template`** - Template for new environments
+5. **`tests/test-envs/.env.template`** - Template for new environments
 
 ### Updated Configuration
 
-6. **`tests/config/playwright.config.ts`**
+6. **`tests/playwright.config.ts`**
    - Added dotenv import and environment loading logic
    - Reads `TEST_ENV` variable to determine which `.env` file to use
    - Added comprehensive usage documentation
    - Environment-aware setup with logging
 
-7. **`tests/config/package.json`**
+7. **`tests/package.json`**
    - Added `cross-env` and `dotenv` dependencies
    - Created 20+ npm scripts for different testing scenarios:
      - `test:e2e:local` / `:local:headed` / `:local:debug`
@@ -99,7 +99,7 @@ A comprehensive, production-ready E2E testing infrastructure that runs the same 
 ## Installation Complete
 
 ```bash
-cd tests/config
+cd tests
 npm install --save-dev cross-env dotenv
 # ✅ Packages installed successfully
 ```
@@ -263,7 +263,7 @@ npm run test:e2e:production:headed
 
 ### Immediate (Do Now)
 
-1. ✅ Install dependencies: `cd tests/config && npm install`
+1. ✅ Install dependencies: `cd tests && npm install`
 2. ⏳ Update `.env.production` with actual Cloud Run URLs after deployment
 3. ⏳ Update `.env.staging` with staging environment URLs
 4. ⏳ Run first test: `npm run test:e2e:local:headed`
@@ -291,7 +291,7 @@ npm run test:e2e:production:headed
 1. **Show File Structure** (15 sec)
 
    ```bash
-   tree tests/config/*.env*
+   tree tests/test-envs/*.env*
    ```
 
 2. **Explain Architecture** (20 sec)

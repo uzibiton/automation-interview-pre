@@ -4,16 +4,16 @@
 
 ### Core Files Created
 
-- [x] `tests/config/.env.local` - Local development configuration
-- [x] `tests/config/.env.docker` - Docker container configuration
-- [x] `tests/config/.env.staging` - Cloud Run staging configuration
-- [x] `tests/config/.env.production` - Cloud Run production configuration
-- [x] `tests/config/.env.template` - Template for new environments
+- [x] `tests/test-envs/.env.local` - Local development configuration
+- [x] `tests/test-envs/.env.docker` - Docker container configuration
+- [x] `tests/test-envs/.env.staging` - Cloud Run staging configuration
+- [x] `tests/test-envs/.env.production` - Cloud Run production configuration
+- [x] `tests/test-envs/.env.template` - Template for new environments
 
 ### Configuration Updated
 
-- [x] `tests/config/playwright.config.ts` - Multi-environment support
-- [x] `tests/config/package.json` - Added 20+ npm scripts
+- [x] `tests/playwright.config.ts` - Multi-environment support
+- [x] `tests/package.json` - Added 20+ npm scripts
 - [x] Dependencies installed: `cross-env`, `dotenv`
 
 ### Documentation Created
@@ -40,22 +40,22 @@
 1. ⏳ **Update Production URLs**
    - Deploy to Cloud Run
    - Run: `gcloud run services list --region=us-central1`
-   - Edit: `tests/config/.env.production`
+   - Edit: `tests/test-envs/.env.production`
    - Replace `XXXX` with actual Cloud Run service URLs
 
 2. ⏳ **Update Staging URLs**
    - Deploy branch to staging
    - Get Cloud Run URLs from deployment logs
-   - Edit: `tests/config/.env.staging`
+   - Edit: `tests/test-envs/.env.staging`
    - Replace `XXXX` with actual URLs
 
 3. ⏳ **Verify Local Setup**
    ```bash
-   cd tests/config
+   cd tests
    npm install  # ✅ Already done
    cd ../..
    docker-compose up  # Verify services start
-   cd tests/config
+   cd tests
    npm run test:e2e:local:headed  # Should pass
    ```
 
@@ -123,7 +123,7 @@
 - [ ] Start Docker services: `docker-compose up`
 - [ ] Verify local tests pass: `npm run test:e2e:local:headed`
 - [ ] Have terminals open and ready:
-  - Terminal 1: `tests/config/` directory (for running commands)
+  - Terminal 1: `tests/` directory (for running commands)
   - Terminal 2: VS Code with `playwright.config.ts` open
 - [ ] Browser tabs ready:
   - Local app: http://localhost:5173
