@@ -23,7 +23,11 @@ function AnalyticsPage({ token, refreshKey }: AnalyticsPageProps) {
       <ExpensePieChart token={token} refreshKey={refreshKey} />
 
       <div className="page-actions">
-        <Link to="/expenses" className="btn btn-secondary">
+        <Link
+          to="/expenses"
+          className="btn btn-secondary"
+          data-testid="analytics-view-expenses-link"
+        >
           {t('analytics.viewExpenses')}
         </Link>
       </div>

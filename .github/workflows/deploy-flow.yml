@@ -368,7 +368,7 @@ jobs:
           path: frontend-dist
 
       - name: Deploy frontend to Cloud Storage
-        id: deploy-frontend
+        id: deploy-frontend-gcs
         run: |
           # Create bucket if it doesn't exist
           gsutil ls gs://${{ needs.setup.outputs.frontend_bucket }} 2>/dev/null || \
@@ -385,7 +385,76 @@ jobs:
 
           URL="https://storage.googleapis.com/${{ needs.setup.outputs.frontend_bucket }}/index.html"
           echo "url=${URL}" >> $GITHUB_OUTPUT
-          echo "Frontend deployed to: ${URL}"
+          echo "Frontend deployed to GCS: ${URL}"
+
+      - name: Deploy frontend to Cloud Run
+        id: deploy-frontend
+        run: |
+          # Get service URLs for environment variables
+          API_URL=$(gcloud run services describe api-service${{ needs.setup.outputs.service_suffix }} \
+            --region=${{ needs.setup.outputs.region }} \
+            --format='value(status.url)' 2>/dev/null || echo "${{ needs.setup.outputs.api_url }}")
+          AUTH_URL=$(gcloud run services describe auth-service${{ needs.setup.outputs.service_suffix }} \
+            --region=${{ needs.setup.outputs.region }} \
+            --format='value(status.url)' 2>/dev/null || echo "${{ needs.setup.outputs.auth_url }}")
+
+          # Create Dockerfile for serving static files with nginx
+          cat > frontend-dist/Dockerfile << 'EOF'
+          FROM nginx:alpine
+          COPY . /usr/share/nginx/html
+          COPY nginx.conf /etc/nginx/conf.d/default.conf
+          EXPOSE 8080
+          CMD ["nginx", "-g", "daemon off;"]
+          EOF
+
+          # Create nginx config for SPA routing
+          cat > frontend-dist/nginx.conf << 'EOF'
+          server {
+              listen 8080;
+              root /usr/share/nginx/html;
+              index index.html;
+
+              location / {
+                  try_files $uri $uri/ /index.html;
+              }
+
+              location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+                  expires 1y;
+                  add_header Cache-Control "public, immutable";
+              }
+          }
+          EOF
+
+          # Create runtime config.js with actual service URLs
+          cat > frontend-dist/config.js << EOF
+          window.ENV = {
+            VITE_AUTH_SERVICE_URL: "${AUTH_URL}",
+            VITE_API_SERVICE_URL: "${API_URL}",
+            VITE_GOOGLE_CLIENT_ID: "${{ secrets.GOOGLE_CLIENT_ID }}"
+          };
+          EOF
+
+          # Deploy to Cloud Run
+          SERVICE_NAME="expense-tracker${{ needs.setup.outputs.service_suffix == '-dev' && '-develop' || needs.setup.outputs.service_suffix }}"
+
+          gcloud run deploy ${SERVICE_NAME} \
+            --source=frontend-dist \
+            --region=${{ needs.setup.outputs.region }} \
+            --platform=managed \
+            --allow-unauthenticated \
+            --port=8080 \
+            --memory=256Mi \
+            --cpu=1 \
+            --min-instances=0 \
+            --max-instances=10
+
+          # Get the deployed URL
+          CLOUD_RUN_URL=$(gcloud run services describe ${SERVICE_NAME} \
+            --region=${{ needs.setup.outputs.region }} \
+            --format='value(status.url)')
+
+          echo "url=${CLOUD_RUN_URL}" >> $GITHUB_OUTPUT
+          echo "Frontend deployed to Cloud Run: ${CLOUD_RUN_URL}"
 
       - name: Wait for Cloud Run deployments
         run: |

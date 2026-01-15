@@ -44,7 +44,11 @@ function MembersTestPage({ token: _token }: MembersTestPageProps) {
               Demo page for Members List Table component - Viewing as: {demoUserRole}
             </p>
           </div>
-          <button className="btn btn-primary" onClick={() => setShowInviteModal(true)}>
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowInviteModal(true)}
+            data-testid="invite-member-button"
+          >
             Invite Member
           </button>
         </div>

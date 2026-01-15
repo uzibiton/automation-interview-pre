@@ -11,9 +11,10 @@ const LanguageSwitcher: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', gap: '10px' }}>
+    <div style={{ display: 'flex', gap: '10px' }} data-testid="language-switcher">
       <button
         onClick={() => changeLanguage('en')}
+        data-testid="language-switcher-english-button"
         style={{
           padding: '5px 15px',
           backgroundColor: i18n.language === 'en' ? '#007bff' : '#6c757d',
@@ -27,6 +28,7 @@ const LanguageSwitcher: React.FC = () => {
       </button>
       <button
         onClick={() => changeLanguage('he')}
+        data-testid="language-switcher-hebrew-button"
         style={{
           padding: '5px 15px',
           backgroundColor: i18n.language === 'he' ? '#007bff' : '#6c757d',

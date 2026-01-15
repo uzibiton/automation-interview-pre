@@ -148,53 +148,71 @@ function MembersListTable({
   }
 
   return (
-    <div className="members-table-container">
-      <table className="members-table">
+    <div className="members-table-container" data-testid="members-list-container">
+      <table className="members-table" data-testid="members-table">
         <thead>
           <tr>
-            <th>{translation('groups.members.avatar')}</th>
-            <th>{translation('groups.members.name')}</th>
-            <th>{translation('groups.members.email')}</th>
-            <th>{translation('groups.members.role')}</th>
-            <th>{translation('groups.members.joinedDate')}</th>
+            <th data-testid="members-table-header-avatar">
+              {translation('groups.members.avatar')}
+            </th>
+            <th data-testid="members-table-header-name">{translation('groups.members.name')}</th>
+            <th data-testid="members-table-header-email">{translation('groups.members.email')}</th>
+            <th data-testid="members-table-header-role">{translation('groups.members.role')}</th>
+            <th data-testid="members-table-header-joined">
+              {translation('groups.members.joinedDate')}
+            </th>
             {(canManageMembers || canRemoveMembers) && (
-              <th>{translation('groups.members.actions')}</th>
+              <th data-testid="members-table-header-actions">
+                {translation('groups.members.actions')}
+              </th>
             )}
           </tr>
         </thead>
         <tbody>
-          {members.map((member) => {
+          {members.map((member, index) => {
             const isOwner = member.role === GroupRole.OWNER;
             const isCurrentUser = member.userId === currentUserId;
 
             return (
-              <tr key={member.id}>
-                <td>
+              <tr key={member.id} data-testid={`members-table-row-${index}`}>
+                <td data-testid={`members-table-row-${index}-cell-avatar`}>
                   <img
                     src={getAvatarUrl(member.avatar, member.name)}
                     alt={`${member.name}'s avatar`}
                     className="member-avatar"
+                    data-testid={`members-table-row-${index}-avatar`}
                   />
                 </td>
-                <td className="member-name">
+                <td className="member-name" data-testid={`members-table-row-${index}-cell-name`}>
                   {member.name}
                   {isCurrentUser && <span className="badge-you"> (You)</span>}
                 </td>
-                <td className="member-email">{member.email}</td>
-                <td>
+                <td className="member-email" data-testid={`members-table-row-${index}-cell-email`}>
+                  {member.email}
+                </td>
+                <td data-testid={`members-table-row-${index}-cell-role`}>
                   <span className={getRoleBadgeClass(member.role)}>
                     {translation(`groups.members.roles.${member.role}`)}
                   </span>
                 </td>
-                <td className="member-joined">{formatDate(member.joinedAt)}</td>
+                <td
+                  className="member-joined"
+                  data-testid={`members-table-row-${index}-cell-joined`}
+                >
+                  {formatDate(member.joinedAt)}
+                </td>
                 {(canManageMembers || canRemoveMembers) && (
-                  <td className="member-actions">
+                  <td
+                    className="member-actions"
+                    data-testid={`members-table-row-${index}-cell-actions`}
+                  >
                     {/* Change Role button */}
                     {canManageMembers && !isOwner && (
                       <button
                         className="btn-action btn-change-role"
                         onClick={() => handleChangeRoleClick(member)}
                         title={translation('groups.members.changeRole')}
+                        data-testid={`members-table-row-${index}-change-role-button`}
                       >
                         🔄
                       </button>
@@ -206,6 +224,7 @@ function MembersListTable({
                         className="btn-action btn-reset-password"
                         onClick={() => handleResetPassword(member)}
                         title={translation('groups.members.resetPassword')}
+                        data-testid={`members-table-row-${index}-reset-password-button`}
                       >
                         🔑
                       </button>
@@ -217,6 +236,7 @@ function MembersListTable({
                         className="btn-action btn-remove"
                         onClick={() => handleRemoveClick(member)}
                         title={translation('groups.members.removeMember')}
+                        data-testid={`members-table-row-${index}-remove-button`}
                       >
                         🗑️
                       </button>
@@ -242,14 +262,23 @@ function MembersListTable({
 
       {/* Change Role Dialog */}
       {changingRoleMember && (
-        <div className="modal-overlay" onClick={() => setChangingRoleMember(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="modal-overlay"
+          onClick={() => setChangingRoleMember(null)}
+          data-testid="role-change-dialog-overlay"
+        >
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+            data-testid="role-change-dialog"
+          >
             <div className="modal-header">
               <h3>{translation('groups.members.changeRole')}</h3>
               <button
                 className="modal-close"
                 onClick={() => setChangingRoleMember(null)}
                 aria-label={translation('common.cancel')}
+                data-testid="role-change-dialog-close-button"
               >
                 ✕
               </button>
@@ -292,6 +321,7 @@ function MembersListTable({
                 type="button"
                 className="btn btn-secondary"
                 onClick={() => setChangingRoleMember(null)}
+                data-testid="role-change-dialog-cancel-button"
               >
                 {translation('common.cancel')}
               </button>
@@ -300,6 +330,7 @@ function MembersListTable({
                 className="btn btn-primary"
                 onClick={handleConfirmRoleChange}
                 disabled={!newRole || newRole === changingRoleMember.role}
+                data-testid="role-change-dialog-confirm-button"
               >
                 {translation('groups.members.changeRole')}
               </button>

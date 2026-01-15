@@ -4,8 +4,6 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
 
 @Entity('expenses')
@@ -39,6 +37,9 @@ export class Expense {
 
   @Column('text', { array: true, nullable: true })
   labels: string[];
+
+  @Column({ name: 'created_by', nullable: true })
+  createdBy: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

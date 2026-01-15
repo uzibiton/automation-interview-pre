@@ -83,7 +83,12 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
@@ -98,7 +103,12 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
@@ -113,7 +123,12 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
@@ -127,38 +142,9 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
-          </tbody>
-        </table>,
-      );
-
-      expect(screen.getByTestId('creator-info-1')).toBeInTheDocument();
-      expect(screen.getByTestId('creator-name-1')).toHaveTextContent('Created by: John Doe');
-    });
-
-    it('should display avatar for creator', () => {
-      render(
-        <table>
-          <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
-          </tbody>
-        </table>,
-      );
-
-      const avatar = screen.getByTestId('creator-avatar-1') as HTMLImageElement;
-      expect(avatar).toBeInTheDocument();
-      expect(avatar.src).toContain('ui-avatars.com');
-      expect(avatar.alt).toBe('John Doe');
-    });
-
-    it('should not display creator info when createdBy is missing', () => {
-      const expenseWithoutCreator = { ...mockExpense, createdBy: undefined };
-
-      render(
-        <table>
-          <tbody>
             <ExpenseListItem
-              expense={expenseWithoutCreator}
+              expense={mockExpense}
+              index={0}
               categories={mockCategories}
               {...mockHandlers}
             />
@@ -166,22 +152,67 @@ describe('ExpenseListItem', () => {
         </table>,
       );
 
-      expect(screen.queryByTestId('creator-info-1')).not.toBeInTheDocument();
+      expect(screen.getByTestId('expenses-table-row-0-cell-created-by')).toBeInTheDocument();
+      expect(screen.getByTestId('expenses-table-row-0-cell-created-by')).toHaveTextContent(
+        'John Doe',
+      );
     });
 
-    it('should apply subtle styling to creator info', () => {
+    it('should display creator name in created-by cell', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
 
-      const creatorInfo = screen.getByTestId('creator-info-1');
-      expect(creatorInfo).toHaveStyle({
-        fontSize: '0.85em',
-        color: '#666',
+      const createdByCell = screen.getByTestId('expenses-table-row-0-cell-created-by');
+      expect(createdByCell).toBeInTheDocument();
+      expect(createdByCell).toHaveTextContent('John Doe');
+    });
+
+    it('should show dash when createdBy is missing', () => {
+      const expenseWithoutCreator = { ...mockExpense, createdBy: undefined };
+
+      render(
+        <table>
+          <tbody>
+            <ExpenseListItem
+              expense={expenseWithoutCreator}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
+          </tbody>
+        </table>,
+      );
+
+      expect(screen.getByTestId('expenses-table-row-0-cell-created-by')).toHaveTextContent('-');
+    });
+
+    it('should render amount with bold styling', () => {
+      render(
+        <table>
+          <tbody>
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
+          </tbody>
+        </table>,
+      );
+
+      const amountCell = screen.getByTestId('expenses-table-row-0-cell-amount');
+      expect(amountCell).toHaveStyle({
+        fontWeight: 'bold',
       });
     });
   });
@@ -191,12 +222,17 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
 
-      const editButton = screen.getByTestId('edit-button-1');
+      const editButton = screen.getByTestId('expenses-table-row-0-edit-button');
       fireEvent.click(editButton);
 
       expect(mockHandlers.onEdit).toHaveBeenCalledWith(mockExpense);
@@ -207,12 +243,17 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
 
-      const deleteButton = screen.getByTestId('delete-button-1');
+      const deleteButton = screen.getByTestId('expenses-table-row-0-delete-button');
       fireEvent.click(deleteButton);
 
       expect(mockHandlers.onDelete).toHaveBeenCalledWith(1);
@@ -223,12 +264,17 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
 
-      const row = screen.getByTestId('expense-row-1');
+      const row = screen.getByTestId('expenses-table-row-0');
       fireEvent.click(row);
 
       expect(mockHandlers.onRowClick).toHaveBeenCalledTimes(1);
@@ -238,12 +284,17 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
 
-      const row = screen.getByTestId('expense-row-1');
+      const row = screen.getByTestId('expenses-table-row-0');
       fireEvent.keyDown(row, { key: 'Enter' });
 
       expect(mockHandlers.onRowKeyDown).toHaveBeenCalledTimes(1);
@@ -259,6 +310,7 @@ describe('ExpenseListItem', () => {
           <tbody>
             <ExpenseListItem
               expense={expenseWithInvalidCategory}
+              index={0}
               categories={mockCategories}
               {...mockHandlers}
             />
@@ -278,6 +330,7 @@ describe('ExpenseListItem', () => {
           <tbody>
             <ExpenseListItem
               expense={expenseWithoutPayment}
+              index={0}
               categories={mockCategories}
               {...mockHandlers}
             />
@@ -296,6 +349,7 @@ describe('ExpenseListItem', () => {
           <tbody>
             <ExpenseListItem
               expense={expenseWithStringAmount}
+              index={0}
               categories={mockCategories}
               {...mockHandlers}
             />
@@ -313,14 +367,24 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={expense1} categories={mockCategories} {...mockHandlers} />
-            <ExpenseListItem expense={expense2} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={expense1}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
+            <ExpenseListItem
+              expense={expense2}
+              index={1}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
 
-      expect(screen.getByTestId('creator-name-1')).toHaveTextContent('Created by: Alice');
-      expect(screen.getByTestId('creator-name-2')).toHaveTextContent('Created by: Bob');
+      expect(screen.getByTestId('expenses-table-row-0-cell-created-by')).toHaveTextContent('Alice');
+      expect(screen.getByTestId('expenses-table-row-1-cell-created-by')).toHaveTextContent('Bob');
     });
   });
 
@@ -329,29 +393,37 @@ describe('ExpenseListItem', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
 
-      expect(screen.getByTestId('expense-row-1')).toBeInTheDocument();
-      expect(screen.getByTestId('edit-button-1')).toBeInTheDocument();
-      expect(screen.getByTestId('delete-button-1')).toBeInTheDocument();
-      expect(screen.getByTestId('creator-info-1')).toBeInTheDocument();
-      expect(screen.getByTestId('creator-avatar-1')).toBeInTheDocument();
-      expect(screen.getByTestId('creator-name-1')).toBeInTheDocument();
+      expect(screen.getByTestId('expenses-table-row-0')).toBeInTheDocument();
+      expect(screen.getByTestId('expenses-table-row-0-edit-button')).toBeInTheDocument();
+      expect(screen.getByTestId('expenses-table-row-0-delete-button')).toBeInTheDocument();
+      expect(screen.getByTestId('expenses-table-row-0-cell-created-by')).toBeInTheDocument();
     });
 
     it('should have focusable row', () => {
       render(
         <table>
           <tbody>
-            <ExpenseListItem expense={mockExpense} categories={mockCategories} {...mockHandlers} />
+            <ExpenseListItem
+              expense={mockExpense}
+              index={0}
+              categories={mockCategories}
+              {...mockHandlers}
+            />
           </tbody>
         </table>,
       );
 
-      const row = screen.getByTestId('expense-row-1');
+      const row = screen.getByTestId('expenses-table-row-0');
       expect(row).toHaveAttribute('tabIndex', '0');
     });
   });
