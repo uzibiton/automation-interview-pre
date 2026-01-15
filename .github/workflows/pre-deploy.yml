@@ -413,62 +413,8 @@ jobs:
           name: coverage-${{ needs.generate-timestamp.outputs.timestamp }}
           path: tests/reports/${{ needs.generate-timestamp.outputs.timestamp }}/coverage/
 
-  # ==========================================================================
-  # E2E Smoke Tests
-  # ===========================================================================
-  e2e-smoke:
-    name: E2E Smoke Tests
-    needs: [generate-timestamp, static-analysis-gate]
-    if: ${{ !inputs.skip_e2e }}
-    runs-on: ubuntu-latest
-    env:
-      HEADLESS: 'true'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install workspace dependencies
-        run: npm ci
-
-      - name: Cache test node_modules
-        id: cache-node-modules-e2e
-        uses: actions/cache@v4
-        with:
-          path: tests/node_modules
-          key: ${{ runner.os }}-test-modules-e2e-${{ hashFiles('tests/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-test-modules-e2e-
-
-      - name: Install test dependencies
-        if: steps.cache-node-modules-e2e.outputs.cache-hit != 'true'
-        run: npm ci
-        working-directory: tests
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-        working-directory: tests
-
-      - name: Run Playwright smoke tests
-        run: |
-          echo "Running Playwright smoke tests against ${{ inputs.e2e_env }}"
-          TEST_ENV=${{ inputs.e2e_env }} npm run test:e2e:smoke -- --reporter=dot --workers=2
-        working-directory: tests
-        timeout-minutes: 20
-
-      - name: Upload E2E artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: e2e-reports-${{ needs.generate-timestamp.outputs.timestamp }}
-          path: tests/test-results/
-          retention-days: 7
+  # E2E smoke tests moved to post-deploy workflow (post-deploy.yml)
+  # ARCHIVED: moved to post-deploy.yml; kept here previously for pre-deploy checks
 
   # ============================================================================
   # Static Analysis Gate - Check if all static stages passed

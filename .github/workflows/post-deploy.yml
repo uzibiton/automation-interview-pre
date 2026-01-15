@@ -16,38 +16,6 @@ on:
           - staging
           - production
         default: develop
-      pr_number:
-        description: 'PR number (only for PR environments)'
-        required: false
-        type: string
-      skip_integration_tests:
-        description: 'Skip integration tests'
-        type: boolean
-        default: false
-      skip_smoke_tests:
-        description: 'Skip smoke tests'
-        type: boolean
-        default: false
-
-  # Called by Main0: ALL
-  workflow_call:
-    inputs:
-      environment:
-        type: string
-        required: true
-        description: 'Target environment (pr, develop, staging, production)'
-      pr_number:
-        type: string
-        required: false
-        description: 'PR number for PR environments'
-      timestamp:
-        type: string
-        required: true
-        description: 'CI run timestamp for artifact naming'
-      api_url:
-        type: string
-        required: true
-        description: 'Deployed API URL'
       auth_url:
         type: string
         required: false
@@ -56,25 +24,24 @@ on:
         type: string
         required: true
         description: 'Deployed frontend URL'
+      api_url:
+        type: string
+        required: false
+        description: 'Deployed API URL (optional override)'
+      pr_number:
+        type: string
+        required: false
+        description: 'Pull request number (for PR environments)'
+      timestamp:
+        type: string
+        required: false
+        description: 'Optional timestamp to namespace artifacts'
       skip_integration_tests:
         type: boolean
         default: false
       skip_smoke_tests:
         type: boolean
         default: false
-    secrets:
-      GCP_PROJECT_ID:
-        required: false
-      GCP_SA_KEY:
-        required: false
-      TEST_USER_EMAIL:
-        required: false
-      TEST_USER_PASSWORD:
-        required: false
-    outputs:
-      all_passed:
-        description: 'Whether all post-deploy checks passed'
-        value: ${{ jobs.post-deploy-gate.outputs.all_passed }}
 
 jobs:
   # ============================================================================
@@ -362,7 +329,7 @@ jobs:
   smoke-tests:
     name: Smoke Tests
     needs: [health-check, integration-tests]
-    if: ${{ !inputs.skip_smoke_tests && (success() || needs.integration-tests.result == 'skipped') }}
+    if: ${{ !inputs.skip_smoke_tests && (inputs.environment == 'develop' || inputs.environment == 'staging' || inputs.pr_number != '') }}
     runs-on: ubuntu-latest
 
     steps:
@@ -390,32 +357,26 @@ jobs:
         run: npm ci
         working-directory: tests
 
-      - name: Run smoke tests
-        run: npm run test:smoke -- --maxWorkers=2 --forceExit
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
         working-directory: tests
-        timeout-minutes: 10
-        env:
-          API_URL: ${{ needs.health-check.outputs.api_url }}
-          FRONTEND_URL: ${{ needs.health-check.outputs.frontend_url }}
-          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-        continue-on-error: true
 
-      - name: Organize test results
-        if: always()
+      - name: Run Playwright smoke tests against deployed frontend
         run: |
-          mkdir -p reports/${{ needs.health-check.outputs.timestamp }}/smoke-tests
-          if [ -d "reports" ]; then
-            find reports -maxdepth 1 -type f -exec mv {} reports/${{ needs.health-check.outputs.timestamp }}/smoke-tests/ \; 2>/dev/null || true
-          fi
+          echo "Running Playwright smoke tests against deployed frontend: ${{ needs.health-check.outputs.frontend_url }}"
+          BASE_URL=${{ needs.health-check.outputs.frontend_url }} \
+            TEST_ENV=${{ inputs.environment }} \
+            HEADLESS=true \
+            npm run test:e2e:smoke -- --reporter=dot --workers=2
         working-directory: tests
+        timeout-minutes: 20
 
-      - name: Upload smoke test results
+      - name: Upload smoke artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smoke-tests-${{ needs.health-check.outputs.timestamp }}
-          path: tests/reports/${{ needs.health-check.outputs.timestamp }}/smoke-tests/
+          name: smoke-reports-${{ needs.health-check.outputs.timestamp }}
+          path: tests/test-results/
           retention-days: 30
 
   # ============================================================================
