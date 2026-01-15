@@ -26,7 +26,7 @@ docker-compose -f tests/docker/docker-compose.test.yml \
   --profile e2e up --abort-on-container-exit        # E2E tests (~15 min)
 
 # Local development (requires setup - see below)
-cd tests/config
+cd tests/test-envs
 npm run test:unit       # Unit tests
 npm run test:watch      # Watch mode for active development
 npm run test:e2e        # E2E tests with Playwright
@@ -37,8 +37,8 @@ npm run test:e2e        # E2E tests with Playwright
 If you want to run tests locally (outside Docker):
 
 ```bash
-# 1. Navigate to test config directory
-cd tests/config
+# 1. Navigate to test environment directory
+cd tests/test-envs
 
 # 2. Install Node.js dependencies
 npm install
@@ -80,7 +80,7 @@ tests/
 ├── demo/             # Demo materials for presentations
 ├── fixtures/         # Test data
 ├── docker/           # Docker configuration
-├── config/           # Test configurations
+├── test-envs/           # Test configurations
 ├── scripts/          # Execution scripts
 └── docs/             # Documentation
 ```
@@ -162,7 +162,7 @@ docker-compose -f tests/docker/docker-compose.test.yml down -v
 - **Volume mounts**: Live code changes without rebuilds
 - **Named volumes**: Persist test data and node_modules
 - **Virtual environments**: Python packages isolated in venv
-- **Working directory**: Tests execute from `/app/tests/config` with proper Jest configuration
+- **Working directory**: Tests execute from `/app/tests/test-envs` with proper Jest configuration
 
 ## 📈 Coverage & Reporting
 

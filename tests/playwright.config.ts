@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import * as fs from 'fs';
 
 /**
  * =============================================================================
@@ -23,10 +24,20 @@ import * as path from 'path';
 // Determine which environment to load
 const TEST_ENV = process.env.TEST_ENV || 'local';
 const envFile = `.env.${TEST_ENV}`;
-const envPath = path.resolve(__dirname, envFile);
+const envPath = path.resolve(__dirname, 'test-envs', envFile);
 
-// Load environment-specific configuration
-dotenv.config({ path: envPath });
+// Load shared + environment-specific configuration
+// Load `.env.common` first, then the env-specific file so the env-specific
+// values can override the common ones.
+const envFiles = [path.resolve(__dirname, 'test-envs', '.env.common'), envPath];
+for (let i = 0; i < envFiles.length; i++) {
+  const p = envFiles[i];
+  if (fs.existsSync(p)) {
+    // Allow the last file (env-specific) to override values from common
+    const override = i === envFiles.length - 1;
+    dotenv.config({ path: p, override });
+  }
+}
 
 console.log(`🔧 Loading Playwright config for environment: ${TEST_ENV}`);
 console.log(`📄 Environment file: ${envFile}`);
@@ -53,7 +64,7 @@ console.log(`🌐 Base URL: ${process.env.BASE_URL}`);
 
 export default defineConfig({
   // Test directory
-  testDir: '../e2e',
+  testDir: './e2e',
 
   // Test execution settings
   fullyParallel: true,
@@ -66,20 +77,20 @@ export default defineConfig({
     [
       'html',
       {
-        outputFolder: `../reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/html-report`,
+        outputFolder: `./reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/html-report`,
         open: 'never',
       },
     ],
     [
       'json',
       {
-        outputFile: `../reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/results.json`,
+        outputFile: `./reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/results.json`,
       },
     ],
     [
       'junit',
       {
-        outputFile: `../reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/junit.xml`,
+        outputFile: `./reports/e2e/${new Date().toISOString().replace(/[:.]/g, '-')}/junit.xml`,
       },
     ],
     ['list'], // Console output
@@ -202,7 +213,7 @@ export default defineConfig({
   // },
 
   // Output folder for test artifacts (screenshots, videos, traces)
-  outputDir: `../test-results/${new Date().toISOString().replace(/[:.]/g, '-')}/test-artifacts`,
+  outputDir: `./test-results/${new Date().toISOString().replace(/[:.]/g, '-')}/test-artifacts`,
 });
 
 /**

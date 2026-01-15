@@ -115,7 +115,7 @@ services:
       context: ../..
       dockerfile: tests/docker/test.Dockerfile
       target: test
-    working_dir: /app/tests/config
+    working_dir: /app/tests/test-envs
     volumes:
       # Mount source code (read-only for safety)
       - ../../app/services:/app/services:ro
@@ -124,9 +124,9 @@ services:
       - ../unit:/app/tests/unit
       - ../fixtures:/app/tests/fixtures
       # Mount configs
-      - ../config:/app/tests/config
+      - ../test-envs:/app/tests/test-envs
       # Preserve node_modules in container
-      - test-node-modules:/app/tests/config/node_modules
+      - test-node-modules:/app/tests/test-envs/node_modules
     environment:
       - TEST_TYPE=unit
       - CI=true
@@ -149,7 +149,7 @@ services:
       - ../../app/services:/app/services:ro
       - ../integration:/app/tests/integration
       - ../fixtures:/app/tests/fixtures
-      - ../config:/app/tests/config
+      - ../test-envs:/app/tests/test-envs
       - test-node-modules:/app/node_modules
     environment:
       - TEST_TYPE=integration
@@ -181,7 +181,7 @@ services:
     volumes:
       - ../e2e:/app/tests/e2e
       - ../fixtures:/app/tests/fixtures
-      - ../config:/app/tests/config
+      - ../test-envs:/app/tests/test-envs
       - test-node-modules:/app/node_modules
       # Mount for test artifacts (screenshots, videos)
       - ../e2e/test-results:/app/tests/e2e/test-results

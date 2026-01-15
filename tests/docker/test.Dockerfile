@@ -53,7 +53,7 @@ RUN apk add --no-cache \
     make
 
 # Copy Python requirements
-COPY tests/config/requirements.txt ./
+COPY tests/test-envs/requirements.txt ./
 
 # Create and activate virtual environment
 RUN python3 -m venv /opt/venv
@@ -90,7 +90,7 @@ FROM browser-base AS test
 WORKDIR /app
 
 # Copy test configurations
-COPY tests/config/*.config.js tests/config/*.config.ts tests/config/*.ini ./config/
+COPY tests/test-envs/*.config.js tests/test-envs/*.config.ts tests/test-envs/*.ini ./config/
 
 # Copy test scripts
 COPY tests/scripts/*.sh ./scripts/

@@ -16,7 +16,7 @@ echo "Purpose: Full feature validation"
 echo "================================"
 echo ""
 
-cd "$(dirname "$0")/../config"
+cd "$(dirname "$0")/../test-envs"
 
 # Unit tests
 echo "📦 Unit tests (all)..."

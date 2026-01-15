@@ -8,7 +8,7 @@
 
 ```bash
 # 1. Install dependencies
-cd tests/config
+cd tests
 npm install
 
 # 2. Start services
@@ -16,7 +16,7 @@ cd ../..
 docker-compose up
 
 # 3. Run tests (in new terminal)
-cd tests/config
+cd tests
 npm run test:e2e:local:headed
 ```
 
@@ -91,7 +91,7 @@ npm run test:e2e:production:debug   # Debug mode
 
 ### Configuration Files
 
-Each environment has its own `.env` file in `tests/config/`:
+Each environment has its own `.env` file in `tests/test-envs/`:
 
 - `.env.local` - Local development (localhost:5173)
 - `.env.docker` - Docker services (service names)
@@ -119,7 +119,7 @@ After deploying to Cloud Run:
 gcloud run services list --region=us-central1
 
 # 2. Update environment file
-# Edit: tests/config/.env.production or .env.staging
+# Edit: tests/test-envs/.env.production or .env.staging
 # Replace placeholders with actual service URLs
 
 # 3. Verify URLs
@@ -214,7 +214,7 @@ npm run test:e2e:docker:headed
 # 2. Get the Cloud Run URLs from deployment logs
 # Example: https://frontend-feature-new-ui-xxx.run.app
 
-# 3. Update tests/config/.env.staging with actual URLs
+# 3. Update tests/test-envs/.env.staging with actual URLs
 BASE_URL=https://frontend-staging-xxx.run.app
 API_URL=https://api-service-staging-xxx.run.app
 AUTH_URL=https://auth-service-staging-xxx.run.app
@@ -250,7 +250,7 @@ npm run test:e2e:staging:debug
 
 ```bash
 # 1. After production deployment, get Cloud Run URLs
-# 2. Update tests/config/.env.production with actual URLs
+# 2. Update tests/test-envs/.env.production with actual URLs
 BASE_URL=https://frontend-xxx.run.app
 API_URL=https://api-service-xxx.run.app
 AUTH_URL=https://auth-service-xxx.run.app
@@ -327,7 +327,7 @@ Add to `.github/workflows/ci-cd.yml` before deployment:
 ```yaml
 - name: Run E2E Tests in Docker
   run: |
-    cd tests/config
+    cd tests
     npm install
     npm run test:e2e:docker
 ```
@@ -342,7 +342,7 @@ Add after Cloud Run deployment:
 ```yaml
 - name: Run Smoke Tests in Production
   run: |
-    cd tests/config
+    cd tests
     npm install
     npm run test:e2e:production:smoke
 ```
@@ -356,7 +356,7 @@ Add after Cloud Run deployment:
 # Pre-deploy: Fast smoke tests in Docker
 - name: Smoke Tests (Pre-Deploy)
   run: |
-    cd tests/config
+    cd tests
     npm install
     TEST_ENV=docker playwright test --grep @smoke
 
@@ -367,7 +367,7 @@ Add after Cloud Run deployment:
 # Post-deploy: Critical path validation
 - name: Production Validation (Post-Deploy)
   run: |
-    cd tests/config
+    cd tests
     npm run test:e2e:production:smoke
 ```
 

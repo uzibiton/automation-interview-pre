@@ -16,7 +16,7 @@ echo "Purpose: Comprehensive validation"
 echo "================================"
 echo ""
 
-cd "$(dirname "$0")/../config"
+cd "$(dirname "$0")/../test-envs"
 
 # Run full regression suite first
 echo "Running regression suite..."

@@ -13,10 +13,9 @@ out/
 # Environment variables (SENSITIVE!)
 environments/.env
 environments/.env.local
-environments/.env*.local
-environments/.env.production
-environments/.env.development
-environments/.env.test
+environments/.env.local
+.env
+.env*.local
 .env
 .env.local
 .env*.local
