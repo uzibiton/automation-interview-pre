@@ -1,5 +1,4 @@
-name: 'Main0: ALL'
-
+name: 'Main0 CI/CD'
 run-name: 'Main0 CI/CD'
 
 # Main CI/CD orchestration workflow that calls reusable workflows:
