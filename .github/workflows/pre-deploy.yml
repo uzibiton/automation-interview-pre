@@ -418,9 +418,11 @@ jobs:
   # ===========================================================================
   e2e-smoke:
     name: E2E Smoke Tests
-    needs: [static-analysis-gate]
+    needs: [generate-timestamp, static-analysis-gate]
     if: ${{ !inputs.skip_e2e }}
     runs-on: ubuntu-latest
+    env:
+      HEADLESS: 'true'
 
     steps:
       - name: Checkout code
