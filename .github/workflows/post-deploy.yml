@@ -43,6 +43,47 @@ on:
         type: boolean
         default: false
 
+  # Allow this workflow to be called as a reusable workflow
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+      pr_number:
+        type: string
+        required: false
+      timestamp:
+        type: string
+        required: false
+      api_url:
+        type: string
+        required: false
+      auth_url:
+        type: string
+        required: false
+      frontend_url:
+        type: string
+        required: false
+      skip_integration_tests:
+        type: boolean
+        default: false
+      skip_smoke_tests:
+        type: boolean
+        default: false
+    secrets:
+      GCP_PROJECT_ID:
+        required: false
+      GCP_SA_KEY:
+        required: false
+      TEST_USER_EMAIL:
+        required: false
+      TEST_USER_PASSWORD:
+        required: false
+    outputs:
+      all_passed:
+        description: 'Whether all post-deploy checks passed'
+        value: ${{ jobs.post-deploy-gate.outputs.all_passed }}
+
 jobs:
   # ============================================================================
   # Resolve URLs - shared setup for health checks
