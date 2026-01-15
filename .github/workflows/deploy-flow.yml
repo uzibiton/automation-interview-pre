@@ -30,6 +30,28 @@ on:
         type: boolean
         default: false
 
+  # Trigger on PRs that touch the frontend/UI paths
+  pull_request:
+    branches:
+      - develop
+      - staging
+      - main
+    paths:
+      - 'app/frontend/**'
+      - 'frontend/**'
+
+  # Trigger on pushes to branches when frontend/UI files change
+  push:
+    branches:
+      - develop
+      - staging
+      - main
+      - 'feature/**'
+      - 'hotfix/**'
+    paths:
+      - 'app/frontend/**'
+      - 'frontend/**'
+
   # Called by Main0: ALL
   workflow_call:
     inputs:
