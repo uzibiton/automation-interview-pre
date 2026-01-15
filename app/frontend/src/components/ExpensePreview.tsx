@@ -102,6 +102,7 @@ function ExpensePreview({
           onClick={onCancel}
           disabled={loading}
           aria-label={translation('expenses.cancel')}
+          data-testid="expense-preview-cancel-button"
         >
           {translation('expenses.cancel')}
         </button>
@@ -110,6 +111,7 @@ function ExpensePreview({
           onClick={onEdit}
           disabled={loading}
           aria-label={translation('expenses.edit')}
+          data-testid="expense-preview-edit-button"
         >
           {translation('expenses.edit')}
         </button>
@@ -118,6 +120,7 @@ function ExpensePreview({
           onClick={onApprove}
           disabled={loading || parsedExpense.amount === null}
           aria-label={translation('chat.preview.approve')}
+          data-testid="expense-preview-approve-button"
         >
           {loading ? translation('expenses.saving') : translation('chat.preview.approve')}
         </button>

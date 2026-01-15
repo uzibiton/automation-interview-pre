@@ -182,8 +182,16 @@ function GroupCreationDialog({ isOpen, onClose, onSuccess }: GroupCreationDialog
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="modal-overlay"
+      onClick={handleClose}
+      data-testid="group-creation-dialog-overlay"
+    >
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
+        data-testid="group-creation-dialog"
+      >
         <div className="modal-header">
           <h3>{translation('groups.createGroupTitle')}</h3>
           <button
@@ -191,6 +199,7 @@ function GroupCreationDialog({ isOpen, onClose, onSuccess }: GroupCreationDialog
             onClick={handleClose}
             disabled={loading}
             aria-label={translation('common.cancel')}
+            data-testid="group-creation-dialog-close-button"
           >
             ✕
           </button>
@@ -229,6 +238,7 @@ function GroupCreationDialog({ isOpen, onClose, onSuccess }: GroupCreationDialog
               aria-required="true"
               aria-invalid={!!errors.name && touched.name}
               aria-describedby={errors.name && touched.name ? 'nameError' : undefined}
+              data-testid="group-creation-name-input"
             />
             {errors.name && touched.name && (
               <span id="nameError" className="error-message" role="alert">
@@ -253,6 +263,7 @@ function GroupCreationDialog({ isOpen, onClose, onSuccess }: GroupCreationDialog
               rows={4}
               aria-invalid={!!errors.description && touched.description}
               aria-describedby={errors.description && touched.description ? 'descError' : undefined}
+              data-testid="group-creation-description-input"
             />
             {errors.description && touched.description && (
               <span id="descError" className="error-message" role="alert">
@@ -269,6 +280,7 @@ function GroupCreationDialog({ isOpen, onClose, onSuccess }: GroupCreationDialog
               className="btn btn-secondary"
               onClick={handleClose}
               disabled={loading}
+              data-testid="group-creation-cancel-button"
             >
               {translation('common.cancel')}
             </button>
@@ -276,6 +288,7 @@ function GroupCreationDialog({ isOpen, onClose, onSuccess }: GroupCreationDialog
               type="submit"
               className="btn btn-primary"
               disabled={loading || Object.keys(errors).length > 0}
+              data-testid="group-creation-submit-button"
             >
               {loading ? translation('groups.creating') : translation('groups.createGroup')}
             </button>

@@ -12,7 +12,14 @@ import ExpenseListItem from './expenses/ExpenseListItem';
 
 const API_SERVICE_URL = getApiServiceUrl();
 
-type SortField = 'date' | 'description' | 'category' | 'amount' | 'paymentMethod' | null;
+type SortField =
+  | 'date'
+  | 'description'
+  | 'category'
+  | 'amount'
+  | 'paymentMethod'
+  | 'createdBy'
+  | null;
 type SortDirection = 'asc' | 'desc' | null;
 
 interface ExpenseListProps {
@@ -260,6 +267,12 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
           compareResult = paymentA.localeCompare(paymentB);
           break;
         }
+        case 'createdBy': {
+          const createdByA = a.createdBy || '';
+          const createdByB = b.createdBy || '';
+          compareResult = createdByA.localeCompare(createdByB);
+          break;
+        }
       }
 
       return sortDirection === 'asc' ? compareResult : -compareResult;
@@ -292,49 +305,81 @@ function ExpenseList({ token, refreshKey, onUpdate }: ExpenseListProps) {
       <h2>{translation('expenses.title')}</h2>
 
       {/* My Expenses Filter Toggle */}
-      <div style={{ marginBottom: '16px' }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+      <div style={{ marginBottom: '16px' }} data-testid="my-expenses-filter">
+        <label
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+          data-testid="my-expenses-label"
+        >
           <input
             type="checkbox"
             checked={showMyExpensesOnly}
             onChange={(e) => setShowMyExpensesOnly(e.target.checked)}
             data-testid="my-expenses-toggle"
           />
-          <span>{translation('expenses.myExpenses')}</span>
+          <span data-testid="my-expenses-text">{translation('expenses.myExpenses')}</span>
         </label>
       </div>
 
-      <table className="table">
+      <table className="table" data-testid="expenses-table">
         <thead>
           <tr>
-            <th className="sortable-header" onClick={() => handleSort('date')}>
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('date')}
+              data-testid="expenses-table-header-date"
+            >
               {translation('expenses.date')}
               {getSortIcon('date')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('category')}>
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('category')}
+              data-testid="expenses-table-header-category"
+            >
               {translation('expenses.category')}
               {getSortIcon('category')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('description')}>
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('description')}
+              data-testid="expenses-table-header-description"
+            >
               {translation('expenses.description')}
               {getSortIcon('description')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('amount')}>
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('amount')}
+              data-testid="expenses-table-header-amount"
+            >
               {translation('expenses.amount')}
               {getSortIcon('amount')}
             </th>
-            <th className="sortable-header" onClick={() => handleSort('paymentMethod')}>
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('paymentMethod')}
+              data-testid="expenses-table-header-payment-method"
+            >
               {translation('expenses.paymentMethod')}
               {getSortIcon('paymentMethod')}
             </th>
-            <th>Actions</th>
+            <th
+              className="sortable-header"
+              onClick={() => handleSort('createdBy')}
+              data-testid="expenses-table-header-created-by"
+            >
+              {translation('expenses.createdBy')}
+              {getSortIcon('createdBy')}
+            </th>
+            <th data-testid="expenses-table-header-actions">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {sortedExpenses.map((expense) => (
+          {sortedExpenses.map((expense, index) => (
             <ExpenseListItem
               key={expense.id}
               expense={expense}
+              index={index}
               categories={categories}
               onEdit={handleEdit}
               onDelete={handleDeleteClick}

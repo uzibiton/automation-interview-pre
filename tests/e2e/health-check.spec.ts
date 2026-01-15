@@ -122,7 +122,7 @@ test.describe('API Service Health @smoke', () => {
     try {
       const response = await page.request.get(`${apiUrl}/health`);
       expect(response.ok()).toBeTruthy();
-    } catch (error) {
+    } catch {
       // If health endpoint doesn't exist, just verify we can reach the API
       console.log('Health endpoint not available, skipping API health check');
     }
@@ -135,7 +135,7 @@ test.describe('API Service Health @smoke', () => {
     try {
       const response = await page.request.get(`${authUrl}/health`);
       expect(response.ok()).toBeTruthy();
-    } catch (error) {
+    } catch {
       console.log('Auth health endpoint not available, skipping Auth health check');
     }
   });

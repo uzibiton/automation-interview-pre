@@ -43,9 +43,10 @@ function TaskForm({ token, onSuccess }: TaskFormProps) {
   return (
     <div
       style={{ background: 'white', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}
+      data-testid="task-form-container"
     >
       <h2 style={{ marginBottom: '20px' }}>Create New Task</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} data-testid="task-form">
         <div className="form-group">
           <label>Title *</label>
           <input
@@ -55,6 +56,7 @@ function TaskForm({ token, onSuccess }: TaskFormProps) {
             value={formData.title}
             onChange={handleChange}
             required
+            data-testid="task-form-title-input"
           />
         </div>
 
@@ -65,6 +67,7 @@ function TaskForm({ token, onSuccess }: TaskFormProps) {
             className="form-control"
             value={formData.description}
             onChange={handleChange}
+            data-testid="task-form-description-input"
           />
         </div>
 
@@ -76,6 +79,7 @@ function TaskForm({ token, onSuccess }: TaskFormProps) {
               className="form-control"
               value={formData.priority}
               onChange={handleChange}
+              data-testid="task-form-priority-select"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -90,6 +94,7 @@ function TaskForm({ token, onSuccess }: TaskFormProps) {
               className="form-control"
               value={formData.status}
               onChange={handleChange}
+              data-testid="task-form-status-select"
             >
               <option value="pending">Pending</option>
               <option value="in_progress">In Progress</option>
@@ -105,11 +110,12 @@ function TaskForm({ token, onSuccess }: TaskFormProps) {
               className="form-control"
               value={formData.dueDate}
               onChange={handleChange}
+              data-testid="task-form-due-date-input"
             />
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary" data-testid="task-form-submit-button">
           Create Task
         </button>
       </form>

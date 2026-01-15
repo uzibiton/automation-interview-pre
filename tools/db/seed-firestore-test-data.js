@@ -233,7 +233,7 @@ async function seedExpenses() {
 
   let created = 0;
   for (const expense of expenses) {
-    const docRef = await expensesRef.add(expense);
+    const _docRef = await expensesRef.add(expense);
     created++;
     if (created <= 5) {
       console.log(`   ✅ Created expense: ${expense.description} - $${expense.amount}`);

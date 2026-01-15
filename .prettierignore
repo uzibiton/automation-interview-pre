@@ -1,0 +1,10 @@
+# Generated files
+app/frontend/public/mockServiceWorker.js
+
+# Build outputs
+dist/
+build/
+node_modules/
+
+# Reports
+tests/reports/

@@ -69,14 +69,14 @@ function TaskList({ token, refreshKey, onUpdate }: TaskListProps) {
   if (loading) return <div>Loading tasks...</div>;
 
   return (
-    <div className="task-list">
+    <div className="task-list" data-testid="task-list-container">
       {tasks.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#666', padding: '40px' }}>
           No tasks yet. Create your first task!
         </p>
       ) : (
-        tasks.map((task) => (
-          <div key={task.id} className="task-card">
+        tasks.map((task, index) => (
+          <div key={task.id} className="task-card" data-testid={`task-card-${index}`}>
             <div className="task-header">
               <div className="task-title">{task.title}</div>
               <span className={`task-status status-${task.status}`}>
@@ -100,6 +100,7 @@ function TaskList({ token, refreshKey, onUpdate }: TaskListProps) {
                   }
                   className="btn btn-primary"
                   style={{ fontSize: '12px' }}
+                  data-testid={`task-card-${index}-status-button`}
                 >
                   {task.status === 'pending' ? 'Start' : 'Complete'}
                 </button>
@@ -108,6 +109,7 @@ function TaskList({ token, refreshKey, onUpdate }: TaskListProps) {
                 onClick={() => deleteTask(task.id)}
                 className="btn btn-secondary"
                 style={{ fontSize: '12px', color: '#d32f2f' }}
+                data-testid={`task-card-${index}-delete-button`}
               >
                 Delete
               </button>

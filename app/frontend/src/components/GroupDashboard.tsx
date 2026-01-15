@@ -191,7 +191,11 @@ function GroupDashboard({ user }: GroupDashboardProps) {
           <p style={{ color: '#666', marginBottom: '30px' }}>
             {translation('groups.dashboard.noGroupDescription')}
           </p>
-          <button className="btn btn-primary" onClick={() => setShowCreateGroupDialog(true)}>
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowCreateGroupDialog(true)}
+            data-testid="create-group-button"
+          >
             {translation('groups.createGroup')}
           </button>
         </div>
@@ -228,7 +232,11 @@ function GroupDashboard({ user }: GroupDashboardProps) {
         </div>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           {canEditGroup && (
-            <button className="btn btn-secondary" onClick={handleEditClick}>
+            <button
+              className="btn btn-secondary"
+              onClick={handleEditClick}
+              data-testid="edit-group-button"
+            >
               {translation('groups.dashboard.editGroup')}
             </button>
           )}
@@ -237,6 +245,7 @@ function GroupDashboard({ user }: GroupDashboardProps) {
               className="btn btn-danger"
               onClick={() => setShowDeleteDialog(true)}
               style={{ backgroundColor: '#f44336', color: 'white' }}
+              data-testid="delete-group-button"
             >
               {translation('groups.dashboard.deleteGroup')}
             </button>
@@ -287,7 +296,11 @@ function GroupDashboard({ user }: GroupDashboardProps) {
         >
           <h3>{translation('groups.members.title')}</h3>
           {canInviteMembers && (
-            <button className="btn btn-primary" onClick={() => setShowInvitationModal(true)}>
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowInvitationModal(true)}
+              data-testid="invite-member-button"
+            >
               {translation('groups.dashboard.inviteMember')}
             </button>
           )}

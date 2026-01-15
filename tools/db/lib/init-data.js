@@ -76,7 +76,7 @@ export const INIT_USERS = [
 ];
 
 // Helper to get current ISO timestamp
-const now = () => new Date().toISOString();
+const _now = () => new Date().toISOString();
 
 /**
  * Groups to create
