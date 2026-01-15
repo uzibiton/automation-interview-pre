@@ -123,6 +123,16 @@ module.exports = {
         '<rootDir>/tests/integration/**/*.spec.ts',
       ],
       setupFilesAfterEnv: ['<rootDir>/tests/jest.setup.js'],
+      reporters: [
+        [
+          'jest-junit',
+          {
+            outputDirectory: '<rootDir>/tests/reports/integration',
+            outputName: 'junit.xml',
+          },
+        ],
+        'default',
+      ],
       transform: {
         '^.+\\.tsx?$': [
           require.resolve('ts-jest'),
