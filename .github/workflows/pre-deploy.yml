@@ -340,9 +340,16 @@ jobs:
       - name: Organize test results
         if: always()
         run: |
-          mkdir -p reports/${{ needs.generate-timestamp.outputs.timestamp }}/unit-tests
+          DEST=reports/${{ needs.generate-timestamp.outputs.timestamp }}/unit-tests
+          mkdir -p "$DEST"
           if [ -d "reports" ]; then
-            find reports -maxdepth 1 -type f -exec mv {} reports/${{ needs.generate-timestamp.outputs.timestamp }}/unit-tests/ \; 2>/dev/null || true
+            shopt -s nullglob || true
+            for entry in reports/*; do
+              if [ "$entry" = "reports/${{ needs.generate-timestamp.outputs.timestamp }}" ] || [ "$entry" = "$DEST" ]; then
+                continue
+              fi
+              mv "$entry" "$DEST/" 2>/dev/null || true
+            done
           fi
         working-directory: tests
 

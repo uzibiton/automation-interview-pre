@@ -349,9 +349,16 @@ jobs:
       - name: Organize test results
         if: always()
         run: |
-          mkdir -p reports/${{ needs.health-check.outputs.timestamp }}/integration-tests
+          DEST=reports/${{ needs.health-check.outputs.timestamp }}/integration-tests
+          mkdir -p "$DEST"
           if [ -d "reports" ]; then
-            find reports -maxdepth 1 -type f -exec mv {} reports/${{ needs.health-check.outputs.timestamp }}/integration-tests/ \; 2>/dev/null || true
+            shopt -s nullglob || true
+            for entry in reports/*; do
+              if [ "$entry" = "reports/${{ needs.health-check.outputs.timestamp }}" ] || [ "$entry" = "$DEST" ]; then
+                continue
+              fi
+              mv "$entry" "$DEST/" 2>/dev/null || true
+            done
           fi
         working-directory: tests
 
@@ -360,8 +367,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: integration-tests-${{ needs.health-check.outputs.timestamp }}
-          path: tests/reports/${{ needs.health-check.outputs.timestamp }}/integration-tests/
+          path: |
+            tests/reports/**
+            tests/test-results/**
           retention-days: 30
+          if-no-files-found: warn
 
   # ============================================================================
   # STAGE 6: Smoke Tests (runs after integration tests)
@@ -417,8 +427,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: smoke-reports-${{ needs.health-check.outputs.timestamp }}
-          path: tests/test-results/
+          path: |
+            tests/test-results/**
+            tests/reports/**
           retention-days: 30
+          if-no-files-found: warn
 
   # ============================================================================
   # Post-Deploy Gate - Check if all post-deployment stages passed
